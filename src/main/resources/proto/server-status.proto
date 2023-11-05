@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package daikombat.dto;
+
+option java_multiple_files = true;
+option java_package = "com.beverly.hills.money.gang.proto";
+
+message ServerStatus {
+  int32 serverId = 1;
+  repeated int32 gameIds = 2;
+  bool requiresPin = 3;
+  int32 playersOnline = 4;
+}

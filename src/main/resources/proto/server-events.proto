@@ -1,19 +1,25 @@
 syntax = "proto3";
 
-package daikombat;
+package daikombat.dto;
 
 option java_multiple_files = true;
-option java_package = "com.beverly.hills.money.gang.dto";
+option java_package = "com.beverly.hills.money.gang.proto";
 
 message ServerEvents {
 
   int32 eventId = 1;
-  int32 playersOnline = 2;
-  optional int32 hmac = 3;
+  optional int32 playersOnline = 2;
+  optional Error error = 3;
+  optional bytes hmac = 4;
 
   oneof events {
-    ChatEvent chatEvents = 4;
-    GameEvents gameEvents = 5;
+    ChatEvent chatEvents = 5;
+    GameEvents gameEvents = 6;
+  }
+
+  message Error {
+    int32 errorCode = 1;
+    string message = 2;
   }
 
   message ChatEvents {
@@ -30,9 +36,11 @@ message ServerEvents {
   }
 
   message GameEvent {
-    GameEventType eventType = 1;
-    Vector position = 2;
-    Vector direction = 3;
+    int32 playerId = 1;
+    optional string playerName = 2;
+    GameEventType eventType = 3;
+    Vector position = 4;
+    Vector direction = 5;
 
     message Vector {
       float x = 1;

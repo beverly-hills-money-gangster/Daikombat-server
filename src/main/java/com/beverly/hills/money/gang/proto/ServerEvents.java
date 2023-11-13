@@ -2995,6 +2995,12 @@ private static final long serialVersionUID = 0L;
      * <code>.daikombat.dto.ServerEvents.GameEvent.Vector direction = 5;</code>
      */
     com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.VectorOrBuilder getDirectionOrBuilder();
+
+    /**
+     * <code>int32 health = 6;</code>
+     * @return The health.
+     */
+    int getHealth();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerEvents.GameEvent}
@@ -3858,6 +3864,17 @@ private static final long serialVersionUID = 0L;
       return direction_ == null ? com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.getDefaultInstance() : direction_;
     }
 
+    public static final int HEALTH_FIELD_NUMBER = 6;
+    private int health_ = 0;
+    /**
+     * <code>int32 health = 6;</code>
+     * @return The health.
+     */
+    @java.lang.Override
+    public int getHealth() {
+      return health_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -3887,6 +3904,9 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000004) != 0)) {
         output.writeMessage(5, getDirection());
       }
+      if (health_ != 0) {
+        output.writeInt32(6, health_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -3914,6 +3934,10 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000004) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(5, getDirection());
+      }
+      if (health_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(6, health_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -3948,6 +3972,8 @@ private static final long serialVersionUID = 0L;
         if (!getDirection()
             .equals(other.getDirection())) return false;
       }
+      if (getHealth()
+          != other.getHealth()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -3975,6 +4001,8 @@ private static final long serialVersionUID = 0L;
         hash = (37 * hash) + DIRECTION_FIELD_NUMBER;
         hash = (53 * hash) + getDirection().hashCode();
       }
+      hash = (37 * hash) + HEALTH_FIELD_NUMBER;
+      hash = (53 * hash) + getHealth();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -4126,6 +4154,7 @@ private static final long serialVersionUID = 0L;
           directionBuilder_.dispose();
           directionBuilder_ = null;
         }
+        health_ = 0;
         return this;
       }
 
@@ -4181,6 +4210,9 @@ private static final long serialVersionUID = 0L;
               ? direction_
               : directionBuilder_.build();
           to_bitField0_ |= 0x00000004;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.health_ = health_;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -4246,6 +4278,9 @@ private static final long serialVersionUID = 0L;
         if (other.hasDirection()) {
           mergeDirection(other.getDirection());
         }
+        if (other.getHealth() != 0) {
+          setHealth(other.getHealth());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -4301,6 +4336,11 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000010;
                 break;
               } // case 42
+              case 48: {
+                health_ = input.readInt32();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 48
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -4723,6 +4763,38 @@ private static final long serialVersionUID = 0L;
         }
         return directionBuilder_;
       }
+
+      private int health_ ;
+      /**
+       * <code>int32 health = 6;</code>
+       * @return The health.
+       */
+      @java.lang.Override
+      public int getHealth() {
+        return health_;
+      }
+      /**
+       * <code>int32 health = 6;</code>
+       * @param value The health to set.
+       * @return This builder for chaining.
+       */
+      public Builder setHealth(int value) {
+
+        health_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 health = 6;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearHealth() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        health_ = 0;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -4831,13 +4903,21 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int EVENTID_FIELD_NUMBER = 1;
-  private int eventId_ = 0;
+  private long eventId_ = 0L;
   /**
-   * <code>int32 eventId = 1;</code>
+   * <code>optional int64 eventId = 1;</code>
+   * @return Whether the eventId field is set.
+   */
+  @java.lang.Override
+  public boolean hasEventId() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <code>optional int64 eventId = 1;</code>
    * @return The eventId.
    */
   @java.lang.Override
-  public int getEventId() {
+  public long getEventId() {
     return eventId_;
   }
 
@@ -4849,7 +4929,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasPlayersOnline() {
-    return ((bitField0_ & 0x00000001) != 0);
+    return ((bitField0_ & 0x00000002) != 0);
   }
   /**
    * <code>optional int32 playersOnline = 2;</code>
@@ -4868,7 +4948,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasError() {
-    return ((bitField0_ & 0x00000002) != 0);
+    return ((bitField0_ & 0x00000004) != 0);
   }
   /**
    * <code>optional .daikombat.dto.ServerEvents.Error error = 3;</code>
@@ -4894,7 +4974,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasHmac() {
-    return ((bitField0_ & 0x00000004) != 0);
+    return ((bitField0_ & 0x00000008) != 0);
   }
   /**
    * <code>optional bytes hmac = 4;</code>
@@ -4981,16 +5061,16 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (eventId_ != 0) {
-      output.writeInt32(1, eventId_);
-    }
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeInt32(2, playersOnline_);
+      output.writeInt64(1, eventId_);
     }
     if (((bitField0_ & 0x00000002) != 0)) {
-      output.writeMessage(3, getError());
+      output.writeInt32(2, playersOnline_);
     }
     if (((bitField0_ & 0x00000004) != 0)) {
+      output.writeMessage(3, getError());
+    }
+    if (((bitField0_ & 0x00000008) != 0)) {
       output.writeBytes(4, hmac_);
     }
     if (eventsCase_ == 5) {
@@ -5008,19 +5088,19 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (eventId_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(1, eventId_);
-    }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(2, playersOnline_);
+        .computeInt64Size(1, eventId_);
     }
     if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, getError());
+        .computeInt32Size(2, playersOnline_);
     }
     if (((bitField0_ & 0x00000004) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, getError());
+    }
+    if (((bitField0_ & 0x00000008) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeBytesSize(4, hmac_);
     }
@@ -5047,8 +5127,11 @@ private static final long serialVersionUID = 0L;
     }
     com.beverly.hills.money.gang.proto.ServerEvents other = (com.beverly.hills.money.gang.proto.ServerEvents) obj;
 
-    if (getEventId()
-        != other.getEventId()) return false;
+    if (hasEventId() != other.hasEventId()) return false;
+    if (hasEventId()) {
+      if (getEventId()
+          != other.getEventId()) return false;
+    }
     if (hasPlayersOnline() != other.hasPlayersOnline()) return false;
     if (hasPlayersOnline()) {
       if (getPlayersOnline()
@@ -5088,8 +5171,11 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + EVENTID_FIELD_NUMBER;
-    hash = (53 * hash) + getEventId();
+    if (hasEventId()) {
+      hash = (37 * hash) + EVENTID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getEventId());
+    }
     if (hasPlayersOnline()) {
       hash = (37 * hash) + PLAYERSONLINE_FIELD_NUMBER;
       hash = (53 * hash) + getPlayersOnline();
@@ -5251,7 +5337,7 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      eventId_ = 0;
+      eventId_ = 0L;
       playersOnline_ = 0;
       error_ = null;
       if (errorBuilder_ != null) {
@@ -5301,23 +5387,24 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(com.beverly.hills.money.gang.proto.ServerEvents result) {
       int from_bitField0_ = bitField0_;
+      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.eventId_ = eventId_;
+        to_bitField0_ |= 0x00000001;
       }
-      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.playersOnline_ = playersOnline_;
-        to_bitField0_ |= 0x00000001;
+        to_bitField0_ |= 0x00000002;
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
         result.error_ = errorBuilder_ == null
             ? error_
             : errorBuilder_.build();
-        to_bitField0_ |= 0x00000002;
+        to_bitField0_ |= 0x00000004;
       }
       if (((from_bitField0_ & 0x00000008) != 0)) {
         result.hmac_ = hmac_;
-        to_bitField0_ |= 0x00000004;
+        to_bitField0_ |= 0x00000008;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -5379,7 +5466,7 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(com.beverly.hills.money.gang.proto.ServerEvents other) {
       if (other == com.beverly.hills.money.gang.proto.ServerEvents.getDefaultInstance()) return this;
-      if (other.getEventId() != 0) {
+      if (other.hasEventId()) {
         setEventId(other.getEventId());
       }
       if (other.hasPlayersOnline()) {
@@ -5431,7 +5518,7 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 8: {
-              eventId_ = input.readInt32();
+              eventId_ = input.readInt64();
               bitField0_ |= 0x00000001;
               break;
             } // case 8
@@ -5498,21 +5585,29 @@ private static final long serialVersionUID = 0L;
 
     private int bitField0_;
 
-    private int eventId_ ;
+    private long eventId_ ;
     /**
-     * <code>int32 eventId = 1;</code>
+     * <code>optional int64 eventId = 1;</code>
+     * @return Whether the eventId field is set.
+     */
+    @java.lang.Override
+    public boolean hasEventId() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>optional int64 eventId = 1;</code>
      * @return The eventId.
      */
     @java.lang.Override
-    public int getEventId() {
+    public long getEventId() {
       return eventId_;
     }
     /**
-     * <code>int32 eventId = 1;</code>
+     * <code>optional int64 eventId = 1;</code>
      * @param value The eventId to set.
      * @return This builder for chaining.
      */
-    public Builder setEventId(int value) {
+    public Builder setEventId(long value) {
 
       eventId_ = value;
       bitField0_ |= 0x00000001;
@@ -5520,12 +5615,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>int32 eventId = 1;</code>
+     * <code>optional int64 eventId = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearEventId() {
       bitField0_ = (bitField0_ & ~0x00000001);
-      eventId_ = 0;
+      eventId_ = 0L;
       onChanged();
       return this;
     }

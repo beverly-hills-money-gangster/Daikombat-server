@@ -2,13 +2,12 @@ package com.beverly.hills.money.gang.state;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 
-public class PlayerState {
+public class PlayerState implements PlayerStateReader {
 
     private static final int DEFAULT_HP = 100;
 
@@ -16,21 +15,29 @@ public class PlayerState {
     private final AtomicInteger health = new AtomicInteger(DEFAULT_HP);
 
     @Getter
-    private final int id;
+    private final int playerId;
 
     @Getter
-    private final String name;
+    private final String playerName;
     private final AtomicReference<PlayerCoordinates> playerCoordinatesRef;
 
     public PlayerState(String name, PlayerCoordinates coordinates, int id) {
-        this.name = name;
+        this.playerName = name;
         this.playerCoordinatesRef = new AtomicReference<>(coordinates);
-        this.id = id;
+        this.playerId = id;
     }
 
-    public void setPlayerCoordinates(PlayerCoordinates playerCoordinates) {
-        playerCoordinatesRef.set(playerCoordinates);
+
+    @Override
+    public PlayerCoordinates getCoordinates() {
+        return playerCoordinatesRef.get();
     }
+
+    @Override
+    public int getHealth() {
+        return health.get();
+    }
+
 
     public void registerKill() {
         kills.incrementAndGet();
@@ -38,8 +45,11 @@ public class PlayerState {
 
     @Builder
     public static class PlayerCoordinates {
-        private final Vector2D direction;
-        private final Vector2D position;
+        @Getter
+        private final Vector direction;
+        @Getter
+        private final Vector position;
+
     }
 
 }

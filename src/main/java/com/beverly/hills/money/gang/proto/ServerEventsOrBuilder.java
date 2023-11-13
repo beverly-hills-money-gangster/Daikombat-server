@@ -9,10 +9,15 @@ public interface ServerEventsOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>int32 eventId = 1;</code>
+   * <code>optional int64 eventId = 1;</code>
+   * @return Whether the eventId field is set.
+   */
+  boolean hasEventId();
+  /**
+   * <code>optional int64 eventId = 1;</code>
    * @return The eventId.
    */
-  int getEventId();
+  long getEventId();
 
   /**
    * <code>optional int32 playersOnline = 2;</code>

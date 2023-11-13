@@ -1,8 +1,7 @@
 package com.beverly.hills.money.gang.initializer;
 
 
-import com.beverly.hills.money.gang.handler.GameServerProtoHandler;
-import com.beverly.hills.money.gang.proto.ServerCommand;
+import com.beverly.hills.money.gang.handler.inbound.GameServerInboundHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -20,7 +19,7 @@ public class GameServerInitializer extends ChannelInitializer<SocketChannel> {
         p.addLast(new ProtobufDecoder(ServerCommand.getDefaultInstance()));
         p.addLast(new ProtobufVarint32LengthFieldPrepender());
         p.addLast(new ProtobufEncoder());
-        p.addLast(new GameServerProtoHandler());
+        p.addLast(new GameServerInboundHandler());
     }
 
 }

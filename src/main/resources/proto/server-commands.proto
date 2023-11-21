@@ -17,6 +17,7 @@ message ServerCommand {
 
 message PushChatEventCommand {
   string message = 1;
+  int32 playerId = 2;
 }
 
 message JoinGameCommand {
@@ -28,6 +29,8 @@ message PushGameEventCommand {
   GameEventType eventType = 1;
   Vector position = 2;
   Vector direction = 3;
+  int32 playerId = 4;
+  optional int32 affectedPlayerId = 5;
 
   message Vector {
     float x = 1;

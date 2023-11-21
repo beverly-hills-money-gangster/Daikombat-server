@@ -771,6 +771,36 @@ private static final long serialVersionUID = 0L;
     return direction_ == null ? com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.getDefaultInstance() : direction_;
   }
 
+  public static final int PLAYERID_FIELD_NUMBER = 4;
+  private int playerId_ = 0;
+  /**
+   * <code>int32 playerId = 4;</code>
+   * @return The playerId.
+   */
+  @java.lang.Override
+  public int getPlayerId() {
+    return playerId_;
+  }
+
+  public static final int AFFECTEDPLAYERID_FIELD_NUMBER = 5;
+  private int affectedPlayerId_ = 0;
+  /**
+   * <code>optional int32 affectedPlayerId = 5;</code>
+   * @return Whether the affectedPlayerId field is set.
+   */
+  @java.lang.Override
+  public boolean hasAffectedPlayerId() {
+    return ((bitField0_ & 0x00000004) != 0);
+  }
+  /**
+   * <code>optional int32 affectedPlayerId = 5;</code>
+   * @return The affectedPlayerId.
+   */
+  @java.lang.Override
+  public int getAffectedPlayerId() {
+    return affectedPlayerId_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -794,6 +824,12 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000002) != 0)) {
       output.writeMessage(3, getDirection());
     }
+    if (playerId_ != 0) {
+      output.writeInt32(4, playerId_);
+    }
+    if (((bitField0_ & 0x00000004) != 0)) {
+      output.writeInt32(5, affectedPlayerId_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -814,6 +850,14 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getDirection());
+    }
+    if (playerId_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(4, playerId_);
+    }
+    if (((bitField0_ & 0x00000004) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(5, affectedPlayerId_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -841,6 +885,13 @@ private static final long serialVersionUID = 0L;
       if (!getDirection()
           .equals(other.getDirection())) return false;
     }
+    if (getPlayerId()
+        != other.getPlayerId()) return false;
+    if (hasAffectedPlayerId() != other.hasAffectedPlayerId()) return false;
+    if (hasAffectedPlayerId()) {
+      if (getAffectedPlayerId()
+          != other.getAffectedPlayerId()) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -861,6 +912,12 @@ private static final long serialVersionUID = 0L;
     if (hasDirection()) {
       hash = (37 * hash) + DIRECTION_FIELD_NUMBER;
       hash = (53 * hash) + getDirection().hashCode();
+    }
+    hash = (37 * hash) + PLAYERID_FIELD_NUMBER;
+    hash = (53 * hash) + getPlayerId();
+    if (hasAffectedPlayerId()) {
+      hash = (37 * hash) + AFFECTEDPLAYERID_FIELD_NUMBER;
+      hash = (53 * hash) + getAffectedPlayerId();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -1011,6 +1068,8 @@ private static final long serialVersionUID = 0L;
         directionBuilder_.dispose();
         directionBuilder_ = null;
       }
+      playerId_ = 0;
+      affectedPlayerId_ = 0;
       return this;
     }
 
@@ -1059,6 +1118,13 @@ private static final long serialVersionUID = 0L;
             ? direction_
             : directionBuilder_.build();
         to_bitField0_ |= 0x00000002;
+      }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.playerId_ = playerId_;
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.affectedPlayerId_ = affectedPlayerId_;
+        to_bitField0_ |= 0x00000004;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -1116,6 +1182,12 @@ private static final long serialVersionUID = 0L;
       if (other.hasDirection()) {
         mergeDirection(other.getDirection());
       }
+      if (other.getPlayerId() != 0) {
+        setPlayerId(other.getPlayerId());
+      }
+      if (other.hasAffectedPlayerId()) {
+        setAffectedPlayerId(other.getAffectedPlayerId());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -1161,6 +1233,16 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000004;
               break;
             } // case 26
+            case 32: {
+              playerId_ = input.readInt32();
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 32
+            case 40: {
+              affectedPlayerId_ = input.readInt32();
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 40
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1471,6 +1553,78 @@ private static final long serialVersionUID = 0L;
         direction_ = null;
       }
       return directionBuilder_;
+    }
+
+    private int playerId_ ;
+    /**
+     * <code>int32 playerId = 4;</code>
+     * @return The playerId.
+     */
+    @java.lang.Override
+    public int getPlayerId() {
+      return playerId_;
+    }
+    /**
+     * <code>int32 playerId = 4;</code>
+     * @param value The playerId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setPlayerId(int value) {
+
+      playerId_ = value;
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 playerId = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearPlayerId() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      playerId_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private int affectedPlayerId_ ;
+    /**
+     * <code>optional int32 affectedPlayerId = 5;</code>
+     * @return Whether the affectedPlayerId field is set.
+     */
+    @java.lang.Override
+    public boolean hasAffectedPlayerId() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <code>optional int32 affectedPlayerId = 5;</code>
+     * @return The affectedPlayerId.
+     */
+    @java.lang.Override
+    public int getAffectedPlayerId() {
+      return affectedPlayerId_;
+    }
+    /**
+     * <code>optional int32 affectedPlayerId = 5;</code>
+     * @param value The affectedPlayerId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setAffectedPlayerId(int value) {
+
+      affectedPlayerId_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional int32 affectedPlayerId = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearAffectedPlayerId() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      affectedPlayerId_ = 0;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

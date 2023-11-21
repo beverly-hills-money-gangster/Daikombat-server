@@ -56,18 +56,20 @@ public final class ServerCommands {
       "atEventCommandH\000\022:\n\013gameCommand\030\005 \001(\0132#." +
       "daikombat.dto.PushGameEventCommandH\000\0229\n\017" +
       "joinGameCommand\030\006 \001(\0132\036.daikombat.dto.Jo" +
-      "inGameCommandH\000B\t\n\007commandB\007\n\005_hmac\"\'\n\024P" +
-      "ushChatEventCommand\022\017\n\007message\030\001 \001(\t\"%\n\017" +
-      "JoinGameCommand\022\022\n\nplayerName\030\001 \001(\t\"\237\002\n\024" +
-      "PushGameEventCommand\022D\n\teventType\030\001 \001(\0162" +
-      "1.daikombat.dto.PushGameEventCommand.Gam" +
-      "eEventType\022<\n\010position\030\002 \001(\0132*.daikombat" +
-      ".dto.PushGameEventCommand.Vector\022=\n\tdire" +
-      "ction\030\003 \001(\0132*.daikombat.dto.PushGameEven" +
-      "tCommand.Vector\032\036\n\006Vector\022\t\n\001x\030\001 \001(\002\022\t\n\001" +
-      "y\030\002 \001(\002\"$\n\rGameEventType\022\010\n\004MOVE\020\000\022\t\n\005SH" +
-      "OOT\020\001B&\n\"com.beverly.hills.money.gang.pr" +
-      "otoP\001b\006proto3"
+      "inGameCommandH\000B\t\n\007commandB\007\n\005_hmac\"9\n\024P" +
+      "ushChatEventCommand\022\017\n\007message\030\001 \001(\t\022\020\n\010" +
+      "playerId\030\002 \001(\005\"%\n\017JoinGameCommand\022\022\n\npla" +
+      "yerName\030\001 \001(\t\"\345\002\n\024PushGameEventCommand\022D" +
+      "\n\teventType\030\001 \001(\01621.daikombat.dto.PushGa" +
+      "meEventCommand.GameEventType\022<\n\010position" +
+      "\030\002 \001(\0132*.daikombat.dto.PushGameEventComm" +
+      "and.Vector\022=\n\tdirection\030\003 \001(\0132*.daikomba" +
+      "t.dto.PushGameEventCommand.Vector\022\020\n\010pla" +
+      "yerId\030\004 \001(\005\022\035\n\020affectedPlayerId\030\005 \001(\005H\000\210" +
+      "\001\001\032\036\n\006Vector\022\t\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002\"$\n\rGa" +
+      "meEventType\022\010\n\004MOVE\020\000\022\t\n\005SHOOT\020\001B\023\n\021_aff" +
+      "ectedPlayerIdB&\n\"com.beverly.hills.money" +
+      ".gang.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -84,7 +86,7 @@ public final class ServerCommands {
     internal_static_daikombat_dto_PushChatEventCommand_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_PushChatEventCommand_descriptor,
-        new java.lang.String[] { "Message", });
+        new java.lang.String[] { "Message", "PlayerId", });
     internal_static_daikombat_dto_JoinGameCommand_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_daikombat_dto_JoinGameCommand_fieldAccessorTable = new
@@ -96,7 +98,7 @@ public final class ServerCommands {
     internal_static_daikombat_dto_PushGameEventCommand_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_PushGameEventCommand_descriptor,
-        new java.lang.String[] { "EventType", "Position", "Direction", });
+        new java.lang.String[] { "EventType", "Position", "Direction", "PlayerId", "AffectedPlayerId", });
     internal_static_daikombat_dto_PushGameEventCommand_Vector_descriptor =
       internal_static_daikombat_dto_PushGameEventCommand_descriptor.getNestedTypes().get(0);
     internal_static_daikombat_dto_PushGameEventCommand_Vector_fieldAccessorTable = new

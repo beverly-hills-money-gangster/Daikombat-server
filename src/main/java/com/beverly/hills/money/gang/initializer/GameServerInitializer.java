@@ -2,6 +2,7 @@ package com.beverly.hills.money.gang.initializer;
 
 
 import com.beverly.hills.money.gang.handler.inbound.GameServerInboundHandler;
+import com.beverly.hills.money.gang.proto.ServerCommand;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;

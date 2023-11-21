@@ -48,4 +48,21 @@ public interface PushGameEventCommandOrBuilder extends
    * <code>.daikombat.dto.PushGameEventCommand.Vector direction = 3;</code>
    */
   com.beverly.hills.money.gang.proto.PushGameEventCommand.VectorOrBuilder getDirectionOrBuilder();
+
+  /**
+   * <code>int32 playerId = 4;</code>
+   * @return The playerId.
+   */
+  int getPlayerId();
+
+  /**
+   * <code>optional int32 affectedPlayerId = 5;</code>
+   * @return Whether the affectedPlayerId field is set.
+   */
+  boolean hasAffectedPlayerId();
+  /**
+   * <code>optional int32 affectedPlayerId = 5;</code>
+   * @return The affectedPlayerId.
+   */
+  int getAffectedPlayerId();
 }

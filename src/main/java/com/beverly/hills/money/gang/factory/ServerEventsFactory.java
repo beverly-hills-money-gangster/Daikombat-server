@@ -39,6 +39,8 @@ public interface ServerEventsFactory {
                 .build();
     }
 
+    static ServerEvents createGameEvent
+
     static ServerEvents createSpawnEventAllPlayers(long eventId,
                                                    int playersOnline,
                                                    Stream<PlayerStateReader> playersSate) {
@@ -65,6 +67,16 @@ public interface ServerEventsFactory {
                                 playerConnected.getConnectedPlayerId(),
                                 playerConnected.getPlayerName(),
                                 playerConnected.getSpawn())))
+                .build();
+    }
+
+    static ServerEvents createChatEvent(long eventId, int playersOnline, String message, String fromPlayerName) {
+        return ServerEvents.newBuilder()
+                .setEventId(eventId)
+                .setPlayersOnline(playersOnline)
+                .setChatEvents(ServerEvents.ChatEvent.newBuilder()
+                        .setPlayerName(fromPlayerName).setMessage(message)
+                        .build())
                 .build();
     }
 }

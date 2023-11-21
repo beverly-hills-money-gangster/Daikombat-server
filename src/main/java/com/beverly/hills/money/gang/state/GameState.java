@@ -6,6 +6,7 @@ import com.beverly.hills.money.gang.spawner.Spawner;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -18,8 +19,7 @@ public class GameState {
     private final AtomicInteger playerIdGenerator = new AtomicInteger();
     private final AtomicLong gameStateId = new AtomicLong();
 
-    // TODO don't forget to initialize it
-    private final Spawner spawner = null;
+    private final Spawner spawner;
 
     private final Map<String, PlayerState> players = new ConcurrentHashMap<>();
 
@@ -30,19 +30,49 @@ public class GameState {
         int playerId = playerIdGenerator.incrementAndGet();
         PlayerState.PlayerCoordinates spawn = spawner.spawn();
         if (players.putIfAbsent(playerName, new PlayerState(playerName, spawn, playerId)) == null) {
-            return new PlayerConnectedGameState(
-                    gameStateId.incrementAndGet(), playerName, playerId, spawn);
+            return new PlayerConnectedGameState(getNewSequenceId(), playerName, playerId, spawn);
         } else {
             throw new GameLogicError("Can't connect player. Try another player name.", GameErrorCode.PLAYER_EXISTS);
         }
+    }
+
+    // TODO return an object instead
+    public boolean shoot(final int shootingPlayerId, final int shotPlayerId) {
+        return getPlayer(shotPlayerId).map(shotPlayer -> {
+            if (shotPlayer.getShot()) {
+                getPlayer(shootingPlayerId).ifPresent(PlayerState::registerKill);
+                return true;
+            } else {
+                return false;
+            }
+        }).orElse(false);
+    }
+
+    // TODO return an object instead
+    public void move(final int movingPlayerId, final PlayerState.PlayerCoordinates playerCoordinates) {
+        getPlayer(movingPlayerId).ifPresent(playerState -> playerState.move(playerCoordinates));
     }
 
     public int playersOnline() {
         return players.size();
     }
 
+    public long getNewSequenceId() {
+        return gameStateId.incrementAndGet();
+    }
+
     public Stream<PlayerStateReader> readPlayers() {
         return players.values().stream().map(playerState -> playerState);
+    }
+
+    private Optional<PlayerState> getPlayer(int playerId) {
+        return players.values().stream()
+                .filter(playerState -> playerState.getPlayerId() == playerId)
+                .findFirst();
+    }
+
+    public Optional<PlayerStateReader> readPlayer(int playerId) {
+        return getPlayer(playerId).map(playerState -> playerState);
     }
 
 

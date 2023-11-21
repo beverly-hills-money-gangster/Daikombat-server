@@ -19,4 +19,10 @@ public interface PushChatEventCommandOrBuilder extends
    */
   com.google.protobuf.ByteString
       getMessageBytes();
+
+  /**
+   * <code>int32 playerId = 2;</code>
+   * @return The playerId.
+   */
+  int getPlayerId();
 }

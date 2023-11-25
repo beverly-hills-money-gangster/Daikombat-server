@@ -2,12 +2,8 @@ package com.beverly.hills.money.gang.factory;
 
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.proto.ServerEvents;
-import com.beverly.hills.money.gang.state.GameState;
-import com.beverly.hills.money.gang.state.PlayerState;
-import com.beverly.hills.money.gang.state.PlayerStateReader;
-import com.beverly.hills.money.gang.state.Vector;
+import com.beverly.hills.money.gang.state.*;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 public interface ServerEventsFactory {
@@ -39,7 +35,6 @@ public interface ServerEventsFactory {
                 .build();
     }
 
-    static ServerEvents createGameEvent
 
     static ServerEvents createSpawnEventAllPlayers(long eventId,
                                                    int playersOnline,
@@ -57,8 +52,24 @@ public interface ServerEventsFactory {
                 .build();
     }
 
+    static ServerEvents createDeadEventAllPlayers(long eventId,
+                                                   int playersOnline,
+                                                   Stream<PlayerStateReader> playersSate) {
+        var allPlayersSpawns = ServerEvents.GameEvents.newBuilder();
+        playersSate.forEach(playerStateReader -> allPlayersSpawns.addEvents(createSpawnEvent(
+                playerStateReader.getPlayerId(),
+                playerStateReader.getPlayerName(),
+                playerStateReader.getCoordinates())));
+
+        return ServerEvents.newBuilder()
+                .setEventId(eventId)
+                .setPlayersOnline(playersOnline)
+                .setGameEvents(allPlayersSpawns)
+                .build();
+    }
+
     static ServerEvents createSpawnEventSinglePlayer(int playersOnline,
-                                                     GameState.PlayerConnectedGameState playerConnected) {
+                                                     PlayerConnectedGameState playerConnected) {
         return ServerEvents.newBuilder()
                 .setEventId(playerConnected.getNewGameStateId())
                 .setPlayersOnline(playersOnline)

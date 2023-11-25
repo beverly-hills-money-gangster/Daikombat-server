@@ -1,7 +1,7 @@
 package com.beverly.hills.money.gang.registry;
 
 import com.beverly.hills.money.gang.exception.GameLogicError;
-import com.beverly.hills.money.gang.state.GameState;
+import com.beverly.hills.money.gang.state.Game;
 import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
@@ -14,11 +14,11 @@ import static com.beverly.hills.money.gang.exception.GameErrorCode.NOT_EXISTING_
 @RequiredArgsConstructor
 public class GameRoomRegistry {
 
-    private final Map<Integer, GameState> games = new HashMap<>();
+    private final Map<Integer, Game> games = new HashMap<>();
 
     public GameRoomRegistry(int gamesToCreate) {
         for (int i = 0; i < gamesToCreate; i++) {
-            games.put(i, new GameState());
+            games.put(i, new Game());
         }
     }
 
@@ -26,7 +26,7 @@ public class GameRoomRegistry {
         return games.keySet();
     }
 
-    public GameState getGame(int gameId) throws GameLogicError {
+    public Game getGame(int gameId) throws GameLogicError {
         return Optional.ofNullable(games.get(gameId))
                 .orElseThrow(() -> new GameLogicError("Not existing game room", NOT_EXISTING_GAME_ROOM));
     }

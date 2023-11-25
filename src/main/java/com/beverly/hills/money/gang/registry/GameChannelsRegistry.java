@@ -26,9 +26,11 @@ public class GameChannelsRegistry {
         return gameChannels.get(gameId).values().stream();
     }
 
-    public void removeChannel(int playerId) {
+    public void closeChannel(int playerId) {
         for (ConcurrentHashMap<Integer, Channel> channels : gameChannels.values()) {
-            if (channels.remove(playerId) != null) {
+            Channel channel = channels.remove(playerId);
+            if (channel != null) {
+                channel.close();
                 return;
             }
         }

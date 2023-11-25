@@ -36,17 +36,9 @@ message ServerEvents {
   }
 
   message GameEvent {
-    int32 playerId = 1;
-    optional string playerName = 2;
-    GameEventType eventType = 3;
-    Vector position = 4;
-    Vector direction = 5;
-    int32 health = 6;
-
-    message Vector {
-      float x = 1;
-      float y = 2;
-    }
+    GameEventPlayerStats player = 1;
+    optional GameEventPlayerStats affectedPlayer = 2;
+    GameEvent eventType = 3;
 
     enum GameEventType {
       MOVE = 0;
@@ -56,5 +48,18 @@ message ServerEvents {
       SPAWN = 4;
       DISCONNECT = 5;
     }
+  }
+
+  message GameEventPlayerStats {
+    int32 playerId = 1;
+    optional string playerName = 2;
+    Vector position = 3;
+    Vector direction = 4;
+    int32 health = 5;
+  }
+
+  message Vector {
+    float x = 1;
+    float y = 2;
   }
 }

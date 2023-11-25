@@ -7,14 +7,16 @@ import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.proto.ServerEvents;
 import com.beverly.hills.money.gang.registry.GameChannelsRegistry;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
-import com.beverly.hills.money.gang.state.GameState;
-import com.beverly.hills.money.gang.state.PlayerState;
-import com.beverly.hills.money.gang.state.Vector;
+import com.beverly.hills.money.gang.state.*;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Optional;
+import java.util.function.Consumer;
 
 import static com.beverly.hills.money.gang.factory.ServerEventsFactory.*;
 
@@ -37,11 +39,11 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ServerCommand msg) {
         try {
-            GameState game = gameRoomRegistry.getGame(msg.getGameId());
+            Game game = gameRoomRegistry.getGame(msg.getGameId());
 
             if (msg.hasJoinGameCommand()) {
 
-                GameState.PlayerConnectedGameState playerConnected = game.connectPlayer(msg.getJoinGameCommand().getPlayerName());
+                PlayerConnectedGameState playerConnected = game.connectPlayer(msg.getJoinGameCommand().getPlayerName());
                 ServerEvents playerSpawnEvent = createSpawnEventSinglePlayer(game.playersOnline(), playerConnected);
                 gameChannelsRegistry.allChannels(msg.getGameId()).forEach(channel -> channel.writeAndFlush(playerSpawnEvent));
                 gameChannelsRegistry.addChannel(msg.getGameId(), playerConnected.getConnectedPlayerId(), ctx.channel());
@@ -66,15 +68,38 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
                         .build();
                 switch (gameEventType) {
                     case SHOOT -> {
-                        if(game.shoot(gameCommand.getPlayerId(), gameCommand.getAffectedPlayerId())){
+                        PlayerShootingGameState shootingGameState = game.shoot(
+                                playerCoordinates,
+                                gameCommand.getPlayerId(),
+                                gameCommand.getAffectedPlayerId());
+                        Optional.ofNullable(shootingGameState.getPlayerShot()).ifPresentOrElse(
+                                new Consumer<PlayerShootingGameState.PlayerShot>() {
+                            @Override
+                            public void accept(PlayerShootingGameState.PlayerShot playerShot) {
+                                if(playerShot.isDead()){
+                                    gameChannelsRegistry.allChannels(msg.getGameId()).forEach(new Consumer<Channel>() {
+                                        @Override
+                                        public void accept(Channel channel) {
+
+                                        }
+                                    });
+                                    gameChannelsRegistry.closeChannel(gameCommand.getAffectedPlayerId());
+                                } else {
+
+                                }
+                            }
+                        }, new Runnable() {
+                            @Override
+                            public void run() {
+
+                            }
+                        });
                             // TODO send DEAD
-                        }
-                        // TODO send move now
-                        game.move(gameCommand.getPlayerId(), playerCoordinates);
+
 
                     }
                     case MOVE -> {
-                        game.move(gameCommand.getPlayerId(), playerCoordinates);
+                        //game.move(gameCommand.getPlayerId(), playerCoordinates);
                         // TODO schedule 100 ms update
                     }
                 }

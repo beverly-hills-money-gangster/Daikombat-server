@@ -31,12 +31,12 @@ public class PlayerState implements PlayerStateReader {
         this.playerId = id;
     }
 
-    public boolean getShot() {
+    public ShotDetails getShot() {
         if (health.addAndGet(-DEFAULT_DAMAGE) <= 0) {
             dead.set(true);
-            return true;
+            return ShotDetails.builder().dead(true).health(0).build();
         }
-        return false;
+        return ShotDetails.builder().dead(false).health(health.get()).build();
     }
 
 
@@ -66,6 +66,13 @@ public class PlayerState implements PlayerStateReader {
         @Getter
         private final Vector position;
 
+    }
+
+    @Builder
+    @Getter
+    public static class ShotDetails {
+        private final int health;
+        private final boolean dead;
     }
 
 }

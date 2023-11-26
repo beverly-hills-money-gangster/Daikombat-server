@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
@@ -20,8 +21,7 @@ public class Game {
     private final AtomicLong gameStateId = new AtomicLong();
 
     private final Spawner spawner;
-
-    private final Map<String, PlayerState> players = new ConcurrentHashMap<>();
+    private final Map<Integer, PlayerState> players = new ConcurrentHashMap<>();
 
     public PlayerConnectedGameState connectPlayer(final String playerName) throws GameLogicError {
         if (players.size() >= MAX_PLAYERS_TO_ADD) {
@@ -29,62 +29,73 @@ public class Game {
         }
         int playerId = playerIdGenerator.incrementAndGet();
         PlayerState.PlayerCoordinates spawn = spawner.spawn();
-        if (players.putIfAbsent(playerName, new PlayerState(playerName, spawn, playerId)) == null) {
-            return PlayerConnectedGameState.builder()
-                    .newGameStateId(getNewSequenceId())
-                    .connectedPlayerId(playerId)
-                    .playerName(playerName)
-                    .spawn(spawn).build();
-        } else {
-            throw new GameLogicError("Can't connect player. Try another player name.", GameErrorCode.PLAYER_EXISTS);
-        }
+        PlayerState connectedPlayerState = new PlayerState(playerName, spawn, playerId);
+        players.put(playerId, connectedPlayerState);
+        return PlayerConnectedGameState.builder()
+                .playerStateReader(connectedPlayerState)
+                .newGameStateId(newSequenceId()).build();
     }
 
-    // TODO return an object instead
     public PlayerShootingGameState shoot(final PlayerState.PlayerCoordinates shootingPlayerCoordinates,
                                          final int shootingPlayerId,
                                          final Integer shotPlayerId) {
+        PlayerState shootingPlayerState = getPlayer(shootingPlayerId).orElse(null);
+        if (shootingPlayerState == null) {
+            return null;
+        }
+        // TODO remove player if it's dead
         move(shootingPlayerId, shootingPlayerCoordinates);
 
         if (shotPlayerId == null) {
             return PlayerShootingGameState.builder()
-                    .newGameStateId(getNewSequenceId())
-                    .shootingPlayerId(shootingPlayerId)
+                    .newGameStateId(newSequenceId())
+                    .shootingPlayer(shootingPlayerState)
                     .playerShot(null).build();
         }
-        var details = getPlayer(shotPlayerId).map(shotPlayer -> {
-            var shotDetails = shotPlayer.getShot();
-            if (shotDetails.isDead()) {
-                getPlayer(shootingPlayerId).ifPresent(PlayerState::registerKill);
+        var shotPlayerState = getPlayer(shotPlayerId).map(shotPlayer -> {
+            var state = shotPlayer.getShot();
+            if (state.isDead()) {
+                shootingPlayerState.registerKill();
+                players.remove(shootingPlayerId);
             }
-            return shotDetails;
+            return state;
         }).orElse(null);
 
-        if (details == null) {
+        if (shotPlayerState == null) {
             return PlayerShootingGameState.builder()
-                    .newGameStateId(getNewSequenceId())
-                    .shootingPlayerId(shootingPlayerId)
+                    .newGameStateId(newSequenceId())
+                    .shootingPlayer(shootingPlayerState)
                     .playerShot(null).build();
         }
         return PlayerShootingGameState.builder()
-                .newGameStateId(getNewSequenceId())
-                .shootingPlayerId(shootingPlayerId)
-                .playerShot(PlayerShootingGameState.PlayerShot.builder()
-                        .dead(details.isDead()).shotPlayerId(shotPlayerId)
-                        .health(details.getHealth())
-                        .build()).build();
+                .newGameStateId(newSequenceId())
+                .shootingPlayer(shootingPlayerState)
+                .playerShot(shotPlayerState)
+                .build();
     }
 
-    // TODO return an object instead
     private void move(final int movingPlayerId, final PlayerState.PlayerCoordinates playerCoordinates) {
         getPlayer(movingPlayerId).ifPresent(playerState -> playerState.move(playerCoordinates));
+    }
+
+    public void bufferMove(final int movingPlayerId, final PlayerState.PlayerCoordinates playerCoordinates) {
+        move(movingPlayerId, playerCoordinates);
+        newSequenceId();
+    }
+
+    public Stream<PlayerStateReader> getBufferedMoves() {
+        return players.values().stream().filter(PlayerState::hasMoved).map(playerState -> playerState);
+    }
+
+    public void flushBufferedMoves() {
+        players.values().forEach(PlayerState::flushMove);
     }
 
     public int playersOnline() {
         return players.size();
     }
 
-    public long getNewSequenceId() {
+    public long newSequenceId() {
         return gameStateId.incrementAndGet();
     }
 
@@ -93,9 +104,7 @@ public class Game {
     }
 
     private Optional<PlayerState> getPlayer(int playerId) {
-        return players.values().stream()
-                .filter(playerState -> playerState.getPlayerId() == playerId)
-                .findFirst();
+        return Optional.ofNullable(players.get(playerId));
     }
 
     public Optional<PlayerStateReader> readPlayer(int playerId) {

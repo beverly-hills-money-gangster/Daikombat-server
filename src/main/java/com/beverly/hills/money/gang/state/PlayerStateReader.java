@@ -9,4 +9,8 @@ public interface PlayerStateReader {
     String getPlayerName();
 
     int getHealth();
+
+    boolean isDead();
+
+    boolean hasMoved();
 }

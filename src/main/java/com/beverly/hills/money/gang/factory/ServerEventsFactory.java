@@ -2,29 +2,35 @@ package com.beverly.hills.money.gang.factory;
 
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.proto.ServerEvents;
-import com.beverly.hills.money.gang.state.*;
+import com.beverly.hills.money.gang.state.PlayerConnectedGameState;
+import com.beverly.hills.money.gang.state.PlayerStateReader;
+import com.beverly.hills.money.gang.state.Vector;
 
 import java.util.stream.Stream;
 
 public interface ServerEventsFactory {
 
-    static ServerEvents.GameEvent.Vector createVector(Vector vector) {
-        return ServerEvents.GameEvent.Vector.newBuilder()
+    static ServerEvents.Vector createVector(Vector vector) {
+        return ServerEvents.Vector.newBuilder()
                 .setX(vector.getX())
                 .setY(vector.getY()).build();
     }
 
-    static ServerEvents.GameEvent createSpawnEvent(int playerId,
-                                                   String playerName,
-                                                   PlayerState.PlayerCoordinates coordinates) {
+    static ServerEvents.GameEvent createSpawnEvent(PlayerStateReader playerStateReader) {
         return ServerEvents.GameEvent.newBuilder()
                 .setEventType(ServerEvents.GameEvent.GameEventType.SPAWN)
-                .setPlayerId(playerId)
-                .setPlayerName(playerName)
-                .setPosition(ServerEventsFactory.createVector(coordinates.getPosition()))
-                .setDirection(ServerEventsFactory.createVector(coordinates.getDirection()))
+                .setPlayer(ServerEvents.GameEventPlayerStats.newBuilder()
+                        .setPlayerName(playerStateReader.getPlayerName())
+                        .setPlayerId(playerStateReader.getPlayerId())
+                        .setPosition(ServerEventsFactory
+                                .createVector(playerStateReader.getCoordinates().getPosition()))
+                        .setDirection(ServerEventsFactory
+                                .createVector(playerStateReader.getCoordinates().getDirection()))
+                        .setHealth(playerStateReader.getHealth())
+                )
                 .build();
     }
+
 
     static ServerEvents createErrorEvent(GameLogicError error) {
         return ServerEvents.newBuilder()
@@ -40,10 +46,8 @@ public interface ServerEventsFactory {
                                                    int playersOnline,
                                                    Stream<PlayerStateReader> playersSate) {
         var allPlayersSpawns = ServerEvents.GameEvents.newBuilder();
-        playersSate.forEach(playerStateReader -> allPlayersSpawns.addEvents(createSpawnEvent(
-                playerStateReader.getPlayerId(),
-                playerStateReader.getPlayerName(),
-                playerStateReader.getCoordinates())));
+        playersSate.forEach(playerStateReader
+                -> allPlayersSpawns.addEvents(createSpawnEvent(playerStateReader)));
 
         return ServerEvents.newBuilder()
                 .setEventId(eventId)
@@ -52,32 +56,69 @@ public interface ServerEventsFactory {
                 .build();
     }
 
-    static ServerEvents createDeadEventAllPlayers(long eventId,
-                                                   int playersOnline,
-                                                   Stream<PlayerStateReader> playersSate) {
-        var allPlayersSpawns = ServerEvents.GameEvents.newBuilder();
-        playersSate.forEach(playerStateReader -> allPlayersSpawns.addEvents(createSpawnEvent(
-                playerStateReader.getPlayerId(),
-                playerStateReader.getPlayerName(),
-                playerStateReader.getCoordinates())));
+    static ServerEvents.GameEventPlayerStats createPlayerStats(PlayerStateReader playerReader) {
+        return ServerEvents.GameEventPlayerStats.newBuilder()
+                .setPosition(createVector(playerReader.getCoordinates().getPosition()))
+                .setDirection(createVector(playerReader.getCoordinates().getDirection()))
+                .setHealth(playerReader.getHealth())
+                .setPlayerId(playerReader.getPlayerId())
+                .build();
+    }
 
+    static ServerEvents createDeadEvent(long eventId,
+                                        int playersOnline,
+                                        PlayerStateReader shooterPlayerReader,
+                                        PlayerStateReader deadPlayerReader) {
+        var deadPlayerEvent = ServerEvents.GameEvents.newBuilder()
+                .addEvents(ServerEvents.GameEvent.newBuilder()
+                        .setEventType(ServerEvents.GameEvent.GameEventType.DEATH)
+                        .setPlayer(createPlayerStats(shooterPlayerReader))
+                        .setAffectedPlayer(createPlayerStats(deadPlayerReader)));
         return ServerEvents.newBuilder()
                 .setEventId(eventId)
                 .setPlayersOnline(playersOnline)
-                .setGameEvents(allPlayersSpawns)
+                .setGameEvents(deadPlayerEvent)
+                .build();
+    }
+
+    static ServerEvents createGetShotEvent(long eventId,
+                                           int playersOnline,
+                                           PlayerStateReader shooterPlayerReader,
+                                           PlayerStateReader shotPlayerReader) {
+        var deadPlayerEvent = ServerEvents.GameEvents.newBuilder()
+                .addEvents(ServerEvents.GameEvent.newBuilder()
+                        .setEventType(ServerEvents.GameEvent.GameEventType.GET_SHOT)
+                        .setPlayer(createPlayerStats(shooterPlayerReader))
+                        .setAffectedPlayer(createPlayerStats(shotPlayerReader)));
+        return ServerEvents.newBuilder()
+                .setEventId(eventId)
+                .setPlayersOnline(playersOnline)
+                .setGameEvents(deadPlayerEvent)
+                .build();
+    }
+
+    static ServerEvents createShootingEvent(long eventId,
+                                            int playersOnline,
+                                            PlayerStateReader shooterPlayerReader) {
+        var deadPlayerEvent = ServerEvents.GameEvents.newBuilder()
+                .addEvents(ServerEvents.GameEvent.newBuilder()
+                        .setEventType(ServerEvents.GameEvent.GameEventType.SHOOT)
+                        .setPlayer(createPlayerStats(shooterPlayerReader)));
+        return ServerEvents.newBuilder()
+                .setEventId(eventId)
+                .setPlayersOnline(playersOnline)
+                .setGameEvents(deadPlayerEvent)
                 .build();
     }
 
     static ServerEvents createSpawnEventSinglePlayer(int playersOnline,
                                                      PlayerConnectedGameState playerConnected) {
+
         return ServerEvents.newBuilder()
                 .setEventId(playerConnected.getNewGameStateId())
                 .setPlayersOnline(playersOnline)
                 .setGameEvents(ServerEvents.GameEvents.newBuilder()
-                        .addEvents(createSpawnEvent(
-                                playerConnected.getConnectedPlayerId(),
-                                playerConnected.getPlayerName(),
-                                playerConnected.getSpawn())))
+                        .addEvents(createSpawnEvent(playerConnected.getPlayerStateReader())))
                 .build();
     }
 

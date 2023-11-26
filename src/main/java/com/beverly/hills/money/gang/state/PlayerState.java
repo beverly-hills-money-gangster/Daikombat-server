@@ -10,8 +10,10 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class PlayerState implements PlayerStateReader {
 
+    private final AtomicBoolean moved = new AtomicBoolean(false);
+
     private final AtomicBoolean dead = new AtomicBoolean();
-    private static final int DEFAULT_HP = 100;
+    public static final int DEFAULT_HP = 100;
 
     private static final int DEFAULT_DAMAGE = 20;
 
@@ -31,17 +33,22 @@ public class PlayerState implements PlayerStateReader {
         this.playerId = id;
     }
 
-    public ShotDetails getShot() {
+    public PlayerStateReader getShot() {
         if (health.addAndGet(-DEFAULT_DAMAGE) <= 0) {
             dead.set(true);
-            return ShotDetails.builder().dead(true).health(0).build();
+            return this;
         }
-        return ShotDetails.builder().dead(false).health(health.get()).build();
+        return this;
     }
 
 
     public void move(PlayerCoordinates playerCoordinates) {
         playerCoordinatesRef.set(playerCoordinates);
+        moved.set(true);
+    }
+
+    public void flushMove() {
+        moved.set(false);
     }
 
     @Override
@@ -54,6 +61,16 @@ public class PlayerState implements PlayerStateReader {
         return health.get();
     }
 
+
+    @Override
+    public boolean isDead() {
+        return dead.get();
+    }
+
+    @Override
+    public boolean hasMoved() {
+        return moved.get();
+    }
 
     public void registerKill() {
         kills.incrementAndGet();

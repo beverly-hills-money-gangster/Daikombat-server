@@ -46,43 +46,32 @@ public interface ServerEventsOrBuilder extends
   com.beverly.hills.money.gang.proto.ServerEvents.ErrorOrBuilder getErrorOrBuilder();
 
   /**
-   * <code>optional bytes hmac = 4;</code>
-   * @return Whether the hmac field is set.
-   */
-  boolean hasHmac();
-  /**
-   * <code>optional bytes hmac = 4;</code>
-   * @return The hmac.
-   */
-  com.google.protobuf.ByteString getHmac();
-
-  /**
-   * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 5;</code>
+   * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 4;</code>
    * @return Whether the chatEvents field is set.
    */
   boolean hasChatEvents();
   /**
-   * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 5;</code>
+   * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 4;</code>
    * @return The chatEvents.
    */
   com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent getChatEvents();
   /**
-   * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 5;</code>
+   * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 4;</code>
    */
   com.beverly.hills.money.gang.proto.ServerEvents.ChatEventOrBuilder getChatEventsOrBuilder();
 
   /**
-   * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 6;</code>
+   * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 5;</code>
    * @return Whether the gameEvents field is set.
    */
   boolean hasGameEvents();
   /**
-   * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 6;</code>
+   * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 5;</code>
    * @return The gameEvents.
    */
   com.beverly.hills.money.gang.proto.ServerEvents.GameEvents getGameEvents();
   /**
-   * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 6;</code>
+   * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 5;</code>
    */
   com.beverly.hills.money.gang.proto.ServerEvents.GameEventsOrBuilder getGameEventsOrBuilder();
 

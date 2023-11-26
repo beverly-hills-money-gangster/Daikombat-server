@@ -10,11 +10,10 @@ message ServerEvents {
   optional int64 eventId = 1;
   optional int32 playersOnline = 2;
   optional Error error = 3;
-  optional bytes hmac = 4;
 
   oneof events {
-    ChatEvent chatEvents = 5;
-    GameEvents gameEvents = 6;
+    ChatEvent chatEvents = 4;
+    GameEvents gameEvents = 5;
   }
 
   message Error {
@@ -38,7 +37,7 @@ message ServerEvents {
   message GameEvent {
     GameEventPlayerStats player = 1;
     optional GameEventPlayerStats affectedPlayer = 2;
-    GameEvent eventType = 3;
+    GameEventType eventType = 3;
 
     enum GameEventType {
       MOVE = 0;

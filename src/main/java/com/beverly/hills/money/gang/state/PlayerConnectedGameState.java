@@ -7,23 +7,11 @@ import lombok.Getter;
 public class PlayerConnectedGameState extends GameState {
 
     @Getter
-    private final int connectedPlayerId;
-
-    @Getter
-    private final String playerName;
-
-    @Getter
-    private final PlayerState.PlayerCoordinates spawn;
+    private final PlayerStateReader playerStateReader;
 
     @Builder
-    private PlayerConnectedGameState(long newGameStateId,
-                                    String playerName,
-                                    int connectedPlayerId,
-                                    PlayerState.PlayerCoordinates spawn) {
+    public PlayerConnectedGameState(long newGameStateId, PlayerStateReader playerStateReader) {
         super(newGameStateId);
-        this.connectedPlayerId = connectedPlayerId;
-        this.playerName = playerName;
-        this.spawn = spawn;
+        this.playerStateReader = playerStateReader;
     }
-
 }

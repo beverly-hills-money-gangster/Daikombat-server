@@ -17,7 +17,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private ServerEvents() {
-    hmac_ = com.google.protobuf.ByteString.EMPTY;
   }
 
   @java.lang.Override
@@ -2933,27 +2932,34 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>int32 playerId = 1;</code>
-     * @return The playerId.
+     * <code>.daikombat.dto.ServerEvents.GameEventPlayerStats player = 1;</code>
+     * @return Whether the player field is set.
      */
-    int getPlayerId();
+    boolean hasPlayer();
+    /**
+     * <code>.daikombat.dto.ServerEvents.GameEventPlayerStats player = 1;</code>
+     * @return The player.
+     */
+    com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats getPlayer();
+    /**
+     * <code>.daikombat.dto.ServerEvents.GameEventPlayerStats player = 1;</code>
+     */
+    com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStatsOrBuilder getPlayerOrBuilder();
 
     /**
-     * <code>optional string playerName = 2;</code>
-     * @return Whether the playerName field is set.
+     * <code>optional .daikombat.dto.ServerEvents.GameEventPlayerStats affectedPlayer = 2;</code>
+     * @return Whether the affectedPlayer field is set.
      */
-    boolean hasPlayerName();
+    boolean hasAffectedPlayer();
     /**
-     * <code>optional string playerName = 2;</code>
-     * @return The playerName.
+     * <code>optional .daikombat.dto.ServerEvents.GameEventPlayerStats affectedPlayer = 2;</code>
+     * @return The affectedPlayer.
      */
-    java.lang.String getPlayerName();
+    com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats getAffectedPlayer();
     /**
-     * <code>optional string playerName = 2;</code>
-     * @return The bytes for playerName.
+     * <code>optional .daikombat.dto.ServerEvents.GameEventPlayerStats affectedPlayer = 2;</code>
      */
-    com.google.protobuf.ByteString
-        getPlayerNameBytes();
+    com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStatsOrBuilder getAffectedPlayerOrBuilder();
 
     /**
      * <code>.daikombat.dto.ServerEvents.GameEvent.GameEventType eventType = 3;</code>
@@ -2965,42 +2971,6 @@ private static final long serialVersionUID = 0L;
      * @return The eventType.
      */
     com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.GameEventType getEventType();
-
-    /**
-     * <code>.daikombat.dto.ServerEvents.GameEvent.Vector position = 4;</code>
-     * @return Whether the position field is set.
-     */
-    boolean hasPosition();
-    /**
-     * <code>.daikombat.dto.ServerEvents.GameEvent.Vector position = 4;</code>
-     * @return The position.
-     */
-    com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector getPosition();
-    /**
-     * <code>.daikombat.dto.ServerEvents.GameEvent.Vector position = 4;</code>
-     */
-    com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.VectorOrBuilder getPositionOrBuilder();
-
-    /**
-     * <code>.daikombat.dto.ServerEvents.GameEvent.Vector direction = 5;</code>
-     * @return Whether the direction field is set.
-     */
-    boolean hasDirection();
-    /**
-     * <code>.daikombat.dto.ServerEvents.GameEvent.Vector direction = 5;</code>
-     * @return The direction.
-     */
-    com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector getDirection();
-    /**
-     * <code>.daikombat.dto.ServerEvents.GameEvent.Vector direction = 5;</code>
-     */
-    com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.VectorOrBuilder getDirectionOrBuilder();
-
-    /**
-     * <code>int32 health = 6;</code>
-     * @return The health.
-     */
-    int getHealth();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerEvents.GameEvent}
@@ -3015,7 +2985,6 @@ private static final long serialVersionUID = 0L;
       super(builder);
     }
     private GameEvent() {
-      playerName_ = "";
       eventType_ = 0;
     }
 
@@ -3183,615 +3152,57 @@ private static final long serialVersionUID = 0L;
       // @@protoc_insertion_point(enum_scope:daikombat.dto.ServerEvents.GameEvent.GameEventType)
     }
 
-    public interface VectorOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:daikombat.dto.ServerEvents.GameEvent.Vector)
-        com.google.protobuf.MessageOrBuilder {
-
-      /**
-       * <code>float x = 1;</code>
-       * @return The x.
-       */
-      float getX();
-
-      /**
-       * <code>float y = 2;</code>
-       * @return The y.
-       */
-      float getY();
-    }
-    /**
-     * Protobuf type {@code daikombat.dto.ServerEvents.GameEvent.Vector}
-     */
-    public static final class Vector extends
-        com.google.protobuf.GeneratedMessageV3 implements
-        // @@protoc_insertion_point(message_implements:daikombat.dto.ServerEvents.GameEvent.Vector)
-        VectorOrBuilder {
-    private static final long serialVersionUID = 0L;
-      // Use Vector.newBuilder() to construct.
-      private Vector(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-        super(builder);
-      }
-      private Vector() {
-      }
-
-      @java.lang.Override
-      @SuppressWarnings({"unused"})
-      protected java.lang.Object newInstance(
-          UnusedPrivateParameter unused) {
-        return new Vector();
-      }
-
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return com.beverly.hills.money.gang.proto.ServerEventsOuterClass.internal_static_daikombat_dto_ServerEvents_GameEvent_Vector_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return com.beverly.hills.money.gang.proto.ServerEventsOuterClass.internal_static_daikombat_dto_ServerEvents_GameEvent_Vector_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.class, com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.Builder.class);
-      }
-
-      public static final int X_FIELD_NUMBER = 1;
-      private float x_ = 0F;
-      /**
-       * <code>float x = 1;</code>
-       * @return The x.
-       */
-      @java.lang.Override
-      public float getX() {
-        return x_;
-      }
-
-      public static final int Y_FIELD_NUMBER = 2;
-      private float y_ = 0F;
-      /**
-       * <code>float y = 2;</code>
-       * @return The y.
-       */
-      @java.lang.Override
-      public float getY() {
-        return y_;
-      }
-
-      private byte memoizedIsInitialized = -1;
-      @java.lang.Override
-      public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
-
-        memoizedIsInitialized = 1;
-        return true;
-      }
-
-      @java.lang.Override
-      public void writeTo(com.google.protobuf.CodedOutputStream output)
-                          throws java.io.IOException {
-        if (java.lang.Float.floatToRawIntBits(x_) != 0) {
-          output.writeFloat(1, x_);
-        }
-        if (java.lang.Float.floatToRawIntBits(y_) != 0) {
-          output.writeFloat(2, y_);
-        }
-        getUnknownFields().writeTo(output);
-      }
-
-      @java.lang.Override
-      public int getSerializedSize() {
-        int size = memoizedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        if (java.lang.Float.floatToRawIntBits(x_) != 0) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeFloatSize(1, x_);
-        }
-        if (java.lang.Float.floatToRawIntBits(y_) != 0) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeFloatSize(2, y_);
-        }
-        size += getUnknownFields().getSerializedSize();
-        memoizedSize = size;
-        return size;
-      }
-
-      @java.lang.Override
-      public boolean equals(final java.lang.Object obj) {
-        if (obj == this) {
-         return true;
-        }
-        if (!(obj instanceof com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector)) {
-          return super.equals(obj);
-        }
-        com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector other = (com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector) obj;
-
-        if (java.lang.Float.floatToIntBits(getX())
-            != java.lang.Float.floatToIntBits(
-                other.getX())) return false;
-        if (java.lang.Float.floatToIntBits(getY())
-            != java.lang.Float.floatToIntBits(
-                other.getY())) return false;
-        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-        return true;
-      }
-
-      @java.lang.Override
-      public int hashCode() {
-        if (memoizedHashCode != 0) {
-          return memoizedHashCode;
-        }
-        int hash = 41;
-        hash = (19 * hash) + getDescriptor().hashCode();
-        hash = (37 * hash) + X_FIELD_NUMBER;
-        hash = (53 * hash) + java.lang.Float.floatToIntBits(
-            getX());
-        hash = (37 * hash) + Y_FIELD_NUMBER;
-        hash = (53 * hash) + java.lang.Float.floatToIntBits(
-            getY());
-        hash = (29 * hash) + getUnknownFields().hashCode();
-        memoizedHashCode = hash;
-        return hash;
-      }
-
-      public static com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector parseFrom(
-          java.nio.ByteBuffer data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector parseFrom(
-          java.nio.ByteBuffer data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector parseFrom(
-          com.google.protobuf.ByteString data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector parseFrom(
-          com.google.protobuf.ByteString data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector parseFrom(byte[] data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector parseFrom(
-          byte[] data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector parseFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input);
-      }
-      public static com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector parseFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input, extensionRegistry);
-      }
-
-      public static com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector parseDelimitedFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseDelimitedWithIOException(PARSER, input);
-      }
-
-      public static com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector parseDelimitedFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-      }
-      public static com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector parseFrom(
-          com.google.protobuf.CodedInputStream input)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input);
-      }
-      public static com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector parseFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input, extensionRegistry);
-      }
-
-      @java.lang.Override
-      public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder() {
-        return DEFAULT_INSTANCE.toBuilder();
-      }
-      public static Builder newBuilder(com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector prototype) {
-        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-      }
-      @java.lang.Override
-      public Builder toBuilder() {
-        return this == DEFAULT_INSTANCE
-            ? new Builder() : new Builder().mergeFrom(this);
-      }
-
-      @java.lang.Override
-      protected Builder newBuilderForType(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        Builder builder = new Builder(parent);
-        return builder;
-      }
-      /**
-       * Protobuf type {@code daikombat.dto.ServerEvents.GameEvent.Vector}
-       */
-      public static final class Builder extends
-          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-          // @@protoc_insertion_point(builder_implements:daikombat.dto.ServerEvents.GameEvent.Vector)
-          com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.VectorOrBuilder {
-        public static final com.google.protobuf.Descriptors.Descriptor
-            getDescriptor() {
-          return com.beverly.hills.money.gang.proto.ServerEventsOuterClass.internal_static_daikombat_dto_ServerEvents_GameEvent_Vector_descriptor;
-        }
-
-        @java.lang.Override
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internalGetFieldAccessorTable() {
-          return com.beverly.hills.money.gang.proto.ServerEventsOuterClass.internal_static_daikombat_dto_ServerEvents_GameEvent_Vector_fieldAccessorTable
-              .ensureFieldAccessorsInitialized(
-                  com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.class, com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.Builder.class);
-        }
-
-        // Construct using com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.newBuilder()
-        private Builder() {
-
-        }
-
-        private Builder(
-            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-          super(parent);
-
-        }
-        @java.lang.Override
-        public Builder clear() {
-          super.clear();
-          bitField0_ = 0;
-          x_ = 0F;
-          y_ = 0F;
-          return this;
-        }
-
-        @java.lang.Override
-        public com.google.protobuf.Descriptors.Descriptor
-            getDescriptorForType() {
-          return com.beverly.hills.money.gang.proto.ServerEventsOuterClass.internal_static_daikombat_dto_ServerEvents_GameEvent_Vector_descriptor;
-        }
-
-        @java.lang.Override
-        public com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector getDefaultInstanceForType() {
-          return com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.getDefaultInstance();
-        }
-
-        @java.lang.Override
-        public com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector build() {
-          com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector result = buildPartial();
-          if (!result.isInitialized()) {
-            throw newUninitializedMessageException(result);
-          }
-          return result;
-        }
-
-        @java.lang.Override
-        public com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector buildPartial() {
-          com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector result = new com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector(this);
-          if (bitField0_ != 0) { buildPartial0(result); }
-          onBuilt();
-          return result;
-        }
-
-        private void buildPartial0(com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector result) {
-          int from_bitField0_ = bitField0_;
-          if (((from_bitField0_ & 0x00000001) != 0)) {
-            result.x_ = x_;
-          }
-          if (((from_bitField0_ & 0x00000002) != 0)) {
-            result.y_ = y_;
-          }
-        }
-
-        @java.lang.Override
-        public Builder clone() {
-          return super.clone();
-        }
-        @java.lang.Override
-        public Builder setField(
-            com.google.protobuf.Descriptors.FieldDescriptor field,
-            java.lang.Object value) {
-          return super.setField(field, value);
-        }
-        @java.lang.Override
-        public Builder clearField(
-            com.google.protobuf.Descriptors.FieldDescriptor field) {
-          return super.clearField(field);
-        }
-        @java.lang.Override
-        public Builder clearOneof(
-            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-          return super.clearOneof(oneof);
-        }
-        @java.lang.Override
-        public Builder setRepeatedField(
-            com.google.protobuf.Descriptors.FieldDescriptor field,
-            int index, java.lang.Object value) {
-          return super.setRepeatedField(field, index, value);
-        }
-        @java.lang.Override
-        public Builder addRepeatedField(
-            com.google.protobuf.Descriptors.FieldDescriptor field,
-            java.lang.Object value) {
-          return super.addRepeatedField(field, value);
-        }
-        @java.lang.Override
-        public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector) {
-            return mergeFrom((com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector)other);
-          } else {
-            super.mergeFrom(other);
-            return this;
-          }
-        }
-
-        public Builder mergeFrom(com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector other) {
-          if (other == com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.getDefaultInstance()) return this;
-          if (other.getX() != 0F) {
-            setX(other.getX());
-          }
-          if (other.getY() != 0F) {
-            setY(other.getY());
-          }
-          this.mergeUnknownFields(other.getUnknownFields());
-          onChanged();
-          return this;
-        }
-
-        @java.lang.Override
-        public final boolean isInitialized() {
-          return true;
-        }
-
-        @java.lang.Override
-        public Builder mergeFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-          if (extensionRegistry == null) {
-            throw new java.lang.NullPointerException();
-          }
-          try {
-            boolean done = false;
-            while (!done) {
-              int tag = input.readTag();
-              switch (tag) {
-                case 0:
-                  done = true;
-                  break;
-                case 13: {
-                  x_ = input.readFloat();
-                  bitField0_ |= 0x00000001;
-                  break;
-                } // case 13
-                case 21: {
-                  y_ = input.readFloat();
-                  bitField0_ |= 0x00000002;
-                  break;
-                } // case 21
-                default: {
-                  if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                    done = true; // was an endgroup tag
-                  }
-                  break;
-                } // default:
-              } // switch (tag)
-            } // while (!done)
-          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            throw e.unwrapIOException();
-          } finally {
-            onChanged();
-          } // finally
-          return this;
-        }
-        private int bitField0_;
-
-        private float x_ ;
-        /**
-         * <code>float x = 1;</code>
-         * @return The x.
-         */
-        @java.lang.Override
-        public float getX() {
-          return x_;
-        }
-        /**
-         * <code>float x = 1;</code>
-         * @param value The x to set.
-         * @return This builder for chaining.
-         */
-        public Builder setX(float value) {
-
-          x_ = value;
-          bitField0_ |= 0x00000001;
-          onChanged();
-          return this;
-        }
-        /**
-         * <code>float x = 1;</code>
-         * @return This builder for chaining.
-         */
-        public Builder clearX() {
-          bitField0_ = (bitField0_ & ~0x00000001);
-          x_ = 0F;
-          onChanged();
-          return this;
-        }
-
-        private float y_ ;
-        /**
-         * <code>float y = 2;</code>
-         * @return The y.
-         */
-        @java.lang.Override
-        public float getY() {
-          return y_;
-        }
-        /**
-         * <code>float y = 2;</code>
-         * @param value The y to set.
-         * @return This builder for chaining.
-         */
-        public Builder setY(float value) {
-
-          y_ = value;
-          bitField0_ |= 0x00000002;
-          onChanged();
-          return this;
-        }
-        /**
-         * <code>float y = 2;</code>
-         * @return This builder for chaining.
-         */
-        public Builder clearY() {
-          bitField0_ = (bitField0_ & ~0x00000002);
-          y_ = 0F;
-          onChanged();
-          return this;
-        }
-        @java.lang.Override
-        public final Builder setUnknownFields(
-            final com.google.protobuf.UnknownFieldSet unknownFields) {
-          return super.setUnknownFields(unknownFields);
-        }
-
-        @java.lang.Override
-        public final Builder mergeUnknownFields(
-            final com.google.protobuf.UnknownFieldSet unknownFields) {
-          return super.mergeUnknownFields(unknownFields);
-        }
-
-
-        // @@protoc_insertion_point(builder_scope:daikombat.dto.ServerEvents.GameEvent.Vector)
-      }
-
-      // @@protoc_insertion_point(class_scope:daikombat.dto.ServerEvents.GameEvent.Vector)
-      private static final com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector DEFAULT_INSTANCE;
-      static {
-        DEFAULT_INSTANCE = new com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector();
-      }
-
-      public static com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-      }
-
-      private static final com.google.protobuf.Parser<Vector>
-          PARSER = new com.google.protobuf.AbstractParser<Vector>() {
-        @java.lang.Override
-        public Vector parsePartialFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          Builder builder = newBuilder();
-          try {
-            builder.mergeFrom(input, extensionRegistry);
-          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            throw e.setUnfinishedMessage(builder.buildPartial());
-          } catch (com.google.protobuf.UninitializedMessageException e) {
-            throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-          } catch (java.io.IOException e) {
-            throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                .setUnfinishedMessage(builder.buildPartial());
-          }
-          return builder.buildPartial();
-        }
-      };
-
-      public static com.google.protobuf.Parser<Vector> parser() {
-        return PARSER;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Parser<Vector> getParserForType() {
-        return PARSER;
-      }
-
-      @java.lang.Override
-      public com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector getDefaultInstanceForType() {
-        return DEFAULT_INSTANCE;
-      }
-
-    }
-
     private int bitField0_;
-    public static final int PLAYERID_FIELD_NUMBER = 1;
-    private int playerId_ = 0;
+    public static final int PLAYER_FIELD_NUMBER = 1;
+    private com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats player_;
     /**
-     * <code>int32 playerId = 1;</code>
-     * @return The playerId.
+     * <code>.daikombat.dto.ServerEvents.GameEventPlayerStats player = 1;</code>
+     * @return Whether the player field is set.
      */
     @java.lang.Override
-    public int getPlayerId() {
-      return playerId_;
-    }
-
-    public static final int PLAYERNAME_FIELD_NUMBER = 2;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object playerName_ = "";
-    /**
-     * <code>optional string playerName = 2;</code>
-     * @return Whether the playerName field is set.
-     */
-    @java.lang.Override
-    public boolean hasPlayerName() {
+    public boolean hasPlayer() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>optional string playerName = 2;</code>
-     * @return The playerName.
+     * <code>.daikombat.dto.ServerEvents.GameEventPlayerStats player = 1;</code>
+     * @return The player.
      */
     @java.lang.Override
-    public java.lang.String getPlayerName() {
-      java.lang.Object ref = playerName_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        playerName_ = s;
-        return s;
-      }
+    public com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats getPlayer() {
+      return player_ == null ? com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats.getDefaultInstance() : player_;
     }
     /**
-     * <code>optional string playerName = 2;</code>
-     * @return The bytes for playerName.
+     * <code>.daikombat.dto.ServerEvents.GameEventPlayerStats player = 1;</code>
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getPlayerNameBytes() {
-      java.lang.Object ref = playerName_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        playerName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStatsOrBuilder getPlayerOrBuilder() {
+      return player_ == null ? com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats.getDefaultInstance() : player_;
+    }
+
+    public static final int AFFECTEDPLAYER_FIELD_NUMBER = 2;
+    private com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats affectedPlayer_;
+    /**
+     * <code>optional .daikombat.dto.ServerEvents.GameEventPlayerStats affectedPlayer = 2;</code>
+     * @return Whether the affectedPlayer field is set.
+     */
+    @java.lang.Override
+    public boolean hasAffectedPlayer() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>optional .daikombat.dto.ServerEvents.GameEventPlayerStats affectedPlayer = 2;</code>
+     * @return The affectedPlayer.
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats getAffectedPlayer() {
+      return affectedPlayer_ == null ? com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats.getDefaultInstance() : affectedPlayer_;
+    }
+    /**
+     * <code>optional .daikombat.dto.ServerEvents.GameEventPlayerStats affectedPlayer = 2;</code>
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStatsOrBuilder getAffectedPlayerOrBuilder() {
+      return affectedPlayer_ == null ? com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats.getDefaultInstance() : affectedPlayer_;
     }
 
     public static final int EVENTTYPE_FIELD_NUMBER = 3;
@@ -3812,69 +3223,6 @@ private static final long serialVersionUID = 0L;
       return result == null ? com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.GameEventType.UNRECOGNIZED : result;
     }
 
-    public static final int POSITION_FIELD_NUMBER = 4;
-    private com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector position_;
-    /**
-     * <code>.daikombat.dto.ServerEvents.GameEvent.Vector position = 4;</code>
-     * @return Whether the position field is set.
-     */
-    @java.lang.Override
-    public boolean hasPosition() {
-      return ((bitField0_ & 0x00000002) != 0);
-    }
-    /**
-     * <code>.daikombat.dto.ServerEvents.GameEvent.Vector position = 4;</code>
-     * @return The position.
-     */
-    @java.lang.Override
-    public com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector getPosition() {
-      return position_ == null ? com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.getDefaultInstance() : position_;
-    }
-    /**
-     * <code>.daikombat.dto.ServerEvents.GameEvent.Vector position = 4;</code>
-     */
-    @java.lang.Override
-    public com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.VectorOrBuilder getPositionOrBuilder() {
-      return position_ == null ? com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.getDefaultInstance() : position_;
-    }
-
-    public static final int DIRECTION_FIELD_NUMBER = 5;
-    private com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector direction_;
-    /**
-     * <code>.daikombat.dto.ServerEvents.GameEvent.Vector direction = 5;</code>
-     * @return Whether the direction field is set.
-     */
-    @java.lang.Override
-    public boolean hasDirection() {
-      return ((bitField0_ & 0x00000004) != 0);
-    }
-    /**
-     * <code>.daikombat.dto.ServerEvents.GameEvent.Vector direction = 5;</code>
-     * @return The direction.
-     */
-    @java.lang.Override
-    public com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector getDirection() {
-      return direction_ == null ? com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.getDefaultInstance() : direction_;
-    }
-    /**
-     * <code>.daikombat.dto.ServerEvents.GameEvent.Vector direction = 5;</code>
-     */
-    @java.lang.Override
-    public com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.VectorOrBuilder getDirectionOrBuilder() {
-      return direction_ == null ? com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.getDefaultInstance() : direction_;
-    }
-
-    public static final int HEALTH_FIELD_NUMBER = 6;
-    private int health_ = 0;
-    /**
-     * <code>int32 health = 6;</code>
-     * @return The health.
-     */
-    @java.lang.Override
-    public int getHealth() {
-      return health_;
-    }
-
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -3889,23 +3237,14 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (playerId_ != 0) {
-        output.writeInt32(1, playerId_);
-      }
       if (((bitField0_ & 0x00000001) != 0)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, playerName_);
+        output.writeMessage(1, getPlayer());
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        output.writeMessage(2, getAffectedPlayer());
       }
       if (eventType_ != com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.GameEventType.MOVE.getNumber()) {
         output.writeEnum(3, eventType_);
-      }
-      if (((bitField0_ & 0x00000002) != 0)) {
-        output.writeMessage(4, getPosition());
-      }
-      if (((bitField0_ & 0x00000004) != 0)) {
-        output.writeMessage(5, getDirection());
-      }
-      if (health_ != 0) {
-        output.writeInt32(6, health_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -3916,28 +3255,17 @@ private static final long serialVersionUID = 0L;
       if (size != -1) return size;
 
       size = 0;
-      if (playerId_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, playerId_);
-      }
       if (((bitField0_ & 0x00000001) != 0)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, playerName_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getPlayer());
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getAffectedPlayer());
       }
       if (eventType_ != com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.GameEventType.MOVE.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(3, eventType_);
-      }
-      if (((bitField0_ & 0x00000002) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, getPosition());
-      }
-      if (((bitField0_ & 0x00000004) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, getDirection());
-      }
-      if (health_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(6, health_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -3954,26 +3282,17 @@ private static final long serialVersionUID = 0L;
       }
       com.beverly.hills.money.gang.proto.ServerEvents.GameEvent other = (com.beverly.hills.money.gang.proto.ServerEvents.GameEvent) obj;
 
-      if (getPlayerId()
-          != other.getPlayerId()) return false;
-      if (hasPlayerName() != other.hasPlayerName()) return false;
-      if (hasPlayerName()) {
-        if (!getPlayerName()
-            .equals(other.getPlayerName())) return false;
+      if (hasPlayer() != other.hasPlayer()) return false;
+      if (hasPlayer()) {
+        if (!getPlayer()
+            .equals(other.getPlayer())) return false;
+      }
+      if (hasAffectedPlayer() != other.hasAffectedPlayer()) return false;
+      if (hasAffectedPlayer()) {
+        if (!getAffectedPlayer()
+            .equals(other.getAffectedPlayer())) return false;
       }
       if (eventType_ != other.eventType_) return false;
-      if (hasPosition() != other.hasPosition()) return false;
-      if (hasPosition()) {
-        if (!getPosition()
-            .equals(other.getPosition())) return false;
-      }
-      if (hasDirection() != other.hasDirection()) return false;
-      if (hasDirection()) {
-        if (!getDirection()
-            .equals(other.getDirection())) return false;
-      }
-      if (getHealth()
-          != other.getHealth()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -3985,24 +3304,16 @@ private static final long serialVersionUID = 0L;
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + PLAYERID_FIELD_NUMBER;
-      hash = (53 * hash) + getPlayerId();
-      if (hasPlayerName()) {
-        hash = (37 * hash) + PLAYERNAME_FIELD_NUMBER;
-        hash = (53 * hash) + getPlayerName().hashCode();
+      if (hasPlayer()) {
+        hash = (37 * hash) + PLAYER_FIELD_NUMBER;
+        hash = (53 * hash) + getPlayer().hashCode();
+      }
+      if (hasAffectedPlayer()) {
+        hash = (37 * hash) + AFFECTEDPLAYER_FIELD_NUMBER;
+        hash = (53 * hash) + getAffectedPlayer().hashCode();
       }
       hash = (37 * hash) + EVENTTYPE_FIELD_NUMBER;
       hash = (53 * hash) + eventType_;
-      if (hasPosition()) {
-        hash = (37 * hash) + POSITION_FIELD_NUMBER;
-        hash = (53 * hash) + getPosition().hashCode();
-      }
-      if (hasDirection()) {
-        hash = (37 * hash) + DIRECTION_FIELD_NUMBER;
-        hash = (53 * hash) + getDirection().hashCode();
-      }
-      hash = (37 * hash) + HEALTH_FIELD_NUMBER;
-      hash = (53 * hash) + getHealth();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -4133,28 +3444,25 @@ private static final long serialVersionUID = 0L;
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
-          getPositionFieldBuilder();
-          getDirectionFieldBuilder();
+          getPlayerFieldBuilder();
+          getAffectedPlayerFieldBuilder();
         }
       }
       @java.lang.Override
       public Builder clear() {
         super.clear();
         bitField0_ = 0;
-        playerId_ = 0;
-        playerName_ = "";
+        player_ = null;
+        if (playerBuilder_ != null) {
+          playerBuilder_.dispose();
+          playerBuilder_ = null;
+        }
+        affectedPlayer_ = null;
+        if (affectedPlayerBuilder_ != null) {
+          affectedPlayerBuilder_.dispose();
+          affectedPlayerBuilder_ = null;
+        }
         eventType_ = 0;
-        position_ = null;
-        if (positionBuilder_ != null) {
-          positionBuilder_.dispose();
-          positionBuilder_ = null;
-        }
-        direction_ = null;
-        if (directionBuilder_ != null) {
-          directionBuilder_.dispose();
-          directionBuilder_ = null;
-        }
-        health_ = 0;
         return this;
       }
 
@@ -4188,31 +3496,21 @@ private static final long serialVersionUID = 0L;
 
       private void buildPartial0(com.beverly.hills.money.gang.proto.ServerEvents.GameEvent result) {
         int from_bitField0_ = bitField0_;
-        if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.playerId_ = playerId_;
-        }
         int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.playerName_ = playerName_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.player_ = playerBuilder_ == null
+              ? player_
+              : playerBuilder_.build();
           to_bitField0_ |= 0x00000001;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.affectedPlayer_ = affectedPlayerBuilder_ == null
+              ? affectedPlayer_
+              : affectedPlayerBuilder_.build();
+          to_bitField0_ |= 0x00000002;
         }
         if (((from_bitField0_ & 0x00000004) != 0)) {
           result.eventType_ = eventType_;
-        }
-        if (((from_bitField0_ & 0x00000008) != 0)) {
-          result.position_ = positionBuilder_ == null
-              ? position_
-              : positionBuilder_.build();
-          to_bitField0_ |= 0x00000002;
-        }
-        if (((from_bitField0_ & 0x00000010) != 0)) {
-          result.direction_ = directionBuilder_ == null
-              ? direction_
-              : directionBuilder_.build();
-          to_bitField0_ |= 0x00000004;
-        }
-        if (((from_bitField0_ & 0x00000020) != 0)) {
-          result.health_ = health_;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -4261,6 +3559,1028 @@ private static final long serialVersionUID = 0L;
 
       public Builder mergeFrom(com.beverly.hills.money.gang.proto.ServerEvents.GameEvent other) {
         if (other == com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.getDefaultInstance()) return this;
+        if (other.hasPlayer()) {
+          mergePlayer(other.getPlayer());
+        }
+        if (other.hasAffectedPlayer()) {
+          mergeAffectedPlayer(other.getAffectedPlayer());
+        }
+        if (other.eventType_ != 0) {
+          setEventTypeValue(other.getEventTypeValue());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                input.readMessage(
+                    getPlayerFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                input.readMessage(
+                    getAffectedPlayerFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 24: {
+                eventType_ = input.readEnum();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats player_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats, com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats.Builder, com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStatsOrBuilder> playerBuilder_;
+      /**
+       * <code>.daikombat.dto.ServerEvents.GameEventPlayerStats player = 1;</code>
+       * @return Whether the player field is set.
+       */
+      public boolean hasPlayer() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <code>.daikombat.dto.ServerEvents.GameEventPlayerStats player = 1;</code>
+       * @return The player.
+       */
+      public com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats getPlayer() {
+        if (playerBuilder_ == null) {
+          return player_ == null ? com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats.getDefaultInstance() : player_;
+        } else {
+          return playerBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.daikombat.dto.ServerEvents.GameEventPlayerStats player = 1;</code>
+       */
+      public Builder setPlayer(com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats value) {
+        if (playerBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          player_ = value;
+        } else {
+          playerBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.daikombat.dto.ServerEvents.GameEventPlayerStats player = 1;</code>
+       */
+      public Builder setPlayer(
+          com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats.Builder builderForValue) {
+        if (playerBuilder_ == null) {
+          player_ = builderForValue.build();
+        } else {
+          playerBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.daikombat.dto.ServerEvents.GameEventPlayerStats player = 1;</code>
+       */
+      public Builder mergePlayer(com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats value) {
+        if (playerBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0) &&
+            player_ != null &&
+            player_ != com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats.getDefaultInstance()) {
+            getPlayerBuilder().mergeFrom(value);
+          } else {
+            player_ = value;
+          }
+        } else {
+          playerBuilder_.mergeFrom(value);
+        }
+        if (player_ != null) {
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>.daikombat.dto.ServerEvents.GameEventPlayerStats player = 1;</code>
+       */
+      public Builder clearPlayer() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        player_ = null;
+        if (playerBuilder_ != null) {
+          playerBuilder_.dispose();
+          playerBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.daikombat.dto.ServerEvents.GameEventPlayerStats player = 1;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats.Builder getPlayerBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return getPlayerFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.daikombat.dto.ServerEvents.GameEventPlayerStats player = 1;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStatsOrBuilder getPlayerOrBuilder() {
+        if (playerBuilder_ != null) {
+          return playerBuilder_.getMessageOrBuilder();
+        } else {
+          return player_ == null ?
+              com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats.getDefaultInstance() : player_;
+        }
+      }
+      /**
+       * <code>.daikombat.dto.ServerEvents.GameEventPlayerStats player = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats, com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats.Builder, com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStatsOrBuilder> 
+          getPlayerFieldBuilder() {
+        if (playerBuilder_ == null) {
+          playerBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats, com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats.Builder, com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStatsOrBuilder>(
+                  getPlayer(),
+                  getParentForChildren(),
+                  isClean());
+          player_ = null;
+        }
+        return playerBuilder_;
+      }
+
+      private com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats affectedPlayer_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats, com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats.Builder, com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStatsOrBuilder> affectedPlayerBuilder_;
+      /**
+       * <code>optional .daikombat.dto.ServerEvents.GameEventPlayerStats affectedPlayer = 2;</code>
+       * @return Whether the affectedPlayer field is set.
+       */
+      public boolean hasAffectedPlayer() {
+        return ((bitField0_ & 0x00000002) != 0);
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerEvents.GameEventPlayerStats affectedPlayer = 2;</code>
+       * @return The affectedPlayer.
+       */
+      public com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats getAffectedPlayer() {
+        if (affectedPlayerBuilder_ == null) {
+          return affectedPlayer_ == null ? com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats.getDefaultInstance() : affectedPlayer_;
+        } else {
+          return affectedPlayerBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerEvents.GameEventPlayerStats affectedPlayer = 2;</code>
+       */
+      public Builder setAffectedPlayer(com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats value) {
+        if (affectedPlayerBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          affectedPlayer_ = value;
+        } else {
+          affectedPlayerBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerEvents.GameEventPlayerStats affectedPlayer = 2;</code>
+       */
+      public Builder setAffectedPlayer(
+          com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats.Builder builderForValue) {
+        if (affectedPlayerBuilder_ == null) {
+          affectedPlayer_ = builderForValue.build();
+        } else {
+          affectedPlayerBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerEvents.GameEventPlayerStats affectedPlayer = 2;</code>
+       */
+      public Builder mergeAffectedPlayer(com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats value) {
+        if (affectedPlayerBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) != 0) &&
+            affectedPlayer_ != null &&
+            affectedPlayer_ != com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats.getDefaultInstance()) {
+            getAffectedPlayerBuilder().mergeFrom(value);
+          } else {
+            affectedPlayer_ = value;
+          }
+        } else {
+          affectedPlayerBuilder_.mergeFrom(value);
+        }
+        if (affectedPlayer_ != null) {
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerEvents.GameEventPlayerStats affectedPlayer = 2;</code>
+       */
+      public Builder clearAffectedPlayer() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        affectedPlayer_ = null;
+        if (affectedPlayerBuilder_ != null) {
+          affectedPlayerBuilder_.dispose();
+          affectedPlayerBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerEvents.GameEventPlayerStats affectedPlayer = 2;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats.Builder getAffectedPlayerBuilder() {
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return getAffectedPlayerFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerEvents.GameEventPlayerStats affectedPlayer = 2;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStatsOrBuilder getAffectedPlayerOrBuilder() {
+        if (affectedPlayerBuilder_ != null) {
+          return affectedPlayerBuilder_.getMessageOrBuilder();
+        } else {
+          return affectedPlayer_ == null ?
+              com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats.getDefaultInstance() : affectedPlayer_;
+        }
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerEvents.GameEventPlayerStats affectedPlayer = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats, com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats.Builder, com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStatsOrBuilder> 
+          getAffectedPlayerFieldBuilder() {
+        if (affectedPlayerBuilder_ == null) {
+          affectedPlayerBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats, com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats.Builder, com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStatsOrBuilder>(
+                  getAffectedPlayer(),
+                  getParentForChildren(),
+                  isClean());
+          affectedPlayer_ = null;
+        }
+        return affectedPlayerBuilder_;
+      }
+
+      private int eventType_ = 0;
+      /**
+       * <code>.daikombat.dto.ServerEvents.GameEvent.GameEventType eventType = 3;</code>
+       * @return The enum numeric value on the wire for eventType.
+       */
+      @java.lang.Override public int getEventTypeValue() {
+        return eventType_;
+      }
+      /**
+       * <code>.daikombat.dto.ServerEvents.GameEvent.GameEventType eventType = 3;</code>
+       * @param value The enum numeric value on the wire for eventType to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEventTypeValue(int value) {
+        eventType_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.daikombat.dto.ServerEvents.GameEvent.GameEventType eventType = 3;</code>
+       * @return The eventType.
+       */
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.GameEventType getEventType() {
+        com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.GameEventType result = com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.GameEventType.forNumber(eventType_);
+        return result == null ? com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.GameEventType.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>.daikombat.dto.ServerEvents.GameEvent.GameEventType eventType = 3;</code>
+       * @param value The eventType to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEventType(com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.GameEventType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000004;
+        eventType_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.daikombat.dto.ServerEvents.GameEvent.GameEventType eventType = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearEventType() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        eventType_ = 0;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:daikombat.dto.ServerEvents.GameEvent)
+    }
+
+    // @@protoc_insertion_point(class_scope:daikombat.dto.ServerEvents.GameEvent)
+    private static final com.beverly.hills.money.gang.proto.ServerEvents.GameEvent DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.beverly.hills.money.gang.proto.ServerEvents.GameEvent();
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerEvents.GameEvent getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<GameEvent>
+        PARSER = new com.google.protobuf.AbstractParser<GameEvent>() {
+      @java.lang.Override
+      public GameEvent parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<GameEvent> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<GameEvent> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerEvents.GameEvent getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface GameEventPlayerStatsOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:daikombat.dto.ServerEvents.GameEventPlayerStats)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>int32 playerId = 1;</code>
+     * @return The playerId.
+     */
+    int getPlayerId();
+
+    /**
+     * <code>optional string playerName = 2;</code>
+     * @return Whether the playerName field is set.
+     */
+    boolean hasPlayerName();
+    /**
+     * <code>optional string playerName = 2;</code>
+     * @return The playerName.
+     */
+    java.lang.String getPlayerName();
+    /**
+     * <code>optional string playerName = 2;</code>
+     * @return The bytes for playerName.
+     */
+    com.google.protobuf.ByteString
+        getPlayerNameBytes();
+
+    /**
+     * <code>.daikombat.dto.ServerEvents.Vector position = 3;</code>
+     * @return Whether the position field is set.
+     */
+    boolean hasPosition();
+    /**
+     * <code>.daikombat.dto.ServerEvents.Vector position = 3;</code>
+     * @return The position.
+     */
+    com.beverly.hills.money.gang.proto.ServerEvents.Vector getPosition();
+    /**
+     * <code>.daikombat.dto.ServerEvents.Vector position = 3;</code>
+     */
+    com.beverly.hills.money.gang.proto.ServerEvents.VectorOrBuilder getPositionOrBuilder();
+
+    /**
+     * <code>.daikombat.dto.ServerEvents.Vector direction = 4;</code>
+     * @return Whether the direction field is set.
+     */
+    boolean hasDirection();
+    /**
+     * <code>.daikombat.dto.ServerEvents.Vector direction = 4;</code>
+     * @return The direction.
+     */
+    com.beverly.hills.money.gang.proto.ServerEvents.Vector getDirection();
+    /**
+     * <code>.daikombat.dto.ServerEvents.Vector direction = 4;</code>
+     */
+    com.beverly.hills.money.gang.proto.ServerEvents.VectorOrBuilder getDirectionOrBuilder();
+
+    /**
+     * <code>int32 health = 5;</code>
+     * @return The health.
+     */
+    int getHealth();
+  }
+  /**
+   * Protobuf type {@code daikombat.dto.ServerEvents.GameEventPlayerStats}
+   */
+  public static final class GameEventPlayerStats extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:daikombat.dto.ServerEvents.GameEventPlayerStats)
+      GameEventPlayerStatsOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use GameEventPlayerStats.newBuilder() to construct.
+    private GameEventPlayerStats(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private GameEventPlayerStats() {
+      playerName_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new GameEventPlayerStats();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.beverly.hills.money.gang.proto.ServerEventsOuterClass.internal_static_daikombat_dto_ServerEvents_GameEventPlayerStats_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.beverly.hills.money.gang.proto.ServerEventsOuterClass.internal_static_daikombat_dto_ServerEvents_GameEventPlayerStats_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats.class, com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int PLAYERID_FIELD_NUMBER = 1;
+    private int playerId_ = 0;
+    /**
+     * <code>int32 playerId = 1;</code>
+     * @return The playerId.
+     */
+    @java.lang.Override
+    public int getPlayerId() {
+      return playerId_;
+    }
+
+    public static final int PLAYERNAME_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object playerName_ = "";
+    /**
+     * <code>optional string playerName = 2;</code>
+     * @return Whether the playerName field is set.
+     */
+    @java.lang.Override
+    public boolean hasPlayerName() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>optional string playerName = 2;</code>
+     * @return The playerName.
+     */
+    @java.lang.Override
+    public java.lang.String getPlayerName() {
+      java.lang.Object ref = playerName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        playerName_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string playerName = 2;</code>
+     * @return The bytes for playerName.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getPlayerNameBytes() {
+      java.lang.Object ref = playerName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        playerName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int POSITION_FIELD_NUMBER = 3;
+    private com.beverly.hills.money.gang.proto.ServerEvents.Vector position_;
+    /**
+     * <code>.daikombat.dto.ServerEvents.Vector position = 3;</code>
+     * @return Whether the position field is set.
+     */
+    @java.lang.Override
+    public boolean hasPosition() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>.daikombat.dto.ServerEvents.Vector position = 3;</code>
+     * @return The position.
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerEvents.Vector getPosition() {
+      return position_ == null ? com.beverly.hills.money.gang.proto.ServerEvents.Vector.getDefaultInstance() : position_;
+    }
+    /**
+     * <code>.daikombat.dto.ServerEvents.Vector position = 3;</code>
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerEvents.VectorOrBuilder getPositionOrBuilder() {
+      return position_ == null ? com.beverly.hills.money.gang.proto.ServerEvents.Vector.getDefaultInstance() : position_;
+    }
+
+    public static final int DIRECTION_FIELD_NUMBER = 4;
+    private com.beverly.hills.money.gang.proto.ServerEvents.Vector direction_;
+    /**
+     * <code>.daikombat.dto.ServerEvents.Vector direction = 4;</code>
+     * @return Whether the direction field is set.
+     */
+    @java.lang.Override
+    public boolean hasDirection() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>.daikombat.dto.ServerEvents.Vector direction = 4;</code>
+     * @return The direction.
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerEvents.Vector getDirection() {
+      return direction_ == null ? com.beverly.hills.money.gang.proto.ServerEvents.Vector.getDefaultInstance() : direction_;
+    }
+    /**
+     * <code>.daikombat.dto.ServerEvents.Vector direction = 4;</code>
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerEvents.VectorOrBuilder getDirectionOrBuilder() {
+      return direction_ == null ? com.beverly.hills.money.gang.proto.ServerEvents.Vector.getDefaultInstance() : direction_;
+    }
+
+    public static final int HEALTH_FIELD_NUMBER = 5;
+    private int health_ = 0;
+    /**
+     * <code>int32 health = 5;</code>
+     * @return The health.
+     */
+    @java.lang.Override
+    public int getHealth() {
+      return health_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (playerId_ != 0) {
+        output.writeInt32(1, playerId_);
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, playerName_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        output.writeMessage(3, getPosition());
+      }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        output.writeMessage(4, getDirection());
+      }
+      if (health_ != 0) {
+        output.writeInt32(5, health_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (playerId_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, playerId_);
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, playerName_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getPosition());
+      }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, getDirection());
+      }
+      if (health_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(5, health_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats)) {
+        return super.equals(obj);
+      }
+      com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats other = (com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats) obj;
+
+      if (getPlayerId()
+          != other.getPlayerId()) return false;
+      if (hasPlayerName() != other.hasPlayerName()) return false;
+      if (hasPlayerName()) {
+        if (!getPlayerName()
+            .equals(other.getPlayerName())) return false;
+      }
+      if (hasPosition() != other.hasPosition()) return false;
+      if (hasPosition()) {
+        if (!getPosition()
+            .equals(other.getPosition())) return false;
+      }
+      if (hasDirection() != other.hasDirection()) return false;
+      if (hasDirection()) {
+        if (!getDirection()
+            .equals(other.getDirection())) return false;
+      }
+      if (getHealth()
+          != other.getHealth()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + PLAYERID_FIELD_NUMBER;
+      hash = (53 * hash) + getPlayerId();
+      if (hasPlayerName()) {
+        hash = (37 * hash) + PLAYERNAME_FIELD_NUMBER;
+        hash = (53 * hash) + getPlayerName().hashCode();
+      }
+      if (hasPosition()) {
+        hash = (37 * hash) + POSITION_FIELD_NUMBER;
+        hash = (53 * hash) + getPosition().hashCode();
+      }
+      if (hasDirection()) {
+        hash = (37 * hash) + DIRECTION_FIELD_NUMBER;
+        hash = (53 * hash) + getDirection().hashCode();
+      }
+      hash = (37 * hash) + HEALTH_FIELD_NUMBER;
+      hash = (53 * hash) + getHealth();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code daikombat.dto.ServerEvents.GameEventPlayerStats}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:daikombat.dto.ServerEvents.GameEventPlayerStats)
+        com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStatsOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.beverly.hills.money.gang.proto.ServerEventsOuterClass.internal_static_daikombat_dto_ServerEvents_GameEventPlayerStats_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.beverly.hills.money.gang.proto.ServerEventsOuterClass.internal_static_daikombat_dto_ServerEvents_GameEventPlayerStats_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats.class, com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats.Builder.class);
+      }
+
+      // Construct using com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getPositionFieldBuilder();
+          getDirectionFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        playerId_ = 0;
+        playerName_ = "";
+        position_ = null;
+        if (positionBuilder_ != null) {
+          positionBuilder_.dispose();
+          positionBuilder_ = null;
+        }
+        direction_ = null;
+        if (directionBuilder_ != null) {
+          directionBuilder_.dispose();
+          directionBuilder_ = null;
+        }
+        health_ = 0;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.beverly.hills.money.gang.proto.ServerEventsOuterClass.internal_static_daikombat_dto_ServerEvents_GameEventPlayerStats_descriptor;
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats getDefaultInstanceForType() {
+        return com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats build() {
+        com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats buildPartial() {
+        com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats result = new com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.playerId_ = playerId_;
+        }
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.playerName_ = playerName_;
+          to_bitField0_ |= 0x00000001;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.position_ = positionBuilder_ == null
+              ? position_
+              : positionBuilder_.build();
+          to_bitField0_ |= 0x00000002;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.direction_ = directionBuilder_ == null
+              ? direction_
+              : directionBuilder_.build();
+          to_bitField0_ |= 0x00000004;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.health_ = health_;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats) {
+          return mergeFrom((com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats other) {
+        if (other == com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats.getDefaultInstance()) return this;
         if (other.getPlayerId() != 0) {
           setPlayerId(other.getPlayerId());
         }
@@ -4268,9 +4588,6 @@ private static final long serialVersionUID = 0L;
           playerName_ = other.playerName_;
           bitField0_ |= 0x00000002;
           onChanged();
-        }
-        if (other.eventType_ != 0) {
-          setEventTypeValue(other.getEventTypeValue());
         }
         if (other.hasPosition()) {
           mergePosition(other.getPosition());
@@ -4317,30 +4634,25 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000002;
                 break;
               } // case 18
-              case 24: {
-                eventType_ = input.readEnum();
-                bitField0_ |= 0x00000004;
-                break;
-              } // case 24
-              case 34: {
+              case 26: {
                 input.readMessage(
                     getPositionFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 34: {
+                input.readMessage(
+                    getDirectionFieldBuilder().getBuilder(),
                     extensionRegistry);
                 bitField0_ |= 0x00000008;
                 break;
               } // case 34
-              case 42: {
-                input.readMessage(
-                    getDirectionFieldBuilder().getBuilder(),
-                    extensionRegistry);
+              case 40: {
+                health_ = input.readInt32();
                 bitField0_ |= 0x00000010;
                 break;
-              } // case 42
-              case 48: {
-                health_ = input.readInt32();
-                bitField0_ |= 0x00000020;
-                break;
-              } // case 48
+              } // case 40
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -4469,84 +4781,31 @@ private static final long serialVersionUID = 0L;
         return this;
       }
 
-      private int eventType_ = 0;
-      /**
-       * <code>.daikombat.dto.ServerEvents.GameEvent.GameEventType eventType = 3;</code>
-       * @return The enum numeric value on the wire for eventType.
-       */
-      @java.lang.Override public int getEventTypeValue() {
-        return eventType_;
-      }
-      /**
-       * <code>.daikombat.dto.ServerEvents.GameEvent.GameEventType eventType = 3;</code>
-       * @param value The enum numeric value on the wire for eventType to set.
-       * @return This builder for chaining.
-       */
-      public Builder setEventTypeValue(int value) {
-        eventType_ = value;
-        bitField0_ |= 0x00000004;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>.daikombat.dto.ServerEvents.GameEvent.GameEventType eventType = 3;</code>
-       * @return The eventType.
-       */
-      @java.lang.Override
-      public com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.GameEventType getEventType() {
-        com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.GameEventType result = com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.GameEventType.forNumber(eventType_);
-        return result == null ? com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.GameEventType.UNRECOGNIZED : result;
-      }
-      /**
-       * <code>.daikombat.dto.ServerEvents.GameEvent.GameEventType eventType = 3;</code>
-       * @param value The eventType to set.
-       * @return This builder for chaining.
-       */
-      public Builder setEventType(com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.GameEventType value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        bitField0_ |= 0x00000004;
-        eventType_ = value.getNumber();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>.daikombat.dto.ServerEvents.GameEvent.GameEventType eventType = 3;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearEventType() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        eventType_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector position_;
+      private com.beverly.hills.money.gang.proto.ServerEvents.Vector position_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector, com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.Builder, com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.VectorOrBuilder> positionBuilder_;
+          com.beverly.hills.money.gang.proto.ServerEvents.Vector, com.beverly.hills.money.gang.proto.ServerEvents.Vector.Builder, com.beverly.hills.money.gang.proto.ServerEvents.VectorOrBuilder> positionBuilder_;
       /**
-       * <code>.daikombat.dto.ServerEvents.GameEvent.Vector position = 4;</code>
+       * <code>.daikombat.dto.ServerEvents.Vector position = 3;</code>
        * @return Whether the position field is set.
        */
       public boolean hasPosition() {
-        return ((bitField0_ & 0x00000008) != 0);
+        return ((bitField0_ & 0x00000004) != 0);
       }
       /**
-       * <code>.daikombat.dto.ServerEvents.GameEvent.Vector position = 4;</code>
+       * <code>.daikombat.dto.ServerEvents.Vector position = 3;</code>
        * @return The position.
        */
-      public com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector getPosition() {
+      public com.beverly.hills.money.gang.proto.ServerEvents.Vector getPosition() {
         if (positionBuilder_ == null) {
-          return position_ == null ? com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.getDefaultInstance() : position_;
+          return position_ == null ? com.beverly.hills.money.gang.proto.ServerEvents.Vector.getDefaultInstance() : position_;
         } else {
           return positionBuilder_.getMessage();
         }
       }
       /**
-       * <code>.daikombat.dto.ServerEvents.GameEvent.Vector position = 4;</code>
+       * <code>.daikombat.dto.ServerEvents.Vector position = 3;</code>
        */
-      public Builder setPosition(com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector value) {
+      public Builder setPosition(com.beverly.hills.money.gang.proto.ServerEvents.Vector value) {
         if (positionBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -4555,32 +4814,32 @@ private static final long serialVersionUID = 0L;
         } else {
           positionBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000004;
         onChanged();
         return this;
       }
       /**
-       * <code>.daikombat.dto.ServerEvents.GameEvent.Vector position = 4;</code>
+       * <code>.daikombat.dto.ServerEvents.Vector position = 3;</code>
        */
       public Builder setPosition(
-          com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.Builder builderForValue) {
+          com.beverly.hills.money.gang.proto.ServerEvents.Vector.Builder builderForValue) {
         if (positionBuilder_ == null) {
           position_ = builderForValue.build();
         } else {
           positionBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000004;
         onChanged();
         return this;
       }
       /**
-       * <code>.daikombat.dto.ServerEvents.GameEvent.Vector position = 4;</code>
+       * <code>.daikombat.dto.ServerEvents.Vector position = 3;</code>
        */
-      public Builder mergePosition(com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector value) {
+      public Builder mergePosition(com.beverly.hills.money.gang.proto.ServerEvents.Vector value) {
         if (positionBuilder_ == null) {
-          if (((bitField0_ & 0x00000008) != 0) &&
+          if (((bitField0_ & 0x00000004) != 0) &&
             position_ != null &&
-            position_ != com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.getDefaultInstance()) {
+            position_ != com.beverly.hills.money.gang.proto.ServerEvents.Vector.getDefaultInstance()) {
             getPositionBuilder().mergeFrom(value);
           } else {
             position_ = value;
@@ -4589,16 +4848,16 @@ private static final long serialVersionUID = 0L;
           positionBuilder_.mergeFrom(value);
         }
         if (position_ != null) {
-          bitField0_ |= 0x00000008;
+          bitField0_ |= 0x00000004;
           onChanged();
         }
         return this;
       }
       /**
-       * <code>.daikombat.dto.ServerEvents.GameEvent.Vector position = 4;</code>
+       * <code>.daikombat.dto.ServerEvents.Vector position = 3;</code>
        */
       public Builder clearPosition() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+        bitField0_ = (bitField0_ & ~0x00000004);
         position_ = null;
         if (positionBuilder_ != null) {
           positionBuilder_.dispose();
@@ -4608,33 +4867,33 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.daikombat.dto.ServerEvents.GameEvent.Vector position = 4;</code>
+       * <code>.daikombat.dto.ServerEvents.Vector position = 3;</code>
        */
-      public com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.Builder getPositionBuilder() {
-        bitField0_ |= 0x00000008;
+      public com.beverly.hills.money.gang.proto.ServerEvents.Vector.Builder getPositionBuilder() {
+        bitField0_ |= 0x00000004;
         onChanged();
         return getPositionFieldBuilder().getBuilder();
       }
       /**
-       * <code>.daikombat.dto.ServerEvents.GameEvent.Vector position = 4;</code>
+       * <code>.daikombat.dto.ServerEvents.Vector position = 3;</code>
        */
-      public com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.VectorOrBuilder getPositionOrBuilder() {
+      public com.beverly.hills.money.gang.proto.ServerEvents.VectorOrBuilder getPositionOrBuilder() {
         if (positionBuilder_ != null) {
           return positionBuilder_.getMessageOrBuilder();
         } else {
           return position_ == null ?
-              com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.getDefaultInstance() : position_;
+              com.beverly.hills.money.gang.proto.ServerEvents.Vector.getDefaultInstance() : position_;
         }
       }
       /**
-       * <code>.daikombat.dto.ServerEvents.GameEvent.Vector position = 4;</code>
+       * <code>.daikombat.dto.ServerEvents.Vector position = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector, com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.Builder, com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.VectorOrBuilder> 
+          com.beverly.hills.money.gang.proto.ServerEvents.Vector, com.beverly.hills.money.gang.proto.ServerEvents.Vector.Builder, com.beverly.hills.money.gang.proto.ServerEvents.VectorOrBuilder> 
           getPositionFieldBuilder() {
         if (positionBuilder_ == null) {
           positionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector, com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.Builder, com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.VectorOrBuilder>(
+              com.beverly.hills.money.gang.proto.ServerEvents.Vector, com.beverly.hills.money.gang.proto.ServerEvents.Vector.Builder, com.beverly.hills.money.gang.proto.ServerEvents.VectorOrBuilder>(
                   getPosition(),
                   getParentForChildren(),
                   isClean());
@@ -4643,31 +4902,31 @@ private static final long serialVersionUID = 0L;
         return positionBuilder_;
       }
 
-      private com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector direction_;
+      private com.beverly.hills.money.gang.proto.ServerEvents.Vector direction_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector, com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.Builder, com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.VectorOrBuilder> directionBuilder_;
+          com.beverly.hills.money.gang.proto.ServerEvents.Vector, com.beverly.hills.money.gang.proto.ServerEvents.Vector.Builder, com.beverly.hills.money.gang.proto.ServerEvents.VectorOrBuilder> directionBuilder_;
       /**
-       * <code>.daikombat.dto.ServerEvents.GameEvent.Vector direction = 5;</code>
+       * <code>.daikombat.dto.ServerEvents.Vector direction = 4;</code>
        * @return Whether the direction field is set.
        */
       public boolean hasDirection() {
-        return ((bitField0_ & 0x00000010) != 0);
+        return ((bitField0_ & 0x00000008) != 0);
       }
       /**
-       * <code>.daikombat.dto.ServerEvents.GameEvent.Vector direction = 5;</code>
+       * <code>.daikombat.dto.ServerEvents.Vector direction = 4;</code>
        * @return The direction.
        */
-      public com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector getDirection() {
+      public com.beverly.hills.money.gang.proto.ServerEvents.Vector getDirection() {
         if (directionBuilder_ == null) {
-          return direction_ == null ? com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.getDefaultInstance() : direction_;
+          return direction_ == null ? com.beverly.hills.money.gang.proto.ServerEvents.Vector.getDefaultInstance() : direction_;
         } else {
           return directionBuilder_.getMessage();
         }
       }
       /**
-       * <code>.daikombat.dto.ServerEvents.GameEvent.Vector direction = 5;</code>
+       * <code>.daikombat.dto.ServerEvents.Vector direction = 4;</code>
        */
-      public Builder setDirection(com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector value) {
+      public Builder setDirection(com.beverly.hills.money.gang.proto.ServerEvents.Vector value) {
         if (directionBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -4676,32 +4935,32 @@ private static final long serialVersionUID = 0L;
         } else {
           directionBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000008;
         onChanged();
         return this;
       }
       /**
-       * <code>.daikombat.dto.ServerEvents.GameEvent.Vector direction = 5;</code>
+       * <code>.daikombat.dto.ServerEvents.Vector direction = 4;</code>
        */
       public Builder setDirection(
-          com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.Builder builderForValue) {
+          com.beverly.hills.money.gang.proto.ServerEvents.Vector.Builder builderForValue) {
         if (directionBuilder_ == null) {
           direction_ = builderForValue.build();
         } else {
           directionBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000008;
         onChanged();
         return this;
       }
       /**
-       * <code>.daikombat.dto.ServerEvents.GameEvent.Vector direction = 5;</code>
+       * <code>.daikombat.dto.ServerEvents.Vector direction = 4;</code>
        */
-      public Builder mergeDirection(com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector value) {
+      public Builder mergeDirection(com.beverly.hills.money.gang.proto.ServerEvents.Vector value) {
         if (directionBuilder_ == null) {
-          if (((bitField0_ & 0x00000010) != 0) &&
+          if (((bitField0_ & 0x00000008) != 0) &&
             direction_ != null &&
-            direction_ != com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.getDefaultInstance()) {
+            direction_ != com.beverly.hills.money.gang.proto.ServerEvents.Vector.getDefaultInstance()) {
             getDirectionBuilder().mergeFrom(value);
           } else {
             direction_ = value;
@@ -4710,16 +4969,16 @@ private static final long serialVersionUID = 0L;
           directionBuilder_.mergeFrom(value);
         }
         if (direction_ != null) {
-          bitField0_ |= 0x00000010;
+          bitField0_ |= 0x00000008;
           onChanged();
         }
         return this;
       }
       /**
-       * <code>.daikombat.dto.ServerEvents.GameEvent.Vector direction = 5;</code>
+       * <code>.daikombat.dto.ServerEvents.Vector direction = 4;</code>
        */
       public Builder clearDirection() {
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00000008);
         direction_ = null;
         if (directionBuilder_ != null) {
           directionBuilder_.dispose();
@@ -4729,33 +4988,33 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.daikombat.dto.ServerEvents.GameEvent.Vector direction = 5;</code>
+       * <code>.daikombat.dto.ServerEvents.Vector direction = 4;</code>
        */
-      public com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.Builder getDirectionBuilder() {
-        bitField0_ |= 0x00000010;
+      public com.beverly.hills.money.gang.proto.ServerEvents.Vector.Builder getDirectionBuilder() {
+        bitField0_ |= 0x00000008;
         onChanged();
         return getDirectionFieldBuilder().getBuilder();
       }
       /**
-       * <code>.daikombat.dto.ServerEvents.GameEvent.Vector direction = 5;</code>
+       * <code>.daikombat.dto.ServerEvents.Vector direction = 4;</code>
        */
-      public com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.VectorOrBuilder getDirectionOrBuilder() {
+      public com.beverly.hills.money.gang.proto.ServerEvents.VectorOrBuilder getDirectionOrBuilder() {
         if (directionBuilder_ != null) {
           return directionBuilder_.getMessageOrBuilder();
         } else {
           return direction_ == null ?
-              com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.getDefaultInstance() : direction_;
+              com.beverly.hills.money.gang.proto.ServerEvents.Vector.getDefaultInstance() : direction_;
         }
       }
       /**
-       * <code>.daikombat.dto.ServerEvents.GameEvent.Vector direction = 5;</code>
+       * <code>.daikombat.dto.ServerEvents.Vector direction = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector, com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.Builder, com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.VectorOrBuilder> 
+          com.beverly.hills.money.gang.proto.ServerEvents.Vector, com.beverly.hills.money.gang.proto.ServerEvents.Vector.Builder, com.beverly.hills.money.gang.proto.ServerEvents.VectorOrBuilder> 
           getDirectionFieldBuilder() {
         if (directionBuilder_ == null) {
           directionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector, com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.Vector.Builder, com.beverly.hills.money.gang.proto.ServerEvents.GameEvent.VectorOrBuilder>(
+              com.beverly.hills.money.gang.proto.ServerEvents.Vector, com.beverly.hills.money.gang.proto.ServerEvents.Vector.Builder, com.beverly.hills.money.gang.proto.ServerEvents.VectorOrBuilder>(
                   getDirection(),
                   getParentForChildren(),
                   isClean());
@@ -4766,7 +5025,7 @@ private static final long serialVersionUID = 0L;
 
       private int health_ ;
       /**
-       * <code>int32 health = 6;</code>
+       * <code>int32 health = 5;</code>
        * @return The health.
        */
       @java.lang.Override
@@ -4774,23 +5033,23 @@ private static final long serialVersionUID = 0L;
         return health_;
       }
       /**
-       * <code>int32 health = 6;</code>
+       * <code>int32 health = 5;</code>
        * @param value The health to set.
        * @return This builder for chaining.
        */
       public Builder setHealth(int value) {
 
         health_ = value;
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00000010;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 health = 6;</code>
+       * <code>int32 health = 5;</code>
        * @return This builder for chaining.
        */
       public Builder clearHealth() {
-        bitField0_ = (bitField0_ & ~0x00000020);
+        bitField0_ = (bitField0_ & ~0x00000010);
         health_ = 0;
         onChanged();
         return this;
@@ -4808,23 +5067,23 @@ private static final long serialVersionUID = 0L;
       }
 
 
-      // @@protoc_insertion_point(builder_scope:daikombat.dto.ServerEvents.GameEvent)
+      // @@protoc_insertion_point(builder_scope:daikombat.dto.ServerEvents.GameEventPlayerStats)
     }
 
-    // @@protoc_insertion_point(class_scope:daikombat.dto.ServerEvents.GameEvent)
-    private static final com.beverly.hills.money.gang.proto.ServerEvents.GameEvent DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:daikombat.dto.ServerEvents.GameEventPlayerStats)
+    private static final com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.beverly.hills.money.gang.proto.ServerEvents.GameEvent();
+      DEFAULT_INSTANCE = new com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats();
     }
 
-    public static com.beverly.hills.money.gang.proto.ServerEvents.GameEvent getDefaultInstance() {
+    public static com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<GameEvent>
-        PARSER = new com.google.protobuf.AbstractParser<GameEvent>() {
+    private static final com.google.protobuf.Parser<GameEventPlayerStats>
+        PARSER = new com.google.protobuf.AbstractParser<GameEventPlayerStats>() {
       @java.lang.Override
-      public GameEvent parsePartialFrom(
+      public GameEventPlayerStats parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -4843,17 +5102,569 @@ private static final long serialVersionUID = 0L;
       }
     };
 
-    public static com.google.protobuf.Parser<GameEvent> parser() {
+    public static com.google.protobuf.Parser<GameEventPlayerStats> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<GameEvent> getParserForType() {
+    public com.google.protobuf.Parser<GameEventPlayerStats> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.beverly.hills.money.gang.proto.ServerEvents.GameEvent getDefaultInstanceForType() {
+    public com.beverly.hills.money.gang.proto.ServerEvents.GameEventPlayerStats getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface VectorOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:daikombat.dto.ServerEvents.Vector)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>float x = 1;</code>
+     * @return The x.
+     */
+    float getX();
+
+    /**
+     * <code>float y = 2;</code>
+     * @return The y.
+     */
+    float getY();
+  }
+  /**
+   * Protobuf type {@code daikombat.dto.ServerEvents.Vector}
+   */
+  public static final class Vector extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:daikombat.dto.ServerEvents.Vector)
+      VectorOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use Vector.newBuilder() to construct.
+    private Vector(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private Vector() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new Vector();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.beverly.hills.money.gang.proto.ServerEventsOuterClass.internal_static_daikombat_dto_ServerEvents_Vector_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.beverly.hills.money.gang.proto.ServerEventsOuterClass.internal_static_daikombat_dto_ServerEvents_Vector_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.beverly.hills.money.gang.proto.ServerEvents.Vector.class, com.beverly.hills.money.gang.proto.ServerEvents.Vector.Builder.class);
+    }
+
+    public static final int X_FIELD_NUMBER = 1;
+    private float x_ = 0F;
+    /**
+     * <code>float x = 1;</code>
+     * @return The x.
+     */
+    @java.lang.Override
+    public float getX() {
+      return x_;
+    }
+
+    public static final int Y_FIELD_NUMBER = 2;
+    private float y_ = 0F;
+    /**
+     * <code>float y = 2;</code>
+     * @return The y.
+     */
+    @java.lang.Override
+    public float getY() {
+      return y_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (java.lang.Float.floatToRawIntBits(x_) != 0) {
+        output.writeFloat(1, x_);
+      }
+      if (java.lang.Float.floatToRawIntBits(y_) != 0) {
+        output.writeFloat(2, y_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (java.lang.Float.floatToRawIntBits(x_) != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(1, x_);
+      }
+      if (java.lang.Float.floatToRawIntBits(y_) != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(2, y_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.beverly.hills.money.gang.proto.ServerEvents.Vector)) {
+        return super.equals(obj);
+      }
+      com.beverly.hills.money.gang.proto.ServerEvents.Vector other = (com.beverly.hills.money.gang.proto.ServerEvents.Vector) obj;
+
+      if (java.lang.Float.floatToIntBits(getX())
+          != java.lang.Float.floatToIntBits(
+              other.getX())) return false;
+      if (java.lang.Float.floatToIntBits(getY())
+          != java.lang.Float.floatToIntBits(
+              other.getY())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + X_FIELD_NUMBER;
+      hash = (53 * hash) + java.lang.Float.floatToIntBits(
+          getX());
+      hash = (37 * hash) + Y_FIELD_NUMBER;
+      hash = (53 * hash) + java.lang.Float.floatToIntBits(
+          getY());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerEvents.Vector parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerEvents.Vector parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerEvents.Vector parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerEvents.Vector parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerEvents.Vector parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerEvents.Vector parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerEvents.Vector parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerEvents.Vector parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerEvents.Vector parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerEvents.Vector parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerEvents.Vector parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerEvents.Vector parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.beverly.hills.money.gang.proto.ServerEvents.Vector prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code daikombat.dto.ServerEvents.Vector}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:daikombat.dto.ServerEvents.Vector)
+        com.beverly.hills.money.gang.proto.ServerEvents.VectorOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.beverly.hills.money.gang.proto.ServerEventsOuterClass.internal_static_daikombat_dto_ServerEvents_Vector_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.beverly.hills.money.gang.proto.ServerEventsOuterClass.internal_static_daikombat_dto_ServerEvents_Vector_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.beverly.hills.money.gang.proto.ServerEvents.Vector.class, com.beverly.hills.money.gang.proto.ServerEvents.Vector.Builder.class);
+      }
+
+      // Construct using com.beverly.hills.money.gang.proto.ServerEvents.Vector.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        x_ = 0F;
+        y_ = 0F;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.beverly.hills.money.gang.proto.ServerEventsOuterClass.internal_static_daikombat_dto_ServerEvents_Vector_descriptor;
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerEvents.Vector getDefaultInstanceForType() {
+        return com.beverly.hills.money.gang.proto.ServerEvents.Vector.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerEvents.Vector build() {
+        com.beverly.hills.money.gang.proto.ServerEvents.Vector result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerEvents.Vector buildPartial() {
+        com.beverly.hills.money.gang.proto.ServerEvents.Vector result = new com.beverly.hills.money.gang.proto.ServerEvents.Vector(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(com.beverly.hills.money.gang.proto.ServerEvents.Vector result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.x_ = x_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.y_ = y_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.beverly.hills.money.gang.proto.ServerEvents.Vector) {
+          return mergeFrom((com.beverly.hills.money.gang.proto.ServerEvents.Vector)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.beverly.hills.money.gang.proto.ServerEvents.Vector other) {
+        if (other == com.beverly.hills.money.gang.proto.ServerEvents.Vector.getDefaultInstance()) return this;
+        if (other.getX() != 0F) {
+          setX(other.getX());
+        }
+        if (other.getY() != 0F) {
+          setY(other.getY());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 13: {
+                x_ = input.readFloat();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 13
+              case 21: {
+                y_ = input.readFloat();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 21
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private float x_ ;
+      /**
+       * <code>float x = 1;</code>
+       * @return The x.
+       */
+      @java.lang.Override
+      public float getX() {
+        return x_;
+      }
+      /**
+       * <code>float x = 1;</code>
+       * @param value The x to set.
+       * @return This builder for chaining.
+       */
+      public Builder setX(float value) {
+
+        x_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>float x = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearX() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        x_ = 0F;
+        onChanged();
+        return this;
+      }
+
+      private float y_ ;
+      /**
+       * <code>float y = 2;</code>
+       * @return The y.
+       */
+      @java.lang.Override
+      public float getY() {
+        return y_;
+      }
+      /**
+       * <code>float y = 2;</code>
+       * @param value The y to set.
+       * @return This builder for chaining.
+       */
+      public Builder setY(float value) {
+
+        y_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>float y = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearY() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        y_ = 0F;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:daikombat.dto.ServerEvents.Vector)
+    }
+
+    // @@protoc_insertion_point(class_scope:daikombat.dto.ServerEvents.Vector)
+    private static final com.beverly.hills.money.gang.proto.ServerEvents.Vector DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.beverly.hills.money.gang.proto.ServerEvents.Vector();
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerEvents.Vector getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Vector>
+        PARSER = new com.google.protobuf.AbstractParser<Vector>() {
+      @java.lang.Override
+      public Vector parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<Vector> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Vector> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerEvents.Vector getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -4866,8 +5677,8 @@ private static final long serialVersionUID = 0L;
   public enum EventsCase
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    CHATEVENTS(5),
-    GAMEEVENTS(6),
+    CHATEVENTS(4),
+    GAMEEVENTS(5),
     EVENTS_NOT_SET(0);
     private final int value;
     private EventsCase(int value) {
@@ -4885,8 +5696,8 @@ private static final long serialVersionUID = 0L;
 
     public static EventsCase forNumber(int value) {
       switch (value) {
-        case 5: return CHATEVENTS;
-        case 6: return GAMEEVENTS;
+        case 4: return CHATEVENTS;
+        case 5: return GAMEEVENTS;
         case 0: return EVENTS_NOT_SET;
         default: return null;
       }
@@ -4966,82 +5777,63 @@ private static final long serialVersionUID = 0L;
     return error_ == null ? com.beverly.hills.money.gang.proto.ServerEvents.Error.getDefaultInstance() : error_;
   }
 
-  public static final int HMAC_FIELD_NUMBER = 4;
-  private com.google.protobuf.ByteString hmac_ = com.google.protobuf.ByteString.EMPTY;
+  public static final int CHATEVENTS_FIELD_NUMBER = 4;
   /**
-   * <code>optional bytes hmac = 4;</code>
-   * @return Whether the hmac field is set.
-   */
-  @java.lang.Override
-  public boolean hasHmac() {
-    return ((bitField0_ & 0x00000008) != 0);
-  }
-  /**
-   * <code>optional bytes hmac = 4;</code>
-   * @return The hmac.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString getHmac() {
-    return hmac_;
-  }
-
-  public static final int CHATEVENTS_FIELD_NUMBER = 5;
-  /**
-   * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 5;</code>
+   * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 4;</code>
    * @return Whether the chatEvents field is set.
    */
   @java.lang.Override
   public boolean hasChatEvents() {
-    return eventsCase_ == 5;
+    return eventsCase_ == 4;
   }
   /**
-   * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 5;</code>
+   * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 4;</code>
    * @return The chatEvents.
    */
   @java.lang.Override
   public com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent getChatEvents() {
-    if (eventsCase_ == 5) {
+    if (eventsCase_ == 4) {
        return (com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent) events_;
     }
     return com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent.getDefaultInstance();
   }
   /**
-   * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 5;</code>
+   * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 4;</code>
    */
   @java.lang.Override
   public com.beverly.hills.money.gang.proto.ServerEvents.ChatEventOrBuilder getChatEventsOrBuilder() {
-    if (eventsCase_ == 5) {
+    if (eventsCase_ == 4) {
        return (com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent) events_;
     }
     return com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent.getDefaultInstance();
   }
 
-  public static final int GAMEEVENTS_FIELD_NUMBER = 6;
+  public static final int GAMEEVENTS_FIELD_NUMBER = 5;
   /**
-   * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 6;</code>
+   * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 5;</code>
    * @return Whether the gameEvents field is set.
    */
   @java.lang.Override
   public boolean hasGameEvents() {
-    return eventsCase_ == 6;
+    return eventsCase_ == 5;
   }
   /**
-   * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 6;</code>
+   * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 5;</code>
    * @return The gameEvents.
    */
   @java.lang.Override
   public com.beverly.hills.money.gang.proto.ServerEvents.GameEvents getGameEvents() {
-    if (eventsCase_ == 6) {
+    if (eventsCase_ == 5) {
        return (com.beverly.hills.money.gang.proto.ServerEvents.GameEvents) events_;
     }
     return com.beverly.hills.money.gang.proto.ServerEvents.GameEvents.getDefaultInstance();
   }
   /**
-   * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 6;</code>
+   * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 5;</code>
    */
   @java.lang.Override
   public com.beverly.hills.money.gang.proto.ServerEvents.GameEventsOrBuilder getGameEventsOrBuilder() {
-    if (eventsCase_ == 6) {
+    if (eventsCase_ == 5) {
        return (com.beverly.hills.money.gang.proto.ServerEvents.GameEvents) events_;
     }
     return com.beverly.hills.money.gang.proto.ServerEvents.GameEvents.getDefaultInstance();
@@ -5070,14 +5862,11 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000004) != 0)) {
       output.writeMessage(3, getError());
     }
-    if (((bitField0_ & 0x00000008) != 0)) {
-      output.writeBytes(4, hmac_);
+    if (eventsCase_ == 4) {
+      output.writeMessage(4, (com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent) events_);
     }
     if (eventsCase_ == 5) {
-      output.writeMessage(5, (com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent) events_);
-    }
-    if (eventsCase_ == 6) {
-      output.writeMessage(6, (com.beverly.hills.money.gang.proto.ServerEvents.GameEvents) events_);
+      output.writeMessage(5, (com.beverly.hills.money.gang.proto.ServerEvents.GameEvents) events_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -5100,17 +5889,13 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getError());
     }
-    if (((bitField0_ & 0x00000008) != 0)) {
+    if (eventsCase_ == 4) {
       size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(4, hmac_);
+        .computeMessageSize(4, (com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent) events_);
     }
     if (eventsCase_ == 5) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(5, (com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent) events_);
-    }
-    if (eventsCase_ == 6) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(6, (com.beverly.hills.money.gang.proto.ServerEvents.GameEvents) events_);
+        .computeMessageSize(5, (com.beverly.hills.money.gang.proto.ServerEvents.GameEvents) events_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -5142,18 +5927,13 @@ private static final long serialVersionUID = 0L;
       if (!getError()
           .equals(other.getError())) return false;
     }
-    if (hasHmac() != other.hasHmac()) return false;
-    if (hasHmac()) {
-      if (!getHmac()
-          .equals(other.getHmac())) return false;
-    }
     if (!getEventsCase().equals(other.getEventsCase())) return false;
     switch (eventsCase_) {
-      case 5:
+      case 4:
         if (!getChatEvents()
             .equals(other.getChatEvents())) return false;
         break;
-      case 6:
+      case 5:
         if (!getGameEvents()
             .equals(other.getGameEvents())) return false;
         break;
@@ -5184,16 +5964,12 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + ERROR_FIELD_NUMBER;
       hash = (53 * hash) + getError().hashCode();
     }
-    if (hasHmac()) {
-      hash = (37 * hash) + HMAC_FIELD_NUMBER;
-      hash = (53 * hash) + getHmac().hashCode();
-    }
     switch (eventsCase_) {
-      case 5:
+      case 4:
         hash = (37 * hash) + CHATEVENTS_FIELD_NUMBER;
         hash = (53 * hash) + getChatEvents().hashCode();
         break;
-      case 6:
+      case 5:
         hash = (37 * hash) + GAMEEVENTS_FIELD_NUMBER;
         hash = (53 * hash) + getGameEvents().hashCode();
         break;
@@ -5344,7 +6120,6 @@ private static final long serialVersionUID = 0L;
         errorBuilder_.dispose();
         errorBuilder_ = null;
       }
-      hmac_ = com.google.protobuf.ByteString.EMPTY;
       if (chatEventsBuilder_ != null) {
         chatEventsBuilder_.clear();
       }
@@ -5402,21 +6177,17 @@ private static final long serialVersionUID = 0L;
             : errorBuilder_.build();
         to_bitField0_ |= 0x00000004;
       }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.hmac_ = hmac_;
-        to_bitField0_ |= 0x00000008;
-      }
       result.bitField0_ |= to_bitField0_;
     }
 
     private void buildPartialOneofs(com.beverly.hills.money.gang.proto.ServerEvents result) {
       result.eventsCase_ = eventsCase_;
       result.events_ = this.events_;
-      if (eventsCase_ == 5 &&
+      if (eventsCase_ == 4 &&
           chatEventsBuilder_ != null) {
         result.events_ = chatEventsBuilder_.build();
       }
-      if (eventsCase_ == 6 &&
+      if (eventsCase_ == 5 &&
           gameEventsBuilder_ != null) {
         result.events_ = gameEventsBuilder_.build();
       }
@@ -5475,9 +6246,6 @@ private static final long serialVersionUID = 0L;
       if (other.hasError()) {
         mergeError(other.getError());
       }
-      if (other.hasHmac()) {
-        setHmac(other.getHmac());
-      }
       switch (other.getEventsCase()) {
         case CHATEVENTS: {
           mergeChatEvents(other.getChatEvents());
@@ -5535,24 +6303,19 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 26
             case 34: {
-              hmac_ = input.readBytes();
-              bitField0_ |= 0x00000008;
+              input.readMessage(
+                  getChatEventsFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              eventsCase_ = 4;
               break;
             } // case 34
             case 42: {
               input.readMessage(
-                  getChatEventsFieldBuilder().getBuilder(),
+                  getGameEventsFieldBuilder().getBuilder(),
                   extensionRegistry);
               eventsCase_ = 5;
               break;
             } // case 42
-            case 50: {
-              input.readMessage(
-                  getGameEventsFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              eventsCase_ = 6;
-              break;
-            } // case 50
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -5786,76 +6549,36 @@ private static final long serialVersionUID = 0L;
       return errorBuilder_;
     }
 
-    private com.google.protobuf.ByteString hmac_ = com.google.protobuf.ByteString.EMPTY;
-    /**
-     * <code>optional bytes hmac = 4;</code>
-     * @return Whether the hmac field is set.
-     */
-    @java.lang.Override
-    public boolean hasHmac() {
-      return ((bitField0_ & 0x00000008) != 0);
-    }
-    /**
-     * <code>optional bytes hmac = 4;</code>
-     * @return The hmac.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString getHmac() {
-      return hmac_;
-    }
-    /**
-     * <code>optional bytes hmac = 4;</code>
-     * @param value The hmac to set.
-     * @return This builder for chaining.
-     */
-    public Builder setHmac(com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      hmac_ = value;
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional bytes hmac = 4;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearHmac() {
-      bitField0_ = (bitField0_ & ~0x00000008);
-      hmac_ = getDefaultInstance().getHmac();
-      onChanged();
-      return this;
-    }
-
     private com.google.protobuf.SingleFieldBuilderV3<
         com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent, com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent.Builder, com.beverly.hills.money.gang.proto.ServerEvents.ChatEventOrBuilder> chatEventsBuilder_;
     /**
-     * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 5;</code>
+     * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 4;</code>
      * @return Whether the chatEvents field is set.
      */
     @java.lang.Override
     public boolean hasChatEvents() {
-      return eventsCase_ == 5;
+      return eventsCase_ == 4;
     }
     /**
-     * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 5;</code>
+     * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 4;</code>
      * @return The chatEvents.
      */
     @java.lang.Override
     public com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent getChatEvents() {
       if (chatEventsBuilder_ == null) {
-        if (eventsCase_ == 5) {
+        if (eventsCase_ == 4) {
           return (com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent) events_;
         }
         return com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent.getDefaultInstance();
       } else {
-        if (eventsCase_ == 5) {
+        if (eventsCase_ == 4) {
           return chatEventsBuilder_.getMessage();
         }
         return com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent.getDefaultInstance();
       }
     }
     /**
-     * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 5;</code>
+     * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 4;</code>
      */
     public Builder setChatEvents(com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent value) {
       if (chatEventsBuilder_ == null) {
@@ -5867,11 +6590,11 @@ private static final long serialVersionUID = 0L;
       } else {
         chatEventsBuilder_.setMessage(value);
       }
-      eventsCase_ = 5;
+      eventsCase_ = 4;
       return this;
     }
     /**
-     * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 5;</code>
+     * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 4;</code>
      */
     public Builder setChatEvents(
         com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent.Builder builderForValue) {
@@ -5881,15 +6604,15 @@ private static final long serialVersionUID = 0L;
       } else {
         chatEventsBuilder_.setMessage(builderForValue.build());
       }
-      eventsCase_ = 5;
+      eventsCase_ = 4;
       return this;
     }
     /**
-     * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 5;</code>
+     * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 4;</code>
      */
     public Builder mergeChatEvents(com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent value) {
       if (chatEventsBuilder_ == null) {
-        if (eventsCase_ == 5 &&
+        if (eventsCase_ == 4 &&
             events_ != com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent.getDefaultInstance()) {
           events_ = com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent.newBuilder((com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent) events_)
               .mergeFrom(value).buildPartial();
@@ -5898,27 +6621,27 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       } else {
-        if (eventsCase_ == 5) {
+        if (eventsCase_ == 4) {
           chatEventsBuilder_.mergeFrom(value);
         } else {
           chatEventsBuilder_.setMessage(value);
         }
       }
-      eventsCase_ = 5;
+      eventsCase_ = 4;
       return this;
     }
     /**
-     * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 5;</code>
+     * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 4;</code>
      */
     public Builder clearChatEvents() {
       if (chatEventsBuilder_ == null) {
-        if (eventsCase_ == 5) {
+        if (eventsCase_ == 4) {
           eventsCase_ = 0;
           events_ = null;
           onChanged();
         }
       } else {
-        if (eventsCase_ == 5) {
+        if (eventsCase_ == 4) {
           eventsCase_ = 0;
           events_ = null;
         }
@@ -5927,33 +6650,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 5;</code>
+     * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 4;</code>
      */
     public com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent.Builder getChatEventsBuilder() {
       return getChatEventsFieldBuilder().getBuilder();
     }
     /**
-     * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 5;</code>
+     * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 4;</code>
      */
     @java.lang.Override
     public com.beverly.hills.money.gang.proto.ServerEvents.ChatEventOrBuilder getChatEventsOrBuilder() {
-      if ((eventsCase_ == 5) && (chatEventsBuilder_ != null)) {
+      if ((eventsCase_ == 4) && (chatEventsBuilder_ != null)) {
         return chatEventsBuilder_.getMessageOrBuilder();
       } else {
-        if (eventsCase_ == 5) {
+        if (eventsCase_ == 4) {
           return (com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent) events_;
         }
         return com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent.getDefaultInstance();
       }
     }
     /**
-     * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 5;</code>
+     * <code>.daikombat.dto.ServerEvents.ChatEvent chatEvents = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent, com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent.Builder, com.beverly.hills.money.gang.proto.ServerEvents.ChatEventOrBuilder> 
         getChatEventsFieldBuilder() {
       if (chatEventsBuilder_ == null) {
-        if (!(eventsCase_ == 5)) {
+        if (!(eventsCase_ == 4)) {
           events_ = com.beverly.hills.money.gang.proto.ServerEvents.ChatEvent.getDefaultInstance();
         }
         chatEventsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -5963,7 +6686,7 @@ private static final long serialVersionUID = 0L;
                 isClean());
         events_ = null;
       }
-      eventsCase_ = 5;
+      eventsCase_ = 4;
       onChanged();
       return chatEventsBuilder_;
     }
@@ -5971,33 +6694,33 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.beverly.hills.money.gang.proto.ServerEvents.GameEvents, com.beverly.hills.money.gang.proto.ServerEvents.GameEvents.Builder, com.beverly.hills.money.gang.proto.ServerEvents.GameEventsOrBuilder> gameEventsBuilder_;
     /**
-     * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 6;</code>
+     * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 5;</code>
      * @return Whether the gameEvents field is set.
      */
     @java.lang.Override
     public boolean hasGameEvents() {
-      return eventsCase_ == 6;
+      return eventsCase_ == 5;
     }
     /**
-     * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 6;</code>
+     * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 5;</code>
      * @return The gameEvents.
      */
     @java.lang.Override
     public com.beverly.hills.money.gang.proto.ServerEvents.GameEvents getGameEvents() {
       if (gameEventsBuilder_ == null) {
-        if (eventsCase_ == 6) {
+        if (eventsCase_ == 5) {
           return (com.beverly.hills.money.gang.proto.ServerEvents.GameEvents) events_;
         }
         return com.beverly.hills.money.gang.proto.ServerEvents.GameEvents.getDefaultInstance();
       } else {
-        if (eventsCase_ == 6) {
+        if (eventsCase_ == 5) {
           return gameEventsBuilder_.getMessage();
         }
         return com.beverly.hills.money.gang.proto.ServerEvents.GameEvents.getDefaultInstance();
       }
     }
     /**
-     * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 6;</code>
+     * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 5;</code>
      */
     public Builder setGameEvents(com.beverly.hills.money.gang.proto.ServerEvents.GameEvents value) {
       if (gameEventsBuilder_ == null) {
@@ -6009,11 +6732,11 @@ private static final long serialVersionUID = 0L;
       } else {
         gameEventsBuilder_.setMessage(value);
       }
-      eventsCase_ = 6;
+      eventsCase_ = 5;
       return this;
     }
     /**
-     * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 6;</code>
+     * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 5;</code>
      */
     public Builder setGameEvents(
         com.beverly.hills.money.gang.proto.ServerEvents.GameEvents.Builder builderForValue) {
@@ -6023,15 +6746,15 @@ private static final long serialVersionUID = 0L;
       } else {
         gameEventsBuilder_.setMessage(builderForValue.build());
       }
-      eventsCase_ = 6;
+      eventsCase_ = 5;
       return this;
     }
     /**
-     * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 6;</code>
+     * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 5;</code>
      */
     public Builder mergeGameEvents(com.beverly.hills.money.gang.proto.ServerEvents.GameEvents value) {
       if (gameEventsBuilder_ == null) {
-        if (eventsCase_ == 6 &&
+        if (eventsCase_ == 5 &&
             events_ != com.beverly.hills.money.gang.proto.ServerEvents.GameEvents.getDefaultInstance()) {
           events_ = com.beverly.hills.money.gang.proto.ServerEvents.GameEvents.newBuilder((com.beverly.hills.money.gang.proto.ServerEvents.GameEvents) events_)
               .mergeFrom(value).buildPartial();
@@ -6040,27 +6763,27 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       } else {
-        if (eventsCase_ == 6) {
+        if (eventsCase_ == 5) {
           gameEventsBuilder_.mergeFrom(value);
         } else {
           gameEventsBuilder_.setMessage(value);
         }
       }
-      eventsCase_ = 6;
+      eventsCase_ = 5;
       return this;
     }
     /**
-     * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 6;</code>
+     * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 5;</code>
      */
     public Builder clearGameEvents() {
       if (gameEventsBuilder_ == null) {
-        if (eventsCase_ == 6) {
+        if (eventsCase_ == 5) {
           eventsCase_ = 0;
           events_ = null;
           onChanged();
         }
       } else {
-        if (eventsCase_ == 6) {
+        if (eventsCase_ == 5) {
           eventsCase_ = 0;
           events_ = null;
         }
@@ -6069,33 +6792,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 6;</code>
+     * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 5;</code>
      */
     public com.beverly.hills.money.gang.proto.ServerEvents.GameEvents.Builder getGameEventsBuilder() {
       return getGameEventsFieldBuilder().getBuilder();
     }
     /**
-     * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 6;</code>
+     * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 5;</code>
      */
     @java.lang.Override
     public com.beverly.hills.money.gang.proto.ServerEvents.GameEventsOrBuilder getGameEventsOrBuilder() {
-      if ((eventsCase_ == 6) && (gameEventsBuilder_ != null)) {
+      if ((eventsCase_ == 5) && (gameEventsBuilder_ != null)) {
         return gameEventsBuilder_.getMessageOrBuilder();
       } else {
-        if (eventsCase_ == 6) {
+        if (eventsCase_ == 5) {
           return (com.beverly.hills.money.gang.proto.ServerEvents.GameEvents) events_;
         }
         return com.beverly.hills.money.gang.proto.ServerEvents.GameEvents.getDefaultInstance();
       }
     }
     /**
-     * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 6;</code>
+     * <code>.daikombat.dto.ServerEvents.GameEvents gameEvents = 5;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         com.beverly.hills.money.gang.proto.ServerEvents.GameEvents, com.beverly.hills.money.gang.proto.ServerEvents.GameEvents.Builder, com.beverly.hills.money.gang.proto.ServerEvents.GameEventsOrBuilder> 
         getGameEventsFieldBuilder() {
       if (gameEventsBuilder_ == null) {
-        if (!(eventsCase_ == 6)) {
+        if (!(eventsCase_ == 5)) {
           events_ = com.beverly.hills.money.gang.proto.ServerEvents.GameEvents.getDefaultInstance();
         }
         gameEventsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -6105,7 +6828,7 @@ private static final long serialVersionUID = 0L;
                 isClean());
         events_ = null;
       }
-      eventsCase_ = 6;
+      eventsCase_ = 5;
       onChanged();
       return gameEventsBuilder_;
     }

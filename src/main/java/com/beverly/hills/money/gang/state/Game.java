@@ -3,6 +3,7 @@ package com.beverly.hills.money.gang.state;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.spawner.Spawner;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
@@ -16,6 +17,8 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class Game {
 
+    @Getter
+    private final int id;
     private static final int MAX_PLAYERS_TO_ADD = 25;
     private final AtomicInteger playerIdGenerator = new AtomicInteger();
     private final AtomicLong gameStateId = new AtomicLong();

@@ -13,8 +13,8 @@ public class GameChannelsRegistry {
 
     public GameChannelsRegistry(GameRoomRegistry gameRoomRegistry) {
         // init registry
-        gameRoomRegistry.getGameIds()
-                .forEach(gameId -> gameChannels.putIfAbsent(gameId, new ConcurrentHashMap<>()));
+        gameRoomRegistry.getGames()
+                .forEach(game -> gameChannels.putIfAbsent(game.getId(), new ConcurrentHashMap<>()));
     }
 
     public void addChannel(int gameId, int playerId, Channel channel) {

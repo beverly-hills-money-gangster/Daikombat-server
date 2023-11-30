@@ -19,18 +19,16 @@ public interface ServerEventsFactory {
     static ServerEvents.GameEvent createSpawnEvent(PlayerStateReader playerStateReader) {
         return ServerEvents.GameEvent.newBuilder()
                 .setEventType(ServerEvents.GameEvent.GameEventType.SPAWN)
-                .setPlayer(ServerEvents.GameEventPlayerStats.newBuilder()
-                        .setPlayerName(playerStateReader.getPlayerName())
-                        .setPlayerId(playerStateReader.getPlayerId())
-                        .setPosition(ServerEventsFactory
-                                .createVector(playerStateReader.getCoordinates().getPosition()))
-                        .setDirection(ServerEventsFactory
-                                .createVector(playerStateReader.getCoordinates().getDirection()))
-                        .setHealth(playerStateReader.getHealth())
-                )
+                .setPlayer(createPlayerStats(playerStateReader))
                 .build();
     }
 
+
+    static ServerEvents.GameEvent createMoveGameEvent(PlayerStateReader playerStateReader) {
+        return ServerEvents.GameEvent.newBuilder()
+                .setPlayer(createPlayerStats(playerStateReader))
+                .setEventType(ServerEvents.GameEvent.GameEventType.MOVE).build();
+    }
 
     static ServerEvents createErrorEvent(GameLogicError error) {
         return ServerEvents.newBuilder()
@@ -40,7 +38,6 @@ public interface ServerEventsFactory {
                         .build())
                 .build();
     }
-
 
     static ServerEvents createSpawnEventAllPlayers(long eventId,
                                                    int playersOnline,
@@ -56,8 +53,23 @@ public interface ServerEventsFactory {
                 .build();
     }
 
+    static ServerEvents createMovesEventAllPlayers(long eventId,
+                                                   int playersOnline,
+                                                   Stream<PlayerStateReader> playersSate) {
+        var allPlayersMoves = ServerEvents.GameEvents.newBuilder();
+        playersSate.forEach(playerStateReader
+                -> allPlayersMoves.addEvents(createMoveGameEvent(playerStateReader)));
+
+        return ServerEvents.newBuilder()
+                .setEventId(eventId)
+                .setPlayersOnline(playersOnline)
+                .setGameEvents(allPlayersMoves)
+                .build();
+    }
+
     static ServerEvents.GameEventPlayerStats createPlayerStats(PlayerStateReader playerReader) {
         return ServerEvents.GameEventPlayerStats.newBuilder()
+                .setPlayerName(playerReader.getPlayerName())
                 .setPosition(createVector(playerReader.getCoordinates().getPosition()))
                 .setDirection(createVector(playerReader.getCoordinates().getDirection()))
                 .setHealth(playerReader.getHealth())

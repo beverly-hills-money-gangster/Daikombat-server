@@ -27,6 +27,7 @@ import static com.beverly.hills.money.gang.factory.ServerEventsFactory.*;
 // TODO anti-cheat
 // TODO add chat message censoring
 // TODO add auto-ban
+// TODO add logs
 
 @RequiredArgsConstructor
 public class GameServerInboundHandler extends SimpleChannelInboundHandler<ServerCommand> implements Closeable {
@@ -43,7 +44,18 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     // TODO don't forget to call it
     public void scheduleSendBufferedMoves() {
         bufferedMovesExecutor.scheduleAtFixedRate(() -> {
-            // TODO notify all players in all games about movements
+            gameRoomRegistry.getGames().forEach(game -> {
+                try {
+                    ServerEvents movesEvents
+                            = createMovesEventAllPlayers(
+                            game.newSequenceId(),
+                            game.playersOnline(),
+                            game.getBufferedMoves());
+                    gameChannelsRegistry.allChannels(game.getId()).forEach(channel -> channel.writeAndFlush(movesEvents));
+                } finally {
+                    game.flushBufferedMoves();
+                }
+            });
         }, movesUpdateFrequencyMls, movesUpdateFrequencyMls, TimeUnit.MILLISECONDS);
     }
 
@@ -84,34 +96,32 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
                                 playerCoordinates,
                                 gameCommand.getPlayerId(),
                                 gameCommand.getAffectedPlayerId());
-                        if (shootingGameState == null) {
-                            break;
-                        }
-                        Optional.ofNullable(shootingGameState.getPlayerShot()).ifPresentOrElse(
-                                shotPlayer -> {
-                                    if (shotPlayer.isDead()) {
-                                        var deadEvent = createDeadEvent(shootingGameState.getNewGameStateId(),
-                                                game.playersOnline(),
-                                                shootingGameState.getShootingPlayer(),
-                                                shootingGameState.getPlayerShot());
-                                        gameChannelsRegistry.closeChannel(shotPlayer.getPlayerId());
-                                        gameChannelsRegistry.allChannels(msg.getGameId()).forEach(channel
-                                                -> channel.writeAndFlush(deadEvent));
+                        Optional.ofNullable(shootingGameState).map(PlayerShootingGameState::getPlayerShot)
+                                .ifPresentOrElse(
+                                        shotPlayer -> {
+                                            if (shotPlayer.isDead()) {
+                                                var deadEvent = createDeadEvent(shootingGameState.getNewGameStateId(),
+                                                        game.playersOnline(),
+                                                        shootingGameState.getShootingPlayer(),
+                                                        shootingGameState.getPlayerShot());
+                                                gameChannelsRegistry.closeChannel(shotPlayer.getPlayerId());
+                                                gameChannelsRegistry.allChannels(msg.getGameId()).forEach(channel
+                                                        -> channel.writeAndFlush(deadEvent));
 
-                                    } else {
-                                        var shotEvent = createGetShotEvent(shootingGameState.getNewGameStateId(),
-                                                game.playersOnline(),
-                                                shootingGameState.getShootingPlayer(),
-                                                shootingGameState.getPlayerShot());
-                                        gameChannelsRegistry.allChannels(msg.getGameId()).forEach(channel
-                                                -> channel.writeAndFlush(shotEvent));
-                                    }
-                                }, () -> {
-                                    var shootingEvent = createShootingEvent(shootingGameState.getNewGameStateId(),
-                                            game.playersOnline(),
-                                            shootingGameState.getShootingPlayer());
-                                    gameChannelsRegistry.allChannels(msg.getGameId()).forEach(channel -> channel.writeAndFlush(shootingEvent));
-                                });
+                                            } else {
+                                                var shotEvent = createGetShotEvent(shootingGameState.getNewGameStateId(),
+                                                        game.playersOnline(),
+                                                        shootingGameState.getShootingPlayer(),
+                                                        shootingGameState.getPlayerShot());
+                                                gameChannelsRegistry.allChannels(msg.getGameId()).forEach(channel
+                                                        -> channel.writeAndFlush(shotEvent));
+                                            }
+                                        }, () -> {
+                                            var shootingEvent = createShootingEvent(shootingGameState.getNewGameStateId(),
+                                                    game.playersOnline(),
+                                                    shootingGameState.getShootingPlayer());
+                                            gameChannelsRegistry.allChannels(msg.getGameId()).forEach(channel -> channel.writeAndFlush(shootingEvent));
+                                        });
                     }
                     case MOVE -> game.bufferMove(gameCommand.getPlayerId(), playerCoordinates);
                     default -> ctx.channel().writeAndFlush(createErrorEvent(

@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
+import java.util.stream.Stream;
 
 import static com.beverly.hills.money.gang.exception.GameErrorCode.NOT_EXISTING_GAME_ROOM;
 
@@ -22,8 +22,9 @@ public class GameRoomRegistry {
         }
     }
 
-    public Set<Integer> getGameIds() {
-        return games.keySet();
+
+    public Stream<Game> getGames() {
+        return games.values().stream();
     }
 
     public Game getGame(int gameId) throws GameLogicError {

@@ -13,12 +13,11 @@ import static com.beverly.hills.money.gang.exception.GameErrorCode.NOT_EXISTING_
 
 @RequiredArgsConstructor
 public class GameRoomRegistry {
-
     private final Map<Integer, Game> games = new HashMap<>();
 
     public GameRoomRegistry(int gamesToCreate) {
         for (int i = 0; i < gamesToCreate; i++) {
-            games.put(i, new Game());
+            games.put(i, new Game(i));
         }
     }
 

@@ -50,26 +50,25 @@ public final class ServerCommands {
   static {
     java.lang.String[] descriptorData = {
       "\n.src/main/resources/proto/server-comman" +
-      "ds.proto\022\rdaikombat.dto\"\371\001\n\rServerComman" +
-      "d\022\016\n\006gameId\030\001 \001(\005\022\021\n\004hmac\030\002 \001(\014H\001\210\001\001\022:\n\013" +
-      "chatCommand\030\004 \001(\0132#.daikombat.dto.PushCh" +
-      "atEventCommandH\000\022:\n\013gameCommand\030\005 \001(\0132#." +
-      "daikombat.dto.PushGameEventCommandH\000\0229\n\017" +
-      "joinGameCommand\030\006 \001(\0132\036.daikombat.dto.Jo" +
-      "inGameCommandH\000B\t\n\007commandB\007\n\005_hmac\"9\n\024P" +
-      "ushChatEventCommand\022\017\n\007message\030\001 \001(\t\022\020\n\010" +
-      "playerId\030\002 \001(\005\"%\n\017JoinGameCommand\022\022\n\npla" +
-      "yerName\030\001 \001(\t\"\345\002\n\024PushGameEventCommand\022D" +
-      "\n\teventType\030\001 \001(\01621.daikombat.dto.PushGa" +
-      "meEventCommand.GameEventType\022<\n\010position" +
-      "\030\002 \001(\0132*.daikombat.dto.PushGameEventComm" +
-      "and.Vector\022=\n\tdirection\030\003 \001(\0132*.daikomba" +
-      "t.dto.PushGameEventCommand.Vector\022\020\n\010pla" +
-      "yerId\030\004 \001(\005\022\035\n\020affectedPlayerId\030\005 \001(\005H\000\210" +
-      "\001\001\032\036\n\006Vector\022\t\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002\"$\n\rGa" +
-      "meEventType\022\010\n\004MOVE\020\000\022\t\n\005SHOOT\020\001B\023\n\021_aff" +
-      "ectedPlayerIdB&\n\"com.beverly.hills.money" +
-      ".gang.protoP\001b\006proto3"
+      "ds.proto\022\rdaikombat.dto\"\335\001\n\rServerComman" +
+      "d\022\016\n\006gameId\030\001 \001(\005\022:\n\013chatCommand\030\002 \001(\0132#" +
+      ".daikombat.dto.PushChatEventCommandH\000\022:\n" +
+      "\013gameCommand\030\003 \001(\0132#.daikombat.dto.PushG" +
+      "ameEventCommandH\000\0229\n\017joinGameCommand\030\004 \001" +
+      "(\0132\036.daikombat.dto.JoinGameCommandH\000B\t\n\007" +
+      "command\"9\n\024PushChatEventCommand\022\017\n\007messa" +
+      "ge\030\001 \001(\t\022\020\n\010playerId\030\002 \001(\005\"%\n\017JoinGameCo" +
+      "mmand\022\022\n\nplayerName\030\001 \001(\t\"\345\002\n\024PushGameEv" +
+      "entCommand\022D\n\teventType\030\001 \001(\01621.daikomba" +
+      "t.dto.PushGameEventCommand.GameEventType" +
+      "\022<\n\010position\030\002 \001(\0132*.daikombat.dto.PushG" +
+      "ameEventCommand.Vector\022=\n\tdirection\030\003 \001(" +
+      "\0132*.daikombat.dto.PushGameEventCommand.V" +
+      "ector\022\020\n\010playerId\030\004 \001(\005\022\035\n\020affectedPlaye" +
+      "rId\030\005 \001(\005H\000\210\001\001\032\036\n\006Vector\022\t\n\001x\030\001 \001(\002\022\t\n\001y" +
+      "\030\002 \001(\002\"$\n\rGameEventType\022\010\n\004MOVE\020\000\022\t\n\005SHO" +
+      "OT\020\001B\023\n\021_affectedPlayerIdB&\n\"com.beverly" +
+      ".hills.money.gang.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -80,7 +79,7 @@ public final class ServerCommands {
     internal_static_daikombat_dto_ServerCommand_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_ServerCommand_descriptor,
-        new java.lang.String[] { "GameId", "Hmac", "ChatCommand", "GameCommand", "JoinGameCommand", "Command", });
+        new java.lang.String[] { "GameId", "ChatCommand", "GameCommand", "JoinGameCommand", "Command", });
     internal_static_daikombat_dto_PushChatEventCommand_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_daikombat_dto_PushChatEventCommand_fieldAccessorTable = new

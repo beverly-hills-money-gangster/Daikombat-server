@@ -2,6 +2,7 @@ package com.beverly.hills.money.gang.state;
 
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
+import com.beverly.hills.money.gang.registry.GameChannelsRegistry;
 import com.beverly.hills.money.gang.spawner.Spawner;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,6 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
@@ -23,7 +23,10 @@ public class Game {
     private final AtomicInteger playerIdGenerator = new AtomicInteger();
     private final AtomicLong gameStateId = new AtomicLong();
 
-    private final Spawner spawner;
+    @Getter
+    private final GameChannelsRegistry gameChannelsRegistry = new GameChannelsRegistry();
+
+    private final Spawner spawner = new Spawner();
     private final Map<Integer, PlayerState> players = new ConcurrentHashMap<>();
 
     public PlayerConnectedGameState connectPlayer(final String playerName) throws GameLogicError {

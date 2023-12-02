@@ -9,8 +9,8 @@ import com.beverly.hills.money.gang.registry.GameChannelsRegistry;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.state.*;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelOutboundInvoker;
 import io.netty.channel.SimpleChannelInboundHandler;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,14 +29,12 @@ import static com.beverly.hills.money.gang.factory.ServerEventsFactory.*;
 // TODO add auto-ban
 // TODO add logs
 
-@RequiredArgsConstructor
+
 public class GameServerInboundHandler extends SimpleChannelInboundHandler<ServerCommand> implements Closeable {
 
-    private final GameChannelsRegistry gameChannelsRegistry;
+    private final GameRoomRegistry gameRoomRegistry = new GameRoomRegistry();
 
-    private final GameRoomRegistry gameRoomRegistry;
-
-    private final int movesUpdateFrequencyMls;
+    private static final int MOVES_UPDATE_FREQUENCY_MLS = 100;
     private static final Logger LOG = LoggerFactory.getLogger(GameServerInboundHandler.class);
 
     private final ScheduledExecutorService bufferedMovesExecutor = Executors.newScheduledThreadPool(1);
@@ -56,7 +54,7 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
                     game.flushBufferedMoves();
                 }
             });
-        }, movesUpdateFrequencyMls, movesUpdateFrequencyMls, TimeUnit.MILLISECONDS);
+        }, MOVES_UPDATE_FREQUENCY_MLS, MOVES_UPDATE_FREQUENCY_MLS, TimeUnit.MILLISECONDS);
     }
 
 
@@ -84,7 +82,6 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
                 PushGameEventCommand.GameEventType gameEventType = gameCommand.getEventType();
                 PlayerState.PlayerCoordinates playerCoordinates = PlayerState.PlayerCoordinates
                         .builder()
-                        // TODO refactor
                         .direction(Vector.builder()
                                 .x(gameCommand.getDirection().getX()).y(gameCommand.getDirection().getY()).build())
                         .position(Vector.builder()
@@ -157,7 +154,8 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
 
     @Override
     public void close() {
-        // TODO close all
+        gameRoomRegistry.getGames().forEach(game
+                -> gameChannelsRegistry.allChannels(game.getId()).forEach(ChannelOutboundInvoker::close));
         bufferedMovesExecutor.shutdown();
     }
 }

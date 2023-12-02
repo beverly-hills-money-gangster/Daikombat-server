@@ -15,58 +15,47 @@ public interface ServerCommandOrBuilder extends
   int getGameId();
 
   /**
-   * <code>optional bytes hmac = 2;</code>
-   * @return Whether the hmac field is set.
-   */
-  boolean hasHmac();
-  /**
-   * <code>optional bytes hmac = 2;</code>
-   * @return The hmac.
-   */
-  com.google.protobuf.ByteString getHmac();
-
-  /**
-   * <code>.daikombat.dto.PushChatEventCommand chatCommand = 4;</code>
+   * <code>.daikombat.dto.PushChatEventCommand chatCommand = 2;</code>
    * @return Whether the chatCommand field is set.
    */
   boolean hasChatCommand();
   /**
-   * <code>.daikombat.dto.PushChatEventCommand chatCommand = 4;</code>
+   * <code>.daikombat.dto.PushChatEventCommand chatCommand = 2;</code>
    * @return The chatCommand.
    */
   com.beverly.hills.money.gang.proto.PushChatEventCommand getChatCommand();
   /**
-   * <code>.daikombat.dto.PushChatEventCommand chatCommand = 4;</code>
+   * <code>.daikombat.dto.PushChatEventCommand chatCommand = 2;</code>
    */
   com.beverly.hills.money.gang.proto.PushChatEventCommandOrBuilder getChatCommandOrBuilder();
 
   /**
-   * <code>.daikombat.dto.PushGameEventCommand gameCommand = 5;</code>
+   * <code>.daikombat.dto.PushGameEventCommand gameCommand = 3;</code>
    * @return Whether the gameCommand field is set.
    */
   boolean hasGameCommand();
   /**
-   * <code>.daikombat.dto.PushGameEventCommand gameCommand = 5;</code>
+   * <code>.daikombat.dto.PushGameEventCommand gameCommand = 3;</code>
    * @return The gameCommand.
    */
   com.beverly.hills.money.gang.proto.PushGameEventCommand getGameCommand();
   /**
-   * <code>.daikombat.dto.PushGameEventCommand gameCommand = 5;</code>
+   * <code>.daikombat.dto.PushGameEventCommand gameCommand = 3;</code>
    */
   com.beverly.hills.money.gang.proto.PushGameEventCommandOrBuilder getGameCommandOrBuilder();
 
   /**
-   * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 6;</code>
+   * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 4;</code>
    * @return Whether the joinGameCommand field is set.
    */
   boolean hasJoinGameCommand();
   /**
-   * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 6;</code>
+   * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 4;</code>
    * @return The joinGameCommand.
    */
   com.beverly.hills.money.gang.proto.JoinGameCommand getJoinGameCommand();
   /**
-   * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 6;</code>
+   * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 4;</code>
    */
   com.beverly.hills.money.gang.proto.JoinGameCommandOrBuilder getJoinGameCommandOrBuilder();
 

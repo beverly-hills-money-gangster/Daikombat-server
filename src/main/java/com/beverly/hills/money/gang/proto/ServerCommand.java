@@ -17,7 +17,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private ServerCommand() {
-    hmac_ = com.google.protobuf.ByteString.EMPTY;
   }
 
   @java.lang.Override
@@ -40,16 +39,15 @@ private static final long serialVersionUID = 0L;
             com.beverly.hills.money.gang.proto.ServerCommand.class, com.beverly.hills.money.gang.proto.ServerCommand.Builder.class);
   }
 
-  private int bitField0_;
   private int commandCase_ = 0;
   @SuppressWarnings("serial")
   private java.lang.Object command_;
   public enum CommandCase
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    CHATCOMMAND(4),
-    GAMECOMMAND(5),
-    JOINGAMECOMMAND(6),
+    CHATCOMMAND(2),
+    GAMECOMMAND(3),
+    JOINGAMECOMMAND(4),
     COMMAND_NOT_SET(0);
     private final int value;
     private CommandCase(int value) {
@@ -67,9 +65,9 @@ private static final long serialVersionUID = 0L;
 
     public static CommandCase forNumber(int value) {
       switch (value) {
-        case 4: return CHATCOMMAND;
-        case 5: return GAMECOMMAND;
-        case 6: return JOINGAMECOMMAND;
+        case 2: return CHATCOMMAND;
+        case 3: return GAMECOMMAND;
+        case 4: return JOINGAMECOMMAND;
         case 0: return COMMAND_NOT_SET;
         default: return null;
       }
@@ -96,113 +94,94 @@ private static final long serialVersionUID = 0L;
     return gameId_;
   }
 
-  public static final int HMAC_FIELD_NUMBER = 2;
-  private com.google.protobuf.ByteString hmac_ = com.google.protobuf.ByteString.EMPTY;
+  public static final int CHATCOMMAND_FIELD_NUMBER = 2;
   /**
-   * <code>optional bytes hmac = 2;</code>
-   * @return Whether the hmac field is set.
-   */
-  @java.lang.Override
-  public boolean hasHmac() {
-    return ((bitField0_ & 0x00000001) != 0);
-  }
-  /**
-   * <code>optional bytes hmac = 2;</code>
-   * @return The hmac.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString getHmac() {
-    return hmac_;
-  }
-
-  public static final int CHATCOMMAND_FIELD_NUMBER = 4;
-  /**
-   * <code>.daikombat.dto.PushChatEventCommand chatCommand = 4;</code>
+   * <code>.daikombat.dto.PushChatEventCommand chatCommand = 2;</code>
    * @return Whether the chatCommand field is set.
    */
   @java.lang.Override
   public boolean hasChatCommand() {
-    return commandCase_ == 4;
+    return commandCase_ == 2;
   }
   /**
-   * <code>.daikombat.dto.PushChatEventCommand chatCommand = 4;</code>
+   * <code>.daikombat.dto.PushChatEventCommand chatCommand = 2;</code>
    * @return The chatCommand.
    */
   @java.lang.Override
   public com.beverly.hills.money.gang.proto.PushChatEventCommand getChatCommand() {
-    if (commandCase_ == 4) {
+    if (commandCase_ == 2) {
        return (com.beverly.hills.money.gang.proto.PushChatEventCommand) command_;
     }
     return com.beverly.hills.money.gang.proto.PushChatEventCommand.getDefaultInstance();
   }
   /**
-   * <code>.daikombat.dto.PushChatEventCommand chatCommand = 4;</code>
+   * <code>.daikombat.dto.PushChatEventCommand chatCommand = 2;</code>
    */
   @java.lang.Override
   public com.beverly.hills.money.gang.proto.PushChatEventCommandOrBuilder getChatCommandOrBuilder() {
-    if (commandCase_ == 4) {
+    if (commandCase_ == 2) {
        return (com.beverly.hills.money.gang.proto.PushChatEventCommand) command_;
     }
     return com.beverly.hills.money.gang.proto.PushChatEventCommand.getDefaultInstance();
   }
 
-  public static final int GAMECOMMAND_FIELD_NUMBER = 5;
+  public static final int GAMECOMMAND_FIELD_NUMBER = 3;
   /**
-   * <code>.daikombat.dto.PushGameEventCommand gameCommand = 5;</code>
+   * <code>.daikombat.dto.PushGameEventCommand gameCommand = 3;</code>
    * @return Whether the gameCommand field is set.
    */
   @java.lang.Override
   public boolean hasGameCommand() {
-    return commandCase_ == 5;
+    return commandCase_ == 3;
   }
   /**
-   * <code>.daikombat.dto.PushGameEventCommand gameCommand = 5;</code>
+   * <code>.daikombat.dto.PushGameEventCommand gameCommand = 3;</code>
    * @return The gameCommand.
    */
   @java.lang.Override
   public com.beverly.hills.money.gang.proto.PushGameEventCommand getGameCommand() {
-    if (commandCase_ == 5) {
+    if (commandCase_ == 3) {
        return (com.beverly.hills.money.gang.proto.PushGameEventCommand) command_;
     }
     return com.beverly.hills.money.gang.proto.PushGameEventCommand.getDefaultInstance();
   }
   /**
-   * <code>.daikombat.dto.PushGameEventCommand gameCommand = 5;</code>
+   * <code>.daikombat.dto.PushGameEventCommand gameCommand = 3;</code>
    */
   @java.lang.Override
   public com.beverly.hills.money.gang.proto.PushGameEventCommandOrBuilder getGameCommandOrBuilder() {
-    if (commandCase_ == 5) {
+    if (commandCase_ == 3) {
        return (com.beverly.hills.money.gang.proto.PushGameEventCommand) command_;
     }
     return com.beverly.hills.money.gang.proto.PushGameEventCommand.getDefaultInstance();
   }
 
-  public static final int JOINGAMECOMMAND_FIELD_NUMBER = 6;
+  public static final int JOINGAMECOMMAND_FIELD_NUMBER = 4;
   /**
-   * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 6;</code>
+   * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 4;</code>
    * @return Whether the joinGameCommand field is set.
    */
   @java.lang.Override
   public boolean hasJoinGameCommand() {
-    return commandCase_ == 6;
+    return commandCase_ == 4;
   }
   /**
-   * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 6;</code>
+   * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 4;</code>
    * @return The joinGameCommand.
    */
   @java.lang.Override
   public com.beverly.hills.money.gang.proto.JoinGameCommand getJoinGameCommand() {
-    if (commandCase_ == 6) {
+    if (commandCase_ == 4) {
        return (com.beverly.hills.money.gang.proto.JoinGameCommand) command_;
     }
     return com.beverly.hills.money.gang.proto.JoinGameCommand.getDefaultInstance();
   }
   /**
-   * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 6;</code>
+   * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 4;</code>
    */
   @java.lang.Override
   public com.beverly.hills.money.gang.proto.JoinGameCommandOrBuilder getJoinGameCommandOrBuilder() {
-    if (commandCase_ == 6) {
+    if (commandCase_ == 4) {
        return (com.beverly.hills.money.gang.proto.JoinGameCommand) command_;
     }
     return com.beverly.hills.money.gang.proto.JoinGameCommand.getDefaultInstance();
@@ -225,17 +204,14 @@ private static final long serialVersionUID = 0L;
     if (gameId_ != 0) {
       output.writeInt32(1, gameId_);
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeBytes(2, hmac_);
+    if (commandCase_ == 2) {
+      output.writeMessage(2, (com.beverly.hills.money.gang.proto.PushChatEventCommand) command_);
+    }
+    if (commandCase_ == 3) {
+      output.writeMessage(3, (com.beverly.hills.money.gang.proto.PushGameEventCommand) command_);
     }
     if (commandCase_ == 4) {
-      output.writeMessage(4, (com.beverly.hills.money.gang.proto.PushChatEventCommand) command_);
-    }
-    if (commandCase_ == 5) {
-      output.writeMessage(5, (com.beverly.hills.money.gang.proto.PushGameEventCommand) command_);
-    }
-    if (commandCase_ == 6) {
-      output.writeMessage(6, (com.beverly.hills.money.gang.proto.JoinGameCommand) command_);
+      output.writeMessage(4, (com.beverly.hills.money.gang.proto.JoinGameCommand) command_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -250,21 +226,17 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(1, gameId_);
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
+    if (commandCase_ == 2) {
       size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(2, hmac_);
+        .computeMessageSize(2, (com.beverly.hills.money.gang.proto.PushChatEventCommand) command_);
+    }
+    if (commandCase_ == 3) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, (com.beverly.hills.money.gang.proto.PushGameEventCommand) command_);
     }
     if (commandCase_ == 4) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, (com.beverly.hills.money.gang.proto.PushChatEventCommand) command_);
-    }
-    if (commandCase_ == 5) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(5, (com.beverly.hills.money.gang.proto.PushGameEventCommand) command_);
-    }
-    if (commandCase_ == 6) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(6, (com.beverly.hills.money.gang.proto.JoinGameCommand) command_);
+        .computeMessageSize(4, (com.beverly.hills.money.gang.proto.JoinGameCommand) command_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -283,22 +255,17 @@ private static final long serialVersionUID = 0L;
 
     if (getGameId()
         != other.getGameId()) return false;
-    if (hasHmac() != other.hasHmac()) return false;
-    if (hasHmac()) {
-      if (!getHmac()
-          .equals(other.getHmac())) return false;
-    }
     if (!getCommandCase().equals(other.getCommandCase())) return false;
     switch (commandCase_) {
-      case 4:
+      case 2:
         if (!getChatCommand()
             .equals(other.getChatCommand())) return false;
         break;
-      case 5:
+      case 3:
         if (!getGameCommand()
             .equals(other.getGameCommand())) return false;
         break;
-      case 6:
+      case 4:
         if (!getJoinGameCommand()
             .equals(other.getJoinGameCommand())) return false;
         break;
@@ -318,20 +285,16 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + GAMEID_FIELD_NUMBER;
     hash = (53 * hash) + getGameId();
-    if (hasHmac()) {
-      hash = (37 * hash) + HMAC_FIELD_NUMBER;
-      hash = (53 * hash) + getHmac().hashCode();
-    }
     switch (commandCase_) {
-      case 4:
+      case 2:
         hash = (37 * hash) + CHATCOMMAND_FIELD_NUMBER;
         hash = (53 * hash) + getChatCommand().hashCode();
         break;
-      case 5:
+      case 3:
         hash = (37 * hash) + GAMECOMMAND_FIELD_NUMBER;
         hash = (53 * hash) + getGameCommand().hashCode();
         break;
-      case 6:
+      case 4:
         hash = (37 * hash) + JOINGAMECOMMAND_FIELD_NUMBER;
         hash = (53 * hash) + getJoinGameCommand().hashCode();
         break;
@@ -470,7 +433,6 @@ private static final long serialVersionUID = 0L;
       super.clear();
       bitField0_ = 0;
       gameId_ = 0;
-      hmac_ = com.google.protobuf.ByteString.EMPTY;
       if (chatCommandBuilder_ != null) {
         chatCommandBuilder_.clear();
       }
@@ -519,26 +481,20 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.gameId_ = gameId_;
       }
-      int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.hmac_ = hmac_;
-        to_bitField0_ |= 0x00000001;
-      }
-      result.bitField0_ |= to_bitField0_;
     }
 
     private void buildPartialOneofs(com.beverly.hills.money.gang.proto.ServerCommand result) {
       result.commandCase_ = commandCase_;
       result.command_ = this.command_;
-      if (commandCase_ == 4 &&
+      if (commandCase_ == 2 &&
           chatCommandBuilder_ != null) {
         result.command_ = chatCommandBuilder_.build();
       }
-      if (commandCase_ == 5 &&
+      if (commandCase_ == 3 &&
           gameCommandBuilder_ != null) {
         result.command_ = gameCommandBuilder_.build();
       }
-      if (commandCase_ == 6 &&
+      if (commandCase_ == 4 &&
           joinGameCommandBuilder_ != null) {
         result.command_ = joinGameCommandBuilder_.build();
       }
@@ -591,9 +547,6 @@ private static final long serialVersionUID = 0L;
       if (other.getGameId() != 0) {
         setGameId(other.getGameId());
       }
-      if (other.hasHmac()) {
-        setHmac(other.getHmac());
-      }
       switch (other.getCommandCase()) {
         case CHATCOMMAND: {
           mergeChatCommand(other.getChatCommand());
@@ -643,31 +596,26 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 8
             case 18: {
-              hmac_ = input.readBytes();
-              bitField0_ |= 0x00000002;
-              break;
-            } // case 18
-            case 34: {
               input.readMessage(
                   getChatCommandFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              commandCase_ = 2;
+              break;
+            } // case 18
+            case 26: {
+              input.readMessage(
+                  getGameCommandFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              commandCase_ = 3;
+              break;
+            } // case 26
+            case 34: {
+              input.readMessage(
+                  getJoinGameCommandFieldBuilder().getBuilder(),
                   extensionRegistry);
               commandCase_ = 4;
               break;
             } // case 34
-            case 42: {
-              input.readMessage(
-                  getGameCommandFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              commandCase_ = 5;
-              break;
-            } // case 42
-            case 50: {
-              input.readMessage(
-                  getJoinGameCommandFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              commandCase_ = 6;
-              break;
-            } // case 50
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -732,76 +680,36 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private com.google.protobuf.ByteString hmac_ = com.google.protobuf.ByteString.EMPTY;
-    /**
-     * <code>optional bytes hmac = 2;</code>
-     * @return Whether the hmac field is set.
-     */
-    @java.lang.Override
-    public boolean hasHmac() {
-      return ((bitField0_ & 0x00000002) != 0);
-    }
-    /**
-     * <code>optional bytes hmac = 2;</code>
-     * @return The hmac.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString getHmac() {
-      return hmac_;
-    }
-    /**
-     * <code>optional bytes hmac = 2;</code>
-     * @param value The hmac to set.
-     * @return This builder for chaining.
-     */
-    public Builder setHmac(com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      hmac_ = value;
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional bytes hmac = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearHmac() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      hmac_ = getDefaultInstance().getHmac();
-      onChanged();
-      return this;
-    }
-
     private com.google.protobuf.SingleFieldBuilderV3<
         com.beverly.hills.money.gang.proto.PushChatEventCommand, com.beverly.hills.money.gang.proto.PushChatEventCommand.Builder, com.beverly.hills.money.gang.proto.PushChatEventCommandOrBuilder> chatCommandBuilder_;
     /**
-     * <code>.daikombat.dto.PushChatEventCommand chatCommand = 4;</code>
+     * <code>.daikombat.dto.PushChatEventCommand chatCommand = 2;</code>
      * @return Whether the chatCommand field is set.
      */
     @java.lang.Override
     public boolean hasChatCommand() {
-      return commandCase_ == 4;
+      return commandCase_ == 2;
     }
     /**
-     * <code>.daikombat.dto.PushChatEventCommand chatCommand = 4;</code>
+     * <code>.daikombat.dto.PushChatEventCommand chatCommand = 2;</code>
      * @return The chatCommand.
      */
     @java.lang.Override
     public com.beverly.hills.money.gang.proto.PushChatEventCommand getChatCommand() {
       if (chatCommandBuilder_ == null) {
-        if (commandCase_ == 4) {
+        if (commandCase_ == 2) {
           return (com.beverly.hills.money.gang.proto.PushChatEventCommand) command_;
         }
         return com.beverly.hills.money.gang.proto.PushChatEventCommand.getDefaultInstance();
       } else {
-        if (commandCase_ == 4) {
+        if (commandCase_ == 2) {
           return chatCommandBuilder_.getMessage();
         }
         return com.beverly.hills.money.gang.proto.PushChatEventCommand.getDefaultInstance();
       }
     }
     /**
-     * <code>.daikombat.dto.PushChatEventCommand chatCommand = 4;</code>
+     * <code>.daikombat.dto.PushChatEventCommand chatCommand = 2;</code>
      */
     public Builder setChatCommand(com.beverly.hills.money.gang.proto.PushChatEventCommand value) {
       if (chatCommandBuilder_ == null) {
@@ -813,11 +721,11 @@ private static final long serialVersionUID = 0L;
       } else {
         chatCommandBuilder_.setMessage(value);
       }
-      commandCase_ = 4;
+      commandCase_ = 2;
       return this;
     }
     /**
-     * <code>.daikombat.dto.PushChatEventCommand chatCommand = 4;</code>
+     * <code>.daikombat.dto.PushChatEventCommand chatCommand = 2;</code>
      */
     public Builder setChatCommand(
         com.beverly.hills.money.gang.proto.PushChatEventCommand.Builder builderForValue) {
@@ -827,15 +735,15 @@ private static final long serialVersionUID = 0L;
       } else {
         chatCommandBuilder_.setMessage(builderForValue.build());
       }
-      commandCase_ = 4;
+      commandCase_ = 2;
       return this;
     }
     /**
-     * <code>.daikombat.dto.PushChatEventCommand chatCommand = 4;</code>
+     * <code>.daikombat.dto.PushChatEventCommand chatCommand = 2;</code>
      */
     public Builder mergeChatCommand(com.beverly.hills.money.gang.proto.PushChatEventCommand value) {
       if (chatCommandBuilder_ == null) {
-        if (commandCase_ == 4 &&
+        if (commandCase_ == 2 &&
             command_ != com.beverly.hills.money.gang.proto.PushChatEventCommand.getDefaultInstance()) {
           command_ = com.beverly.hills.money.gang.proto.PushChatEventCommand.newBuilder((com.beverly.hills.money.gang.proto.PushChatEventCommand) command_)
               .mergeFrom(value).buildPartial();
@@ -844,27 +752,27 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       } else {
-        if (commandCase_ == 4) {
+        if (commandCase_ == 2) {
           chatCommandBuilder_.mergeFrom(value);
         } else {
           chatCommandBuilder_.setMessage(value);
         }
       }
-      commandCase_ = 4;
+      commandCase_ = 2;
       return this;
     }
     /**
-     * <code>.daikombat.dto.PushChatEventCommand chatCommand = 4;</code>
+     * <code>.daikombat.dto.PushChatEventCommand chatCommand = 2;</code>
      */
     public Builder clearChatCommand() {
       if (chatCommandBuilder_ == null) {
-        if (commandCase_ == 4) {
+        if (commandCase_ == 2) {
           commandCase_ = 0;
           command_ = null;
           onChanged();
         }
       } else {
-        if (commandCase_ == 4) {
+        if (commandCase_ == 2) {
           commandCase_ = 0;
           command_ = null;
         }
@@ -873,33 +781,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.daikombat.dto.PushChatEventCommand chatCommand = 4;</code>
+     * <code>.daikombat.dto.PushChatEventCommand chatCommand = 2;</code>
      */
     public com.beverly.hills.money.gang.proto.PushChatEventCommand.Builder getChatCommandBuilder() {
       return getChatCommandFieldBuilder().getBuilder();
     }
     /**
-     * <code>.daikombat.dto.PushChatEventCommand chatCommand = 4;</code>
+     * <code>.daikombat.dto.PushChatEventCommand chatCommand = 2;</code>
      */
     @java.lang.Override
     public com.beverly.hills.money.gang.proto.PushChatEventCommandOrBuilder getChatCommandOrBuilder() {
-      if ((commandCase_ == 4) && (chatCommandBuilder_ != null)) {
+      if ((commandCase_ == 2) && (chatCommandBuilder_ != null)) {
         return chatCommandBuilder_.getMessageOrBuilder();
       } else {
-        if (commandCase_ == 4) {
+        if (commandCase_ == 2) {
           return (com.beverly.hills.money.gang.proto.PushChatEventCommand) command_;
         }
         return com.beverly.hills.money.gang.proto.PushChatEventCommand.getDefaultInstance();
       }
     }
     /**
-     * <code>.daikombat.dto.PushChatEventCommand chatCommand = 4;</code>
+     * <code>.daikombat.dto.PushChatEventCommand chatCommand = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         com.beverly.hills.money.gang.proto.PushChatEventCommand, com.beverly.hills.money.gang.proto.PushChatEventCommand.Builder, com.beverly.hills.money.gang.proto.PushChatEventCommandOrBuilder> 
         getChatCommandFieldBuilder() {
       if (chatCommandBuilder_ == null) {
-        if (!(commandCase_ == 4)) {
+        if (!(commandCase_ == 2)) {
           command_ = com.beverly.hills.money.gang.proto.PushChatEventCommand.getDefaultInstance();
         }
         chatCommandBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -909,7 +817,7 @@ private static final long serialVersionUID = 0L;
                 isClean());
         command_ = null;
       }
-      commandCase_ = 4;
+      commandCase_ = 2;
       onChanged();
       return chatCommandBuilder_;
     }
@@ -917,33 +825,33 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.beverly.hills.money.gang.proto.PushGameEventCommand, com.beverly.hills.money.gang.proto.PushGameEventCommand.Builder, com.beverly.hills.money.gang.proto.PushGameEventCommandOrBuilder> gameCommandBuilder_;
     /**
-     * <code>.daikombat.dto.PushGameEventCommand gameCommand = 5;</code>
+     * <code>.daikombat.dto.PushGameEventCommand gameCommand = 3;</code>
      * @return Whether the gameCommand field is set.
      */
     @java.lang.Override
     public boolean hasGameCommand() {
-      return commandCase_ == 5;
+      return commandCase_ == 3;
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand gameCommand = 5;</code>
+     * <code>.daikombat.dto.PushGameEventCommand gameCommand = 3;</code>
      * @return The gameCommand.
      */
     @java.lang.Override
     public com.beverly.hills.money.gang.proto.PushGameEventCommand getGameCommand() {
       if (gameCommandBuilder_ == null) {
-        if (commandCase_ == 5) {
+        if (commandCase_ == 3) {
           return (com.beverly.hills.money.gang.proto.PushGameEventCommand) command_;
         }
         return com.beverly.hills.money.gang.proto.PushGameEventCommand.getDefaultInstance();
       } else {
-        if (commandCase_ == 5) {
+        if (commandCase_ == 3) {
           return gameCommandBuilder_.getMessage();
         }
         return com.beverly.hills.money.gang.proto.PushGameEventCommand.getDefaultInstance();
       }
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand gameCommand = 5;</code>
+     * <code>.daikombat.dto.PushGameEventCommand gameCommand = 3;</code>
      */
     public Builder setGameCommand(com.beverly.hills.money.gang.proto.PushGameEventCommand value) {
       if (gameCommandBuilder_ == null) {
@@ -955,11 +863,11 @@ private static final long serialVersionUID = 0L;
       } else {
         gameCommandBuilder_.setMessage(value);
       }
-      commandCase_ = 5;
+      commandCase_ = 3;
       return this;
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand gameCommand = 5;</code>
+     * <code>.daikombat.dto.PushGameEventCommand gameCommand = 3;</code>
      */
     public Builder setGameCommand(
         com.beverly.hills.money.gang.proto.PushGameEventCommand.Builder builderForValue) {
@@ -969,15 +877,15 @@ private static final long serialVersionUID = 0L;
       } else {
         gameCommandBuilder_.setMessage(builderForValue.build());
       }
-      commandCase_ = 5;
+      commandCase_ = 3;
       return this;
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand gameCommand = 5;</code>
+     * <code>.daikombat.dto.PushGameEventCommand gameCommand = 3;</code>
      */
     public Builder mergeGameCommand(com.beverly.hills.money.gang.proto.PushGameEventCommand value) {
       if (gameCommandBuilder_ == null) {
-        if (commandCase_ == 5 &&
+        if (commandCase_ == 3 &&
             command_ != com.beverly.hills.money.gang.proto.PushGameEventCommand.getDefaultInstance()) {
           command_ = com.beverly.hills.money.gang.proto.PushGameEventCommand.newBuilder((com.beverly.hills.money.gang.proto.PushGameEventCommand) command_)
               .mergeFrom(value).buildPartial();
@@ -986,27 +894,27 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       } else {
-        if (commandCase_ == 5) {
+        if (commandCase_ == 3) {
           gameCommandBuilder_.mergeFrom(value);
         } else {
           gameCommandBuilder_.setMessage(value);
         }
       }
-      commandCase_ = 5;
+      commandCase_ = 3;
       return this;
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand gameCommand = 5;</code>
+     * <code>.daikombat.dto.PushGameEventCommand gameCommand = 3;</code>
      */
     public Builder clearGameCommand() {
       if (gameCommandBuilder_ == null) {
-        if (commandCase_ == 5) {
+        if (commandCase_ == 3) {
           commandCase_ = 0;
           command_ = null;
           onChanged();
         }
       } else {
-        if (commandCase_ == 5) {
+        if (commandCase_ == 3) {
           commandCase_ = 0;
           command_ = null;
         }
@@ -1015,33 +923,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand gameCommand = 5;</code>
+     * <code>.daikombat.dto.PushGameEventCommand gameCommand = 3;</code>
      */
     public com.beverly.hills.money.gang.proto.PushGameEventCommand.Builder getGameCommandBuilder() {
       return getGameCommandFieldBuilder().getBuilder();
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand gameCommand = 5;</code>
+     * <code>.daikombat.dto.PushGameEventCommand gameCommand = 3;</code>
      */
     @java.lang.Override
     public com.beverly.hills.money.gang.proto.PushGameEventCommandOrBuilder getGameCommandOrBuilder() {
-      if ((commandCase_ == 5) && (gameCommandBuilder_ != null)) {
+      if ((commandCase_ == 3) && (gameCommandBuilder_ != null)) {
         return gameCommandBuilder_.getMessageOrBuilder();
       } else {
-        if (commandCase_ == 5) {
+        if (commandCase_ == 3) {
           return (com.beverly.hills.money.gang.proto.PushGameEventCommand) command_;
         }
         return com.beverly.hills.money.gang.proto.PushGameEventCommand.getDefaultInstance();
       }
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand gameCommand = 5;</code>
+     * <code>.daikombat.dto.PushGameEventCommand gameCommand = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         com.beverly.hills.money.gang.proto.PushGameEventCommand, com.beverly.hills.money.gang.proto.PushGameEventCommand.Builder, com.beverly.hills.money.gang.proto.PushGameEventCommandOrBuilder> 
         getGameCommandFieldBuilder() {
       if (gameCommandBuilder_ == null) {
-        if (!(commandCase_ == 5)) {
+        if (!(commandCase_ == 3)) {
           command_ = com.beverly.hills.money.gang.proto.PushGameEventCommand.getDefaultInstance();
         }
         gameCommandBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -1051,7 +959,7 @@ private static final long serialVersionUID = 0L;
                 isClean());
         command_ = null;
       }
-      commandCase_ = 5;
+      commandCase_ = 3;
       onChanged();
       return gameCommandBuilder_;
     }
@@ -1059,33 +967,33 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.beverly.hills.money.gang.proto.JoinGameCommand, com.beverly.hills.money.gang.proto.JoinGameCommand.Builder, com.beverly.hills.money.gang.proto.JoinGameCommandOrBuilder> joinGameCommandBuilder_;
     /**
-     * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 6;</code>
+     * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 4;</code>
      * @return Whether the joinGameCommand field is set.
      */
     @java.lang.Override
     public boolean hasJoinGameCommand() {
-      return commandCase_ == 6;
+      return commandCase_ == 4;
     }
     /**
-     * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 6;</code>
+     * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 4;</code>
      * @return The joinGameCommand.
      */
     @java.lang.Override
     public com.beverly.hills.money.gang.proto.JoinGameCommand getJoinGameCommand() {
       if (joinGameCommandBuilder_ == null) {
-        if (commandCase_ == 6) {
+        if (commandCase_ == 4) {
           return (com.beverly.hills.money.gang.proto.JoinGameCommand) command_;
         }
         return com.beverly.hills.money.gang.proto.JoinGameCommand.getDefaultInstance();
       } else {
-        if (commandCase_ == 6) {
+        if (commandCase_ == 4) {
           return joinGameCommandBuilder_.getMessage();
         }
         return com.beverly.hills.money.gang.proto.JoinGameCommand.getDefaultInstance();
       }
     }
     /**
-     * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 6;</code>
+     * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 4;</code>
      */
     public Builder setJoinGameCommand(com.beverly.hills.money.gang.proto.JoinGameCommand value) {
       if (joinGameCommandBuilder_ == null) {
@@ -1097,11 +1005,11 @@ private static final long serialVersionUID = 0L;
       } else {
         joinGameCommandBuilder_.setMessage(value);
       }
-      commandCase_ = 6;
+      commandCase_ = 4;
       return this;
     }
     /**
-     * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 6;</code>
+     * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 4;</code>
      */
     public Builder setJoinGameCommand(
         com.beverly.hills.money.gang.proto.JoinGameCommand.Builder builderForValue) {
@@ -1111,15 +1019,15 @@ private static final long serialVersionUID = 0L;
       } else {
         joinGameCommandBuilder_.setMessage(builderForValue.build());
       }
-      commandCase_ = 6;
+      commandCase_ = 4;
       return this;
     }
     /**
-     * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 6;</code>
+     * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 4;</code>
      */
     public Builder mergeJoinGameCommand(com.beverly.hills.money.gang.proto.JoinGameCommand value) {
       if (joinGameCommandBuilder_ == null) {
-        if (commandCase_ == 6 &&
+        if (commandCase_ == 4 &&
             command_ != com.beverly.hills.money.gang.proto.JoinGameCommand.getDefaultInstance()) {
           command_ = com.beverly.hills.money.gang.proto.JoinGameCommand.newBuilder((com.beverly.hills.money.gang.proto.JoinGameCommand) command_)
               .mergeFrom(value).buildPartial();
@@ -1128,27 +1036,27 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       } else {
-        if (commandCase_ == 6) {
+        if (commandCase_ == 4) {
           joinGameCommandBuilder_.mergeFrom(value);
         } else {
           joinGameCommandBuilder_.setMessage(value);
         }
       }
-      commandCase_ = 6;
+      commandCase_ = 4;
       return this;
     }
     /**
-     * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 6;</code>
+     * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 4;</code>
      */
     public Builder clearJoinGameCommand() {
       if (joinGameCommandBuilder_ == null) {
-        if (commandCase_ == 6) {
+        if (commandCase_ == 4) {
           commandCase_ = 0;
           command_ = null;
           onChanged();
         }
       } else {
-        if (commandCase_ == 6) {
+        if (commandCase_ == 4) {
           commandCase_ = 0;
           command_ = null;
         }
@@ -1157,33 +1065,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 6;</code>
+     * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 4;</code>
      */
     public com.beverly.hills.money.gang.proto.JoinGameCommand.Builder getJoinGameCommandBuilder() {
       return getJoinGameCommandFieldBuilder().getBuilder();
     }
     /**
-     * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 6;</code>
+     * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 4;</code>
      */
     @java.lang.Override
     public com.beverly.hills.money.gang.proto.JoinGameCommandOrBuilder getJoinGameCommandOrBuilder() {
-      if ((commandCase_ == 6) && (joinGameCommandBuilder_ != null)) {
+      if ((commandCase_ == 4) && (joinGameCommandBuilder_ != null)) {
         return joinGameCommandBuilder_.getMessageOrBuilder();
       } else {
-        if (commandCase_ == 6) {
+        if (commandCase_ == 4) {
           return (com.beverly.hills.money.gang.proto.JoinGameCommand) command_;
         }
         return com.beverly.hills.money.gang.proto.JoinGameCommand.getDefaultInstance();
       }
     }
     /**
-     * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 6;</code>
+     * <code>.daikombat.dto.JoinGameCommand joinGameCommand = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         com.beverly.hills.money.gang.proto.JoinGameCommand, com.beverly.hills.money.gang.proto.JoinGameCommand.Builder, com.beverly.hills.money.gang.proto.JoinGameCommandOrBuilder> 
         getJoinGameCommandFieldBuilder() {
       if (joinGameCommandBuilder_ == null) {
-        if (!(commandCase_ == 6)) {
+        if (!(commandCase_ == 4)) {
           command_ = com.beverly.hills.money.gang.proto.JoinGameCommand.getDefaultInstance();
         }
         joinGameCommandBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -1193,7 +1101,7 @@ private static final long serialVersionUID = 0L;
                 isClean());
         command_ = null;
       }
-      commandCase_ = 6;
+      commandCase_ = 4;
       onChanged();
       return joinGameCommandBuilder_;
     }

@@ -5,10 +5,14 @@ import lombok.Getter;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 
 public class PlayerState implements PlayerStateReader {
+    private static final int MAX_IDLE_TIME_MLS = 5_000;
+
+    private final AtomicLong stateChangedLastTime = new AtomicLong(System.currentTimeMillis());
 
     private final AtomicBoolean moved = new AtomicBoolean(false);
 
@@ -33,7 +37,12 @@ public class PlayerState implements PlayerStateReader {
         this.playerId = id;
     }
 
+    public boolean isIdleForTooLong() {
+        return (System.currentTimeMillis() - stateChangedLastTime.get()) > MAX_IDLE_TIME_MLS;
+    }
+
     public PlayerStateReader getShot() {
+        stateChangedLastTime.set(System.currentTimeMillis());
         if (health.addAndGet(-DEFAULT_DAMAGE) <= 0) {
             dead.set(true);
             return this;
@@ -43,6 +52,7 @@ public class PlayerState implements PlayerStateReader {
 
 
     public void move(PlayerCoordinates playerCoordinates) {
+        stateChangedLastTime.set(System.currentTimeMillis());
         playerCoordinatesRef.set(playerCoordinates);
         moved.set(true);
     }
@@ -73,6 +83,7 @@ public class PlayerState implements PlayerStateReader {
     }
 
     public void registerKill() {
+        stateChangedLastTime.set(System.currentTimeMillis());
         kills.incrementAndGet();
     }
 

@@ -1,24 +1,18 @@
 package com.beverly.hills.money.gang.state;
 
-import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
-import com.beverly.hills.money.gang.registry.GameChannelsRegistry;
+import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import com.beverly.hills.money.gang.spawner.Spawner;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelOutboundInvoker;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
-import java.io.IOException;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
@@ -28,24 +22,19 @@ public class Game implements Closeable {
 
     @Getter
     private final int id;
-    private static final int MAX_PLAYERS_TO_ADD = 25;
     private final AtomicInteger playerIdGenerator = new AtomicInteger();
     private final AtomicLong gameStateId = new AtomicLong();
 
     @Getter
-    private final GameChannelsRegistry gameChannelsRegistry = new GameChannelsRegistry();
+    private final PlayersRegistry playersRegistry = new PlayersRegistry();
 
     private final Spawner spawner = new Spawner();
-    private final Map<Integer, PlayerState> players = new ConcurrentHashMap<>();
 
-    public PlayerConnectedGameState connectPlayer(final String playerName) throws GameLogicError {
-        if (players.size() >= MAX_PLAYERS_TO_ADD) {
-            throw new GameLogicError("Can't connect player. Server is full.", GameErrorCode.SERVER_FULL);
-        }
+    public PlayerConnectedGameState connectPlayer(final String playerName, final Channel playerChannel) throws GameLogicError {
         int playerId = playerIdGenerator.incrementAndGet();
         PlayerState.PlayerCoordinates spawn = spawner.spawn();
         PlayerState connectedPlayerState = new PlayerState(playerName, spawn, playerId);
-        players.put(playerId, connectedPlayerState);
+        playersRegistry.addPlayer(connectedPlayerState, playerChannel);
         return PlayerConnectedGameState.builder()
                 .playerStateReader(connectedPlayerState)
                 .newGameStateId(newSequenceId()).build();
@@ -69,7 +58,6 @@ public class Game implements Closeable {
             var state = shotPlayer.getShot();
             if (state.isDead()) {
                 shootingPlayerState.registerKill();
-                players.remove(shootingPlayerId);
             }
             return state;
         }).orElse(null);
@@ -97,15 +85,17 @@ public class Game implements Closeable {
     }
 
     public Stream<PlayerStateReader> getBufferedMoves() {
-        return players.values().stream().filter(PlayerState::hasMoved).map(playerState -> playerState);
+        return playersRegistry.allPlayers().map(PlayersRegistry.PlayerStateChannel::getPlayerState)
+                .filter(PlayerState::hasMoved).map(playerState -> playerState);
     }
 
     public void flushBufferedMoves() {
-        players.values().forEach(PlayerState::flushMove);
+        playersRegistry.allPlayers().map(PlayersRegistry.PlayerStateChannel::getPlayerState)
+                .forEach(PlayerState::flushMove);
     }
 
     public int playersOnline() {
-        return players.size();
+        return playersRegistry.playersOnline();
     }
 
     public long newSequenceId() {
@@ -113,11 +103,12 @@ public class Game implements Closeable {
     }
 
     public Stream<PlayerStateReader> readPlayers() {
-        return players.values().stream().map(playerState -> playerState);
+        return playersRegistry.allPlayers().map(PlayersRegistry.PlayerStateChannel::getPlayerState)
+                .map(playerState -> playerState);
     }
 
     private Optional<PlayerState> getPlayer(int playerId) {
-        return Optional.ofNullable(players.get(playerId));
+        return playersRegistry.getPlayerState(playerId);
     }
 
     public Optional<PlayerStateReader> readPlayer(int playerId) {
@@ -126,9 +117,8 @@ public class Game implements Closeable {
 
 
     @Override
-    public void close() throws IOException {
-        gameChannelsRegistry.allChannels().forEach(ChannelOutboundInvoker::close);
-        gameChannelsRegistry.
-
+    public void close() {
+        LOG.info("Close game {}", getId());
+        playersRegistry.close();
     }
 }

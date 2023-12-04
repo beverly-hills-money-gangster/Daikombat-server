@@ -23,6 +23,8 @@ public class ServerRunner {
     private final AtomicReference<State> stateRef = new AtomicReference<>(State.INIT);
     private final AtomicReference<Channel> serverChannelRef = new AtomicReference<>();
 
+    private final AtomicReference<GameServerInitializer> gameServerInitializerRef = new AtomicReference<>();
+
     public void runServer() throws InterruptedException {
         if (!stateRef.compareAndSet(State.INIT, State.STARTING)) {
             throw new IllegalStateException("Can't run!");
@@ -34,17 +36,21 @@ public class ServerRunner {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
             ServerBootstrap bootStrap = new ServerBootstrap();
+            GameServerInitializer gameServerInitializer = new GameServerInitializer();
+            gameServerInitializerRef.set(gameServerInitializer);
             bootStrap.group(serverGroup, workerGroup)
                     .option(ChannelOption.SO_BACKLOG, 100)
                     .childOption(ChannelOption.TCP_NODELAY, true)
                     .channel(NioServerSocketChannel.class)
-                    .childHandler(new GameServerInitializer());
+                    .childHandler(gameServerInitializer);
             // Bind to port
             var serverChannel = bootStrap.bind(port).sync()
                     .channel();
             LOG.info("Synced on port {}", port);
             serverChannelRef.set(serverChannel);
-            stateRef.set(State.RUNNING);
+            if (!stateRef.compareAndSet(State.STARTING, State.RUNNING)) {
+                throw new IllegalStateException("Can't run!");
+            }
             serverChannel.closeFuture().sync();
         } catch (Exception e) {
             LOG.error("Error occurred while running server", e);
@@ -59,14 +65,23 @@ public class ServerRunner {
     }
 
     public void stop() {
-        if (!stateRef.compareAndSet(State.RUNNING, State.STOPPED)) {
+        if (!stateRef.compareAndSet(State.RUNNING, State.STOPPING)) {
             throw new IllegalStateException("Can't stop!");
         }
-        serverChannelRef.get().close();
+        try {
+            gameServerInitializerRef.get().close();
+        } catch (Exception e) {
+            LOG.error("Can't stop game server initializer", e);
+        }
+        try {
+            serverChannelRef.get().close();
+        } catch (Exception e) {
+            LOG.error("Can't close server channel", e);
+        }
     }
 
     private enum State {
-        INIT, STARTING, RUNNING, STOPPED
+        INIT, STARTING, RUNNING, STOPPING, STOPPED
     }
 
 }

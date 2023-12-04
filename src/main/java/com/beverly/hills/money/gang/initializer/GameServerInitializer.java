@@ -11,7 +11,12 @@ import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 
-public class GameServerInitializer extends ChannelInitializer<SocketChannel> {
+import java.io.Closeable;
+
+// TODO is it one for all channels?
+public class GameServerInitializer extends ChannelInitializer<SocketChannel> implements Closeable {
+
+    private final GameServerInboundHandler gameServerInboundHandler = new GameServerInboundHandler();
 
     @Override
     protected void initChannel(SocketChannel ch) {
@@ -20,7 +25,11 @@ public class GameServerInitializer extends ChannelInitializer<SocketChannel> {
         p.addLast(new ProtobufDecoder(ServerCommand.getDefaultInstance()));
         p.addLast(new ProtobufVarint32LengthFieldPrepender());
         p.addLast(new ProtobufEncoder());
-        p.addLast(new GameServerInboundHandler());
+        p.addLast(gameServerInboundHandler);
     }
 
+    @Override
+    public void close() {
+        gameServerInboundHandler.close();
+    }
 }

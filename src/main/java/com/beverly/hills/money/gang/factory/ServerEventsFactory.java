@@ -30,6 +30,12 @@ public interface ServerEventsFactory {
                 .setEventType(ServerEvents.GameEvent.GameEventType.MOVE).build();
     }
 
+    static ServerEvents.GameEvent createDisconnectGameEvent(PlayerStateReader playerStateReader) {
+        return ServerEvents.GameEvent.newBuilder()
+                .setPlayer(createPlayerStats(playerStateReader))
+                .setEventType(ServerEvents.GameEvent.GameEventType.DISCONNECT).build();
+    }
+
     static ServerEvents createErrorEvent(GameLogicError error) {
         return ServerEvents.newBuilder()
                 .setError(ServerEvents.Error.newBuilder()
@@ -64,6 +70,20 @@ public interface ServerEventsFactory {
                 .setEventId(eventId)
                 .setPlayersOnline(playersOnline)
                 .setGameEvents(allPlayersMoves)
+                .build();
+    }
+
+    static ServerEvents createDisconnectedEvent(long eventId,
+                                                int playersOnline,
+                                                Stream<PlayerStateReader> disconnectedPlayers) {
+        var allDisconnectedPlayers = ServerEvents.GameEvents.newBuilder();
+        disconnectedPlayers.forEach(playerStateReader
+                -> allDisconnectedPlayers.addEvents(createDisconnectGameEvent(playerStateReader)));
+
+        return ServerEvents.newBuilder()
+                .setEventId(eventId)
+                .setPlayersOnline(playersOnline)
+                .setGameEvents(allDisconnectedPlayers)
                 .build();
     }
 
@@ -139,7 +159,7 @@ public interface ServerEventsFactory {
                 .setEventId(eventId)
                 .setPlayersOnline(playersOnline)
                 .setChatEvents(ServerEvents.ChatEvent.newBuilder()
-                        .setPlayerName(fromPlayerName).setMessage(message)
+                        .setPlayerName(fromPlayerName).setMessage(message) // TODO maybe use player id instead of name?
                         .build())
                 .build();
     }

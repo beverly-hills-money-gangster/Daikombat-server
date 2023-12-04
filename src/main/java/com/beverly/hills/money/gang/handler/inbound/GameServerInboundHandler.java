@@ -9,6 +9,7 @@ import com.beverly.hills.money.gang.handler.command.ServerCommandHandler;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.proto.ServerEvents;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
+import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import com.beverly.hills.money.gang.state.Game;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -16,13 +17,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
-import static com.beverly.hills.money.gang.factory.ServerEventsFactory.createErrorEvent;
-import static com.beverly.hills.money.gang.factory.ServerEventsFactory.createMovesEventAllPlayers;
+import static com.beverly.hills.money.gang.factory.ServerEventsFactory.*;
 
 // TODO add rate limiting
 // TODO add heart beating
@@ -36,8 +36,15 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
 
     private final GameRoomRegistry gameRoomRegistry = new GameRoomRegistry();
     private static final int MOVES_UPDATE_FREQUENCY_MLS = 100;
+
+    private static final int IDLE_PLAYERS_KILLER_FREQUENCY_MLS = 10_000;
     private static final Logger LOG = LoggerFactory.getLogger(GameServerInboundHandler.class);
+
+    // TODO give it a name
     private final ScheduledExecutorService bufferedMovesExecutor = Executors.newScheduledThreadPool(1);
+
+    // TODO give it a name
+    private final ScheduledExecutorService idlePlayersKillerExecutor = Executors.newScheduledThreadPool(1);
 
     private final ServerCommandHandler playerConnectedServerCommandHandler
             = new PlayerConnectedServerCommandHandler();
@@ -48,25 +55,41 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
 
     public GameServerInboundHandler() {
         scheduleSendBufferedMoves();
+        scheduleIdlePlayerKiller();
     }
 
-    // TODO don't forget to call it
     private void scheduleSendBufferedMoves() {
-        bufferedMovesExecutor.scheduleAtFixedRate(() -> {
-            gameRoomRegistry.getGames().forEach(game -> {
-                try {
-                    ServerEvents movesEvents
-                            = createMovesEventAllPlayers(
-                            game.newSequenceId(),
-                            game.playersOnline(),
-                            game.getBufferedMoves());
-                    game.getGameChannelsRegistry().allChannels(game.getId())
-                            .forEach(channel -> channel.writeAndFlush(movesEvents));
-                } finally {
-                    game.flushBufferedMoves();
-                }
-            });
-        }, MOVES_UPDATE_FREQUENCY_MLS, MOVES_UPDATE_FREQUENCY_MLS, TimeUnit.MILLISECONDS);
+        bufferedMovesExecutor.scheduleAtFixedRate(() -> gameRoomRegistry.getGames().forEach(game -> {
+            try {
+                ServerEvents movesEvents
+                        = createMovesEventAllPlayers(
+                        game.newSequenceId(),
+                        game.playersOnline(),
+                        game.getBufferedMoves());
+                game.getPlayersRegistry().allPlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
+                        .forEach(channel -> channel.writeAndFlush(movesEvents));
+            } finally {
+                game.flushBufferedMoves();
+            }
+        }), 5_000, MOVES_UPDATE_FREQUENCY_MLS, TimeUnit.MILLISECONDS);
+    }
+
+    private void scheduleIdlePlayerKiller() {
+        idlePlayersKillerExecutor.scheduleAtFixedRate(() -> gameRoomRegistry.getGames().forEach(game -> {
+            var idlePlayers = game.getPlayersRegistry().allPlayers()
+                    .filter(playerStateChannel -> playerStateChannel.getPlayerState().isIdleForTooLong())
+                    .collect(Collectors.toList());
+
+            ServerEvents disconnectedEvents = createDisconnectedEvent(game.newSequenceId(),
+                    game.playersOnline(), idlePlayers.stream()
+                            .map(PlayersRegistry.PlayerStateChannel::getPlayerState));
+            idlePlayers.forEach(playerStateChannel
+                    -> game.getPlayersRegistry()
+                    .removePlayer(playerStateChannel.getPlayerState().getPlayerId()));
+            game.getPlayersRegistry().allPlayers()
+                    .forEach(playerStateChannel -> playerStateChannel.getChannel().writeAndFlush(disconnectedEvents));
+
+        }), 5_000, IDLE_PLAYERS_KILLER_FREQUENCY_MLS, TimeUnit.MILLISECONDS);
     }
 
 
@@ -96,11 +119,17 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         try {
             bufferedMovesExecutor.shutdownNow();
         } catch (Exception e) {
             LOG.error("Can't shutdown buffered moves executor", e);
         }
+        try {
+            idlePlayersKillerExecutor.shutdownNow();
+        } catch (Exception e) {
+            LOG.error("Can't shutdown player killer executor", e);
+        }
+        gameRoomRegistry.close();
     }
 }

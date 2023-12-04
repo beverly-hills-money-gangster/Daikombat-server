@@ -13,4 +13,6 @@ public interface PlayerStateReader {
     boolean isDead();
 
     boolean hasMoved();
+
+    boolean isIdleForTooLong();
 }

@@ -30,7 +30,7 @@ message ServerEvents {
   }
 
   message ChatEvent {
-    string playerName = 1;
+    string playerName = 1; // TODO maybe use player id to save traffic?
     string message = 2;
   }
 

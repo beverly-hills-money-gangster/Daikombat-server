@@ -4,6 +4,7 @@ import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerCommand;
+import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerShootingGameState;
 import com.beverly.hills.money.gang.state.PlayerState;
@@ -44,9 +45,9 @@ public class GameServerCommandHandler implements ServerCommandHandler {
                                         game.playersOnline(),
                                         shootingGameState.getShootingPlayer(),
                                         shootingGameState.getPlayerShot());
-                                game.getGameChannelsRegistry().closeChannel(shotPlayer.getPlayerId());
-                                game.getGameChannelsRegistry().allChannels(msg.getGameId()).forEach(channel
-                                        -> channel.writeAndFlush(deadEvent));
+                                game.getPlayersRegistry().removePlayer(shotPlayer.getPlayerId());
+                                game.getPlayersRegistry().allPlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
+                                        .forEach(channel -> channel.writeAndFlush(deadEvent));
 
                             } else {
                                 var shotEvent = createGetShotEvent(
@@ -54,15 +55,16 @@ public class GameServerCommandHandler implements ServerCommandHandler {
                                         game.playersOnline(),
                                         shootingGameState.getShootingPlayer(),
                                         shootingGameState.getPlayerShot());
-                                game.getGameChannelsRegistry().allChannels(msg.getGameId()).forEach(channel
-                                        -> channel.writeAndFlush(shotEvent));
+                                game.getPlayersRegistry().allPlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
+                                        .forEach(channel -> channel.writeAndFlush(shotEvent));
                             }
                         }, () -> {
                             var shootingEvent = createShootingEvent(
                                     shootingGameState.getNewGameStateId(),
                                     game.playersOnline(),
                                     shootingGameState.getShootingPlayer());
-                            game.getGameChannelsRegistry().allChannels(msg.getGameId()).forEach(channel -> channel.writeAndFlush(shootingEvent));
+                            game.getPlayersRegistry().allPlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
+                                    .forEach(channel -> channel.writeAndFlush(shootingEvent));
                         });
             }
             case MOVE -> game.bufferMove(gameCommand.getPlayerId(), playerCoordinates);

@@ -4,18 +4,27 @@ import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.registry.GameChannelsRegistry;
 import com.beverly.hills.money.gang.spawner.Spawner;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelOutboundInvoker;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class Game {
+public class Game implements Closeable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Game.class);
 
     @Getter
     private final int id;
@@ -49,9 +58,7 @@ public class Game {
         if (shootingPlayerState == null) {
             return null;
         }
-        // TODO remove player if it's dead
         move(shootingPlayerId, shootingPlayerCoordinates);
-
         if (shotPlayerId == null) {
             return PlayerShootingGameState.builder()
                     .newGameStateId(newSequenceId())
@@ -118,4 +125,10 @@ public class Game {
     }
 
 
+    @Override
+    public void close() throws IOException {
+        gameChannelsRegistry.allChannels().forEach(ChannelOutboundInvoker::close);
+        gameChannelsRegistry.
+
+    }
 }

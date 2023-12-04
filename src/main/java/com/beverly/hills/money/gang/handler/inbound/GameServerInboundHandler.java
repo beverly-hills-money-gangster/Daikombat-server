@@ -2,25 +2,27 @@ package com.beverly.hills.money.gang.handler.inbound;
 
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
-import com.beverly.hills.money.gang.proto.PushGameEventCommand;
+import com.beverly.hills.money.gang.handler.command.ChatServerCommandHandler;
+import com.beverly.hills.money.gang.handler.command.GameServerCommandHandler;
+import com.beverly.hills.money.gang.handler.command.PlayerConnectedServerCommandHandler;
+import com.beverly.hills.money.gang.handler.command.ServerCommandHandler;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.proto.ServerEvents;
-import com.beverly.hills.money.gang.registry.GameChannelsRegistry;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
-import com.beverly.hills.money.gang.state.*;
+import com.beverly.hills.money.gang.state.Game;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelOutboundInvoker;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
-import java.util.Optional;
+import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static com.beverly.hills.money.gang.factory.ServerEventsFactory.*;
+import static com.beverly.hills.money.gang.factory.ServerEventsFactory.createErrorEvent;
+import static com.beverly.hills.money.gang.factory.ServerEventsFactory.createMovesEventAllPlayers;
 
 // TODO add rate limiting
 // TODO add heart beating
@@ -33,14 +35,23 @@ import static com.beverly.hills.money.gang.factory.ServerEventsFactory.*;
 public class GameServerInboundHandler extends SimpleChannelInboundHandler<ServerCommand> implements Closeable {
 
     private final GameRoomRegistry gameRoomRegistry = new GameRoomRegistry();
-
     private static final int MOVES_UPDATE_FREQUENCY_MLS = 100;
     private static final Logger LOG = LoggerFactory.getLogger(GameServerInboundHandler.class);
-
     private final ScheduledExecutorService bufferedMovesExecutor = Executors.newScheduledThreadPool(1);
 
+    private final ServerCommandHandler playerConnectedServerCommandHandler
+            = new PlayerConnectedServerCommandHandler();
+
+    private final ServerCommandHandler chatServerCommandHandler = new ChatServerCommandHandler();
+
+    private final ServerCommandHandler gameServerCommandHandler = new GameServerCommandHandler();
+
+    public GameServerInboundHandler() {
+        scheduleSendBufferedMoves();
+    }
+
     // TODO don't forget to call it
-    public void scheduleSendBufferedMoves() {
+    private void scheduleSendBufferedMoves() {
         bufferedMovesExecutor.scheduleAtFixedRate(() -> {
             gameRoomRegistry.getGames().forEach(game -> {
                 try {
@@ -49,7 +60,8 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
                             game.newSequenceId(),
                             game.playersOnline(),
                             game.getBufferedMoves());
-                    gameChannelsRegistry.allChannels(game.getId()).forEach(channel -> channel.writeAndFlush(movesEvents));
+                    game.getGameChannelsRegistry().allChannels(game.getId())
+                            .forEach(channel -> channel.writeAndFlush(movesEvents));
                 } finally {
                     game.flushBufferedMoves();
                 }
@@ -62,81 +74,12 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     protected void channelRead0(ChannelHandlerContext ctx, ServerCommand msg) {
         try {
             Game game = gameRoomRegistry.getGame(msg.getGameId());
-
             if (msg.hasJoinGameCommand()) {
-
-                PlayerConnectedGameState playerConnected = game.connectPlayer(msg.getJoinGameCommand().getPlayerName());
-                ServerEvents playerSpawnEvent = createSpawnEventSinglePlayer(game.playersOnline(), playerConnected);
-                gameChannelsRegistry.allChannels(msg.getGameId()).forEach(channel -> channel.writeAndFlush(playerSpawnEvent));
-                gameChannelsRegistry.addChannel(msg.getGameId(), playerConnected.getPlayerStateReader().getPlayerId(), ctx.channel());
-                ServerEvents allPlayersSpawnEvent =
-                        createSpawnEventAllPlayers(
-                                playerSpawnEvent.getEventId(),
-                                game.playersOnline(),
-                                game.readPlayers());
-                ctx.channel().writeAndFlush(allPlayersSpawnEvent);
-
-
+                playerConnectedServerCommandHandler.handle(msg, game, ctx.channel());
             } else if (msg.hasGameCommand()) {
-                PushGameEventCommand gameCommand = msg.getGameCommand();
-                PushGameEventCommand.GameEventType gameEventType = gameCommand.getEventType();
-                PlayerState.PlayerCoordinates playerCoordinates = PlayerState.PlayerCoordinates
-                        .builder()
-                        .direction(Vector.builder()
-                                .x(gameCommand.getDirection().getX()).y(gameCommand.getDirection().getY()).build())
-                        .position(Vector.builder()
-                                .x(gameCommand.getPosition().getX()).y(gameCommand.getPosition().getY()).build())
-                        .build();
-                switch (gameEventType) {
-                    case SHOOT -> {
-                        PlayerShootingGameState shootingGameState = game.shoot(
-                                playerCoordinates,
-                                gameCommand.getPlayerId(),
-                                gameCommand.getAffectedPlayerId());
-                        Optional.ofNullable(shootingGameState).map(PlayerShootingGameState::getPlayerShot)
-                                .ifPresentOrElse(
-                                        shotPlayer -> {
-                                            if (shotPlayer.isDead()) {
-                                                var deadEvent = createDeadEvent(shootingGameState.getNewGameStateId(),
-                                                        game.playersOnline(),
-                                                        shootingGameState.getShootingPlayer(),
-                                                        shootingGameState.getPlayerShot());
-                                                gameChannelsRegistry.closeChannel(shotPlayer.getPlayerId());
-                                                gameChannelsRegistry.allChannels(msg.getGameId()).forEach(channel
-                                                        -> channel.writeAndFlush(deadEvent));
-
-                                            } else {
-                                                var shotEvent = createGetShotEvent(shootingGameState.getNewGameStateId(),
-                                                        game.playersOnline(),
-                                                        shootingGameState.getShootingPlayer(),
-                                                        shootingGameState.getPlayerShot());
-                                                gameChannelsRegistry.allChannels(msg.getGameId()).forEach(channel
-                                                        -> channel.writeAndFlush(shotEvent));
-                                            }
-                                        }, () -> {
-                                            var shootingEvent = createShootingEvent(shootingGameState.getNewGameStateId(),
-                                                    game.playersOnline(),
-                                                    shootingGameState.getShootingPlayer());
-                                            gameChannelsRegistry.allChannels(msg.getGameId()).forEach(channel -> channel.writeAndFlush(shootingEvent));
-                                        });
-                    }
-                    case MOVE -> game.bufferMove(gameCommand.getPlayerId(), playerCoordinates);
-                    default -> ctx.channel().writeAndFlush(createErrorEvent(
-                            new GameLogicError("Not supported command",
-                                    GameErrorCode.COMMAND_NOT_RECOGNIZED)));
-                }
-
+                gameServerCommandHandler.handle(msg, game, ctx.channel());
             } else if (msg.hasChatCommand()) {
-
-                game.readPlayer(msg.getChatCommand().getPlayerId())
-                        .ifPresent(playerStateReader -> gameChannelsRegistry.allChannels(msg.getGameId())
-                                .filter(channel -> channel != ctx.channel())
-                                .forEach(channel -> channel.writeAndFlush(createChatEvent(
-                                        game.newSequenceId(),
-                                        game.playersOnline(),
-                                        msg.getChatCommand().getMessage(),
-                                        playerStateReader.getPlayerName()))));
-
+                chatServerCommandHandler.handle(msg, game, ctx.channel());
             } else {
                 throw new GameLogicError("Command is not recognized", GameErrorCode.COMMAND_NOT_RECOGNIZED);
             }
@@ -153,9 +96,11 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     }
 
     @Override
-    public void close() {
-        gameRoomRegistry.getGames().forEach(game
-                -> gameChannelsRegistry.allChannels(game.getId()).forEach(ChannelOutboundInvoker::close));
-        bufferedMovesExecutor.shutdown();
+    public void close() throws IOException {
+        try {
+            bufferedMovesExecutor.shutdownNow();
+        } catch (Exception e) {
+            LOG.error("Can't shutdown buffered moves executor", e);
+        }
     }
 }

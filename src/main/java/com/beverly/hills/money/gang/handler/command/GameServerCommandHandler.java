@@ -45,10 +45,9 @@ public class GameServerCommandHandler implements ServerCommandHandler {
                                         game.playersOnline(),
                                         shootingGameState.getShootingPlayer(),
                                         shootingGameState.getPlayerShot());
-                                game.getPlayersRegistry().removePlayer(shotPlayer.getPlayerId());
                                 game.getPlayersRegistry().allPlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
                                         .forEach(channel -> channel.writeAndFlush(deadEvent));
-
+                                game.getPlayersRegistry().removePlayer(shotPlayer.getPlayerId());
                             } else {
                                 var shotEvent = createGetShotEvent(
                                         shootingGameState.getNewGameStateId(),

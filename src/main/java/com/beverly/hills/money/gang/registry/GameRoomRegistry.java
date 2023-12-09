@@ -13,8 +13,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static com.beverly.hills.money.gang.exception.GameErrorCode.NOT_EXISTING_GAME_ROOM;
-
-@RequiredArgsConstructor
 public class GameRoomRegistry implements Closeable {
 
     private static final Logger LOG = LoggerFactory.getLogger(GameRoomRegistry.class);

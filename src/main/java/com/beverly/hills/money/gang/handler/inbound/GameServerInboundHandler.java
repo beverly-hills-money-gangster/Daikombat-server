@@ -22,6 +22,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static com.beverly.hills.money.gang.config.GameConfig.*;
 import static com.beverly.hills.money.gang.factory.ServerEventsFactory.*;
 
 // TODO add rate limiting
@@ -34,10 +35,8 @@ import static com.beverly.hills.money.gang.factory.ServerEventsFactory.*;
 
 public class GameServerInboundHandler extends SimpleChannelInboundHandler<ServerCommand> implements Closeable {
 
-    private final GameRoomRegistry gameRoomRegistry = new GameRoomRegistry();
-    private static final int MOVES_UPDATE_FREQUENCY_MLS = 100;
+    private final GameRoomRegistry gameRoomRegistry = new GameRoomRegistry(GAMES_TO_CREATE);
 
-    private static final int IDLE_PLAYERS_KILLER_FREQUENCY_MLS = 10_000;
     private static final Logger LOG = LoggerFactory.getLogger(GameServerInboundHandler.class);
 
     // TODO give it a name

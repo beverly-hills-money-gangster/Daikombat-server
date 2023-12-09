@@ -11,19 +11,27 @@ import java.io.Closeable;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
+
+import static com.beverly.hills.money.gang.config.GameConfig.MAX_PLAYERS_PER_GAME;
 
 // TODO combine this class with  private final Map<Integer, PlayerState> players = new ConcurrentHashMap<>();
 // TODO remove inactive players
 public class PlayersRegistry implements Closeable {
 
-    private static final int MAX_PLAYERS_TO_ADD = 25;
     private final Map<Integer, PlayerStateChannel> players = new ConcurrentHashMap<>();
 
     public void addPlayer(PlayerState playerState, Channel channel) throws GameLogicError {
-        if (players.size() >= MAX_PLAYERS_TO_ADD) {
+        // not thread-safe
+        if (players.size() >= MAX_PLAYERS_PER_GAME) {
             throw new GameLogicError("Can't connect player. Server is full.", GameErrorCode.SERVER_FULL);
+        } else if (players.values().stream()
+                .anyMatch(playerStateChannel -> playerStateChannel.getPlayerState().getPlayerName()
+                .equals(playerState.getPlayerName()))) {
+            throw new GameLogicError("Can't connect player. Player name already taken.", GameErrorCode.PLAYER_EXISTS);
         }
+        // thread-safe
         players.put(playerState.getPlayerId(), PlayerStateChannel.builder()
                 .channel(channel).playerState(playerState).build());
     }

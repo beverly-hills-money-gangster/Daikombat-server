@@ -1,5 +1,6 @@
 package com.beverly.hills.money.gang.state;
 
+import com.beverly.hills.money.gang.config.GameConfig;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -8,9 +9,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static com.beverly.hills.money.gang.config.GameConfig.MAX_IDLE_TIME_MLS;
+
 
 public class PlayerState implements PlayerStateReader {
-    private static final int MAX_IDLE_TIME_MLS = 5_000;
 
     private final AtomicLong stateChangedLastTime = new AtomicLong(System.currentTimeMillis());
 
@@ -18,8 +20,6 @@ public class PlayerState implements PlayerStateReader {
 
     private final AtomicBoolean dead = new AtomicBoolean();
     public static final int DEFAULT_HP = 100;
-
-    private static final int DEFAULT_DAMAGE = 20;
 
     private final AtomicInteger kills = new AtomicInteger();
     private final AtomicInteger health = new AtomicInteger(DEFAULT_HP);
@@ -43,7 +43,7 @@ public class PlayerState implements PlayerStateReader {
 
     public PlayerStateReader getShot() {
         stateChangedLastTime.set(System.currentTimeMillis());
-        if (health.addAndGet(-DEFAULT_DAMAGE) <= 0) {
+        if (health.addAndGet(-GameConfig.DEFAULT_DAMAGE) <= 0) {
             dead.set(true);
             return this;
         }

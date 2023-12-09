@@ -75,10 +75,6 @@ public class Game implements Closeable {
                 .build();
     }
 
-    private void move(final int movingPlayerId, final PlayerState.PlayerCoordinates playerCoordinates) {
-        getPlayer(movingPlayerId).ifPresent(playerState -> playerState.move(playerCoordinates));
-    }
-
     public void bufferMove(final int movingPlayerId, final PlayerState.PlayerCoordinates playerCoordinates) {
         move(movingPlayerId, playerCoordinates);
         newSequenceId();
@@ -100,6 +96,10 @@ public class Game implements Closeable {
 
     public long newSequenceId() {
         return gameStateId.incrementAndGet();
+    }
+
+    private void move(final int movingPlayerId, final PlayerState.PlayerCoordinates playerCoordinates) {
+        getPlayer(movingPlayerId).ifPresent(playerState -> playerState.move(playerCoordinates));
     }
 
     public Stream<PlayerStateReader> readPlayers() {

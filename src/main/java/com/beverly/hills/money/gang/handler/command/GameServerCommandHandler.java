@@ -18,7 +18,7 @@ import static com.beverly.hills.money.gang.factory.ServerEventsFactory.*;
 public class GameServerCommandHandler implements ServerCommandHandler {
 
     @Override
-    public void handle(ServerCommand msg, Game game, Channel currentChannel) {
+    public void handle(ServerCommand msg, Game game, Channel currentChannel) throws GameLogicError {
         PushGameEventCommand gameCommand = msg.getGameCommand();
         PushGameEventCommand.GameEventType gameEventType = gameCommand.getEventType();
         PlayerState.PlayerCoordinates playerCoordinates = PlayerState.PlayerCoordinates

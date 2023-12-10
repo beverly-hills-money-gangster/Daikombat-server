@@ -1,5 +1,6 @@
 package com.beverly.hills.money.gang.state;
 
+import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import com.beverly.hills.money.gang.spawner.Spawner;
@@ -10,9 +11,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
@@ -42,31 +45,41 @@ public class Game implements Closeable {
 
     public PlayerShootingGameState shoot(final PlayerState.PlayerCoordinates shootingPlayerCoordinates,
                                          final int shootingPlayerId,
-                                         final Integer shotPlayerId) {
+                                         final Integer shotPlayerId) throws GameLogicError {
         PlayerState shootingPlayerState = getPlayer(shootingPlayerId).orElse(null);
         if (shootingPlayerState == null) {
+            // non-existing player can't shoot
             return null;
+        } else if (shootingPlayerState.isDead()) {
+            // dead players can't shoot
+            return null;
+        } else if (Objects.equals(shootingPlayerId, shotPlayerId)) {
+            // you can't shoot yourself!
+            throw new GameLogicError("You can't shoot yourself", GameErrorCode.CAN_NOT_SHOOT_YOURSELF);
         }
+
         move(shootingPlayerId, shootingPlayerCoordinates);
         if (shotPlayerId == null) {
+            // if nobody was shot
             return PlayerShootingGameState.builder()
                     .newGameStateId(newSequenceId())
                     .shootingPlayer(shootingPlayerState)
                     .playerShot(null).build();
         }
         var shotPlayerState = getPlayer(shotPlayerId).map(shotPlayer -> {
-            var state = shotPlayer.getShot();
-            if (state.isDead()) {
+            if (shotPlayer.isDead()) {
+                // you can't shoot an already dead player
+                return null;
+            }
+            shotPlayer.getShot();
+            if (shotPlayer.isDead()) {
                 shootingPlayerState.registerKill();
             }
-            return state;
+            return shotPlayer;
         }).orElse(null);
 
         if (shotPlayerState == null) {
-            return PlayerShootingGameState.builder()
-                    .newGameStateId(newSequenceId())
-                    .shootingPlayer(shootingPlayerState)
-                    .playerShot(null).build();
+            return null;
         }
         return PlayerShootingGameState.builder()
                 .newGameStateId(newSequenceId())
@@ -99,7 +112,9 @@ public class Game implements Closeable {
     }
 
     private void move(final int movingPlayerId, final PlayerState.PlayerCoordinates playerCoordinates) {
-        getPlayer(movingPlayerId).ifPresent(playerState -> playerState.move(playerCoordinates));
+        getPlayer(movingPlayerId)
+                .filter(playerState -> !playerState.isDead())
+                .ifPresent(playerState -> playerState.move(playerCoordinates));
     }
 
     public Stream<PlayerStateReader> readPlayers() {

@@ -37,6 +37,10 @@ public class PlayerState implements PlayerStateReader {
         this.playerId = id;
     }
 
+    public int getKills() {
+        return kills.get();
+    }
+
     public boolean isIdleForTooLong() {
         return (System.currentTimeMillis() - stateChangedLastTime.get()) > MAX_IDLE_TIME_MLS;
     }

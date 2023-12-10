@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 
 import static com.beverly.hills.money.gang.exception.GameErrorCode.CAN_NOT_SHOOT_YOURSELF;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 public class GameTest {
 
@@ -34,6 +34,11 @@ public class GameTest {
     @AfterEach
     public void tearDown() {
         if (game != null) {
+            game.getPlayersRegistry().allPlayers().forEach(playerStateChannel -> {
+                assertTrue(playerStateChannel.getPlayerState().getHealth() >= 0, "Health can't be negative");
+                assertTrue(playerStateChannel.getPlayerState().getKills() >= 0, "Kill count can't be negative");
+            });
+            assertTrue(game.playersOnline() >= 0, "Player count can't be negative");
             game.close();
         }
     }
@@ -46,6 +51,8 @@ public class GameTest {
      **/
     @Test
     public void testConnectPlayerOnce() throws Throwable {
+        assertEquals(0, game.getPlayersRegistry().playersOnline(),
+                "No online players as nobody connected yet");
         String playerName = "some player";
         Channel channel = mock(Channel.class);
         PlayerConnectedGameState playerConnectedGameState = game.connectPlayer(playerName, channel);
@@ -128,7 +135,7 @@ public class GameTest {
      * @when max players per game come to connect concurrently
      * @then the game connects everybody successfully
      */
-    @Test
+    @RepeatedTest(32)
     public void testConnectPlayerConcurrency() {
         String playerName = "some player";
         AtomicInteger failures = new AtomicInteger();
@@ -390,7 +397,7 @@ public class GameTest {
      * @when all of them shoot each other once concurrently
      * @then nobody gets killed, everybody's health is reduced
      */
-    @RepeatedTest(10)
+    @RepeatedTest(32)
     public void testShootConcurrency() throws Throwable {
 
         CountDownLatch latch = new CountDownLatch(1);
@@ -440,35 +447,237 @@ public class GameTest {
         });
     }
 
+    /**
+     * @given a player
+     * @when the player moves
+     * @then the game changes player's coordinates and buffers them
+     */
     @Test
-    public void testMove() {
+    public void testMove() throws Throwable {
+        String playerName = "some player";
+        Channel channel = mock(Channel.class);
+        PlayerConnectedGameState playerConnectedGameState = game.connectPlayer(playerName, channel);
+        assertEquals(0, game.getBufferedMoves().count(), "No moves buffered before you actually move");
+        PlayerState.PlayerCoordinates playerCoordinates = PlayerState.PlayerCoordinates
+                .builder()
+                .direction(Vector.builder().x(1f).y(0).build())
+                .position(Vector.builder().x(0f).y(1).build()).build();
+        game.bufferMove(playerConnectedGameState.getPlayerStateReader().getPlayerId(), playerCoordinates);
+        assertEquals(1, game.getBufferedMoves().count(), "One move should be buffered");
+        PlayerState playerState = game.getPlayersRegistry().getPlayerState(playerConnectedGameState.getPlayerStateReader().getPlayerId())
+                .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
+        assertEquals(100, playerState.getHealth());
+        assertEquals(0, playerState.getKills(), "Nobody got killed");
+        assertEquals(1, game.playersOnline());
+        assertEquals(Vector.builder().x(1f).y(0).build(), playerState.getCoordinates().getDirection());
+        assertEquals(Vector.builder().x(0f).y(1).build(), playerState.getCoordinates().getPosition());
+    }
+
+    /**
+     * @given a player
+     * @when the player moves twice
+     * @then the game changes player's coordinates to the latest and buffers them
+     */
+    @Test
+    public void testMoveTwice() throws Throwable {
+        String playerName = "some player";
+        Channel channel = mock(Channel.class);
+        PlayerConnectedGameState playerConnectedGameState = game.connectPlayer(playerName, channel);
+        assertEquals(0, game.getBufferedMoves().count(), "No moves buffered before you actually move");
+        PlayerState.PlayerCoordinates playerCoordinates = PlayerState.PlayerCoordinates
+                .builder()
+                .direction(Vector.builder().x(1f).y(0).build())
+                .position(Vector.builder().x(0f).y(1).build()).build();
+        game.bufferMove(playerConnectedGameState.getPlayerStateReader().getPlayerId(), playerCoordinates);
+        PlayerState.PlayerCoordinates playerNewCoordinates = PlayerState.PlayerCoordinates
+                .builder()
+                .direction(Vector.builder().x(2f).y(1).build())
+                .position(Vector.builder().x(1f).y(2).build()).build();
+        game.bufferMove(playerConnectedGameState.getPlayerStateReader().getPlayerId(), playerNewCoordinates);
+        assertEquals(1, game.getBufferedMoves().count(), "One move should be buffered");
+
+        PlayerState playerState = game.getPlayersRegistry().getPlayerState(playerConnectedGameState.getPlayerStateReader().getPlayerId())
+                .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
+        assertEquals(100, playerState.getHealth());
+        assertEquals(0, playerState.getKills(), "Nobody got killed");
+        assertEquals(1, game.playersOnline());
+        assertEquals(Vector.builder().x(2f).y(1).build(), playerState.getCoordinates().getDirection());
+        assertEquals(Vector.builder().x(1f).y(2).build(), playerState.getCoordinates().getPosition());
+    }
+
+    /**
+     * @given a game with no players
+     * @when a non-existing player moves
+     * @then nothing happens
+     */
+    @Test
+    public void testMoveNotExistingPlayer() throws GameLogicError {
+
+        assertEquals(0, game.getBufferedMoves().count(), "No moves buffered before you actually move");
+        PlayerState.PlayerCoordinates playerCoordinates = PlayerState.PlayerCoordinates
+                .builder()
+                .direction(Vector.builder().x(1f).y(0).build())
+                .position(Vector.builder().x(0f).y(1).build()).build();
+        game.bufferMove(123, playerCoordinates);
+        assertEquals(0, game.getBufferedMoves().count(),
+                "No moves buffered because only existing players can move");
 
     }
 
+    /**
+     * @given a dead player
+     * @when the dead player moves
+     * @then nothing happens
+     */
     @Test
-    public void testMoveTwice() {
+    public void testMoveDead() throws Throwable {
+        String shooterPlayerName = "shooter player";
+        String shotPlayerName = "shot player";
+        Channel channel = mock(Channel.class);
+        PlayerConnectedGameState shooterPlayerConnectedGameState = game.connectPlayer(shooterPlayerName, channel);
+        PlayerConnectedGameState shotPlayerConnectedGameState = game.connectPlayer(shotPlayerName, channel);
 
+        int shotsToKill = (int) Math.ceil(100d / GameConfig.DEFAULT_DAMAGE);
+
+        // after this loop, one player is  dead
+        for (int i = 0; i < shotsToKill; i++) {
+            game.shoot(
+                    shooterPlayerConnectedGameState.getPlayerStateReader().getCoordinates(),
+                    shooterPlayerConnectedGameState.getPlayerStateReader().getPlayerId(),
+                    shotPlayerConnectedGameState.getPlayerStateReader().getPlayerId());
+        }
+        PlayerState.PlayerCoordinates playerCoordinates = PlayerState.PlayerCoordinates
+                .builder()
+                .direction(Vector.builder().x(1f).y(0).build())
+                .position(Vector.builder().x(0f).y(1).build()).build();
+        game.bufferMove(shotPlayerConnectedGameState.getPlayerStateReader().getPlayerId(), playerCoordinates);
+
+        PlayerState deadPlayerState = game.getPlayersRegistry().getPlayerState(shotPlayerConnectedGameState.getPlayerStateReader().getPlayerId())
+                .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
+
+        assertEquals(shotPlayerConnectedGameState.getPlayerStateReader().getCoordinates().getDirection(),
+                deadPlayerState.getCoordinates().getDirection(),
+                "Direction should be the same as the player has moved only after getting killed");
+        assertEquals(shotPlayerConnectedGameState.getPlayerStateReader().getCoordinates().getPosition(),
+                deadPlayerState.getCoordinates().getPosition(),
+                "Position should be the same as the player has moved only after getting killed");
     }
 
+    /**
+     * @given many players connected to the same game
+     * @when players move concurrently
+     * @then players' coordinates are set to the latest and all moves are buffered
+     */
     @Test
-    public void testMoveDead() {
+    public void testMoveConcurrency() throws Throwable {
+        CountDownLatch latch = new CountDownLatch(1);
+        List<PlayerConnectedGameState> connectedPlayers = new ArrayList<>();
+        AtomicInteger failures = new AtomicInteger();
 
+        for (int i = 0; i < GameConfig.MAX_PLAYERS_PER_GAME; i++) {
+            String shotPlayerName = "player " + i;
+            Channel channel = mock(Channel.class);
+            PlayerConnectedGameState connectedPlayer = game.connectPlayer(shotPlayerName, channel);
+            connectedPlayers.add(connectedPlayer);
+        }
+
+        List<Thread> threads = new ArrayList<>();
+        for (int i = 0; i < GameConfig.MAX_PLAYERS_PER_GAME; i++) {
+            int finalI = i;
+            threads.add(new Thread(() -> {
+                try {
+                    latch.await();
+                    PlayerConnectedGameState me = connectedPlayers.get(finalI);
+                    for (int j = 0; j < 10; j++) {
+                        PlayerState.PlayerCoordinates playerCoordinates = PlayerState.PlayerCoordinates
+                                .builder()
+                                .direction(Vector.builder().x(1f + j).y(0).build())
+                                .position(Vector.builder().x(0f).y(1 + j).build()).build();
+                        game.bufferMove(me.getPlayerStateReader().getPlayerId(), playerCoordinates);
+                    }
+
+                } catch (Exception e) {
+                    failures.incrementAndGet();
+                    throw new RuntimeException(e);
+                }
+            }));
+        }
+        threads.forEach(Thread::start);
+        latch.countDown();
+        threads.forEach(thread -> {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        assertEquals(0, failures.get());
+        assertEquals(GameConfig.MAX_PLAYERS_PER_GAME, game.playersOnline());
+
+        game.getPlayersRegistry().allPlayers().forEach(playerStateChannel -> {
+            assertFalse(playerStateChannel.getPlayerState().isDead(), "Nobody is dead");
+            assertEquals(0, playerStateChannel.getPlayerState().getKills(), "Nobody got killed");
+            assertEquals(100, playerStateChannel.getPlayerState().getHealth(), "Nobody got shot");
+            PlayerState.PlayerCoordinates finalCoordinates = PlayerState.PlayerCoordinates
+                    .builder()
+                    .direction(Vector.builder().x(10f).y(0).build())
+                    .position(Vector.builder().x(0f).y(10f).build()).build();
+            assertEquals(finalCoordinates.getPosition(),
+                    playerStateChannel.getPlayerState().getCoordinates().getPosition());
+            assertEquals(finalCoordinates.getDirection(),
+                    playerStateChannel.getPlayerState().getCoordinates().getDirection());
+        });
+        assertEquals(GameConfig.MAX_PLAYERS_PER_GAME, game.getBufferedMoves().count(), "All players moved");
     }
 
-    @Test
-    public void testMoveConcurrency() {
-
-    }
-
+    /**
+     * @given a game with no players
+     * @when the game gets closed
+     * @then nothing happens
+     */
     @Test
     public void testCloseNobodyConnected() {
-
+        game.close();
     }
 
 
+    /**
+     * @given a game with many players
+     * @when the game gets closed
+     * @then all players' channels get closed and no player is connected anymore
+     */
     @Test
-    public void testCloseSomebodyConnected() {
+    public void testCloseSomebodyConnected() throws Throwable {
+        String playerName = "some player";
+        Channel channel = mock(Channel.class);
+        for (int i = 0; i < GameConfig.MAX_PLAYERS_PER_GAME; i++) {
+            game.connectPlayer(playerName + " " + i, channel);
+        }
+        game.close();
+        // all channels should be closed
+        verify(channel, times(GameConfig.MAX_PLAYERS_PER_GAME)).close();
+        assertEquals(0, game.playersOnline(), "No players online when game is closed");
+        assertEquals(0, game.getPlayersRegistry().allPlayers().count(), "No players in the registry when game is closed");
+    }
 
+    /**
+     * @given a closed game with many players
+     * @when the game gets closed again
+     * @then nothing happens. the game is still closed.
+     */
+    @Test
+    public void testCloseTwice() throws GameLogicError {
+        String playerName = "some player";
+        Channel channel = mock(Channel.class);
+        for (int i = 0; i < GameConfig.MAX_PLAYERS_PER_GAME; i++) {
+            game.connectPlayer(playerName + " " + i, channel);
+        }
+        game.close(); // close once
+        game.close(); // close second time
+        // all channels should be closed
+        verify(channel, times(GameConfig.MAX_PLAYERS_PER_GAME)).close();
+        assertEquals(0, game.playersOnline(), "No players online when game is closed");
+        assertEquals(0, game.getPlayersRegistry().allPlayers().count(), "No players in the registry when game is closed");
     }
 
 }

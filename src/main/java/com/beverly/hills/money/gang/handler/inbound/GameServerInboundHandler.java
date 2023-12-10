@@ -26,13 +26,11 @@ import static com.beverly.hills.money.gang.config.GameConfig.*;
 import static com.beverly.hills.money.gang.factory.ServerEventsFactory.*;
 
 // TODO add rate limiting
-// TODO add heart beating
 // TODO anti-cheat
 // TODO add chat message censoring
 // TODO add auto-ban
 // TODO add logs
-
-
+// TODO auth
 public class GameServerInboundHandler extends SimpleChannelInboundHandler<ServerCommand> implements Closeable {
 
     private final GameRoomRegistry gameRoomRegistry = new GameRoomRegistry(GAMES_TO_CREATE);
@@ -90,7 +88,6 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
 
         }), 5_000, IDLE_PLAYERS_KILLER_FREQUENCY_MLS, TimeUnit.MILLISECONDS);
     }
-
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ServerCommand msg) {

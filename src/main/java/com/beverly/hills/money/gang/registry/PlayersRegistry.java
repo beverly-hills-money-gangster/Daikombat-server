@@ -15,8 +15,6 @@ import java.util.stream.Stream;
 
 import static com.beverly.hills.money.gang.config.GameConfig.MAX_PLAYERS_PER_GAME;
 
-// TODO combine this class with  private final Map<Integer, PlayerState> players = new ConcurrentHashMap<>();
-// TODO remove inactive players
 public class PlayersRegistry implements Closeable {
 
     private final Map<Integer, PlayerStateChannel> players = new ConcurrentHashMap<>();

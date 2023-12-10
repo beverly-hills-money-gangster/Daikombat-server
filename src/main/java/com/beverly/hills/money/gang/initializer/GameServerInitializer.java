@@ -21,6 +21,7 @@ public class GameServerInitializer extends ChannelInitializer<SocketChannel> imp
     @Override
     protected void initChannel(SocketChannel ch) {
         ChannelPipeline p = ch.pipeline();
+        // TODO add authentication handler
         p.addLast(new ProtobufVarint32FrameDecoder());
         p.addLast(new ProtobufDecoder(ServerCommand.getDefaultInstance()));
         p.addLast(new ProtobufVarint32LengthFieldPrepender());

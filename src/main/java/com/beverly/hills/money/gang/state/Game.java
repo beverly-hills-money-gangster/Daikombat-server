@@ -13,9 +13,9 @@ import org.slf4j.LoggerFactory;
 import java.io.Closeable;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
@@ -33,7 +33,10 @@ public class Game implements Closeable {
 
     private final Spawner spawner = new Spawner();
 
+    private final AtomicBoolean gameClosed = new AtomicBoolean();
+
     public PlayerConnectedGameState connectPlayer(final String playerName, final Channel playerChannel) throws GameLogicError {
+        validateGameNotClosed();
         int playerId = playerIdGenerator.incrementAndGet();
         PlayerState.PlayerCoordinates spawn = spawner.spawn();
         PlayerState connectedPlayerState = new PlayerState(playerName, spawn, playerId);
@@ -46,15 +49,16 @@ public class Game implements Closeable {
     public PlayerShootingGameState shoot(final PlayerState.PlayerCoordinates shootingPlayerCoordinates,
                                          final int shootingPlayerId,
                                          final Integer shotPlayerId) throws GameLogicError {
+        validateGameNotClosed();
         PlayerState shootingPlayerState = getPlayer(shootingPlayerId).orElse(null);
         if (shootingPlayerState == null) {
-            // non-existing player can't shoot
+            LOG.warn("Non-existing player can't shoot");
             return null;
         } else if (shootingPlayerState.isDead()) {
-            // dead players can't shoot
+            LOG.warn("Dead players can't shoot");
             return null;
         } else if (Objects.equals(shootingPlayerId, shotPlayerId)) {
-            // you can't shoot yourself!
+            LOG.warn("You can't shoot yourself");
             throw new GameLogicError("You can't shoot yourself", GameErrorCode.CAN_NOT_SHOOT_YOURSELF);
         }
 
@@ -68,7 +72,7 @@ public class Game implements Closeable {
         }
         var shotPlayerState = getPlayer(shotPlayerId).map(shotPlayer -> {
             if (shotPlayer.isDead()) {
-                // you can't shoot an already dead player
+                LOG.warn("You can't shoot a dead player");
                 return null;
             }
             shotPlayer.getShot();
@@ -88,7 +92,8 @@ public class Game implements Closeable {
                 .build();
     }
 
-    public void bufferMove(final int movingPlayerId, final PlayerState.PlayerCoordinates playerCoordinates) {
+    public void bufferMove(final int movingPlayerId, final PlayerState.PlayerCoordinates playerCoordinates) throws GameLogicError {
+        validateGameNotClosed();
         move(movingPlayerId, playerCoordinates);
         newSequenceId();
     }
@@ -111,20 +116,12 @@ public class Game implements Closeable {
         return gameStateId.incrementAndGet();
     }
 
-    private void move(final int movingPlayerId, final PlayerState.PlayerCoordinates playerCoordinates) {
-        getPlayer(movingPlayerId)
-                .filter(playerState -> !playerState.isDead())
-                .ifPresent(playerState -> playerState.move(playerCoordinates));
-    }
 
     public Stream<PlayerStateReader> readPlayers() {
         return playersRegistry.allPlayers().map(PlayersRegistry.PlayerStateChannel::getPlayerState)
                 .map(playerState -> playerState);
     }
 
-    private Optional<PlayerState> getPlayer(int playerId) {
-        return playersRegistry.getPlayerState(playerId);
-    }
 
     public Optional<PlayerStateReader> readPlayer(int playerId) {
         return getPlayer(playerId).map(playerState -> playerState);
@@ -133,7 +130,29 @@ public class Game implements Closeable {
 
     @Override
     public void close() {
+        if (!gameClosed.compareAndSet(false, true)) {
+            LOG.warn("Game already closed");
+            return;
+        }
         LOG.info("Close game {}", getId());
         playersRegistry.close();
+        gameClosed.set(true);
+    }
+
+
+    private void validateGameNotClosed() throws GameLogicError {
+        if (gameClosed.get()) {
+            throw new GameLogicError("Game is closed", GameErrorCode.GAME_CLOSED);
+        }
+    }
+
+    private Optional<PlayerState> getPlayer(int playerId) {
+        return playersRegistry.getPlayerState(playerId);
+    }
+
+    private void move(final int movingPlayerId, final PlayerState.PlayerCoordinates playerCoordinates) {
+        getPlayer(movingPlayerId)
+                .filter(playerState -> !playerState.isDead())
+                .ifPresent(playerState -> playerState.move(playerCoordinates));
     }
 }

@@ -12,4 +12,6 @@ public interface GameConfig {
     int MAX_IDLE_TIME_MLS = NumberUtils.toInt(System.getenv("IDLE_PLAYERS_KILLER_FREQUENCY_MLS"), 30_000);
     int DEFAULT_DAMAGE = NumberUtils.toInt(System.getenv("DEFAULT_DAMAGE"), 20);
 
+    String PIN_CODE = System.getenv("PIN_CODE");
+
 }

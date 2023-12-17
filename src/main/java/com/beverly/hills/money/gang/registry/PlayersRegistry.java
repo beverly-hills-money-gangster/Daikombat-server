@@ -6,6 +6,7 @@ import com.beverly.hills.money.gang.state.PlayerState;
 import io.netty.channel.Channel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.io.Closeable;
 import java.util.Map;
@@ -60,6 +61,7 @@ public class PlayersRegistry implements Closeable {
 
     @Builder
     @Getter
+    @ToString
     public static class PlayerStateChannel {
         private final Channel channel;
         private final PlayerState playerState;

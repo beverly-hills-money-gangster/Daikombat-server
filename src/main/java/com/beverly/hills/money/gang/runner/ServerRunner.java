@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 @RequiredArgsConstructor
@@ -20,6 +22,9 @@ public class ServerRunner {
     private static final Logger LOG = LoggerFactory.getLogger(ServerRunner.class);
 
     private final int port;
+
+    private final CountDownLatch startWaitingLatch = new CountDownLatch(1);
+
     private final AtomicReference<State> stateRef = new AtomicReference<>(State.INIT);
     private final AtomicReference<Channel> serverChannelRef = new AtomicReference<>();
 
@@ -51,6 +56,7 @@ public class ServerRunner {
             if (!stateRef.compareAndSet(State.STARTING, State.RUNNING)) {
                 throw new IllegalStateException("Can't run!");
             }
+            startWaitingLatch.countDown();
             serverChannel.closeFuture().sync();
         } catch (Exception e) {
             LOG.error("Error occurred while running server", e);
@@ -62,6 +68,10 @@ public class ServerRunner {
             stateRef.set(State.STOPPED);
             LOG.info("Server stopped");
         }
+    }
+
+    public boolean waitFullyRunning() throws InterruptedException {
+        return startWaitingLatch.await(1, TimeUnit.MINUTES);
     }
 
     public void stop() {

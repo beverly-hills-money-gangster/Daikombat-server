@@ -7,10 +7,11 @@ option java_package = "com.beverly.hills.money.gang.proto";
 
 message ServerCommand {
   int32 gameId = 1;
+  optional bytes hmac = 2;
   oneof command {
-    PushChatEventCommand chatCommand = 2;
-    PushGameEventCommand gameCommand = 3;
-    JoinGameCommand joinGameCommand = 4;
+    PushChatEventCommand chatCommand = 3;
+    PushGameEventCommand gameCommand = 4;
+    JoinGameCommand joinGameCommand = 5;
   }
 }
 

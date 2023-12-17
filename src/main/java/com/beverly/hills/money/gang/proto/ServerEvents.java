@@ -2232,11 +2232,19 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.MessageOrBuilder {
 
     /**
+     * <pre>
+     * TODO maybe use player id to save traffic?
+     * </pre>
+     *
      * <code>string playerName = 1;</code>
      * @return The playerName.
      */
     java.lang.String getPlayerName();
     /**
+     * <pre>
+     * TODO maybe use player id to save traffic?
+     * </pre>
+     *
      * <code>string playerName = 1;</code>
      * @return The bytes for playerName.
      */
@@ -2296,6 +2304,10 @@ private static final long serialVersionUID = 0L;
     @SuppressWarnings("serial")
     private volatile java.lang.Object playerName_ = "";
     /**
+     * <pre>
+     * TODO maybe use player id to save traffic?
+     * </pre>
+     *
      * <code>string playerName = 1;</code>
      * @return The playerName.
      */
@@ -2313,6 +2325,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * TODO maybe use player id to save traffic?
+     * </pre>
+     *
      * <code>string playerName = 1;</code>
      * @return The bytes for playerName.
      */
@@ -2722,6 +2738,10 @@ private static final long serialVersionUID = 0L;
 
       private java.lang.Object playerName_ = "";
       /**
+       * <pre>
+       * TODO maybe use player id to save traffic?
+       * </pre>
+       *
        * <code>string playerName = 1;</code>
        * @return The playerName.
        */
@@ -2738,6 +2758,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * TODO maybe use player id to save traffic?
+       * </pre>
+       *
        * <code>string playerName = 1;</code>
        * @return The bytes for playerName.
        */
@@ -2755,6 +2779,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * TODO maybe use player id to save traffic?
+       * </pre>
+       *
        * <code>string playerName = 1;</code>
        * @param value The playerName to set.
        * @return This builder for chaining.
@@ -2768,6 +2796,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * TODO maybe use player id to save traffic?
+       * </pre>
+       *
        * <code>string playerName = 1;</code>
        * @return This builder for chaining.
        */
@@ -2778,6 +2810,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * TODO maybe use player id to save traffic?
+       * </pre>
+       *
        * <code>string playerName = 1;</code>
        * @param value The bytes for playerName to set.
        * @return This builder for chaining.

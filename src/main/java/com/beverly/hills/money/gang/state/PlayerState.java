@@ -3,6 +3,7 @@ package com.beverly.hills.money.gang.state;
 import com.beverly.hills.money.gang.config.GameConfig;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -11,7 +12,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static com.beverly.hills.money.gang.config.GameConfig.MAX_IDLE_TIME_MLS;
 
-
+@ToString
 public class PlayerState implements PlayerStateReader {
 
     private final AtomicLong stateChangedLastTime = new AtomicLong(System.currentTimeMillis());

@@ -11,6 +11,7 @@ import com.beverly.hills.money.gang.proto.ServerEvents;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import com.beverly.hills.money.gang.state.Game;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
@@ -31,6 +32,7 @@ import static com.beverly.hills.money.gang.factory.ServerEventsFactory.*;
 // TODO add auto-ban
 // TODO add logs
 // TODO auth
+@ChannelHandler.Sharable
 public class GameServerInboundHandler extends SimpleChannelInboundHandler<ServerCommand> implements Closeable {
 
     private final GameRoomRegistry gameRoomRegistry = new GameRoomRegistry(GAMES_TO_CREATE);
@@ -58,6 +60,8 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     private void scheduleSendBufferedMoves() {
         bufferedMovesExecutor.scheduleAtFixedRate(() -> gameRoomRegistry.getGames().forEach(game -> {
             try {
+                LOG.info("Send all moves");
+                // TODO don't send your own moves
                 ServerEvents movesEvents
                         = createMovesEventAllPlayers(
                         game.newSequenceId(),
@@ -73,10 +77,15 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
 
     private void scheduleIdlePlayerKiller() {
         idlePlayersKillerExecutor.scheduleAtFixedRate(() -> gameRoomRegistry.getGames().forEach(game -> {
+            LOG.info("Disconnect idle players");
             var idlePlayers = game.getPlayersRegistry().allPlayers()
                     .filter(playerStateChannel -> playerStateChannel.getPlayerState().isIdleForTooLong())
                     .collect(Collectors.toList());
-
+            if (idlePlayers.isEmpty()) {
+                LOG.info("No player to disconnect");
+                return;
+            }
+            LOG.info("Players to disconnect {}", idlePlayers);
             ServerEvents disconnectedEvents = createDisconnectedEvent(game.newSequenceId(),
                     game.playersOnline(), idlePlayers.stream()
                             .map(PlayersRegistry.PlayerStateChannel::getPlayerState));

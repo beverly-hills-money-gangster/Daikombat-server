@@ -1,8 +1,8 @@
 package com.beverly.hills.money.gang.network;
 
+import com.beverly.hills.money.gang.encrypt.HMACService;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.proto.ServerEvents;
-import com.beverly.hills.money.gang.queue.QueueReader;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -12,16 +12,27 @@ import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
+import io.netty.util.concurrent.EventExecutorGroup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class GameConnectionImpl extends AbstractGameConnection {
 
-    private Channel channel;
+    private static final Logger LOG = LoggerFactory.getLogger(GameConnectionImpl.class);
 
+    private final Channel channel;
 
-    private EventLoopGroup group;
+    private final EventLoopGroup group;
 
-    public GameConnectionImpl(HostPort hostPort, String pinCode) {
-        super(hostPort, pinCode);
+    private final AtomicReference<GameConnectionState> state = new AtomicReference<>();
+
+    public GameConnectionImpl(final HostPort hostPort) {
+        super(hostPort);
+        LOG.info("Start connecting");
+        state.set(GameConnectionState.CONNECTING);
         this.group = new NioEventLoopGroup();
         try {
             Bootstrap bootstrap = new Bootstrap();
@@ -44,36 +55,56 @@ public class GameConnectionImpl extends AbstractGameConnection {
 
                                 @Override
                                 public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-                                    errorsQueueAPI.push(cause);
+                                    LOG.error("Error occurred", cause);
+                                    try {
+                                        errorsQueueAPI.push(cause);
+                                    } finally {
+                                        disconnect();
+                                    }
                                 }
 
                             });
                         }
                     });
             this.channel = bootstrap.connect(hostPort.getHost(), hostPort.getPort()).sync().channel();
-
+            state.set(GameConnectionState.CONNECTED);
         } catch (Exception e) {
-            group.shutdownGracefully();
+            LOG.error("Error occurred", e);
+            disconnect();
             throw new RuntimeException("Can't connect to " + hostPort, e);
         }
     }
 
-    public GameConnectionImpl(HostPort hostPort) {
-        this(hostPort, null);
-    }
-
     @Override
-    public void connect() {
-
-    }
-
-    @Override
-    public void write(ServerCommand serverCommand) {
-
+    public void write(ServerCommand msg) {
+        if (isConnected()) {
+            channel.writeAndFlush(msg);
+        } else {
+            LOG.warn("Can't write using non-connected client");
+        }
     }
 
     @Override
     public void disconnect() {
-        channel.disconnect();
+        LOG.info("Disconnect");
+        Optional.ofNullable(group).ifPresent(EventExecutorGroup::shutdownGracefully);
+        Optional.ofNullable(channel).ifPresent(ChannelOutboundInvoker::close);
+        state.set(GameConnectionState.DISCONNECTED);
+    }
+
+    @Override
+    public boolean isConnected() {
+        return state.get().equals(GameConnectionState.CONNECTED);
+    }
+
+    @Override
+    public boolean isDisconnected() {
+        return state.get().equals(GameConnectionState.DISCONNECTED);
+    }
+
+    private enum GameConnectionState {
+        CONNECTING,
+        CONNECTED,
+        DISCONNECTED
     }
 }

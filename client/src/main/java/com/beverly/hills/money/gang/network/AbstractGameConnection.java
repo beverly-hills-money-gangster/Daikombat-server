@@ -8,18 +8,14 @@ import com.beverly.hills.money.gang.queue.QueueReader;
 public abstract class AbstractGameConnection {
 
     protected final HostPort hostPort;
-    protected final String pinCode;
 
     protected final QueueAPI<ServerEvents> serverEventsQueueAPI = new QueueAPI<>();
 
     protected final QueueAPI<Throwable> errorsQueueAPI = new QueueAPI<>();
 
-    public AbstractGameConnection(HostPort hostPort, String pinCode) {
+    public AbstractGameConnection(HostPort hostPort) {
         this.hostPort = hostPort;
-        this.pinCode = pinCode;
     }
-
-    public abstract void connect();
 
     public abstract void write(ServerCommand serverCommand);
 
@@ -32,4 +28,8 @@ public abstract class AbstractGameConnection {
     }
 
     public abstract void disconnect();
+
+    public abstract boolean isConnected();
+
+    public abstract boolean isDisconnected();
 }

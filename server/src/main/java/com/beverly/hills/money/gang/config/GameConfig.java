@@ -1,6 +1,7 @@
 package com.beverly.hills.money.gang.config;
 
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 public interface GameConfig {
@@ -11,7 +12,6 @@ public interface GameConfig {
     int IDLE_PLAYERS_KILLER_FREQUENCY_MLS = NumberUtils.toInt(System.getenv("IDLE_PLAYERS_KILLER_FREQUENCY_MLS"), 10_000);
     int MAX_IDLE_TIME_MLS = NumberUtils.toInt(System.getenv("IDLE_PLAYERS_KILLER_FREQUENCY_MLS"), 30_000);
     int DEFAULT_DAMAGE = NumberUtils.toInt(System.getenv("DEFAULT_DAMAGE"), 20);
-
-    String PIN_CODE = System.getenv("PIN_CODE");
+    String PASSWORD = StringUtils.defaultIfBlank(System.getenv("PASSWORD"), "daikombat");
 
 }

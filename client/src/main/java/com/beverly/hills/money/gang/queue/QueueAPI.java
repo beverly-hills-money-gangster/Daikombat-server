@@ -3,9 +3,12 @@ package com.beverly.hills.money.gang.queue;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class QueueAPI<T> implements QueueReader<T>, QueueWriter<T> {
     private final Queue<T> queue = new ConcurrentLinkedQueue<>();
+
+    private final AtomicLong lastTimePushed = new AtomicLong();
 
     @Override
     public int size() {
@@ -19,6 +22,7 @@ public class QueueAPI<T> implements QueueReader<T>, QueueWriter<T> {
 
     @Override
     public void push(T event) {
+        lastTimePushed.set(System.currentTimeMillis());
         queue.add(event);
     }
 

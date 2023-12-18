@@ -22,7 +22,7 @@ import static com.beverly.hills.money.gang.factory.ServerEventsFactory.createErr
 @ChannelHandler.Sharable
 public class AuthInboundHandler extends SimpleChannelInboundHandler<ServerCommand> {
 
-    private final HMACService hmacService = new HMACService(GameConfig.PIN_CODE);
+    private final HMACService hmacService = new HMACService(GameConfig.PASSWORD);
 
     private static final Logger LOG = LoggerFactory.getLogger(GameServerInboundHandler.class);
 

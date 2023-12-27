@@ -1,52 +1,53 @@
 package com.beverly.hills.money.gang.handler.inbound;
 
 import com.beverly.hills.money.gang.config.GameConfig;
-import com.beverly.hills.money.gang.encrypt.HMACService;
+import com.beverly.hills.money.gang.encrypt.ServerHMACService;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.proto.ServerCommand;
+import com.google.protobuf.GeneratedMessageV3;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.beverly.hills.money.gang.factory.ServerEventsFactory.createErrorEvent;
+import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createErrorEvent;
 
-// TODO add rate limiting
-// TODO anti-cheat
-// TODO add chat message censoring
-// TODO add auto-ban
-// TODO add logs
-// TODO auth
+
 @ChannelHandler.Sharable
 public class AuthInboundHandler extends SimpleChannelInboundHandler<ServerCommand> {
 
-    private final HMACService hmacService = new HMACService(GameConfig.PASSWORD);
+    private final ServerHMACService hmacService = new ServerHMACService(GameConfig.PASSWORD);
 
     private static final Logger LOG = LoggerFactory.getLogger(GameServerInboundHandler.class);
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ServerCommand msg) {
         try {
+            LOG.debug("Auth message {}", msg);
             if (!msg.hasHmac()) {
                 throw new GameLogicError("No HMAC provided", GameErrorCode.AUTH_ERROR);
             }
-            byte[] commandBytes
-                    = msg.hasJoinGameCommand() ? msg.getJoinGameCommand().toByteArray()
-                    : msg.hasChatCommand() ? msg.getChatCommand().toByteArray()
-                    : msg.hasGameCommand() ? msg.getGameCommand().toByteArray() : null;
-            if (commandBytes == null) {
+            GeneratedMessageV3 command = msg.hasGameCommand() ? msg.getGameCommand()
+                    : msg.hasChatCommand() ? msg.getChatCommand()
+                    : msg.hasJoinGameCommand() ? msg.getJoinGameCommand()
+                    : msg.hasGetServerInfoCommand() ? msg.getGetServerInfoCommand()
+                    : null;
+
+            if (command == null) {
                 throw new GameLogicError("No command specified", GameErrorCode.AUTH_ERROR);
-            }
-            if (!hmacService.isValidMac(commandBytes, msg.getHmac().toByteArray())) {
+            } else if (!hmacService.isValidMac(command.toByteArray(), msg.getHmac().toByteArray())) {
                 throw new GameLogicError("Invalid HMAC", GameErrorCode.AUTH_ERROR);
             }
+            ctx.fireChannelRead(msg);
         } catch (GameLogicError ex) {
+            LOG.error("Game logic error", ex);
             ctx.writeAndFlush(createErrorEvent(ex));
             ctx.close();
         }
     }
+
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {

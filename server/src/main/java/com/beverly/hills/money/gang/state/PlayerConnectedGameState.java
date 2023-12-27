@@ -4,14 +4,11 @@ import lombok.Builder;
 import lombok.Getter;
 
 
-public class PlayerConnectedGameState extends GameState {
+@Getter
+@Builder
+public class PlayerConnectedGameState {
 
     @Getter
     private final PlayerStateReader playerStateReader;
 
-    @Builder
-    public PlayerConnectedGameState(long newGameStateId, PlayerStateReader playerStateReader) {
-        super(newGameStateId);
-        this.playerStateReader = playerStateReader;
-    }
 }

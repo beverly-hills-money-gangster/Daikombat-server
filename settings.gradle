@@ -3,4 +3,5 @@ include 'server'
 include 'client'
 include 'schema'
 include 'schema'
+include 'integration-test'
 

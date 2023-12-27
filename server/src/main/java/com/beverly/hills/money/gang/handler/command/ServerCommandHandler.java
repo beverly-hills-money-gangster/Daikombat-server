@@ -8,5 +8,5 @@ import io.netty.channel.Channel;
 
 public interface ServerCommandHandler {
 
-    void handle(ServerCommand msg, Game game, Channel currentChannel) throws GameLogicError;
+    void handle(ServerCommand msg, Channel currentChannel) throws GameLogicError;
 }

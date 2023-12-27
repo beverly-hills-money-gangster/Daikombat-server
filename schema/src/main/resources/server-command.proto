@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package daikombat.dto;
+
+option java_multiple_files = true;
+option java_package = "com.beverly.hills.money.gang.proto";
+
+message ServerCommand {
+
+  optional bytes hmac = 2;
+  oneof command {
+    PushChatEventCommand chatCommand = 3;
+    PushGameEventCommand gameCommand = 4;
+    JoinGameCommand joinGameCommand = 5;
+    GetServerInfoCommand getServerInfoCommand = 6;
+  }
+}
+
+message GetServerInfoCommand {}
+
+message PushChatEventCommand {
+  int32 gameId = 1;
+  string message = 2;
+  int32 playerId = 3;
+}
+
+message JoinGameCommand {
+  int32 gameId = 1;
+  string playerName = 3;
+}
+
+message PushGameEventCommand {
+  int32 gameId = 1;
+  GameEventType eventType = 2;
+  Vector position = 3;
+  Vector direction = 4;
+  int32 playerId = 5;
+  optional int32 affectedPlayerId = 6;
+
+  message Vector {
+    float x = 1;
+    float y = 2;
+  }
+
+  enum GameEventType {
+    MOVE = 0;
+    SHOOT = 1;
+  }
+}

@@ -4,21 +4,27 @@ import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerCommand;
+import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerShootingGameState;
 import com.beverly.hills.money.gang.state.PlayerState;
 import com.beverly.hills.money.gang.state.Vector;
 import io.netty.channel.Channel;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
-import static com.beverly.hills.money.gang.factory.ServerEventsFactory.*;
+import static com.beverly.hills.money.gang.factory.ServerResponseFactory.*;
 
+@RequiredArgsConstructor
 public class GameServerCommandHandler implements ServerCommandHandler {
 
+    private final GameRoomRegistry gameRoomRegistry;
+
     @Override
-    public void handle(ServerCommand msg, Game game, Channel currentChannel) throws GameLogicError {
+    public void handle(ServerCommand msg, Channel currentChannel) throws GameLogicError {
+        Game game = gameRoomRegistry.getGame(msg.getGameCommand().getGameId());
         PushGameEventCommand gameCommand = msg.getGameCommand();
         PushGameEventCommand.GameEventType gameEventType = gameCommand.getEventType();
         PlayerState.PlayerCoordinates playerCoordinates = PlayerState.PlayerCoordinates
@@ -41,8 +47,6 @@ public class GameServerCommandHandler implements ServerCommandHandler {
                         .ifPresentOrElse(shotPlayer -> {
                             if (shotPlayer.isDead()) {
                                 var deadEvent = createDeadEvent(
-                                        shootingGameState.getNewGameStateId(),
-                                        game.playersOnline(),
                                         shootingGameState.getShootingPlayer(),
                                         shootingGameState.getPlayerShot());
                                 game.getPlayersRegistry().allPlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
@@ -50,7 +54,6 @@ public class GameServerCommandHandler implements ServerCommandHandler {
                                 game.getPlayersRegistry().removePlayer(shotPlayer.getPlayerId());
                             } else {
                                 var shotEvent = createGetShotEvent(
-                                        shootingGameState.getNewGameStateId(),
                                         game.playersOnline(),
                                         shootingGameState.getShootingPlayer(),
                                         shootingGameState.getPlayerShot());
@@ -59,7 +62,6 @@ public class GameServerCommandHandler implements ServerCommandHandler {
                             }
                         }, () -> {
                             var shootingEvent = createShootingEvent(
-                                    shootingGameState.getNewGameStateId(),
                                     game.playersOnline(),
                                     shootingGameState.getShootingPlayer());
                             game.getPlayersRegistry().allPlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)

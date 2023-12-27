@@ -2,15 +2,11 @@ package com.beverly.hills.money.gang.handler.inbound;
 
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
-import com.beverly.hills.money.gang.handler.command.ChatServerCommandHandler;
-import com.beverly.hills.money.gang.handler.command.GameServerCommandHandler;
-import com.beverly.hills.money.gang.handler.command.PlayerConnectedServerCommandHandler;
-import com.beverly.hills.money.gang.handler.command.ServerCommandHandler;
+import com.beverly.hills.money.gang.handler.command.*;
 import com.beverly.hills.money.gang.proto.ServerCommand;
-import com.beverly.hills.money.gang.proto.ServerEvents;
+import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
-import com.beverly.hills.money.gang.state.Game;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -24,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.beverly.hills.money.gang.config.GameConfig.*;
-import static com.beverly.hills.money.gang.factory.ServerEventsFactory.*;
+import static com.beverly.hills.money.gang.factory.ServerResponseFactory.*;
 
 // TODO add rate limiting
 // TODO anti-cheat
@@ -46,11 +42,13 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     private final ScheduledExecutorService idlePlayersKillerExecutor = Executors.newScheduledThreadPool(1);
 
     private final ServerCommandHandler playerConnectedServerCommandHandler
-            = new PlayerConnectedServerCommandHandler();
-
-    private final ServerCommandHandler chatServerCommandHandler = new ChatServerCommandHandler();
-
-    private final ServerCommandHandler gameServerCommandHandler = new GameServerCommandHandler();
+            = new PlayerConnectedServerCommandHandler(gameRoomRegistry);
+    private final ServerCommandHandler chatServerCommandHandler
+            = new ChatServerCommandHandler(gameRoomRegistry);
+    private final ServerCommandHandler gameServerCommandHandler
+            = new GameServerCommandHandler(gameRoomRegistry);
+    private final GetServerInfoCommandHandler getServerInfoCommandHandler
+            = new GetServerInfoCommandHandler(gameRoomRegistry);
 
     public GameServerInboundHandler() {
         scheduleSendBufferedMoves();
@@ -62,9 +60,8 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
             try {
                 LOG.info("Send all moves");
                 // TODO don't send your own moves
-                ServerEvents movesEvents
+                ServerResponse movesEvents
                         = createMovesEventAllPlayers(
-                        game.newSequenceId(),
                         game.playersOnline(),
                         game.getBufferedMoves());
                 game.getPlayersRegistry().allPlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
@@ -86,9 +83,11 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
                 return;
             }
             LOG.info("Players to disconnect {}", idlePlayers);
-            ServerEvents disconnectedEvents = createDisconnectedEvent(game.newSequenceId(),
-                    game.playersOnline(), idlePlayers.stream()
+            ServerResponse disconnectedEvents = createDisconnectedEvent(
+                    game.playersOnline(),
+                    idlePlayers.stream()
                             .map(PlayersRegistry.PlayerStateChannel::getPlayerState));
+
             idlePlayers.forEach(playerStateChannel
                     -> game.getPlayersRegistry()
                     .removePlayer(playerStateChannel.getPlayerState().getPlayerId()));
@@ -101,16 +100,20 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ServerCommand msg) {
         try {
-            Game game = gameRoomRegistry.getGame(msg.getGameId());
+            LOG.debug("Game message {}", msg);
+            ServerCommandHandler serverCommandHandler;
             if (msg.hasJoinGameCommand()) {
-                playerConnectedServerCommandHandler.handle(msg, game, ctx.channel());
+                serverCommandHandler = playerConnectedServerCommandHandler;
             } else if (msg.hasGameCommand()) {
-                gameServerCommandHandler.handle(msg, game, ctx.channel());
+                serverCommandHandler = gameServerCommandHandler;
             } else if (msg.hasChatCommand()) {
-                chatServerCommandHandler.handle(msg, game, ctx.channel());
+                serverCommandHandler = chatServerCommandHandler;
+            } else if (msg.hasGetServerInfoCommand()) {
+                serverCommandHandler = getServerInfoCommandHandler;
             } else {
                 throw new GameLogicError("Command is not recognized", GameErrorCode.COMMAND_NOT_RECOGNIZED);
             }
+            serverCommandHandler.handle(msg, ctx.channel());
         } catch (GameLogicError e) {
             LOG.warn("Game logic error", e);
             ctx.writeAndFlush(createErrorEvent(e));

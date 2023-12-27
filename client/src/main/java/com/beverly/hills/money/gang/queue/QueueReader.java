@@ -6,5 +6,5 @@ public interface QueueReader<T> {
 
     int size();
 
-    Optional<T> pollEvent();
+    Optional<T> poll();
 }

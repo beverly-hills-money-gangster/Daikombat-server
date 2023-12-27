@@ -1,5 +1,6 @@
 package com.beverly.hills.money.gang.state;
 
+import com.beverly.hills.money.gang.config.GameConfig;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
@@ -15,18 +16,16 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class Game implements Closeable {
+public class Game implements Closeable, GameReader {
 
     private static final Logger LOG = LoggerFactory.getLogger(Game.class);
 
     @Getter
     private final int id;
     private final AtomicInteger playerIdGenerator = new AtomicInteger();
-    private final AtomicLong gameStateId = new AtomicLong();
 
     @Getter
     private final PlayersRegistry playersRegistry = new PlayersRegistry();
@@ -42,8 +41,7 @@ public class Game implements Closeable {
         PlayerState connectedPlayerState = new PlayerState(playerName, spawn, playerId);
         playersRegistry.addPlayer(connectedPlayerState, playerChannel);
         return PlayerConnectedGameState.builder()
-                .playerStateReader(connectedPlayerState)
-                .newGameStateId(newSequenceId()).build();
+                .playerStateReader(connectedPlayerState).build();
     }
 
     public PlayerShootingGameState shoot(final PlayerState.PlayerCoordinates shootingPlayerCoordinates,
@@ -66,7 +64,6 @@ public class Game implements Closeable {
         if (shotPlayerId == null) {
             // if nobody was shot
             return PlayerShootingGameState.builder()
-                    .newGameStateId(newSequenceId())
                     .shootingPlayer(shootingPlayerState)
                     .playerShot(null).build();
         }
@@ -86,7 +83,6 @@ public class Game implements Closeable {
             return null;
         }
         return PlayerShootingGameState.builder()
-                .newGameStateId(newSequenceId())
                 .shootingPlayer(shootingPlayerState)
                 .playerShot(shotPlayerState)
                 .build();
@@ -95,7 +91,6 @@ public class Game implements Closeable {
     public void bufferMove(final int movingPlayerId, final PlayerState.PlayerCoordinates playerCoordinates) throws GameLogicError {
         validateGameNotClosed();
         move(movingPlayerId, playerCoordinates);
-        newSequenceId();
     }
 
     public Stream<PlayerStateReader> getBufferedMoves() {
@@ -108,14 +103,19 @@ public class Game implements Closeable {
                 .forEach(PlayerState::flushMove);
     }
 
+    @Override
+    public int gameId() {
+        return id;
+    }
+
     public int playersOnline() {
         return playersRegistry.playersOnline();
     }
 
-    public long newSequenceId() {
-        return gameStateId.incrementAndGet();
+    @Override
+    public int maxPlayersAvailable() {
+        return GameConfig.MAX_PLAYERS_PER_GAME;
     }
-
 
     public Stream<PlayerStateReader> readPlayers() {
         return playersRegistry.allPlayers().map(PlayersRegistry.PlayerStateChannel::getPlayerState)

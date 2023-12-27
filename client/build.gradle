@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'java-library'
     id "io.freefair.lombok" version "8.0.1"
 }
 
@@ -14,9 +15,9 @@ dependencies {
     testImplementation platform('org.junit:junit-bom:5.9.1')
     // https://mvnrepository.com/artifact/org.mockito/mockito-core
     testImplementation 'org.mockito:mockito-core:4.0.0'
-    // https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java
-    implementation 'com.google.protobuf:protobuf-java:3.25.0'
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    // https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java
+    api 'com.google.protobuf:protobuf-java:3.25.0'
     // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
     implementation 'ch.qos.logback:logback-classic:1.4.11'
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api

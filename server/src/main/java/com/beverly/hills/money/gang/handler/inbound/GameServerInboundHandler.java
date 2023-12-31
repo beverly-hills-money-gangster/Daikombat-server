@@ -58,6 +58,9 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     private void scheduleSendBufferedMoves() {
         bufferedMovesExecutor.scheduleAtFixedRate(() -> gameRoomRegistry.getGames().forEach(game -> {
             try {
+                if (game.getPlayersRegistry().playersOnline() == 0) {
+                    return;
+                }
                 LOG.info("Send all moves");
                 // TODO don't send your own moves
                 ServerResponse movesEvents
@@ -74,6 +77,9 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
 
     private void scheduleIdlePlayerKiller() {
         idlePlayersKillerExecutor.scheduleAtFixedRate(() -> gameRoomRegistry.getGames().forEach(game -> {
+            if (game.getPlayersRegistry().playersOnline() == 0) {
+                return;
+            }
             LOG.info("Disconnect idle players");
             var idlePlayers = game.getPlayersRegistry().allPlayers()
                     .filter(playerStateChannel -> playerStateChannel.getPlayerState().isIdleForTooLong())

@@ -20,12 +20,26 @@ import io.netty.util.concurrent.EventExecutorGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class GameConnection {
 
     private static final Logger LOG = LoggerFactory.getLogger(GameConnection.class);
+
+    private static final int MAX_SERVER_INACTIVE_MLS = 5_000;
+
+    private final ScheduledExecutorService idleServerDisconnector = Executors.newScheduledThreadPool(1);
+
+    private final AtomicLong lastServerActivityMls = new AtomicLong();
+
+    private final AtomicBoolean joinedGame = new AtomicBoolean();
 
     private final QueueAPI<ServerResponse> serverEventsQueueAPI = new QueueAPI<>();
 
@@ -40,7 +54,7 @@ public class GameConnection {
 
     private final AtomicReference<GameConnectionState> state = new AtomicReference<>();
 
-    public GameConnection(final GameServerCreds gameServerCreds) {
+    public GameConnection(final GameServerCreds gameServerCreds) throws IOException {
         this.hmacService = new ClientHMACService(gameServerCreds.getPassword());
         LOG.info("Start connecting");
         state.set(GameConnectionState.CONNECTING);
@@ -61,6 +75,7 @@ public class GameConnection {
 
                                 @Override
                                 protected void channelRead0(ChannelHandlerContext ctx, ServerResponse msg) {
+                                    lastServerActivityMls.set(System.currentTimeMillis());
                                     serverEventsQueueAPI.push(msg);
                                 }
 
@@ -80,12 +95,22 @@ public class GameConnection {
             this.channel = bootstrap.connect(
                     gameServerCreds.getHostPort().getHost(),
                     gameServerCreds.getHostPort().getPort()).sync().channel();
+            idleServerDisconnector.scheduleAtFixedRate(() -> {
+                if (joinedGame.get() && isServerIdleForTooLong()) {
+                    LOG.info("Server is inactive");
+                    errorsQueueAPI.push(new IOException("Server is inactive for too long"));
+                }
+            }, 10_000, 10_000, TimeUnit.MILLISECONDS);
             state.set(GameConnectionState.CONNECTED);
         } catch (Exception e) {
             LOG.error("Error occurred", e);
             disconnect();
-            throw new RuntimeException("Can't connect to " + gameServerCreds.getHostPort(), e);
+            throw new IOException("Can't connect to " + gameServerCreds.getHostPort(), e);
         }
+    }
+
+    private boolean isServerIdleForTooLong() {
+        return (System.currentTimeMillis() - lastServerActivityMls.get()) > MAX_SERVER_INACTIVE_MLS;
     }
 
     public void write(PushGameEventCommand pushGameEventCommand) {
@@ -98,6 +123,7 @@ public class GameConnection {
 
     public void write(JoinGameCommand joinGameCommand) {
         writeLocal(joinGameCommand);
+        joinedGame.set(true);
     }
 
     public void write(GetServerInfoCommand getServerInfoCommand) {
@@ -129,8 +155,22 @@ public class GameConnection {
 
     public void disconnect() {
         LOG.info("Disconnect");
-        Optional.ofNullable(group).ifPresent(EventExecutorGroup::shutdownGracefully);
-        Optional.ofNullable(channel).ifPresent(ChannelOutboundInvoker::close);
+        try {
+            Optional.ofNullable(group).ifPresent(EventExecutorGroup::shutdownGracefully);
+        } catch (Exception e) {
+            LOG.error("Can't shutdown bootstrap group", e);
+        }
+        try {
+            Optional.ofNullable(channel).ifPresent(ChannelOutboundInvoker::close);
+
+        } catch (Exception e) {
+            LOG.error("Can't close channel", e);
+        }
+        try {
+            idleServerDisconnector.shutdownNow();
+        } catch (Exception e) {
+            LOG.error("Can't shutdown idle server disconnector", e);
+        }
         state.set(GameConnectionState.DISCONNECTED);
     }
 

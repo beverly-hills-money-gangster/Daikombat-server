@@ -42,7 +42,7 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     private final ScheduledExecutorService idlePlayersKillerExecutor = Executors.newScheduledThreadPool(1);
 
     private final ServerCommandHandler playerConnectedServerCommandHandler
-            = new PlayerConnectedServerCommandHandler(gameRoomRegistry);
+            = new PlayerConnectServerCommandHandler(gameRoomRegistry);
     private final ServerCommandHandler chatServerCommandHandler
             = new ChatServerCommandHandler(gameRoomRegistry);
     private final ServerCommandHandler gameServerCommandHandler
@@ -106,7 +106,6 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ServerCommand msg) {
         try {
-            LOG.debug("Game message {}", msg);
             ServerCommandHandler serverCommandHandler;
             if (msg.hasJoinGameCommand()) {
                 serverCommandHandler = playerConnectedServerCommandHandler;
@@ -123,6 +122,7 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
         } catch (GameLogicError e) {
             LOG.warn("Game logic error", e);
             ctx.writeAndFlush(createErrorEvent(e));
+            ctx.close();
         }
     }
 

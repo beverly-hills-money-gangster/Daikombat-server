@@ -12,13 +12,12 @@ import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createS
 @RequiredArgsConstructor
 public class GetServerInfoCommandHandler implements ServerCommandHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PlayerConnectedServerCommandHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PlayerConnectServerCommandHandler.class);
 
     private final GameRoomRegistry gameRoomRegistry;
 
     @Override
     public void handle(ServerCommand msg, Channel currentChannel) {
-        LOG.info("Handle server info command {}", msg);
         currentChannel.writeAndFlush(createServerInfo(gameRoomRegistry.getGames().map(game -> game)));
     }
 }

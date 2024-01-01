@@ -48,7 +48,7 @@ public interface ServerResponseFactory {
     }
 
     static ServerResponse createSpawnEventAllPlayers(int playersOnline,
-                                                     Stream<PlayerStateReader> playersSate) {
+                                                     List<PlayerStateReader> playersSate) {
         var allPlayersSpawns = ServerResponse.GameEvents.newBuilder();
         playersSate.forEach(playerStateReader
                 -> allPlayersSpawns.addEvents(createSpawnEvent(playerStateReader)));

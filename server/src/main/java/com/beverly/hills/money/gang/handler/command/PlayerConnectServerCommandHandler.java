@@ -12,13 +12,15 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.stream.Collectors;
+
 import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createSpawnEventAllPlayers;
 import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createSpawnEventSinglePlayer;
 
 @RequiredArgsConstructor
-public class PlayerConnectedServerCommandHandler implements ServerCommandHandler {
+public class PlayerConnectServerCommandHandler implements ServerCommandHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PlayerConnectedServerCommandHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PlayerConnectServerCommandHandler.class);
 
     private final GameRoomRegistry gameRoomRegistry;
 
@@ -28,14 +30,21 @@ public class PlayerConnectedServerCommandHandler implements ServerCommandHandler
         LOG.info("Connect player {}", msg);
         PlayerConnectedGameState playerConnected = game.connectPlayer(msg.getJoinGameCommand().getPlayerName(), currentChannel);
         ServerResponse playerSpawnEvent = createSpawnEventSinglePlayer(playerConnected);
-        LOG.info("Send connected player to all other players");
+        LOG.info("Send connected player to all players");
+
         game.getPlayersRegistry().allPlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
                 .forEach(playerChannel -> playerChannel.writeAndFlush(playerSpawnEvent));
-        LOG.info("Send all players positions to the connected player");
-        ServerResponse allPlayersSpawnEvent =
-                createSpawnEventAllPlayers(
-                        game.playersOnline(),
-                        game.readPlayers());
-        currentChannel.writeAndFlush(allPlayersSpawnEvent);
+
+        var allOtherPlayers = game.readPlayers().filter(playerStateReader
+                        -> playerStateReader.getPlayerId() != playerConnected.getPlayerStateReader().getPlayerId())
+                .collect(Collectors.toList());
+        if (!allOtherPlayers.isEmpty()) {
+            LOG.info("Send all players positions to the connected player");
+            ServerResponse allPlayersSpawnEvent =
+                    createSpawnEventAllPlayers(
+                            game.playersOnline(),
+                            allOtherPlayers);
+            currentChannel.writeAndFlush(allPlayersSpawnEvent);
+        }
     }
 }

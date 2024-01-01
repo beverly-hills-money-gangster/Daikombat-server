@@ -15,7 +15,7 @@ import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createC
 @RequiredArgsConstructor
 public class ChatServerCommandHandler implements ServerCommandHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PlayerConnectedServerCommandHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PlayerConnectServerCommandHandler.class);
 
     private final GameRoomRegistry gameRoomRegistry;
 

@@ -75,9 +75,7 @@ public class ServerRunner {
     }
 
     public void stop() {
-        if (!stateRef.compareAndSet(State.RUNNING, State.STOPPING)) {
-            throw new IllegalStateException("Can't stop!");
-        }
+        stateRef.set(State.STOPPING);
         try {
             gameServerInitializerRef.get().close();
         } catch (Exception e) {

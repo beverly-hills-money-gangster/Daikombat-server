@@ -1,8 +1,11 @@
 package com.beverly.hills.money.gang.queue;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.Collectors;
 
 public class QueueAPI<T> implements QueueReader<T>, QueueWriter<T> {
     private final Queue<T> queue = new ConcurrentLinkedQueue<>();
@@ -16,6 +19,11 @@ public class QueueAPI<T> implements QueueReader<T>, QueueWriter<T> {
     @Override
     public Optional<T> poll() {
         return Optional.ofNullable(queue.poll());
+    }
+
+    @Override
+    public List<T> list() {
+        return new ArrayList<>(queue);
     }
 
     @Override

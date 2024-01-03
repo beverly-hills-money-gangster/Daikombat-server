@@ -54,7 +54,7 @@ public abstract class AbstractGameServerTest {
         }
     }
 
-    protected void readAllQueueEvents(QueueReader<ServerResponse> queueReader) {
+    protected void emptyQueue(QueueReader<ServerResponse> queueReader) {
         while (queueReader.poll().isPresent()) {
             // just read them all and that's it
         }

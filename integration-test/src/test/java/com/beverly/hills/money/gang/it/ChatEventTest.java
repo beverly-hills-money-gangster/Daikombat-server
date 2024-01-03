@@ -8,7 +8,9 @@ import com.beverly.hills.money.gang.proto.ServerResponse;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
@@ -37,7 +39,7 @@ public class ChatEventTest extends AbstractGameServerTest {
         }
 
         for (GameConnection gameConnection : gameConnections) {
-            readAllQueueEvents(gameConnection.getResponse());
+            emptyQueue(gameConnection.getResponse());
         }
 
         players.forEach((playerId, gameConnection) -> gameConnection.write(PushChatEventCommand.newBuilder()
@@ -48,14 +50,7 @@ public class ChatEventTest extends AbstractGameServerTest {
 
         assertEquals(GameConfig.MAX_PLAYERS_PER_GAME, players.size(), "The server must be full");
         players.forEach((playerId, gameConnection) -> {
-            List<ServerResponse> responses = new ArrayList<>();
-            while (true) {
-                Optional<ServerResponse> responseOpt = gameConnection.getResponse().poll();
-                if (responseOpt.isEmpty()) {
-                    break;
-                }
-                responses.add(responseOpt.get());
-            }
+            List<ServerResponse> responses = gameConnection.getResponse().list();
             assertEquals(GameConfig.MAX_PLAYERS_PER_GAME - 1, responses.size(),
                     "We must have MAX_PLAYERS-1 messages for every player." +
                             " -1 because you don't send your own message to yourself. Actual responses are:" + responses);
@@ -90,7 +85,7 @@ public class ChatEventTest extends AbstractGameServerTest {
         }
 
         for (GameConnection gameConnection : gameConnections) {
-            readAllQueueEvents(gameConnection.getResponse());
+            emptyQueue(gameConnection.getResponse());
         }
         CountDownLatch latch = new CountDownLatch(1);
         List<Thread> threads = players.entrySet().stream().map(player -> new Thread(() -> {
@@ -120,14 +115,7 @@ public class ChatEventTest extends AbstractGameServerTest {
 
         assertEquals(GameConfig.MAX_PLAYERS_PER_GAME, players.size(), "The server must be full");
         players.forEach((playerId, gameConnection) -> {
-            List<ServerResponse> responses = new ArrayList<>();
-            while (true) {
-                Optional<ServerResponse> responseOpt = gameConnection.getResponse().poll();
-                if (responseOpt.isEmpty()) {
-                    break;
-                }
-                responses.add(responseOpt.get());
-            }
+            List<ServerResponse> responses = gameConnection.getResponse().list();
             assertEquals(GameConfig.MAX_PLAYERS_PER_GAME - 1, responses.size(),
                     "We must have MAX_PLAYERS-1 messages for every player." +
                             " -1 because you don't send your own message to yourself. Actual responses are:" + responses);

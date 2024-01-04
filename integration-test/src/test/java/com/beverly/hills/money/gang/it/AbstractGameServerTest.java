@@ -17,6 +17,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 // TODO finish it
     /*
+    Don't send moves in tests
     Add more comments
     Can a client see that it was closed?
     Test all commands

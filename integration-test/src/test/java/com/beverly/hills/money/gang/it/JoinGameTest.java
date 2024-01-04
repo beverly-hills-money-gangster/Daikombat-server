@@ -1,12 +1,13 @@
 package com.beverly.hills.money.gang.it;
 
-import com.beverly.hills.money.gang.config.GameConfig;
+import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
 import java.io.IOException;
 import java.util.*;
@@ -14,11 +15,13 @@ import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SetEnvironmentVariable(key = "MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
 public class JoinGameTest extends AbstractGameServerTest {
+
     @Test
     public void testJoinGame() throws Exception {
         int gameIdToConnectTo = 0;
-        GameConnection gameConnection = createGameConnection(GameConfig.PASSWORD, "localhost", port);
+        GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection.write(
                 JoinGameCommand.newBuilder()
                         .setPlayerName("my player name")
@@ -42,12 +45,12 @@ public class JoinGameTest extends AbstractGameServerTest {
         ServerResponse serverResponse = gameConnection.getResponse().poll().get();
         assertTrue(serverResponse.hasServerInfo(), "Must include server info only");
         List<ServerResponse.GameInfo> games = serverResponse.getServerInfo().getGamesList();
-        assertEquals(GameConfig.GAMES_TO_CREATE, games.size());
+        assertEquals(ServerConfig.GAMES_TO_CREATE, games.size());
         ServerResponse.GameInfo myGame = games.stream().filter(gameInfo -> gameInfo.getGameId() == gameIdToConnectTo).findFirst()
                 .orElseThrow((Supplier<Exception>) () -> new IllegalStateException("Can't find the game we connected to"));
         assertEquals(1, myGame.getPlayersOnline(), "It's only me now");
         for (ServerResponse.GameInfo gameInfo : games) {
-            assertEquals(GameConfig.MAX_PLAYERS_PER_GAME, gameInfo.getMaxGamePlayers());
+            assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, gameInfo.getMaxGamePlayers());
             if (gameInfo.getGameId() != gameIdToConnectTo) {
                 assertEquals(0, gameInfo.getPlayersOnline(), "Should be no connected players yet");
             }
@@ -57,7 +60,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     @Test
     public void testJoinGameNotExistingGame() throws IOException, InterruptedException {
         int gameIdToConnectTo = 666;
-        GameConnection gameConnection = createGameConnection(GameConfig.PASSWORD, "localhost", port);
+        GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection.write(
                 JoinGameCommand.newBuilder()
                         .setPlayerName("my player name")
@@ -73,7 +76,7 @@ public class JoinGameTest extends AbstractGameServerTest {
         assertEquals("Not existing game room", errorEvent.getMessage());
 
         // need a new game connection because the previous is closed
-        var newGameConnection = createGameConnection(GameConfig.PASSWORD, "localhost", port);
+        var newGameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         newGameConnection.write(GetServerInfoCommand.newBuilder().build());
         Thread.sleep(50);
         assertEquals(0, newGameConnection.getErrors().size(), "Should be no error");
@@ -81,24 +84,24 @@ public class JoinGameTest extends AbstractGameServerTest {
 
         ServerResponse gamesInfoServerResponse = newGameConnection.getResponse().poll().get();
         List<ServerResponse.GameInfo> games = gamesInfoServerResponse.getServerInfo().getGamesList();
-        assertEquals(GameConfig.GAMES_TO_CREATE, games.size());
+        assertEquals(ServerConfig.GAMES_TO_CREATE, games.size());
         for (ServerResponse.GameInfo gameInfo : games) {
-            assertEquals(GameConfig.MAX_PLAYERS_PER_GAME, gameInfo.getMaxGamePlayers());
+            assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, gameInfo.getMaxGamePlayers());
             assertEquals(0, gameInfo.getPlayersOnline(), "Should be no connected players yet");
         }
     }
 
     @Test
     public void testJoinGameTooMany() throws IOException, InterruptedException {
-        for (int i = 0; i < GameConfig.MAX_PLAYERS_PER_GAME; i++) {
-            GameConnection gameConnection = createGameConnection(GameConfig.PASSWORD, "localhost", port);
+        for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
+            GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
             gameConnection.write(
                     JoinGameCommand.newBuilder()
                             .setPlayerName("my player name " + i)
                             .setGameId(0).build());
         }
 
-        GameConnection gameConnection = createGameConnection(GameConfig.PASSWORD, "localhost", port);
+        GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection.write(
                 JoinGameCommand.newBuilder()
                         .setPlayerName("my player name")
@@ -118,8 +121,8 @@ public class JoinGameTest extends AbstractGameServerTest {
     public void testJoinGameMultiplePlayers() throws Exception {
         int gameIdToConnectTo = 0;
         Map<Integer, ServerResponse.Vector> connectedPlayersPositions = new HashMap<>();
-        for (int i = 0; i < GameConfig.MAX_PLAYERS_PER_GAME - 1; i++) {
-            GameConnection gameConnection = createGameConnection(GameConfig.PASSWORD, "localhost", port);
+        for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME - 1; i++) {
+            GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
             gameConnection.write(
                     JoinGameCommand.newBuilder()
                             .setPlayerName("my player name " + i)
@@ -129,10 +132,10 @@ public class JoinGameTest extends AbstractGameServerTest {
             var mySpawnEvent = mySpawnResponse.getGameEvents().getEvents(0);
             connectedPlayersPositions.put(mySpawnEvent.getPlayer().getPlayerId(), mySpawnEvent.getPlayer().getPosition());
         }
-        assertEquals(GameConfig.MAX_PLAYERS_PER_GAME - 1, connectedPlayersPositions.size(),
+        assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME - 1, connectedPlayersPositions.size(),
                 "All players must have unique ids. Something is off");
 
-        GameConnection gameConnection = createGameConnection(GameConfig.PASSWORD, "localhost", port);
+        GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection.write(
                 JoinGameCommand.newBuilder()
                         .setPlayerName("my player name")
@@ -152,8 +155,8 @@ public class JoinGameTest extends AbstractGameServerTest {
 
 
         ServerResponse allOtherPlayersResponse = gameConnection.getResponse().poll().get();
-        assertEquals(GameConfig.MAX_PLAYERS_PER_GAME, allOtherPlayersResponse.getGameEvents().getPlayersOnline());
-        assertEquals(GameConfig.MAX_PLAYERS_PER_GAME - 1, allOtherPlayersResponse.getGameEvents().getEventsCount(),
+        assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, allOtherPlayersResponse.getGameEvents().getPlayersOnline());
+        assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME - 1, allOtherPlayersResponse.getGameEvents().getEventsCount(),
                 "Should be spawns of all players but me");
         Set<Integer> spawnedPlayersIds = new HashSet<>();
         allOtherPlayersResponse.getGameEvents().getEventsList().forEach(gameEvent -> {
@@ -176,13 +179,13 @@ public class JoinGameTest extends AbstractGameServerTest {
         ServerResponse serverResponse = gameConnection.getResponse().poll().get();
         assertTrue(serverResponse.hasServerInfo(), "Must include server info only");
         List<ServerResponse.GameInfo> games = serverResponse.getServerInfo().getGamesList();
-        assertEquals(GameConfig.GAMES_TO_CREATE, games.size());
+        assertEquals(ServerConfig.GAMES_TO_CREATE, games.size());
         ServerResponse.GameInfo myGame = games.stream().filter(gameInfo -> gameInfo.getGameId() == gameIdToConnectTo).findFirst()
                 .orElseThrow((Supplier<Exception>) () -> new IllegalStateException("Can't find the game we connected to"));
-        assertEquals(GameConfig.MAX_PLAYERS_PER_GAME, myGame.getPlayersOnline(), "We should connect all players");
+        assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, myGame.getPlayersOnline(), "We should connect all players");
 
         for (ServerResponse.GameInfo gameInfo : games) {
-            assertEquals(GameConfig.MAX_PLAYERS_PER_GAME, gameInfo.getMaxGamePlayers());
+            assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, gameInfo.getMaxGamePlayers());
             if (gameInfo.getGameId() != gameIdToConnectTo) {
                 assertEquals(0, gameInfo.getPlayersOnline(), "Should be no connected players yet");
             }

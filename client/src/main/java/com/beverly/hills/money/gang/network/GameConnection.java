@@ -17,6 +17,7 @@ import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import io.netty.util.concurrent.EventExecutorGroup;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +34,7 @@ public class GameConnection {
 
     private static final Logger LOG = LoggerFactory.getLogger(GameConnection.class);
 
-    private static final int MAX_SERVER_INACTIVE_MLS = 5_000;
+    private static final int MAX_SERVER_INACTIVE_MLS = NumberUtils.toInt(System.getenv("MAX_SERVER_INACTIVE_MLS"), 5_000);
 
     private final ScheduledExecutorService idleServerDisconnector = Executors.newScheduledThreadPool(1);
 
@@ -99,8 +100,9 @@ public class GameConnection {
                 if (joinedGame.get() && isServerIdleForTooLong()) {
                     LOG.info("Server is inactive");
                     errorsQueueAPI.push(new IOException("Server is inactive for too long"));
+                    disconnect();
                 }
-            }, 10_000, 10_000, TimeUnit.MILLISECONDS);
+            }, 5_000, 5_000, TimeUnit.MILLISECONDS);
             state.set(GameConnectionState.CONNECTED);
         } catch (Exception e) {
             LOG.error("Error occurred", e);
@@ -154,6 +156,7 @@ public class GameConnection {
     }
 
     public void disconnect() {
+        // TODO send a disconnect message or something
         LOG.info("Disconnect");
         try {
             Optional.ofNullable(group).ifPresent(EventExecutorGroup::shutdownGracefully);
@@ -167,7 +170,7 @@ public class GameConnection {
             LOG.error("Can't close channel", e);
         }
         try {
-            idleServerDisconnector.shutdownNow();
+            idleServerDisconnector.shutdown();
         } catch (Exception e) {
             LOG.error("Can't shutdown idle server disconnector", e);
         }

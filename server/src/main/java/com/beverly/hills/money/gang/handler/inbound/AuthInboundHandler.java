@@ -1,6 +1,6 @@
 package com.beverly.hills.money.gang.handler.inbound;
 
-import com.beverly.hills.money.gang.config.GameConfig;
+import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.encrypt.ServerHMACService;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
@@ -18,7 +18,7 @@ import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createE
 @ChannelHandler.Sharable
 public class AuthInboundHandler extends SimpleChannelInboundHandler<ServerCommand> {
 
-    private final ServerHMACService hmacService = new ServerHMACService(GameConfig.PASSWORD);
+    private final ServerHMACService hmacService = new ServerHMACService(ServerConfig.PASSWORD);
 
     private static final Logger LOG = LoggerFactory.getLogger(GameServerInboundHandler.class);
 

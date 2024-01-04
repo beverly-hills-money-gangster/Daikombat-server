@@ -19,7 +19,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static com.beverly.hills.money.gang.config.GameConfig.*;
+import static com.beverly.hills.money.gang.config.ServerConfig.*;
 import static com.beverly.hills.money.gang.factory.ServerResponseFactory.*;
 
 // TODO add rate limiting
@@ -72,7 +72,7 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
             } finally {
                 game.flushBufferedMoves();
             }
-        }), 5_000, MOVES_UPDATE_FREQUENCY_MLS, TimeUnit.MILLISECONDS);
+        }), MOVES_UPDATE_FREQUENCY_MLS, MOVES_UPDATE_FREQUENCY_MLS, TimeUnit.MILLISECONDS);
     }
 
     private void scheduleIdlePlayerKiller() {
@@ -100,7 +100,7 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
             game.getPlayersRegistry().allPlayers()
                     .forEach(playerStateChannel -> playerStateChannel.getChannel().writeAndFlush(disconnectedEvents));
 
-        }), 5_000, IDLE_PLAYERS_KILLER_FREQUENCY_MLS, TimeUnit.MILLISECONDS);
+        }), IDLE_PLAYERS_KILLER_FREQUENCY_MLS, IDLE_PLAYERS_KILLER_FREQUENCY_MLS, TimeUnit.MILLISECONDS);
     }
 
     @Override

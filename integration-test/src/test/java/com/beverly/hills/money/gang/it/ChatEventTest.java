@@ -1,11 +1,12 @@
 package com.beverly.hills.money.gang.it;
 
-import com.beverly.hills.money.gang.config.GameConfig;
+import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PushChatEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -16,13 +17,14 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SetEnvironmentVariable(key = "MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
 public class ChatEventTest extends AbstractGameServerTest {
 
     @Test
     public void testChatManyPlayers() throws InterruptedException, IOException {
         int gameIdToConnectTo = 0;
-        for (int i = 0; i < GameConfig.MAX_PLAYERS_PER_GAME; i++) {
-            GameConnection gameConnection = createGameConnection(GameConfig.PASSWORD, "localhost", port);
+        for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
+            GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
             gameConnection.write(
                     JoinGameCommand.newBuilder()
                             .setPlayerName("my player name " + i)
@@ -48,10 +50,10 @@ public class ChatEventTest extends AbstractGameServerTest {
 
         Thread.sleep(50);
 
-        assertEquals(GameConfig.MAX_PLAYERS_PER_GAME, players.size(), "The server must be full");
+        assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, players.size(), "The server must be full");
         players.forEach((playerId, gameConnection) -> {
             List<ServerResponse> responses = gameConnection.getResponse().list();
-            assertEquals(GameConfig.MAX_PLAYERS_PER_GAME - 1, responses.size(),
+            assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME - 1, responses.size(),
                     "We must have MAX_PLAYERS-1 messages for every player." +
                             " -1 because you don't send your own message to yourself. Actual responses are:" + responses);
             responses.forEach(serverResponse -> {
@@ -67,8 +69,8 @@ public class ChatEventTest extends AbstractGameServerTest {
     @Test
     public void testChatManyPlayersConcurrent() throws IOException, InterruptedException {
         int gameIdToConnectTo = 0;
-        for (int i = 0; i < GameConfig.MAX_PLAYERS_PER_GAME; i++) {
-            GameConnection gameConnection = createGameConnection(GameConfig.PASSWORD, "localhost", port);
+        for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
+            GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
             gameConnection.write(
                     JoinGameCommand.newBuilder()
                             .setPlayerName("my player name " + i)
@@ -113,10 +115,10 @@ public class ChatEventTest extends AbstractGameServerTest {
 
         Thread.sleep(50);
 
-        assertEquals(GameConfig.MAX_PLAYERS_PER_GAME, players.size(), "The server must be full");
+        assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, players.size(), "The server must be full");
         players.forEach((playerId, gameConnection) -> {
             List<ServerResponse> responses = gameConnection.getResponse().list();
-            assertEquals(GameConfig.MAX_PLAYERS_PER_GAME - 1, responses.size(),
+            assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME - 1, responses.size(),
                     "We must have MAX_PLAYERS-1 messages for every player." +
                             " -1 because you don't send your own message to yourself. Actual responses are:" + responses);
             responses.forEach(serverResponse -> {

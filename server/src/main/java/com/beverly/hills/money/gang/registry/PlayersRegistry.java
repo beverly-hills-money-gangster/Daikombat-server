@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
-import static com.beverly.hills.money.gang.config.GameConfig.MAX_PLAYERS_PER_GAME;
+import static com.beverly.hills.money.gang.config.ServerConfig.MAX_PLAYERS_PER_GAME;
 
 public class PlayersRegistry implements Closeable {
 

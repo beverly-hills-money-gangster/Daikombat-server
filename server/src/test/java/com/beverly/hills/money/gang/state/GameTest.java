@@ -1,9 +1,8 @@
 package com.beverly.hills.money.gang.state;
 
-import com.beverly.hills.money.gang.config.GameConfig;
+import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
-import com.beverly.hills.money.gang.state.*;
 import io.netty.channel.Channel;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -104,10 +103,10 @@ public class GameTest {
     public void testConnectPlayerMax() throws Throwable {
         String playerName = "some player";
         Channel channel = mock(Channel.class);
-        for (int i = 0; i < GameConfig.MAX_PLAYERS_PER_GAME; i++) {
+        for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
             game.connectPlayer(playerName + " " + i, channel);
         }
-        assertEquals(GameConfig.MAX_PLAYERS_PER_GAME, game.getPlayersRegistry().playersOnline());
+        assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, game.getPlayersRegistry().playersOnline());
     }
 
     /**
@@ -119,7 +118,7 @@ public class GameTest {
     public void testConnectPlayerToMany() throws Throwable {
         String playerName = "some player";
         Channel channel = mock(Channel.class);
-        for (int i = 0; i < GameConfig.MAX_PLAYERS_PER_GAME; i++) {
+        for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
             game.connectPlayer(playerName + " " + i, channel);
         }
         // connect MAX_PLAYERS_PER_GAME+1 player
@@ -128,7 +127,7 @@ public class GameTest {
                 "We can't connect so many players");
         assertEquals(GameErrorCode.SERVER_FULL, gameLogicError.getErrorCode());
 
-        assertEquals(GameConfig.MAX_PLAYERS_PER_GAME, game.getPlayersRegistry().playersOnline());
+        assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, game.getPlayersRegistry().playersOnline());
     }
 
     /**
@@ -144,7 +143,7 @@ public class GameTest {
         CountDownLatch latch = new CountDownLatch(1);
         List<Thread> threads = new ArrayList<>();
 
-        for (int i = 0; i < GameConfig.MAX_PLAYERS_PER_GAME; i++) {
+        for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
             int finalI = i;
             threads.add(new Thread(() -> {
                 try {
@@ -166,7 +165,7 @@ public class GameTest {
             }
         });
         assertEquals(0, failures.get());
-        assertEquals(GameConfig.MAX_PLAYERS_PER_GAME, game.getPlayersRegistry().playersOnline());
+        assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, game.getPlayersRegistry().playersOnline());
     }
 
     /**
@@ -210,7 +209,7 @@ public class GameTest {
         assertNotNull(playerShootingGameState.getPlayerShot());
 
         assertFalse(playerShootingGameState.getPlayerShot().isDead(), "Just one shot. Nobody is dead yet");
-        assertEquals(100 - GameConfig.DEFAULT_DAMAGE, playerShootingGameState.getPlayerShot().getHealth());
+        assertEquals(100 - ServerConfig.DEFAULT_DAMAGE, playerShootingGameState.getPlayerShot().getHealth());
         PlayerState shooterState = game.getPlayersRegistry().getPlayerState(shooterPlayerConnectedGameState.getPlayerStateReader().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
@@ -218,7 +217,7 @@ public class GameTest {
         assertEquals(2, game.playersOnline());
         PlayerState shotState = game.getPlayersRegistry().getPlayerState(shotPlayerConnectedGameState.getPlayerStateReader().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
-        assertEquals(100 - GameConfig.DEFAULT_DAMAGE, shotState.getHealth());
+        assertEquals(100 - ServerConfig.DEFAULT_DAMAGE, shotState.getHealth());
         assertFalse(shotState.isDead());
     }
 
@@ -235,7 +234,7 @@ public class GameTest {
         PlayerConnectedGameState shooterPlayerConnectedGameState = game.connectPlayer(shooterPlayerName, channel);
         PlayerConnectedGameState shotPlayerConnectedGameState = game.connectPlayer(shotPlayerName, channel);
 
-        int shotsToKill = (int) Math.ceil(100d / GameConfig.DEFAULT_DAMAGE);
+        int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_DAMAGE);
 
         // after this loop, one player is almost dead
         for (int i = 0; i < shotsToKill - 1; i++) {
@@ -303,7 +302,7 @@ public class GameTest {
         PlayerConnectedGameState shooterPlayerConnectedGameState = game.connectPlayer(shooterPlayerName, channel);
         PlayerConnectedGameState shotPlayerConnectedGameState = game.connectPlayer(shotPlayerName, channel);
 
-        int shotsToKill = (int) Math.ceil(100d / GameConfig.DEFAULT_DAMAGE);
+        int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_DAMAGE);
 
         // after this loop, one player is  dead
         for (int i = 0; i < shotsToKill; i++) {
@@ -366,7 +365,7 @@ public class GameTest {
         PlayerConnectedGameState shooterPlayerConnectedGameState = game.connectPlayer(shooterPlayerName, channel);
         PlayerConnectedGameState shotPlayerConnectedGameState = game.connectPlayer(shotPlayerName, channel);
 
-        int shotsToKill = (int) Math.ceil(100d / GameConfig.DEFAULT_DAMAGE);
+        int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_DAMAGE);
 
         // after this loop, one player is  dead
         for (int i = 0; i < shotsToKill; i++) {
@@ -405,7 +404,7 @@ public class GameTest {
         List<PlayerConnectedGameState> connectedPlayers = new ArrayList<>();
         AtomicInteger failures = new AtomicInteger();
 
-        for (int i = 0; i < GameConfig.MAX_PLAYERS_PER_GAME; i++) {
+        for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
             String shotPlayerName = "player " + i;
             Channel channel = mock(Channel.class);
             PlayerConnectedGameState connectedPlayer = game.connectPlayer(shotPlayerName, channel);
@@ -413,7 +412,7 @@ public class GameTest {
         }
 
         List<Thread> threads = new ArrayList<>();
-        for (int i = 0; i < GameConfig.MAX_PLAYERS_PER_GAME; i++) {
+        for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
             int finalI = i;
             threads.add(new Thread(() -> {
                 try {
@@ -440,11 +439,11 @@ public class GameTest {
             }
         });
         assertEquals(0, failures.get());
-        assertEquals(GameConfig.MAX_PLAYERS_PER_GAME, game.playersOnline());
+        assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, game.playersOnline());
         game.getPlayersRegistry().allPlayers().forEach(playerStateChannel -> {
             assertFalse(playerStateChannel.getPlayerState().isDead(), "Nobody is dead");
             assertEquals(0, playerStateChannel.getPlayerState().getKills(), "Nobody got killed");
-            assertEquals(100 - GameConfig.DEFAULT_DAMAGE, playerStateChannel.getPlayerState().getHealth(), "Everybody got hit once");
+            assertEquals(100 - ServerConfig.DEFAULT_DAMAGE, playerStateChannel.getPlayerState().getHealth(), "Everybody got hit once");
         });
     }
 
@@ -538,7 +537,7 @@ public class GameTest {
         PlayerConnectedGameState shooterPlayerConnectedGameState = game.connectPlayer(shooterPlayerName, channel);
         PlayerConnectedGameState shotPlayerConnectedGameState = game.connectPlayer(shotPlayerName, channel);
 
-        int shotsToKill = (int) Math.ceil(100d / GameConfig.DEFAULT_DAMAGE);
+        int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_DAMAGE);
 
         // after this loop, one player is  dead
         for (int i = 0; i < shotsToKill; i++) {
@@ -575,7 +574,7 @@ public class GameTest {
         List<PlayerConnectedGameState> connectedPlayers = new ArrayList<>();
         AtomicInteger failures = new AtomicInteger();
 
-        for (int i = 0; i < GameConfig.MAX_PLAYERS_PER_GAME; i++) {
+        for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
             String shotPlayerName = "player " + i;
             Channel channel = mock(Channel.class);
             PlayerConnectedGameState connectedPlayer = game.connectPlayer(shotPlayerName, channel);
@@ -583,7 +582,7 @@ public class GameTest {
         }
 
         List<Thread> threads = new ArrayList<>();
-        for (int i = 0; i < GameConfig.MAX_PLAYERS_PER_GAME; i++) {
+        for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
             int finalI = i;
             threads.add(new Thread(() -> {
                 try {
@@ -613,7 +612,7 @@ public class GameTest {
             }
         });
         assertEquals(0, failures.get());
-        assertEquals(GameConfig.MAX_PLAYERS_PER_GAME, game.playersOnline());
+        assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, game.playersOnline());
 
         game.getPlayersRegistry().allPlayers().forEach(playerStateChannel -> {
             assertFalse(playerStateChannel.getPlayerState().isDead(), "Nobody is dead");
@@ -628,7 +627,7 @@ public class GameTest {
             assertEquals(finalCoordinates.getDirection(),
                     playerStateChannel.getPlayerState().getCoordinates().getDirection());
         });
-        assertEquals(GameConfig.MAX_PLAYERS_PER_GAME, game.getBufferedMoves().count(), "All players moved");
+        assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, game.getBufferedMoves().count(), "All players moved");
     }
 
     /**
@@ -651,12 +650,12 @@ public class GameTest {
     public void testCloseSomebodyConnected() throws Throwable {
         String playerName = "some player";
         Channel channel = mock(Channel.class);
-        for (int i = 0; i < GameConfig.MAX_PLAYERS_PER_GAME; i++) {
+        for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
             game.connectPlayer(playerName + " " + i, channel);
         }
         game.close();
         // all channels should be closed
-        verify(channel, times(GameConfig.MAX_PLAYERS_PER_GAME)).close();
+        verify(channel, times(ServerConfig.MAX_PLAYERS_PER_GAME)).close();
         assertEquals(0, game.playersOnline(), "No players online when game is closed");
         assertEquals(0, game.getPlayersRegistry().allPlayers().count(), "No players in the registry when game is closed");
     }
@@ -670,13 +669,13 @@ public class GameTest {
     public void testCloseTwice() throws GameLogicError {
         String playerName = "some player";
         Channel channel = mock(Channel.class);
-        for (int i = 0; i < GameConfig.MAX_PLAYERS_PER_GAME; i++) {
+        for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
             game.connectPlayer(playerName + " " + i, channel);
         }
         game.close(); // close once
         game.close(); // close second time
         // all channels should be closed
-        verify(channel, times(GameConfig.MAX_PLAYERS_PER_GAME)).close();
+        verify(channel, times(ServerConfig.MAX_PLAYERS_PER_GAME)).close();
         assertEquals(0, game.playersOnline(), "No players online when game is closed");
         assertEquals(0, game.getPlayersRegistry().allPlayers().count(), "No players in the registry when game is closed");
     }

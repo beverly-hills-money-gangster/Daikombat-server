@@ -1,6 +1,6 @@
 package com.beverly.hills.money.gang.state;
 
-import com.beverly.hills.money.gang.config.GameConfig;
+import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
@@ -114,7 +114,7 @@ public class Game implements Closeable, GameReader {
 
     @Override
     public int maxPlayersAvailable() {
-        return GameConfig.MAX_PLAYERS_PER_GAME;
+        return ServerConfig.MAX_PLAYERS_PER_GAME;
     }
 
     public Stream<PlayerStateReader> readPlayers() {

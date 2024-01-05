@@ -17,6 +17,7 @@ import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import io.netty.util.concurrent.EventExecutorGroup;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +37,8 @@ public class GameConnection {
 
     private static final int MAX_SERVER_INACTIVE_MLS = NumberUtils.toInt(System.getenv("MAX_SERVER_INACTIVE_MLS"), 5_000);
 
-    private final ScheduledExecutorService idleServerDisconnector = Executors.newScheduledThreadPool(1);
+    private final ScheduledExecutorService idleServerDisconnector = Executors.newScheduledThreadPool(1,
+            new BasicThreadFactory.Builder().namingPattern("idle-server-disconnector-%d").build());
 
     private final AtomicLong lastServerActivityMls = new AtomicLong();
 
@@ -45,6 +47,8 @@ public class GameConnection {
     private final QueueAPI<ServerResponse> serverEventsQueueAPI = new QueueAPI<>();
 
     private final QueueAPI<Throwable> errorsQueueAPI = new QueueAPI<>();
+
+    private final QueueAPI<Throwable> warningsQueueAPI = new QueueAPI<>();
 
     private final ClientHMACService hmacService;
 
@@ -151,12 +155,11 @@ public class GameConnection {
             }
             channel.writeAndFlush(serverCommand.build());
         } else {
-            LOG.warn("Can't write using non-connected client");
+            warningsQueueAPI.push(new IOException("Can't write using closed connection"));
         }
     }
 
     public void disconnect() {
-        // TODO send a disconnect message or something
         LOG.info("Disconnect");
         try {
             Optional.ofNullable(group).ifPresent(EventExecutorGroup::shutdownGracefully);
@@ -190,6 +193,10 @@ public class GameConnection {
 
     public QueueReader<Throwable> getErrors() {
         return errorsQueueAPI;
+    }
+
+    public QueueReader<Throwable> getWarning() {
+        return warningsQueueAPI;
     }
 
     public QueueReader<ServerResponse> getResponse() {

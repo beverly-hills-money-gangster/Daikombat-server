@@ -25,6 +25,7 @@ public class ServerRunner {
 
     private final CountDownLatch startWaitingLatch = new CountDownLatch(1);
 
+
     private final AtomicReference<State> stateRef = new AtomicReference<>(State.INIT);
     private final AtomicReference<Channel> serverChannelRef = new AtomicReference<>();
 
@@ -82,7 +83,7 @@ public class ServerRunner {
             LOG.error("Can't stop game server initializer", e);
         }
         try {
-            serverChannelRef.get().close();
+            serverChannelRef.get().closeFuture();
         } catch (Exception e) {
             LOG.error("Can't close server channel", e);
         }

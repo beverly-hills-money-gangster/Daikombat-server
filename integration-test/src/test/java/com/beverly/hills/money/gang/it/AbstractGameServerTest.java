@@ -8,6 +8,8 @@ import com.beverly.hills.money.gang.queue.QueueReader;
 import com.beverly.hills.money.gang.runner.ServerRunner;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,15 +19,21 @@ import java.util.concurrent.ThreadLocalRandom;
 
 // TODO finish it
     /*
+    Fix all vulnerable libs
+    Check with spotbugs
     Don't send moves in tests
     Add more comments
     Can a client see that it was closed?
     Test all commands
     Test concurrent access
     Test error handling
-     */
+    Why sync blocks forever on closing server socket?
+    */
 
 public abstract class AbstractGameServerTest {
+
+    protected static final Logger LOG = LoggerFactory.getLogger(AbstractGameServerTest.class);
+
     protected int port;
 
     protected ServerRunner serverRunner;
@@ -35,7 +43,7 @@ public abstract class AbstractGameServerTest {
 
     @BeforeEach
     public void setUp() throws InterruptedException {
-        port = ThreadLocalRandom.current().nextInt(49_151, 65_535);
+        port = ThreadLocalRandom.current().nextInt(1_024, 49_151);
         serverRunner = new ServerRunner(port);
         new Thread(() -> {
             try {
@@ -45,6 +53,7 @@ public abstract class AbstractGameServerTest {
             }
         }).start();
         serverRunner.waitFullyRunning();
+        LOG.info("Env vars are: {}", System.getenv());
     }
 
     @AfterEach
@@ -53,6 +62,7 @@ public abstract class AbstractGameServerTest {
         for (GameConnection gameConnection : gameConnections) {
             Optional.ofNullable(gameConnection).ifPresent(GameConnection::disconnect);
         }
+        gameConnections.clear();
     }
 
     protected void emptyQueue(QueueReader<ServerResponse> queueReader) {

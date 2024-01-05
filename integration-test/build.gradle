@@ -17,8 +17,13 @@ dependencies {
 
     testImplementation project(":server")
     testImplementation project(":client")
+
+    implementation 'ch.qos.logback:logback-classic:1.4.11'
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+    implementation 'org.slf4j:slf4j-api:2.0.9'
 }
 
 test {
     useJUnitPlatform()
+    forkEvery = 1
 }

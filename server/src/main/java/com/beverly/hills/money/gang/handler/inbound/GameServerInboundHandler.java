@@ -10,6 +10,7 @@ import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,11 +36,12 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
 
     private static final Logger LOG = LoggerFactory.getLogger(GameServerInboundHandler.class);
 
-    // TODO give it a name
-    private final ScheduledExecutorService bufferedMovesExecutor = Executors.newScheduledThreadPool(1);
+    private final ScheduledExecutorService bufferedMovesExecutor = Executors.newScheduledThreadPool(1,
+            new BasicThreadFactory.Builder().namingPattern("moves-buffer-%d").build());
 
     // TODO give it a name
-    private final ScheduledExecutorService idlePlayersKillerExecutor = Executors.newScheduledThreadPool(1);
+    private final ScheduledExecutorService idlePlayersKillerExecutor = Executors.newScheduledThreadPool(1,
+            new BasicThreadFactory.Builder().namingPattern("idle-players-killer-%d").build());
 
     private final ServerCommandHandler playerConnectedServerCommandHandler
             = new PlayerConnectServerCommandHandler(gameRoomRegistry);

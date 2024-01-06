@@ -32,14 +32,12 @@ import static com.beverly.hills.money.gang.factory.ServerResponseFactory.*;
 @ChannelHandler.Sharable
 public class GameServerInboundHandler extends SimpleChannelInboundHandler<ServerCommand> implements Closeable {
 
-    private final GameRoomRegistry gameRoomRegistry = new GameRoomRegistry(GAMES_TO_CREATE);
-
     private static final Logger LOG = LoggerFactory.getLogger(GameServerInboundHandler.class);
+
+    private final GameRoomRegistry gameRoomRegistry = new GameRoomRegistry(GAMES_TO_CREATE);
 
     private final ScheduledExecutorService bufferedMovesExecutor = Executors.newScheduledThreadPool(1,
             new BasicThreadFactory.Builder().namingPattern("moves-buffer-%d").build());
-
-    // TODO give it a name
     private final ScheduledExecutorService idlePlayersKillerExecutor = Executors.newScheduledThreadPool(1,
             new BasicThreadFactory.Builder().namingPattern("idle-players-killer-%d").build());
 
@@ -48,7 +46,7 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     private final ServerCommandHandler chatServerCommandHandler
             = new ChatServerCommandHandler(gameRoomRegistry);
     private final ServerCommandHandler gameServerCommandHandler
-            = new GameServerCommandHandler(gameRoomRegistry);
+            = new GameEventServerCommandHandler(gameRoomRegistry);
     private final GetServerInfoCommandHandler getServerInfoCommandHandler
             = new GetServerInfoCommandHandler(gameRoomRegistry);
 
@@ -63,12 +61,16 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
                 if (game.getPlayersRegistry().playersOnline() == 0) {
                     return;
                 }
+                var bufferedMoves = game.getBufferedMoves();
+                if (bufferedMoves.isEmpty()) {
+                    LOG.info("Nobody moved");
+                    return;
+                }
                 LOG.info("Send all moves");
-                // TODO don't send your own moves
                 ServerResponse movesEvents
                         = createMovesEventAllPlayers(
                         game.playersOnline(),
-                        game.getBufferedMoves());
+                        bufferedMoves);
                 game.getPlayersRegistry().allPlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
                         .forEach(channel -> channel.writeAndFlush(movesEvents));
             } finally {
@@ -108,6 +110,7 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ServerCommand msg) {
         try {
+            LOG.debug("Got command {}", msg);
             ServerCommandHandler serverCommandHandler;
             if (msg.hasJoinGameCommand()) {
                 serverCommandHandler = playerConnectedServerCommandHandler;

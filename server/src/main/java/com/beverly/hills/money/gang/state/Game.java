@@ -12,10 +12,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
@@ -62,6 +64,7 @@ public class Game implements Closeable, GameReader {
 
         move(shootingPlayerId, shootingPlayerCoordinates);
         if (shotPlayerId == null) {
+            LOG.debug("Nobody got shot");
             // if nobody was shot
             return PlayerShootingGameState.builder()
                     .shootingPlayer(shootingPlayerState)
@@ -93,9 +96,9 @@ public class Game implements Closeable, GameReader {
         move(movingPlayerId, playerCoordinates);
     }
 
-    public Stream<PlayerStateReader> getBufferedMoves() {
+    public List<PlayerStateReader> getBufferedMoves() {
         return playersRegistry.allPlayers().map(PlayersRegistry.PlayerStateChannel::getPlayerState)
-                .filter(PlayerState::hasMoved).map(playerState -> playerState);
+                .filter(PlayerState::hasMoved).collect(Collectors.toList());
     }
 
     public void flushBufferedMoves() {

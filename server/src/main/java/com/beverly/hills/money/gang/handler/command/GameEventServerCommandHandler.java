@@ -12,13 +12,17 @@ import com.beverly.hills.money.gang.state.PlayerState;
 import com.beverly.hills.money.gang.state.Vector;
 import io.netty.channel.Channel;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
 import static com.beverly.hills.money.gang.factory.ServerResponseFactory.*;
 
 @RequiredArgsConstructor
-public class GameServerCommandHandler implements ServerCommandHandler {
+public class GameEventServerCommandHandler implements ServerCommandHandler {
+
+    private static final Logger LOG = LoggerFactory.getLogger(GameEventServerCommandHandler.class);
 
     private final GameRoomRegistry gameRoomRegistry;
 
@@ -39,13 +43,15 @@ public class GameServerCommandHandler implements ServerCommandHandler {
                 PlayerShootingGameState shootingGameState = game.shoot(
                         playerCoordinates,
                         gameCommand.getPlayerId(),
-                        gameCommand.getAffectedPlayerId());
+                        gameCommand.hasAffectedPlayerId() ? gameCommand.getAffectedPlayerId() : null);
                 if (shootingGameState == null) {
+                    LOG.debug("No shooting game state");
                     return;
                 }
                 Optional.ofNullable(shootingGameState.getPlayerShot())
                         .ifPresentOrElse(shotPlayer -> {
                             if (shotPlayer.isDead()) {
+                                LOG.debug("Player {} is dead", shotPlayer.getPlayerId());
                                 var deadEvent = createDeadEvent(
                                         shootingGameState.getShootingPlayer(),
                                         shootingGameState.getPlayerShot());
@@ -53,6 +59,7 @@ public class GameServerCommandHandler implements ServerCommandHandler {
                                         .forEach(channel -> channel.writeAndFlush(deadEvent));
                                 game.getPlayersRegistry().removePlayer(shotPlayer.getPlayerId());
                             } else {
+                                LOG.debug("Player {} got shot", shotPlayer.getPlayerId());
                                 var shotEvent = createGetShotEvent(
                                         game.playersOnline(),
                                         shootingGameState.getShootingPlayer(),
@@ -61,6 +68,7 @@ public class GameServerCommandHandler implements ServerCommandHandler {
                                         .forEach(channel -> channel.writeAndFlush(shotEvent));
                             }
                         }, () -> {
+                            LOG.debug("Nobody got shot");
                             var shootingEvent = createShootingEvent(
                                     game.playersOnline(),
                                     shootingGameState.getShootingPlayer());

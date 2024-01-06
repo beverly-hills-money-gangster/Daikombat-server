@@ -113,8 +113,34 @@ public class JoinGameTest extends AbstractGameServerTest {
         ServerResponse serverResponse = gameConnection.getResponse().poll().get();
         ServerResponse.ErrorEvent errorEvent = serverResponse.getErrorEvent();
         assertEquals(GameErrorCode.SERVER_FULL.ordinal(), errorEvent.getErrorCode(),
-                "Should a server full error");
+                "Should be a server full error");
         assertEquals("Can't connect player. Server is full.", errorEvent.getMessage());
+    }
+
+    @Test
+    public void testJoinSameName() throws IOException, InterruptedException {
+
+        GameConnection gameConnection1 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        gameConnection1.write(
+                JoinGameCommand.newBuilder()
+                        .setPlayerName("same name")
+                        .setGameId(0).build());
+
+
+        GameConnection gameConnection2 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        gameConnection2.write(
+                JoinGameCommand.newBuilder()
+                        .setPlayerName("same name")
+                        .setGameId(0).build());
+        Thread.sleep(50);
+        assertEquals(0, gameConnection2.getErrors().size(), "Should be no error");
+        assertEquals(1, gameConnection2.getResponse().size(), "Should be 1 response");
+
+        ServerResponse serverResponse = gameConnection2.getResponse().poll().get();
+        ServerResponse.ErrorEvent errorEvent = serverResponse.getErrorEvent();
+        assertEquals(GameErrorCode.PLAYER_EXISTS.ordinal(), errorEvent.getErrorCode(),
+                "Shouldn't be able to connect as the player name is already taken");
+        assertEquals("Can't connect player. Player name already taken.", errorEvent.getMessage());
     }
 
     @Test

@@ -27,7 +27,6 @@ public class PlayerConnectServerCommandHandler implements ServerCommandHandler {
     @Override
     public void handle(ServerCommand msg, Channel currentChannel) throws GameLogicError {
         Game game = gameRoomRegistry.getGame(msg.getJoinGameCommand().getGameId());
-        LOG.info("Connect player {}", msg);
         PlayerConnectedGameState playerConnected = game.connectPlayer(msg.getJoinGameCommand().getPlayerName(), currentChannel);
         ServerResponse playerSpawnEvent = createSpawnEventSinglePlayer(playerConnected);
         LOG.info("Send connected player to all players");

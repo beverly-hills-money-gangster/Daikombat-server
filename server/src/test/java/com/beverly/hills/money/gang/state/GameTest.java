@@ -57,7 +57,7 @@ public class GameTest {
         Channel channel = mock(Channel.class);
         PlayerConnectedGameState playerConnectedGameState = game.connectPlayer(playerName, channel);
         assertEquals(1, game.getPlayersRegistry().playersOnline(), "We connected 1 player only");
-        assertEquals(0, game.getBufferedMoves().count(), "Nobody moved");
+        assertEquals(0, game.getBufferedMoves().size(), "Nobody moved");
         assertEquals(1, game.getPlayersRegistry().allPlayers().count(), "We connected 1 player only");
         PlayerState playerState = game.getPlayersRegistry().getPlayerState(playerConnectedGameState.getPlayerStateReader().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
@@ -84,7 +84,7 @@ public class GameTest {
         assertEquals(GameErrorCode.PLAYER_EXISTS, gameLogicError.getErrorCode());
 
         assertEquals(1, game.getPlayersRegistry().playersOnline(), "We connected 1 player only");
-        assertEquals(0, game.getBufferedMoves().count(), "Nobody moved");
+        assertEquals(0, game.getBufferedMoves().size(), "Nobody moved");
         assertEquals(1, game.getPlayersRegistry().allPlayers().count(), "We connected 1 player only");
         PlayerState playerState = game.getPlayersRegistry().getPlayerState(playerConnectedGameState.getPlayerStateReader().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
@@ -457,13 +457,13 @@ public class GameTest {
         String playerName = "some player";
         Channel channel = mock(Channel.class);
         PlayerConnectedGameState playerConnectedGameState = game.connectPlayer(playerName, channel);
-        assertEquals(0, game.getBufferedMoves().count(), "No moves buffered before you actually move");
+        assertEquals(0, game.getBufferedMoves().size(), "No moves buffered before you actually move");
         PlayerState.PlayerCoordinates playerCoordinates = PlayerState.PlayerCoordinates
                 .builder()
                 .direction(Vector.builder().x(1f).y(0).build())
                 .position(Vector.builder().x(0f).y(1).build()).build();
         game.bufferMove(playerConnectedGameState.getPlayerStateReader().getPlayerId(), playerCoordinates);
-        assertEquals(1, game.getBufferedMoves().count(), "One move should be buffered");
+        assertEquals(1, game.getBufferedMoves().size(), "One move should be buffered");
         PlayerState playerState = game.getPlayersRegistry().getPlayerState(playerConnectedGameState.getPlayerStateReader().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(100, playerState.getHealth());
@@ -483,7 +483,7 @@ public class GameTest {
         String playerName = "some player";
         Channel channel = mock(Channel.class);
         PlayerConnectedGameState playerConnectedGameState = game.connectPlayer(playerName, channel);
-        assertEquals(0, game.getBufferedMoves().count(), "No moves buffered before you actually move");
+        assertEquals(0, game.getBufferedMoves().size(), "No moves buffered before you actually move");
         PlayerState.PlayerCoordinates playerCoordinates = PlayerState.PlayerCoordinates
                 .builder()
                 .direction(Vector.builder().x(1f).y(0).build())
@@ -494,7 +494,7 @@ public class GameTest {
                 .direction(Vector.builder().x(2f).y(1).build())
                 .position(Vector.builder().x(1f).y(2).build()).build();
         game.bufferMove(playerConnectedGameState.getPlayerStateReader().getPlayerId(), playerNewCoordinates);
-        assertEquals(1, game.getBufferedMoves().count(), "One move should be buffered");
+        assertEquals(1, game.getBufferedMoves().size(), "One move should be buffered");
 
         PlayerState playerState = game.getPlayersRegistry().getPlayerState(playerConnectedGameState.getPlayerStateReader().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
@@ -513,13 +513,13 @@ public class GameTest {
     @Test
     public void testMoveNotExistingPlayer() throws GameLogicError {
 
-        assertEquals(0, game.getBufferedMoves().count(), "No moves buffered before you actually move");
+        assertEquals(0, game.getBufferedMoves().size(), "No moves buffered before you actually move");
         PlayerState.PlayerCoordinates playerCoordinates = PlayerState.PlayerCoordinates
                 .builder()
                 .direction(Vector.builder().x(1f).y(0).build())
                 .position(Vector.builder().x(0f).y(1).build()).build();
         game.bufferMove(123, playerCoordinates);
-        assertEquals(0, game.getBufferedMoves().count(),
+        assertEquals(0, game.getBufferedMoves().size(),
                 "No moves buffered because only existing players can move");
 
     }
@@ -627,7 +627,7 @@ public class GameTest {
             assertEquals(finalCoordinates.getDirection(),
                     playerStateChannel.getPlayerState().getCoordinates().getDirection());
         });
-        assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, game.getBufferedMoves().count(), "All players moved");
+        assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, game.getBufferedMoves().size(), "All players moved");
     }
 
     /**

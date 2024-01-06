@@ -25,6 +25,7 @@ public class AuthInboundHandler extends SimpleChannelInboundHandler<ServerComman
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ServerCommand msg) {
         try {
+            LOG.debug("Auth command {}", msg);
             if (!msg.hasHmac()) {
                 throw new GameLogicError("No HMAC provided", GameErrorCode.AUTH_ERROR);
             }

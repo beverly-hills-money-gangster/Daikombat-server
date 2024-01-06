@@ -21,7 +21,6 @@ public class ChatServerCommandHandler implements ServerCommandHandler {
 
     @Override
     public void handle(ServerCommand msg, Channel currentChannel) throws GameLogicError {
-        LOG.info("Handle chat command {}", msg);
         Game game = gameRoomRegistry.getGame(msg.getChatCommand().getGameId());
         game.readPlayer(msg.getChatCommand().getPlayerId())
                 .ifPresent(playerStateReader -> game.getPlayersRegistry().allPlayers()

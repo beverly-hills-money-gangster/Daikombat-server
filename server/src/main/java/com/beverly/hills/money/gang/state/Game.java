@@ -83,6 +83,7 @@ public class Game implements Closeable, GameReader {
         }).orElse(null);
 
         if (shotPlayerState == null) {
+            LOG.warn("Can't shoot a non-existing player");
             return null;
         }
         return PlayerShootingGameState.builder()

@@ -142,6 +142,7 @@ public class GameConnection {
             byte[] hmac = hmacService.generateHMAC(msg.toByteArray());
             serverCommand.setHmac(ByteString.copyFrom(hmac));
 
+            // TODO simplify this
             if (msg instanceof PushGameEventCommand) {
                 serverCommand.setGameCommand((PushGameEventCommand) msg);
             } else if (msg instanceof PushChatEventCommand) {
@@ -153,7 +154,9 @@ public class GameConnection {
             } else {
                 throw new IllegalArgumentException("Not recognized message type " + msg.getClass());
             }
-            channel.writeAndFlush(serverCommand.build());
+            var message = serverCommand.build();
+            LOG.debug("Write {}", message);
+            channel.writeAndFlush(message);
         } else {
             warningsQueueAPI.push(new IOException("Can't write using closed connection"));
         }

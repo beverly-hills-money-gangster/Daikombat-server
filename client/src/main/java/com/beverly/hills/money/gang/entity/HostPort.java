@@ -9,7 +9,6 @@ public class HostPort {
     private final String host;
     private final int port;
 
-
     @Override
     public String toString() {
         return host + ":" + port;

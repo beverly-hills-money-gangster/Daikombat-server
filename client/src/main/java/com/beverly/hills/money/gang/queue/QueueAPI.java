@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 public class QueueAPI<T> implements QueueReader<T>, QueueWriter<T> {
     private final Queue<T> queue = new ConcurrentLinkedQueue<>();
 
-
     @Override
     public int size() {
         return queue.size();
@@ -31,7 +30,4 @@ public class QueueAPI<T> implements QueueReader<T>, QueueWriter<T> {
         queue.add(event);
     }
 
-    public void clear() {
-        queue.clear();
-    }
 }

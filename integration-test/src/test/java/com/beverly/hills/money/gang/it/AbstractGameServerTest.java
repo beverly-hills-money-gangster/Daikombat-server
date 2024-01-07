@@ -19,9 +19,11 @@ import java.util.concurrent.ThreadLocalRandom;
 
 // TODO finish it
     /*
+    Add shooting yourself test
+    Add shooting non-existing player
+    Add more sophisticated auth tests(wrong HMAC, wrong password, integrity check)
     Fix all vulnerable libs
     Check with spotbugs
-    Don't send moves in tests
     Add more comments
     Can a client see that it was closed?
     Test all commands

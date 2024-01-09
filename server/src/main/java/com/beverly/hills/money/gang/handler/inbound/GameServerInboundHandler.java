@@ -29,6 +29,7 @@ import static com.beverly.hills.money.gang.factory.ServerResponseFactory.*;
 // TODO add auto-ban
 // TODO add logs
 // TODO auth
+// TODO disconnect event for graceful disconnection
 @ChannelHandler.Sharable
 public class GameServerInboundHandler extends SimpleChannelInboundHandler<ServerCommand> implements Closeable {
 
@@ -127,7 +128,12 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
         } catch (GameLogicError e) {
             LOG.warn("Game logic error", e);
             ctx.writeAndFlush(createErrorEvent(e));
-            ctx.close();
+            gameRoomRegistry.getGames()
+                    .forEach(game -> game.getPlayersRegistry()
+                            .allPlayers().filter(playerStateChannel -> playerStateChannel.getChannel() == ctx.channel())
+                            .forEach(playerStateChannel
+                                    -> game.getPlayersRegistry().removePlayer(playerStateChannel.getPlayerState().getPlayerId())));
+
         }
     }
 

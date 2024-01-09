@@ -47,6 +47,7 @@ public class PlayersRegistry implements Closeable {
     }
 
     public void removePlayer(int playerId) {
+        // TODO add logs
         PlayerStateChannel playerStateChannel = players.remove(playerId);
         if (playerStateChannel != null) {
             playerStateChannel.getChannel().close();

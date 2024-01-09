@@ -30,6 +30,7 @@ import java.util.concurrent.ThreadLocalRandom;
     Test concurrent access
     Test error handling
     Why sync blocks forever on closing server socket?
+    Test that DISCONNECT event is sent when an idle player is disconnected
     */
 
 public abstract class AbstractGameServerTest {

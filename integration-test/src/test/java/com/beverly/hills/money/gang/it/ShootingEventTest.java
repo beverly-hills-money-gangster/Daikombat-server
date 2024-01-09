@@ -1,6 +1,7 @@
 package com.beverly.hills.money.gang.it;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
+import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
@@ -336,5 +337,62 @@ public class ShootingEventTest extends AbstractGameServerTest {
         ServerResponse.GameInfo myGame = games.stream().filter(gameInfo -> gameInfo.getGameId() == gameIdToConnectTo).findFirst()
                 .orElseThrow((Supplier<Exception>) () -> new IllegalStateException("Can't find the game we connected to"));
         assertEquals(1, myGame.getPlayersOnline(), "Must be 1 player only as 1 player got killed (it was 2)");
+    }
+
+    @Test
+    public void testShootYourself() throws Exception {
+        int gameIdToConnectTo = 0;
+        GameConnection gameConnection1 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        gameConnection1.write(
+                JoinGameCommand.newBuilder()
+                        .setPlayerName("my player name")
+                        .setGameId(gameIdToConnectTo).build());
+        Thread.sleep(150);
+        ServerResponse shooterPlayerSpawn = gameConnection1.getResponse().poll().get();
+        int shooterPlayerId = shooterPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
+
+        emptyQueue(gameConnection1.getResponse());
+
+
+        var shooterSpawnEvent = shooterPlayerSpawn.getGameEvents().getEvents(0);
+        float newPositionX = shooterSpawnEvent.getPlayer().getPosition().getX() + 0.1f;
+        float newPositionY = shooterSpawnEvent.getPlayer().getPosition().getY() - 0.1f;
+
+        gameConnection1.write(PushGameEventCommand.newBuilder()
+                .setPlayerId(shooterPlayerId)
+                .setGameId(gameIdToConnectTo)
+                .setEventType(PushGameEventCommand.GameEventType.SHOOT)
+                .setDirection(
+                        PushGameEventCommand.Vector.newBuilder()
+                                .setX(shooterSpawnEvent.getPlayer().getDirection().getX())
+                                .setY(shooterSpawnEvent.getPlayer().getDirection().getY())
+                                .build())
+                .setPosition(
+                        PushGameEventCommand.Vector.newBuilder()
+                                .setX(newPositionX)
+                                .setY(newPositionY)
+                                .build())
+                .setAffectedPlayerId(shooterPlayerId) // shoot yourself
+                .build());
+
+        Thread.sleep(250);
+        assertEquals(1, gameConnection1.getResponse().size(), "Should be one error response");
+
+        ServerResponse errorResponse = gameConnection1.getResponse().poll().get();
+        assertTrue(errorResponse.hasErrorEvent());
+        ServerResponse.ErrorEvent errorEvent = errorResponse.getErrorEvent();
+        assertEquals(GameErrorCode.CAN_NOT_SHOOT_YOURSELF.ordinal(), errorEvent.getErrorCode(),
+                "You can't shoot yourself");
+
+        GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+
+        gameConnection.write(GetServerInfoCommand.newBuilder().build());
+        Thread.sleep(50);
+        ServerResponse serverResponse = gameConnection.getResponse().poll().get();
+        List<ServerResponse.GameInfo> games = serverResponse.getServerInfo().getGamesList();
+        for (ServerResponse.GameInfo gameInfo : games) {
+            assertEquals(0, gameInfo.getPlayersOnline(),
+                    "Should be no connected players anywhere. The only player on server got disconnected");
+        }
     }
 }

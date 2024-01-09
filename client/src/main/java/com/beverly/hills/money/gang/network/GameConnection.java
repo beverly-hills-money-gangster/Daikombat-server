@@ -94,6 +94,12 @@ public class GameConnection {
                                     }
                                 }
 
+                                @Override
+                                public void channelInactive(ChannelHandlerContext ctx) {
+                                    LOG.error("Channel closed");
+                                    disconnect();
+                                }
+
                             });
                         }
                     });
@@ -163,6 +169,10 @@ public class GameConnection {
     }
 
     public void disconnect() {
+        if (!state.compareAndSet(GameConnectionState.CONNECTED, GameConnectionState.DISCONNECTING)) {
+            LOG.info("Potential concurrent disconnect");
+            return;
+        }
         LOG.info("Disconnect");
         try {
             Optional.ofNullable(group).ifPresent(EventExecutorGroup::shutdownGracefully);
@@ -193,7 +203,6 @@ public class GameConnection {
         return state.get().equals(GameConnectionState.DISCONNECTED);
     }
 
-
     public QueueReader<Throwable> getErrors() {
         return errorsQueueAPI;
     }
@@ -209,6 +218,7 @@ public class GameConnection {
     private enum GameConnectionState {
         CONNECTING,
         CONNECTED,
+        DISCONNECTING,
         DISCONNECTED
     }
 }

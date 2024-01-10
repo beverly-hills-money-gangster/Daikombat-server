@@ -19,6 +19,8 @@ import java.util.Optional;
 
 import static com.beverly.hills.money.gang.factory.ServerResponseFactory.*;
 
+
+// TODO add protobuf validation for all event types
 @RequiredArgsConstructor
 public class GameEventServerCommandHandler implements ServerCommandHandler {
 
@@ -77,6 +79,12 @@ public class GameEventServerCommandHandler implements ServerCommandHandler {
                         });
             }
             case MOVE -> game.bufferMove(gameCommand.getPlayerId(), playerCoordinates);
+            case EXIT -> game.getPlayersRegistry().removePlayer(gameCommand.getPlayerId())
+                    .ifPresent(playerState -> {
+                        var disconnectEvent = createExitEvent(game.playersOnline(), playerState);
+                        game.getPlayersRegistry().allPlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
+                                .forEach(channel -> channel.writeAndFlush(disconnectEvent));
+                    });
             default -> currentChannel.writeAndFlush(createErrorEvent(
                     new GameLogicError("Not supported command",
                             GameErrorCode.COMMAND_NOT_RECOGNIZED)));

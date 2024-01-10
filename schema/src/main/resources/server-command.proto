@@ -45,5 +45,6 @@ message PushGameEventCommand {
   enum GameEventType {
     MOVE = 0;
     SHOOT = 1;
+    EXIT = 2;
   }
 }

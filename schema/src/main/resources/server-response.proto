@@ -54,7 +54,7 @@ message ServerResponse {
       GET_SHOT = 2;
       DEATH = 3;
       SPAWN = 4;
-      DISCONNECT = 5;
+      EXIT = 5;
     }
   }
 

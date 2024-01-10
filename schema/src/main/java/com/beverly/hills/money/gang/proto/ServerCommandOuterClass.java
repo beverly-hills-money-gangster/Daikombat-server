@@ -53,7 +53,7 @@ public final class ServerCommandOuterClass {
   private static  com.google.protobuf.Descriptors.FileDescriptor
       descriptor;
   static {
-    String[] descriptorData = {
+    java.lang.String[] descriptorData = {
       "\n.schema/src/main/resources/server-comma" +
       "nd.proto\022\rdaikombat.dto\"\256\002\n\rServerComman" +
       "d\022\021\n\004hmac\030\002 \001(\014H\001\210\001\001\022:\n\013chatCommand\030\003 \001(" +
@@ -67,7 +67,7 @@ public final class ServerCommandOuterClass {
       "ChatEventCommand\022\016\n\006gameId\030\001 \001(\005\022\017\n\007mess" +
       "age\030\002 \001(\t\022\020\n\010playerId\030\003 \001(\005\"5\n\017JoinGameC" +
       "ommand\022\016\n\006gameId\030\001 \001(\005\022\022\n\nplayerName\030\003 \001" +
-      "(\t\"\365\002\n\024PushGameEventCommand\022\016\n\006gameId\030\001 " +
+      "(\t\"\377\002\n\024PushGameEventCommand\022\016\n\006gameId\030\001 " +
       "\001(\005\022D\n\teventType\030\002 \001(\01621.daikombat.dto.P" +
       "ushGameEventCommand.GameEventType\022<\n\010pos" +
       "ition\030\003 \001(\0132*.daikombat.dto.PushGameEven" +
@@ -75,9 +75,9 @@ public final class ServerCommandOuterClass {
       "kombat.dto.PushGameEventCommand.Vector\022\020" +
       "\n\010playerId\030\005 \001(\005\022\035\n\020affectedPlayerId\030\006 \001" +
       "(\005H\000\210\001\001\032\036\n\006Vector\022\t\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002\"" +
-      "$\n\rGameEventType\022\010\n\004MOVE\020\000\022\t\n\005SHOOT\020\001B\023\n" +
-      "\021_affectedPlayerIdB&\n\"com.beverly.hills." +
-      "money.gang.protoP\001b\006proto3"
+      ".\n\rGameEventType\022\010\n\004MOVE\020\000\022\t\n\005SHOOT\020\001\022\010\n" +
+      "\004EXIT\020\002B\023\n\021_affectedPlayerIdB&\n\"com.beve" +
+      "rly.hills.money.gang.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -88,37 +88,37 @@ public final class ServerCommandOuterClass {
     internal_static_daikombat_dto_ServerCommand_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_ServerCommand_descriptor,
-        new String[] { "Hmac", "ChatCommand", "GameCommand", "JoinGameCommand", "GetServerInfoCommand", "Command", });
+        new java.lang.String[] { "Hmac", "ChatCommand", "GameCommand", "JoinGameCommand", "GetServerInfoCommand", "Command", });
     internal_static_daikombat_dto_GetServerInfoCommand_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_daikombat_dto_GetServerInfoCommand_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_GetServerInfoCommand_descriptor,
-        new String[] { });
+        new java.lang.String[] { });
     internal_static_daikombat_dto_PushChatEventCommand_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_daikombat_dto_PushChatEventCommand_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_PushChatEventCommand_descriptor,
-        new String[] { "GameId", "Message", "PlayerId", });
+        new java.lang.String[] { "GameId", "Message", "PlayerId", });
     internal_static_daikombat_dto_JoinGameCommand_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_daikombat_dto_JoinGameCommand_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_JoinGameCommand_descriptor,
-        new String[] { "GameId", "PlayerName", });
+        new java.lang.String[] { "GameId", "PlayerName", });
     internal_static_daikombat_dto_PushGameEventCommand_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_daikombat_dto_PushGameEventCommand_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_PushGameEventCommand_descriptor,
-        new String[] { "GameId", "EventType", "Position", "Direction", "PlayerId", "AffectedPlayerId", });
+        new java.lang.String[] { "GameId", "EventType", "Position", "Direction", "PlayerId", "AffectedPlayerId", });
     internal_static_daikombat_dto_PushGameEventCommand_Vector_descriptor =
       internal_static_daikombat_dto_PushGameEventCommand_descriptor.getNestedTypes().get(0);
     internal_static_daikombat_dto_PushGameEventCommand_Vector_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_PushGameEventCommand_Vector_descriptor,
-        new String[] { "X", "Y", });
+        new java.lang.String[] { "X", "Y", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

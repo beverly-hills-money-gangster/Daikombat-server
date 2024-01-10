@@ -32,10 +32,10 @@ public interface ServerResponseFactory {
                 .setEventType(ServerResponse.GameEvent.GameEventType.MOVE).build();
     }
 
-    static ServerResponse.GameEvent createDisconnectGameEvent(PlayerStateReader playerStateReader) {
+    static ServerResponse.GameEvent createExitGameEvent(PlayerStateReader playerStateReader) {
         return ServerResponse.GameEvent.newBuilder()
                 .setPlayer(createPlayerStats(playerStateReader))
-                .setEventType(ServerResponse.GameEvent.GameEventType.DISCONNECT).build();
+                .setEventType(ServerResponse.GameEvent.GameEventType.EXIT).build();
     }
 
     static ServerResponse createErrorEvent(GameLogicError error) {
@@ -84,14 +84,19 @@ public interface ServerResponseFactory {
                 .build();
     }
 
-    static ServerResponse createDisconnectedEvent(int playersOnline,
-                                                  Stream<PlayerStateReader> disconnectedPlayers) {
-        var allDisconnectedPlayers = ServerResponse.GameEvents.newBuilder();
-        disconnectedPlayers.forEach(playerStateReader
-                -> allDisconnectedPlayers.addEvents(createDisconnectGameEvent(playerStateReader)));
-        allDisconnectedPlayers.setPlayersOnline(playersOnline);
+    static ServerResponse createExitEvent(int playersOnline,
+                                          PlayerStateReader exitPlayer) {
+        return createExitEvent(playersOnline, Stream.of(exitPlayer));
+    }
+
+    static ServerResponse createExitEvent(int playersOnline,
+                                          Stream<PlayerStateReader> exitPlayers) {
+        var allExitPlayers = ServerResponse.GameEvents.newBuilder();
+        exitPlayers.forEach(playerStateReader
+                -> allExitPlayers.addEvents(createExitGameEvent(playerStateReader)));
+        allExitPlayers.setPlayersOnline(playersOnline);
         return ServerResponse.newBuilder()
-                .setGameEvents(allDisconnectedPlayers)
+                .setGameEvents(allExitPlayers)
                 .build();
     }
 

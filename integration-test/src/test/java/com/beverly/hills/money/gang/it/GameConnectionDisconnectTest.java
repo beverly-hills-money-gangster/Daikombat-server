@@ -11,7 +11,7 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SetEnvironmentVariable(key = "MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
-public class ClientDisconnectTest extends AbstractGameServerTest {
+public class GameConnectionDisconnectTest extends AbstractGameServerTest {
 
 
     @Test

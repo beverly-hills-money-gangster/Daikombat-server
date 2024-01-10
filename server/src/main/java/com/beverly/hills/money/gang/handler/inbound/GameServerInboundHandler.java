@@ -94,7 +94,7 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
                 return;
             }
             LOG.info("Players to disconnect {}", idlePlayers);
-            ServerResponse disconnectedEvents = createDisconnectedEvent(
+            ServerResponse disconnectedEvents = createExitEvent(
                     game.playersOnline(),
                     idlePlayers.stream()
                             .map(PlayersRegistry.PlayerStateChannel::getPlayerState));

@@ -31,6 +31,7 @@ import java.util.concurrent.ThreadLocalRandom;
     Test error handling
     Why sync blocks forever on closing server socket?
     Test that DISCONNECT event is sent when an idle player is disconnected
+    Test that I get warnings after being disconnected
     */
 
 public abstract class AbstractGameServerTest {
@@ -68,7 +69,7 @@ public abstract class AbstractGameServerTest {
         gameConnections.clear();
     }
 
-    protected void emptyQueue(QueueReader<ServerResponse> queueReader) {
+    protected void emptyQueue(QueueReader<?> queueReader) {
         while (queueReader.poll().isPresent()) {
             // just read them all and that's it
         }

@@ -12,6 +12,7 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @SetEnvironmentVariable(key = "IDLE_PLAYERS_KILLER_FREQUENCY_MLS", value = "1000")
@@ -52,6 +53,17 @@ public class IdleClientTest extends AbstractGameServerTest {
         assertEquals(0, myGameAfterIdle.getPlayersOnline(),
                 "Current player should be disconnected because it was idle for too long");
 
+        emptyQueue(gameConnection.getWarning());
+        gameConnection.write(GetServerInfoCommand.newBuilder().build());
+        Thread.sleep(150);
+        assertEquals(0, gameConnection.getResponse().size(),
+                "Should be no response as we got disconnected by server");
+        assertEquals(1, gameConnection.getWarning().size(),
+                "Should be one warning as we can't write using disconnected connection");
+        Throwable warning = gameConnection.getWarning().poll().get();
+        assertTrue(warning instanceof IOException);
+        assertEquals("Can't write using closed connection", warning.getMessage());
+        assertTrue(gameConnection.isDisconnected());
     }
 
     @Test

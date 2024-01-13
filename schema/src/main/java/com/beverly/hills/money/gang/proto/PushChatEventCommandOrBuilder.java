@@ -9,25 +9,40 @@ public interface PushChatEventCommandOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>int32 gameId = 1;</code>
+   * <code>optional int32 gameId = 1;</code>
+   * @return Whether the gameId field is set.
+   */
+  boolean hasGameId();
+  /**
+   * <code>optional int32 gameId = 1;</code>
    * @return The gameId.
    */
   int getGameId();
 
   /**
-   * <code>string message = 2;</code>
+   * <code>optional string message = 2;</code>
+   * @return Whether the message field is set.
+   */
+  boolean hasMessage();
+  /**
+   * <code>optional string message = 2;</code>
    * @return The message.
    */
   java.lang.String getMessage();
   /**
-   * <code>string message = 2;</code>
+   * <code>optional string message = 2;</code>
    * @return The bytes for message.
    */
   com.google.protobuf.ByteString
       getMessageBytes();
 
   /**
-   * <code>int32 playerId = 3;</code>
+   * <code>optional int32 playerId = 3;</code>
+   * @return Whether the playerId field is set.
+   */
+  boolean hasPlayerId();
+  /**
+   * <code>optional int32 playerId = 3;</code>
    * @return The playerId.
    */
   int getPlayerId();

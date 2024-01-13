@@ -17,9 +17,17 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SetEnvironmentVariable(key = "IDLE_PLAYERS_KILLER_FREQUENCY_MLS", value = "99999")
+@SetEnvironmentVariable(key = "MAX_IDLE_TIME_MLS", value = "99999")
+@SetEnvironmentVariable(key = "MAX_SERVER_INACTIVE_MLS", value = "99999")
 @SetEnvironmentVariable(key = "MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
 public class ChatEventTest extends AbstractGameServerTest {
 
+    /**
+     * @given a running game server
+     * @when many players connect to server and send messages
+     * @then all messages are correctly received by players
+     */
     @Test
     public void testChatManyPlayers() throws InterruptedException, IOException {
         int gameIdToConnectTo = 0;
@@ -66,6 +74,11 @@ public class ChatEventTest extends AbstractGameServerTest {
         });
     }
 
+    /**
+     * @given a running game server
+     * @when many players connect to server and send messages concurrently
+     * @then all messages are correctly received by players
+     */
     @Test
     public void testChatManyPlayersConcurrent() throws IOException, InterruptedException {
         int gameIdToConnectTo = 0;

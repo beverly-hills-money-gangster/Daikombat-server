@@ -19,32 +19,31 @@ message ServerCommand {
 message GetServerInfoCommand {}
 
 message PushChatEventCommand {
-  int32 gameId = 1;
-  string message = 2;
-  int32 playerId = 3;
+  optional int32 gameId = 1;
+  optional string message = 2;
+  optional int32 playerId = 3;
 }
 
 message JoinGameCommand {
-  int32 gameId = 1;
-  string playerName = 3;
+  optional int32 gameId = 1;
+  optional string playerName = 3;
 }
 
 message PushGameEventCommand {
-  int32 gameId = 1;
-  GameEventType eventType = 2;
+  optional int32 gameId = 1;
+  optional GameEventType eventType = 2;
   Vector position = 3;
   Vector direction = 4;
-  int32 playerId = 5;
+  optional int32 playerId = 5;
   optional int32 affectedPlayerId = 6;
 
   message Vector {
-    float x = 1;
-    float y = 2;
+    optional float x = 1;
+    optional float y = 2;
   }
 
   enum GameEventType {
     MOVE = 0;
     SHOOT = 1;
-    EXIT = 2;
   }
 }

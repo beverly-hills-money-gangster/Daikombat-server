@@ -20,16 +20,27 @@ import java.util.Optional;
 import static com.beverly.hills.money.gang.factory.ServerResponseFactory.*;
 
 
-// TODO add protobuf validation for all event types
 @RequiredArgsConstructor
-public class GameEventServerCommandHandler implements ServerCommandHandler {
+public class GameEventServerCommandHandler extends ServerCommandHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(GameEventServerCommandHandler.class);
 
     private final GameRoomRegistry gameRoomRegistry;
 
     @Override
-    public void handle(ServerCommand msg, Channel currentChannel) throws GameLogicError {
+    protected boolean isValidCommand(ServerCommand msg, Channel currentChannel) {
+        var gameCommand = msg.getGameCommand();
+        return gameCommand.hasGameId()
+                && gameCommand.hasPlayerId()
+                && gameCommand.hasPosition()
+                && gameCommand.hasDirection()
+                && gameCommand.hasEventType()
+                && gameRoomRegistry.playerJoinedGame(gameCommand.getGameId(),
+                currentChannel, gameCommand.getPlayerId());
+    }
+
+    @Override
+    protected void handleInternal(ServerCommand msg, Channel currentChannel) throws GameLogicError {
         Game game = gameRoomRegistry.getGame(msg.getGameCommand().getGameId());
         PushGameEventCommand gameCommand = msg.getGameCommand();
         PushGameEventCommand.GameEventType gameEventType = gameCommand.getEventType();
@@ -79,12 +90,6 @@ public class GameEventServerCommandHandler implements ServerCommandHandler {
                         });
             }
             case MOVE -> game.bufferMove(gameCommand.getPlayerId(), playerCoordinates);
-            case EXIT -> game.getPlayersRegistry().removePlayer(gameCommand.getPlayerId())
-                    .ifPresent(playerState -> {
-                        var disconnectEvent = createExitEvent(game.playersOnline(), playerState);
-                        game.getPlayersRegistry().allPlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
-                                .forEach(channel -> channel.writeAndFlush(disconnectEvent));
-                    });
             default -> currentChannel.writeAndFlush(createErrorEvent(
                     new GameLogicError("Not supported command",
                             GameErrorCode.COMMAND_NOT_RECOGNIZED)));

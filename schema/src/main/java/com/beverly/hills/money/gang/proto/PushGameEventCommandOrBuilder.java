@@ -9,18 +9,28 @@ public interface PushGameEventCommandOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>int32 gameId = 1;</code>
+   * <code>optional int32 gameId = 1;</code>
+   * @return Whether the gameId field is set.
+   */
+  boolean hasGameId();
+  /**
+   * <code>optional int32 gameId = 1;</code>
    * @return The gameId.
    */
   int getGameId();
 
   /**
-   * <code>.daikombat.dto.PushGameEventCommand.GameEventType eventType = 2;</code>
+   * <code>optional .daikombat.dto.PushGameEventCommand.GameEventType eventType = 2;</code>
+   * @return Whether the eventType field is set.
+   */
+  boolean hasEventType();
+  /**
+   * <code>optional .daikombat.dto.PushGameEventCommand.GameEventType eventType = 2;</code>
    * @return The enum numeric value on the wire for eventType.
    */
   int getEventTypeValue();
   /**
-   * <code>.daikombat.dto.PushGameEventCommand.GameEventType eventType = 2;</code>
+   * <code>optional .daikombat.dto.PushGameEventCommand.GameEventType eventType = 2;</code>
    * @return The eventType.
    */
   com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType getEventType();
@@ -56,7 +66,12 @@ public interface PushGameEventCommandOrBuilder extends
   com.beverly.hills.money.gang.proto.PushGameEventCommand.VectorOrBuilder getDirectionOrBuilder();
 
   /**
-   * <code>int32 playerId = 5;</code>
+   * <code>optional int32 playerId = 5;</code>
+   * @return Whether the playerId field is set.
+   */
+  boolean hasPlayerId();
+  /**
+   * <code>optional int32 playerId = 5;</code>
    * @return The playerId.
    */
   int getPlayerId();

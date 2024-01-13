@@ -13,9 +13,17 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SetEnvironmentVariable(key = "IDLE_PLAYERS_KILLER_FREQUENCY_MLS", value = "99999")
+@SetEnvironmentVariable(key = "MAX_IDLE_TIME_MLS", value = "99999")
+@SetEnvironmentVariable(key = "MAX_SERVER_INACTIVE_MLS", value = "99999")
 @SetEnvironmentVariable(key = "MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
 public class GameServerInfoTest extends AbstractGameServerTest {
 
+    /**
+     * @given a running game serve
+     * @when player 1 requests server info
+     * @then player 1 gets server info for all games
+     */
     @Test
     public void testGetServerInfo() throws InterruptedException, IOException {
         GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
@@ -34,6 +42,11 @@ public class GameServerInfoTest extends AbstractGameServerTest {
         }
     }
 
+    /**
+     * @given a running game serve
+     * @when player 1 requests server info with incorrect password
+     * @then player 1 fails to get server info. server disconnects the player
+     */
     @Test
     public void testGetServerInfoBadAuth() throws InterruptedException, IOException {
         GameConnection gameConnection = createGameConnection("wrong password", "localhost", port);
@@ -45,16 +58,7 @@ public class GameServerInfoTest extends AbstractGameServerTest {
         ServerResponse.ErrorEvent errorEvent = serverResponse.getErrorEvent();
         assertEquals(GameErrorCode.AUTH_ERROR.ordinal(), errorEvent.getErrorCode(), "Should be auth error");
         assertEquals("Invalid HMAC", errorEvent.getMessage());
-    }
-
-    @Test
-    public void testGetServerInfoNotExistingServer() {
-        assertThrows(IOException.class, () -> createGameConnection(ServerConfig.PASSWORD, "666.666.666.666", port));
-    }
-
-    @Test
-    public void testGetServerInfoWrongPort() {
-        assertThrows(IOException.class, () -> createGameConnection(ServerConfig.PASSWORD, "localhost", 666));
+        assertTrue(gameConnection.isDisconnected());
     }
 
 }

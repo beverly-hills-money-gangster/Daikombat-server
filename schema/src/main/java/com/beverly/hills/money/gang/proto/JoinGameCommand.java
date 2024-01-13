@@ -40,10 +40,19 @@ private static final long serialVersionUID = 0L;
             com.beverly.hills.money.gang.proto.JoinGameCommand.class, com.beverly.hills.money.gang.proto.JoinGameCommand.Builder.class);
   }
 
+  private int bitField0_;
   public static final int GAMEID_FIELD_NUMBER = 1;
   private int gameId_ = 0;
   /**
-   * <code>int32 gameId = 1;</code>
+   * <code>optional int32 gameId = 1;</code>
+   * @return Whether the gameId field is set.
+   */
+  @java.lang.Override
+  public boolean hasGameId() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <code>optional int32 gameId = 1;</code>
    * @return The gameId.
    */
   @java.lang.Override
@@ -55,7 +64,15 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object playerName_ = "";
   /**
-   * <code>string playerName = 3;</code>
+   * <code>optional string playerName = 3;</code>
+   * @return Whether the playerName field is set.
+   */
+  @java.lang.Override
+  public boolean hasPlayerName() {
+    return ((bitField0_ & 0x00000002) != 0);
+  }
+  /**
+   * <code>optional string playerName = 3;</code>
    * @return The playerName.
    */
   @java.lang.Override
@@ -72,7 +89,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string playerName = 3;</code>
+   * <code>optional string playerName = 3;</code>
    * @return The bytes for playerName.
    */
   @java.lang.Override
@@ -104,10 +121,10 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (gameId_ != 0) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       output.writeInt32(1, gameId_);
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(playerName_)) {
+    if (((bitField0_ & 0x00000002) != 0)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 3, playerName_);
     }
     getUnknownFields().writeTo(output);
@@ -119,11 +136,11 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (gameId_ != 0) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(1, gameId_);
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(playerName_)) {
+    if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, playerName_);
     }
     size += getUnknownFields().getSerializedSize();
@@ -141,10 +158,16 @@ private static final long serialVersionUID = 0L;
     }
     com.beverly.hills.money.gang.proto.JoinGameCommand other = (com.beverly.hills.money.gang.proto.JoinGameCommand) obj;
 
-    if (getGameId()
-        != other.getGameId()) return false;
-    if (!getPlayerName()
-        .equals(other.getPlayerName())) return false;
+    if (hasGameId() != other.hasGameId()) return false;
+    if (hasGameId()) {
+      if (getGameId()
+          != other.getGameId()) return false;
+    }
+    if (hasPlayerName() != other.hasPlayerName()) return false;
+    if (hasPlayerName()) {
+      if (!getPlayerName()
+          .equals(other.getPlayerName())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -156,10 +179,14 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + GAMEID_FIELD_NUMBER;
-    hash = (53 * hash) + getGameId();
-    hash = (37 * hash) + PLAYERNAME_FIELD_NUMBER;
-    hash = (53 * hash) + getPlayerName().hashCode();
+    if (hasGameId()) {
+      hash = (37 * hash) + GAMEID_FIELD_NUMBER;
+      hash = (53 * hash) + getGameId();
+    }
+    if (hasPlayerName()) {
+      hash = (37 * hash) + PLAYERNAME_FIELD_NUMBER;
+      hash = (53 * hash) + getPlayerName().hashCode();
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -326,12 +353,16 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(com.beverly.hills.money.gang.proto.JoinGameCommand result) {
       int from_bitField0_ = bitField0_;
+      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.gameId_ = gameId_;
+        to_bitField0_ |= 0x00000001;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.playerName_ = playerName_;
+        to_bitField0_ |= 0x00000002;
       }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -378,10 +409,10 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(com.beverly.hills.money.gang.proto.JoinGameCommand other) {
       if (other == com.beverly.hills.money.gang.proto.JoinGameCommand.getDefaultInstance()) return this;
-      if (other.getGameId() != 0) {
+      if (other.hasGameId()) {
         setGameId(other.getGameId());
       }
-      if (!other.getPlayerName().isEmpty()) {
+      if (other.hasPlayerName()) {
         playerName_ = other.playerName_;
         bitField0_ |= 0x00000002;
         onChanged();
@@ -441,7 +472,15 @@ private static final long serialVersionUID = 0L;
 
     private int gameId_ ;
     /**
-     * <code>int32 gameId = 1;</code>
+     * <code>optional int32 gameId = 1;</code>
+     * @return Whether the gameId field is set.
+     */
+    @java.lang.Override
+    public boolean hasGameId() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>optional int32 gameId = 1;</code>
      * @return The gameId.
      */
     @java.lang.Override
@@ -449,7 +488,7 @@ private static final long serialVersionUID = 0L;
       return gameId_;
     }
     /**
-     * <code>int32 gameId = 1;</code>
+     * <code>optional int32 gameId = 1;</code>
      * @param value The gameId to set.
      * @return This builder for chaining.
      */
@@ -461,7 +500,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>int32 gameId = 1;</code>
+     * <code>optional int32 gameId = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearGameId() {
@@ -473,7 +512,14 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object playerName_ = "";
     /**
-     * <code>string playerName = 3;</code>
+     * <code>optional string playerName = 3;</code>
+     * @return Whether the playerName field is set.
+     */
+    public boolean hasPlayerName() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>optional string playerName = 3;</code>
      * @return The playerName.
      */
     public java.lang.String getPlayerName() {
@@ -489,7 +535,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string playerName = 3;</code>
+     * <code>optional string playerName = 3;</code>
      * @return The bytes for playerName.
      */
     public com.google.protobuf.ByteString
@@ -506,7 +552,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string playerName = 3;</code>
+     * <code>optional string playerName = 3;</code>
      * @param value The playerName to set.
      * @return This builder for chaining.
      */
@@ -519,7 +565,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string playerName = 3;</code>
+     * <code>optional string playerName = 3;</code>
      * @return This builder for chaining.
      */
     public Builder clearPlayerName() {
@@ -529,7 +575,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string playerName = 3;</code>
+     * <code>optional string playerName = 3;</code>
      * @param value The bytes for playerName to set.
      * @return This builder for chaining.
      */

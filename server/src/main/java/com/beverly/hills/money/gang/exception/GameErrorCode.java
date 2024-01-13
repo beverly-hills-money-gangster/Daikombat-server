@@ -7,7 +7,6 @@ public enum GameErrorCode {
     SERVER_FULL,
     NOT_EXISTING_GAME_ROOM,
     COMMAND_NOT_RECOGNIZED,
-
     CAN_NOT_SHOOT_YOURSELF,
     GAME_CLOSED
 

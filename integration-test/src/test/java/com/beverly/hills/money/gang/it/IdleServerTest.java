@@ -21,6 +21,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SetEnvironmentVariable(key = "MAX_SERVER_INACTIVE_MLS", value = "1000")
 public class IdleServerTest extends AbstractGameServerTest {
 
+    /**
+     * @given a running game server and 1 connected player
+     * @when server sends no update for long time
+     * @then the player disconnects from the server
+     */
     @Test
     public void testClientIsMovingButServerIsIdle() throws IOException, InterruptedException {
         int gameToConnectTo = 1;

@@ -3,7 +3,6 @@ package com.beverly.hills.money.gang.it;
 import com.beverly.hills.money.gang.entity.GameServerCreds;
 import com.beverly.hills.money.gang.entity.HostPort;
 import com.beverly.hills.money.gang.network.GameConnection;
-import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.queue.QueueReader;
 import com.beverly.hills.money.gang.runner.ServerRunner;
 import org.junit.jupiter.api.AfterEach;
@@ -17,22 +16,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
-// TODO finish it
-    /*
-    Add shooting yourself test
-    Add shooting non-existing player
-    Add more sophisticated auth tests(wrong HMAC, wrong password, integrity check)
-    Fix all vulnerable libs
-    Check with spotbugs
-    Add more comments
-    Can a client see that it was closed?
-    Test all commands
-    Test concurrent access
-    Test error handling
-    Why sync blocks forever on closing server socket?
-    Test that DISCONNECT event is sent when an idle player is disconnected
-    Test that I get warnings after being disconnected
-    */
+/*
+  TODO:
+  - Add longevity test
+*/
 
 public abstract class AbstractGameServerTest {
 

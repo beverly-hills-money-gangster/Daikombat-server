@@ -19,6 +19,11 @@ import static org.junit.jupiter.api.Assertions.*;
 @SetEnvironmentVariable(key = "MOVES_UPDATE_FREQUENCY_MLS", value = "9999")
 public class ShootingEventTest extends AbstractGameServerTest {
 
+    /**
+     * @given a running server with 1 connected player
+     * @when player 1 shoots and misses
+     * @then nobody got shot
+     */
     @Test
     public void testShootMiss() throws IOException, InterruptedException {
         int gameIdToConnectTo = 0;
@@ -75,6 +80,11 @@ public class ShootingEventTest extends AbstractGameServerTest {
         assertFalse(shootingEvent.hasAffectedPlayer(), "Nobody is affected. Missed the shot");
     }
 
+    /**
+     * @given a running server with 2 connected player
+     * @when player 1 shoots player 2
+     * @then player 2 health is reduced by ServerConfig.DEFAULT_DAMAGE and the event is sent to all players
+     */
     @Test
     public void testShootHit() throws Exception {
         int gameIdToConnectTo = 0;
@@ -154,6 +164,11 @@ public class ShootingEventTest extends AbstractGameServerTest {
         assertEquals(2, myGame.getPlayersOnline(), "Should be 2 players still");
     }
 
+    /**
+     * @given a running server with 2 connected player
+     * @when player 1 kills player 2
+     * @then player 2 is dead and gets disconnected. DEATH event is sent to all active players.
+     */
     @Test
     public void testShootKill() throws Exception {
         int gameIdToConnectTo = 0;
@@ -225,6 +240,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
                 .setAffectedPlayerId(shotPlayerId)
                 .build());
         Thread.sleep(250);
+        assertTrue(gameConnection2.isDisconnected(), "Dead players should be disconnected");
         ServerResponse serverResponse = gameConnection2.getResponse().poll().get();
         var shootingEvent = serverResponse.getGameEvents().getEvents(0);
         assertEquals(ServerResponse.GameEvent.GameEventType.DEATH, shootingEvent.getEventType(),
@@ -245,6 +261,11 @@ public class ShootingEventTest extends AbstractGameServerTest {
         assertEquals(1, myGame.getPlayersOnline(), "Must be 1 player only as 1 player got killed (it was 2)");
     }
 
+    /**
+     * @given a running server with 2 connected player: 1 active player and 2 dead
+     * @when player 1 shoots player 2
+     * @then nothing happens as dead players can't get shot
+     */
     @Test
     public void testShootDeadPlayer() throws Exception {
         int gameIdToConnectTo = 0;
@@ -339,6 +360,11 @@ public class ShootingEventTest extends AbstractGameServerTest {
         assertEquals(1, myGame.getPlayersOnline(), "Must be 1 player only as 1 player got killed (it was 2)");
     }
 
+    /**
+     * @given a running server with 1 connected player
+     * @when player shoots himself
+     * @then player is disconnected
+     */
     @Test
     public void testShootYourself() throws Exception {
         int gameIdToConnectTo = 0;
@@ -376,6 +402,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
                 .build());
 
         Thread.sleep(250);
+        assertTrue(gameConnection1.isDisconnected());
         assertEquals(1, gameConnection1.getResponse().size(), "Should be one error response");
 
         ServerResponse errorResponse = gameConnection1.getResponse().poll().get();

@@ -53,10 +53,6 @@ private static final long serialVersionUID = 0L;
      * <code>SHOOT = 1;</code>
      */
     SHOOT(1),
-    /**
-     * <code>EXIT = 2;</code>
-     */
-    EXIT(2),
     UNRECOGNIZED(-1),
     ;
 
@@ -68,10 +64,6 @@ private static final long serialVersionUID = 0L;
      * <code>SHOOT = 1;</code>
      */
     public static final int SHOOT_VALUE = 1;
-    /**
-     * <code>EXIT = 2;</code>
-     */
-    public static final int EXIT_VALUE = 2;
 
 
     public final int getNumber() {
@@ -100,7 +92,6 @@ private static final long serialVersionUID = 0L;
       switch (value) {
         case 0: return MOVE;
         case 1: return SHOOT;
-        case 2: return EXIT;
         default: return null;
       }
     }
@@ -162,13 +153,23 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>float x = 1;</code>
+     * <code>optional float x = 1;</code>
+     * @return Whether the x field is set.
+     */
+    boolean hasX();
+    /**
+     * <code>optional float x = 1;</code>
      * @return The x.
      */
     float getX();
 
     /**
-     * <code>float y = 2;</code>
+     * <code>optional float y = 2;</code>
+     * @return Whether the y field is set.
+     */
+    boolean hasY();
+    /**
+     * <code>optional float y = 2;</code>
      * @return The y.
      */
     float getY();
@@ -208,10 +209,19 @@ private static final long serialVersionUID = 0L;
               com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.class, com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.Builder.class);
     }
 
+    private int bitField0_;
     public static final int X_FIELD_NUMBER = 1;
     private float x_ = 0F;
     /**
-     * <code>float x = 1;</code>
+     * <code>optional float x = 1;</code>
+     * @return Whether the x field is set.
+     */
+    @java.lang.Override
+    public boolean hasX() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>optional float x = 1;</code>
      * @return The x.
      */
     @java.lang.Override
@@ -222,7 +232,15 @@ private static final long serialVersionUID = 0L;
     public static final int Y_FIELD_NUMBER = 2;
     private float y_ = 0F;
     /**
-     * <code>float y = 2;</code>
+     * <code>optional float y = 2;</code>
+     * @return Whether the y field is set.
+     */
+    @java.lang.Override
+    public boolean hasY() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>optional float y = 2;</code>
      * @return The y.
      */
     @java.lang.Override
@@ -244,10 +262,10 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (java.lang.Float.floatToRawIntBits(x_) != 0) {
+      if (((bitField0_ & 0x00000001) != 0)) {
         output.writeFloat(1, x_);
       }
-      if (java.lang.Float.floatToRawIntBits(y_) != 0) {
+      if (((bitField0_ & 0x00000002) != 0)) {
         output.writeFloat(2, y_);
       }
       getUnknownFields().writeTo(output);
@@ -259,11 +277,11 @@ private static final long serialVersionUID = 0L;
       if (size != -1) return size;
 
       size = 0;
-      if (java.lang.Float.floatToRawIntBits(x_) != 0) {
+      if (((bitField0_ & 0x00000001) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeFloatSize(1, x_);
       }
-      if (java.lang.Float.floatToRawIntBits(y_) != 0) {
+      if (((bitField0_ & 0x00000002) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeFloatSize(2, y_);
       }
@@ -282,12 +300,18 @@ private static final long serialVersionUID = 0L;
       }
       com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector other = (com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector) obj;
 
-      if (java.lang.Float.floatToIntBits(getX())
-          != java.lang.Float.floatToIntBits(
-              other.getX())) return false;
-      if (java.lang.Float.floatToIntBits(getY())
-          != java.lang.Float.floatToIntBits(
-              other.getY())) return false;
+      if (hasX() != other.hasX()) return false;
+      if (hasX()) {
+        if (java.lang.Float.floatToIntBits(getX())
+            != java.lang.Float.floatToIntBits(
+                other.getX())) return false;
+      }
+      if (hasY() != other.hasY()) return false;
+      if (hasY()) {
+        if (java.lang.Float.floatToIntBits(getY())
+            != java.lang.Float.floatToIntBits(
+                other.getY())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -299,12 +323,16 @@ private static final long serialVersionUID = 0L;
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + X_FIELD_NUMBER;
-      hash = (53 * hash) + java.lang.Float.floatToIntBits(
-          getX());
-      hash = (37 * hash) + Y_FIELD_NUMBER;
-      hash = (53 * hash) + java.lang.Float.floatToIntBits(
-          getY());
+      if (hasX()) {
+        hash = (37 * hash) + X_FIELD_NUMBER;
+        hash = (53 * hash) + java.lang.Float.floatToIntBits(
+            getX());
+      }
+      if (hasY()) {
+        hash = (37 * hash) + Y_FIELD_NUMBER;
+        hash = (53 * hash) + java.lang.Float.floatToIntBits(
+            getY());
+      }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -471,12 +499,16 @@ private static final long serialVersionUID = 0L;
 
       private void buildPartial0(com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector result) {
         int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
           result.x_ = x_;
+          to_bitField0_ |= 0x00000001;
         }
         if (((from_bitField0_ & 0x00000002) != 0)) {
           result.y_ = y_;
+          to_bitField0_ |= 0x00000002;
         }
+        result.bitField0_ |= to_bitField0_;
       }
 
       @java.lang.Override
@@ -523,10 +555,10 @@ private static final long serialVersionUID = 0L;
 
       public Builder mergeFrom(com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector other) {
         if (other == com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.getDefaultInstance()) return this;
-        if (other.getX() != 0F) {
+        if (other.hasX()) {
           setX(other.getX());
         }
-        if (other.getY() != 0F) {
+        if (other.hasY()) {
           setY(other.getY());
         }
         this.mergeUnknownFields(other.getUnknownFields());
@@ -584,7 +616,15 @@ private static final long serialVersionUID = 0L;
 
       private float x_ ;
       /**
-       * <code>float x = 1;</code>
+       * <code>optional float x = 1;</code>
+       * @return Whether the x field is set.
+       */
+      @java.lang.Override
+      public boolean hasX() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <code>optional float x = 1;</code>
        * @return The x.
        */
       @java.lang.Override
@@ -592,7 +632,7 @@ private static final long serialVersionUID = 0L;
         return x_;
       }
       /**
-       * <code>float x = 1;</code>
+       * <code>optional float x = 1;</code>
        * @param value The x to set.
        * @return This builder for chaining.
        */
@@ -604,7 +644,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>float x = 1;</code>
+       * <code>optional float x = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearX() {
@@ -616,7 +656,15 @@ private static final long serialVersionUID = 0L;
 
       private float y_ ;
       /**
-       * <code>float y = 2;</code>
+       * <code>optional float y = 2;</code>
+       * @return Whether the y field is set.
+       */
+      @java.lang.Override
+      public boolean hasY() {
+        return ((bitField0_ & 0x00000002) != 0);
+      }
+      /**
+       * <code>optional float y = 2;</code>
        * @return The y.
        */
       @java.lang.Override
@@ -624,7 +672,7 @@ private static final long serialVersionUID = 0L;
         return y_;
       }
       /**
-       * <code>float y = 2;</code>
+       * <code>optional float y = 2;</code>
        * @param value The y to set.
        * @return This builder for chaining.
        */
@@ -636,7 +684,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>float y = 2;</code>
+       * <code>optional float y = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearY() {
@@ -713,7 +761,15 @@ private static final long serialVersionUID = 0L;
   public static final int GAMEID_FIELD_NUMBER = 1;
   private int gameId_ = 0;
   /**
-   * <code>int32 gameId = 1;</code>
+   * <code>optional int32 gameId = 1;</code>
+   * @return Whether the gameId field is set.
+   */
+  @java.lang.Override
+  public boolean hasGameId() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <code>optional int32 gameId = 1;</code>
    * @return The gameId.
    */
   @java.lang.Override
@@ -724,14 +780,21 @@ private static final long serialVersionUID = 0L;
   public static final int EVENTTYPE_FIELD_NUMBER = 2;
   private int eventType_ = 0;
   /**
-   * <code>.daikombat.dto.PushGameEventCommand.GameEventType eventType = 2;</code>
+   * <code>optional .daikombat.dto.PushGameEventCommand.GameEventType eventType = 2;</code>
+   * @return Whether the eventType field is set.
+   */
+  @java.lang.Override public boolean hasEventType() {
+    return ((bitField0_ & 0x00000002) != 0);
+  }
+  /**
+   * <code>optional .daikombat.dto.PushGameEventCommand.GameEventType eventType = 2;</code>
    * @return The enum numeric value on the wire for eventType.
    */
   @java.lang.Override public int getEventTypeValue() {
     return eventType_;
   }
   /**
-   * <code>.daikombat.dto.PushGameEventCommand.GameEventType eventType = 2;</code>
+   * <code>optional .daikombat.dto.PushGameEventCommand.GameEventType eventType = 2;</code>
    * @return The eventType.
    */
   @java.lang.Override public com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType getEventType() {
@@ -747,7 +810,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasPosition() {
-    return ((bitField0_ & 0x00000001) != 0);
+    return ((bitField0_ & 0x00000004) != 0);
   }
   /**
    * <code>.daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
@@ -773,7 +836,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasDirection() {
-    return ((bitField0_ & 0x00000002) != 0);
+    return ((bitField0_ & 0x00000008) != 0);
   }
   /**
    * <code>.daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
@@ -794,7 +857,15 @@ private static final long serialVersionUID = 0L;
   public static final int PLAYERID_FIELD_NUMBER = 5;
   private int playerId_ = 0;
   /**
-   * <code>int32 playerId = 5;</code>
+   * <code>optional int32 playerId = 5;</code>
+   * @return Whether the playerId field is set.
+   */
+  @java.lang.Override
+  public boolean hasPlayerId() {
+    return ((bitField0_ & 0x00000010) != 0);
+  }
+  /**
+   * <code>optional int32 playerId = 5;</code>
    * @return The playerId.
    */
   @java.lang.Override
@@ -810,7 +881,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasAffectedPlayerId() {
-    return ((bitField0_ & 0x00000004) != 0);
+    return ((bitField0_ & 0x00000020) != 0);
   }
   /**
    * <code>optional int32 affectedPlayerId = 6;</code>
@@ -835,22 +906,22 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (gameId_ != 0) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       output.writeInt32(1, gameId_);
     }
-    if (eventType_ != com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType.MOVE.getNumber()) {
+    if (((bitField0_ & 0x00000002) != 0)) {
       output.writeEnum(2, eventType_);
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
+    if (((bitField0_ & 0x00000004) != 0)) {
       output.writeMessage(3, getPosition());
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
+    if (((bitField0_ & 0x00000008) != 0)) {
       output.writeMessage(4, getDirection());
     }
-    if (playerId_ != 0) {
+    if (((bitField0_ & 0x00000010) != 0)) {
       output.writeInt32(5, playerId_);
     }
-    if (((bitField0_ & 0x00000004) != 0)) {
+    if (((bitField0_ & 0x00000020) != 0)) {
       output.writeInt32(6, affectedPlayerId_);
     }
     getUnknownFields().writeTo(output);
@@ -862,27 +933,27 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (gameId_ != 0) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(1, gameId_);
     }
-    if (eventType_ != com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType.MOVE.getNumber()) {
+    if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(2, eventType_);
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
+    if (((bitField0_ & 0x00000004) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getPosition());
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
+    if (((bitField0_ & 0x00000008) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, getDirection());
     }
-    if (playerId_ != 0) {
+    if (((bitField0_ & 0x00000010) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(5, playerId_);
     }
-    if (((bitField0_ & 0x00000004) != 0)) {
+    if (((bitField0_ & 0x00000020) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(6, affectedPlayerId_);
     }
@@ -901,9 +972,15 @@ private static final long serialVersionUID = 0L;
     }
     com.beverly.hills.money.gang.proto.PushGameEventCommand other = (com.beverly.hills.money.gang.proto.PushGameEventCommand) obj;
 
-    if (getGameId()
-        != other.getGameId()) return false;
-    if (eventType_ != other.eventType_) return false;
+    if (hasGameId() != other.hasGameId()) return false;
+    if (hasGameId()) {
+      if (getGameId()
+          != other.getGameId()) return false;
+    }
+    if (hasEventType() != other.hasEventType()) return false;
+    if (hasEventType()) {
+      if (eventType_ != other.eventType_) return false;
+    }
     if (hasPosition() != other.hasPosition()) return false;
     if (hasPosition()) {
       if (!getPosition()
@@ -914,8 +991,11 @@ private static final long serialVersionUID = 0L;
       if (!getDirection()
           .equals(other.getDirection())) return false;
     }
-    if (getPlayerId()
-        != other.getPlayerId()) return false;
+    if (hasPlayerId() != other.hasPlayerId()) return false;
+    if (hasPlayerId()) {
+      if (getPlayerId()
+          != other.getPlayerId()) return false;
+    }
     if (hasAffectedPlayerId() != other.hasAffectedPlayerId()) return false;
     if (hasAffectedPlayerId()) {
       if (getAffectedPlayerId()
@@ -932,10 +1012,14 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + GAMEID_FIELD_NUMBER;
-    hash = (53 * hash) + getGameId();
-    hash = (37 * hash) + EVENTTYPE_FIELD_NUMBER;
-    hash = (53 * hash) + eventType_;
+    if (hasGameId()) {
+      hash = (37 * hash) + GAMEID_FIELD_NUMBER;
+      hash = (53 * hash) + getGameId();
+    }
+    if (hasEventType()) {
+      hash = (37 * hash) + EVENTTYPE_FIELD_NUMBER;
+      hash = (53 * hash) + eventType_;
+    }
     if (hasPosition()) {
       hash = (37 * hash) + POSITION_FIELD_NUMBER;
       hash = (53 * hash) + getPosition().hashCode();
@@ -944,8 +1028,10 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + DIRECTION_FIELD_NUMBER;
       hash = (53 * hash) + getDirection().hashCode();
     }
-    hash = (37 * hash) + PLAYERID_FIELD_NUMBER;
-    hash = (53 * hash) + getPlayerId();
+    if (hasPlayerId()) {
+      hash = (37 * hash) + PLAYERID_FIELD_NUMBER;
+      hash = (53 * hash) + getPlayerId();
+    }
     if (hasAffectedPlayerId()) {
       hash = (37 * hash) + AFFECTEDPLAYERID_FIELD_NUMBER;
       hash = (53 * hash) + getAffectedPlayerId();
@@ -1135,31 +1221,34 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(com.beverly.hills.money.gang.proto.PushGameEventCommand result) {
       int from_bitField0_ = bitField0_;
+      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.gameId_ = gameId_;
+        to_bitField0_ |= 0x00000001;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.eventType_ = eventType_;
+        to_bitField0_ |= 0x00000002;
       }
-      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000004) != 0)) {
         result.position_ = positionBuilder_ == null
             ? position_
             : positionBuilder_.build();
-        to_bitField0_ |= 0x00000001;
+        to_bitField0_ |= 0x00000004;
       }
       if (((from_bitField0_ & 0x00000008) != 0)) {
         result.direction_ = directionBuilder_ == null
             ? direction_
             : directionBuilder_.build();
-        to_bitField0_ |= 0x00000002;
+        to_bitField0_ |= 0x00000008;
       }
       if (((from_bitField0_ & 0x00000010) != 0)) {
         result.playerId_ = playerId_;
+        to_bitField0_ |= 0x00000010;
       }
       if (((from_bitField0_ & 0x00000020) != 0)) {
         result.affectedPlayerId_ = affectedPlayerId_;
-        to_bitField0_ |= 0x00000004;
+        to_bitField0_ |= 0x00000020;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -1208,11 +1297,11 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(com.beverly.hills.money.gang.proto.PushGameEventCommand other) {
       if (other == com.beverly.hills.money.gang.proto.PushGameEventCommand.getDefaultInstance()) return this;
-      if (other.getGameId() != 0) {
+      if (other.hasGameId()) {
         setGameId(other.getGameId());
       }
-      if (other.eventType_ != 0) {
-        setEventTypeValue(other.getEventTypeValue());
+      if (other.hasEventType()) {
+        setEventType(other.getEventType());
       }
       if (other.hasPosition()) {
         mergePosition(other.getPosition());
@@ -1220,7 +1309,7 @@ private static final long serialVersionUID = 0L;
       if (other.hasDirection()) {
         mergeDirection(other.getDirection());
       }
-      if (other.getPlayerId() != 0) {
+      if (other.hasPlayerId()) {
         setPlayerId(other.getPlayerId());
       }
       if (other.hasAffectedPlayerId()) {
@@ -1305,7 +1394,15 @@ private static final long serialVersionUID = 0L;
 
     private int gameId_ ;
     /**
-     * <code>int32 gameId = 1;</code>
+     * <code>optional int32 gameId = 1;</code>
+     * @return Whether the gameId field is set.
+     */
+    @java.lang.Override
+    public boolean hasGameId() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>optional int32 gameId = 1;</code>
      * @return The gameId.
      */
     @java.lang.Override
@@ -1313,7 +1410,7 @@ private static final long serialVersionUID = 0L;
       return gameId_;
     }
     /**
-     * <code>int32 gameId = 1;</code>
+     * <code>optional int32 gameId = 1;</code>
      * @param value The gameId to set.
      * @return This builder for chaining.
      */
@@ -1325,7 +1422,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>int32 gameId = 1;</code>
+     * <code>optional int32 gameId = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearGameId() {
@@ -1337,14 +1434,21 @@ private static final long serialVersionUID = 0L;
 
     private int eventType_ = 0;
     /**
-     * <code>.daikombat.dto.PushGameEventCommand.GameEventType eventType = 2;</code>
+     * <code>optional .daikombat.dto.PushGameEventCommand.GameEventType eventType = 2;</code>
+     * @return Whether the eventType field is set.
+     */
+    @java.lang.Override public boolean hasEventType() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>optional .daikombat.dto.PushGameEventCommand.GameEventType eventType = 2;</code>
      * @return The enum numeric value on the wire for eventType.
      */
     @java.lang.Override public int getEventTypeValue() {
       return eventType_;
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand.GameEventType eventType = 2;</code>
+     * <code>optional .daikombat.dto.PushGameEventCommand.GameEventType eventType = 2;</code>
      * @param value The enum numeric value on the wire for eventType to set.
      * @return This builder for chaining.
      */
@@ -1355,7 +1459,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand.GameEventType eventType = 2;</code>
+     * <code>optional .daikombat.dto.PushGameEventCommand.GameEventType eventType = 2;</code>
      * @return The eventType.
      */
     @java.lang.Override
@@ -1364,7 +1468,7 @@ private static final long serialVersionUID = 0L;
       return result == null ? com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType.UNRECOGNIZED : result;
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand.GameEventType eventType = 2;</code>
+     * <code>optional .daikombat.dto.PushGameEventCommand.GameEventType eventType = 2;</code>
      * @param value The eventType to set.
      * @return This builder for chaining.
      */
@@ -1378,7 +1482,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand.GameEventType eventType = 2;</code>
+     * <code>optional .daikombat.dto.PushGameEventCommand.GameEventType eventType = 2;</code>
      * @return This builder for chaining.
      */
     public Builder clearEventType() {
@@ -1632,7 +1736,15 @@ private static final long serialVersionUID = 0L;
 
     private int playerId_ ;
     /**
-     * <code>int32 playerId = 5;</code>
+     * <code>optional int32 playerId = 5;</code>
+     * @return Whether the playerId field is set.
+     */
+    @java.lang.Override
+    public boolean hasPlayerId() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <code>optional int32 playerId = 5;</code>
      * @return The playerId.
      */
     @java.lang.Override
@@ -1640,7 +1752,7 @@ private static final long serialVersionUID = 0L;
       return playerId_;
     }
     /**
-     * <code>int32 playerId = 5;</code>
+     * <code>optional int32 playerId = 5;</code>
      * @param value The playerId to set.
      * @return This builder for chaining.
      */
@@ -1652,7 +1764,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>int32 playerId = 5;</code>
+     * <code>optional int32 playerId = 5;</code>
      * @return This builder for chaining.
      */
     public Builder clearPlayerId() {

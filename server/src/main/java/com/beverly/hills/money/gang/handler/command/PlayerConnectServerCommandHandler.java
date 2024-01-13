@@ -9,6 +9,7 @@ import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerConnectedGameState;
 import io.netty.channel.Channel;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,14 +19,22 @@ import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createS
 import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createSpawnEventSinglePlayer;
 
 @RequiredArgsConstructor
-public class PlayerConnectServerCommandHandler implements ServerCommandHandler {
+public class PlayerConnectServerCommandHandler extends ServerCommandHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(PlayerConnectServerCommandHandler.class);
 
     private final GameRoomRegistry gameRoomRegistry;
 
     @Override
-    public void handle(ServerCommand msg, Channel currentChannel) throws GameLogicError {
+    protected boolean isValidCommand(ServerCommand msg, Channel currentChannel) {
+        var joinGameCommand = msg.getJoinGameCommand();
+        return joinGameCommand.hasGameId()
+                && joinGameCommand.hasPlayerName()
+                && StringUtils.isNotBlank(joinGameCommand.getPlayerName());
+    }
+
+    @Override
+    protected void handleInternal(ServerCommand msg, Channel currentChannel) throws GameLogicError {
         Game game = gameRoomRegistry.getGame(msg.getJoinGameCommand().getGameId());
         PlayerConnectedGameState playerConnected = game.connectPlayer(msg.getJoinGameCommand().getPlayerName(), currentChannel);
         ServerResponse playerSpawnEvent = createSpawnEventSinglePlayer(playerConnected);

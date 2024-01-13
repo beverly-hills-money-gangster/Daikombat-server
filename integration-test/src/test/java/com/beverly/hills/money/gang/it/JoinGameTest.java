@@ -15,9 +15,17 @@ import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SetEnvironmentVariable(key = "IDLE_PLAYERS_KILLER_FREQUENCY_MLS", value = "99999")
+@SetEnvironmentVariable(key = "MAX_IDLE_TIME_MLS", value = "99999")
+@SetEnvironmentVariable(key = "MAX_SERVER_INACTIVE_MLS", value = "99999")
 @SetEnvironmentVariable(key = "MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
 public class JoinGameTest extends AbstractGameServerTest {
 
+    /**
+     * @given a running game server
+     * @when a player connects to a server
+     * @then the player is connected
+     */
     @Test
     public void testJoinGame() throws Exception {
         int gameIdToConnectTo = 0;
@@ -57,6 +65,11 @@ public class JoinGameTest extends AbstractGameServerTest {
         }
     }
 
+    /**
+     * @given a running game server
+     * @when a player connects to a server using wrong game id
+     * @then the player is not connected
+     */
     @Test
     public void testJoinGameNotExistingGame() throws IOException, InterruptedException {
         int gameIdToConnectTo = 666;
@@ -89,8 +102,14 @@ public class JoinGameTest extends AbstractGameServerTest {
             assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, gameInfo.getMaxGamePlayers());
             assertEquals(0, gameInfo.getPlayersOnline(), "Should be no connected players yet");
         }
+        assertTrue(gameConnection.isDisconnected());
     }
 
+    /**
+     * @given a running game server with max number of players connected to game 0
+     * @when one more player connects to game 0
+     * @then the player is not connected as the server is full
+     */
     @Test
     public void testJoinGameTooMany() throws IOException, InterruptedException {
         for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
@@ -115,8 +134,14 @@ public class JoinGameTest extends AbstractGameServerTest {
         assertEquals(GameErrorCode.SERVER_FULL.ordinal(), errorEvent.getErrorCode(),
                 "Should be a server full error");
         assertEquals("Can't connect player. Server is full.", errorEvent.getMessage());
+        assertTrue(gameConnection.isDisconnected());
     }
 
+    /**
+     * @given a running game server
+     * @when 2 players connect with the same name
+     * @then 1st player is connected, 2nd player is not
+     */
     @Test
     public void testJoinSameName() throws IOException, InterruptedException {
 
@@ -132,7 +157,7 @@ public class JoinGameTest extends AbstractGameServerTest {
                 JoinGameCommand.newBuilder()
                         .setPlayerName("same name")
                         .setGameId(0).build());
-        Thread.sleep(50);
+        Thread.sleep(150);
         assertEquals(0, gameConnection2.getErrors().size(), "Should be no error");
         assertEquals(1, gameConnection2.getResponse().size(), "Should be 1 response");
 
@@ -141,10 +166,18 @@ public class JoinGameTest extends AbstractGameServerTest {
         assertEquals(GameErrorCode.PLAYER_EXISTS.ordinal(), errorEvent.getErrorCode(),
                 "Shouldn't be able to connect as the player name is already taken");
         assertEquals("Can't connect player. Player name already taken.", errorEvent.getMessage());
+
+        assertTrue(gameConnection1.isConnected());
+        assertTrue(gameConnection2.isDisconnected());
     }
 
+    /**
+     * @given a running game server with MAX_PLAYERS_PER_GAME-1 players connected to game 0
+     * @when a new player connects to game 0
+     * @then the player is successfully connected
+     */
     @Test
-    public void testJoinGameMultiplePlayers() throws Exception {
+    public void testJoinGameAlmostFull() throws Exception {
         int gameIdToConnectTo = 0;
         Map<Integer, ServerResponse.Vector> connectedPlayersPositions = new HashMap<>();
         for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME - 1; i++) {
@@ -215,6 +248,40 @@ public class JoinGameTest extends AbstractGameServerTest {
             if (gameInfo.getGameId() != gameIdToConnectTo) {
                 assertEquals(0, gameInfo.getPlayersOnline(), "Should be no connected players yet");
             }
+        }
+    }
+
+    /**
+     * @given a running game server
+     * @when max number of player connect to all games
+     * @then all players are successfully connected
+     */
+    @Test
+    public void testJoinGameMaxPlayersAllGames() throws Exception {
+        for (int gameId = 0; gameId < ServerConfig.GAMES_TO_CREATE; gameId++) {
+            for (int j = 0; j < ServerConfig.MAX_PLAYERS_PER_GAME; j++) {
+                GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+                gameConnection.write(
+                        JoinGameCommand.newBuilder()
+                                .setPlayerName("my player name " + j)
+                                .setGameId(gameId).build());
+                Thread.sleep(150);
+                assertTrue(gameConnection.isConnected());
+            }
+        }
+
+        GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        gameConnection.write(GetServerInfoCommand.newBuilder().build());
+        Thread.sleep(50);
+        assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
+        assertEquals(1, gameConnection.getResponse().size(), "Should be exactly one response");
+        ServerResponse serverResponse = gameConnection.getResponse().poll().get();
+        assertTrue(serverResponse.hasServerInfo(), "Must include server info only");
+        List<ServerResponse.GameInfo> games = serverResponse.getServerInfo().getGamesList();
+        assertEquals(ServerConfig.GAMES_TO_CREATE, games.size());
+        for (ServerResponse.GameInfo gameInfo : games) {
+            assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, gameInfo.getMaxGamePlayers());
+            assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, gameInfo.getPlayersOnline(), "All players are connected");
         }
     }
 }

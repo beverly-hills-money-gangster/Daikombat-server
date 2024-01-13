@@ -9,18 +9,28 @@ public interface JoinGameCommandOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>int32 gameId = 1;</code>
+   * <code>optional int32 gameId = 1;</code>
+   * @return Whether the gameId field is set.
+   */
+  boolean hasGameId();
+  /**
+   * <code>optional int32 gameId = 1;</code>
    * @return The gameId.
    */
   int getGameId();
 
   /**
-   * <code>string playerName = 3;</code>
+   * <code>optional string playerName = 3;</code>
+   * @return Whether the playerName field is set.
+   */
+  boolean hasPlayerName();
+  /**
+   * <code>optional string playerName = 3;</code>
    * @return The playerName.
    */
   java.lang.String getPlayerName();
   /**
-   * <code>string playerName = 3;</code>
+   * <code>optional string playerName = 3;</code>
    * @return The bytes for playerName.
    */
   com.google.protobuf.ByteString

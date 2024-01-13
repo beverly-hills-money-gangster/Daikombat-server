@@ -7,9 +7,11 @@ import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.epoll.EpollChannelOption;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,13 +25,12 @@ import java.util.stream.Collectors;
 import static com.beverly.hills.money.gang.config.ServerConfig.*;
 import static com.beverly.hills.money.gang.factory.ServerResponseFactory.*;
 
-// TODO add rate limiting
-// TODO anti-cheat
-// TODO add chat message censoring
-// TODO add auto-ban
-// TODO add logs
-// TODO auth
-// TODO disconnect event for graceful disconnection
+/*
+TODO:
+   - Fix all vulnerable libs
+   - Add server-client version check
+   - Check with spotbugs
+ */
 @ChannelHandler.Sharable
 public class GameServerInboundHandler extends SimpleChannelInboundHandler<ServerCommand> implements Closeable {
 
@@ -111,6 +112,7 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ServerCommand msg) {
         try {
+            ctx.channel().config().setOption(EpollChannelOption.TCP_QUICKACK, true);
             LOG.debug("Got command {}", msg);
             ServerCommandHandler serverCommandHandler;
             if (msg.hasJoinGameCommand()) {
@@ -128,12 +130,18 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
         } catch (GameLogicError e) {
             LOG.warn("Game logic error", e);
             ctx.writeAndFlush(createErrorEvent(e));
-            gameRoomRegistry.getGames()
-                    .forEach(game -> game.getPlayersRegistry()
-                            .allPlayers().filter(playerStateChannel -> playerStateChannel.getChannel() == ctx.channel())
-                            .forEach(playerStateChannel
-                                    -> game.getPlayersRegistry().removePlayer(playerStateChannel.getPlayerState().getPlayerId())));
+            removeChannel(ctx.channel());
+        }
+    }
 
+    private void removeChannel(Channel channelToRemove) {
+        boolean playerWasFound = gameRoomRegistry.removeChannel(channelToRemove, (game, playerState) -> {
+            var disconnectEvent = createExitEvent(game.playersOnline(), playerState);
+            game.getPlayersRegistry().allPlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
+                    .forEach(channel -> channel.writeAndFlush(disconnectEvent));
+        });
+        if (!playerWasFound) {
+            channelToRemove.close();
         }
     }
 
@@ -141,6 +149,15 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         LOG.error("Error caught", cause);
         ctx.close();
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) {
+        LOG.info("Channel is inactive: {}", ctx.channel());
+        removeChannel(ctx.channel());
+        if (ctx.channel().isOpen()) {
+            ctx.channel().close();
+        }
     }
 
     @Override

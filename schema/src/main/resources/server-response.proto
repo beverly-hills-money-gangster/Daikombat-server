@@ -19,14 +19,14 @@ message ServerResponse {
   }
 
   message GameInfo {
-    int32 gameId = 1;
-    int32 playersOnline = 2;
-    int32 maxGamePlayers = 3;
+    optional int32 gameId = 1;
+    optional int32 playersOnline = 2;
+    optional int32 maxGamePlayers = 3;
   }
 
   message ErrorEvent {
-    int32 errorCode = 1;
-    string message = 2;
+    optional int32 errorCode = 1;
+    optional string message = 2;
   }
 
   message ChatEvents {
@@ -39,8 +39,8 @@ message ServerResponse {
   }
 
   message ChatEvent {
-    int32 playerId = 1;
-    string message = 2;
+    optional int32 playerId = 1;
+    optional string message = 2;
   }
 
   message GameEvent {
@@ -59,15 +59,15 @@ message ServerResponse {
   }
 
   message GameEventPlayerStats {
-    int32 playerId = 1;
+    optional int32 playerId = 1;
     optional string playerName = 2;
     Vector position = 3;
     Vector direction = 4;
-    int32 health = 5;
+    optional int32 health = 5;
   }
 
   message Vector {
-    float x = 1;
-    float y = 2;
+    optional float x = 1;
+    optional float y = 2;
   }
 }

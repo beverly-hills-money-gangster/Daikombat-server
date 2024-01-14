@@ -5,8 +5,10 @@ import org.slf4j.LoggerFactory;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+// TODO maybe it has to be in a library
 public class ClientHMACService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ClientHMACService.class);
@@ -16,7 +18,7 @@ public class ClientHMACService {
     private final SecretKeySpec secretKey;
 
     public ClientHMACService(final String password) {
-        secretKey = new SecretKeySpec(password.getBytes(), HMAC_ALG);
+        secretKey = new SecretKeySpec(password.getBytes(StandardCharsets.UTF_8), HMAC_ALG);
     }
 
     public boolean isValidMac(byte[] givenData, byte[] givenHMAC) {

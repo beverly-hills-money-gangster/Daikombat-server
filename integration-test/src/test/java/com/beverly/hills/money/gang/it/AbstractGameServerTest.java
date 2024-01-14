@@ -18,6 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 /*
   TODO:
+  - Make sure random port is not taken before use
   - Add longevity test
 */
 

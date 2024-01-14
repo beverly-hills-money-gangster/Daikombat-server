@@ -46,13 +46,11 @@ public class PlayerState implements PlayerStateReader {
         return (System.currentTimeMillis() - stateChangedLastTime.get()) > MAX_IDLE_TIME_MLS;
     }
 
-    public PlayerStateReader getShot() {
+    public void getShot() {
         stateChangedLastTime.set(System.currentTimeMillis());
         if (health.addAndGet(-ServerConfig.DEFAULT_DAMAGE) <= 0) {
             dead.set(true);
-            return this;
         }
-        return this;
     }
 
 
@@ -100,12 +98,4 @@ public class PlayerState implements PlayerStateReader {
         private final Vector position;
 
     }
-
-    @Builder
-    @Getter
-    public static class ShotDetails {
-        private final int health;
-        private final boolean dead;
-    }
-
 }

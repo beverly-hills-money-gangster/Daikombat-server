@@ -19,6 +19,17 @@ import java.util.concurrent.atomic.AtomicReference;
 @RequiredArgsConstructor
 public class ServerRunner {
 
+    // TODO add version and print it in GREETING_ASCII
+
+    private static final String GREETING_ASCII = "\n\n" +
+            "██████   █████  ██ ██   ██  ██████  ███    ███ ██████   █████  ████████ \n" +
+            "██   ██ ██   ██ ██ ██  ██  ██    ██ ████  ████ ██   ██ ██   ██    ██    \n" +
+            "██   ██ ███████ ██ █████   ██    ██ ██ ████ ██ ██████  ███████    ██    \n" +
+            "██   ██ ██   ██ ██ ██  ██  ██    ██ ██  ██  ██ ██   ██ ██   ██    ██    \n" +
+            "██████  ██   ██ ██ ██   ██  ██████  ██      ██ ██████  ██   ██    ██    \n\n" +
+            "                        online game server                              \n" +
+            "                                                                        \n";
+
     private static final Logger LOG = LoggerFactory.getLogger(ServerRunner.class);
 
     private final int port;
@@ -52,13 +63,14 @@ public class ServerRunner {
             // Bind to port
             var serverChannel = bootStrap.bind(port).sync()
                     .channel();
+            LOG.info(GREETING_ASCII);
             LOG.info("Synced on port {}", port);
             serverChannelRef.set(serverChannel);
             if (!stateRef.compareAndSet(State.STARTING, State.RUNNING)) {
                 throw new IllegalStateException("Can't run!");
             }
             startWaitingLatch.countDown();
-            serverChannel.closeFuture().sync();
+            serverChannel.closeFuture().sync(); // TODO do I really close it
         } catch (Exception e) {
             LOG.error("Error occurred while running server", e);
             throw e;
@@ -83,7 +95,7 @@ public class ServerRunner {
             LOG.error("Can't stop game server initializer", e);
         }
         try {
-            serverChannelRef.get().closeFuture();
+            serverChannelRef.get().close(); // TODO fix shutting down
         } catch (Exception e) {
             LOG.error("Can't close server channel", e);
         }

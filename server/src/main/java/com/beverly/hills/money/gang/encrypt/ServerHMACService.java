@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -18,7 +19,7 @@ public class ServerHMACService {
     private final SecretKeySpec secretKey;
 
     public ServerHMACService(final String pinCode) {
-        secretKey = new SecretKeySpec(pinCode.getBytes(), HMAC_ALG);
+        secretKey = new SecretKeySpec(pinCode.getBytes(StandardCharsets.UTF_8), HMAC_ALG);
     }
 
     public boolean isValidMac(byte[] givenData, byte[] givenHMAC) {

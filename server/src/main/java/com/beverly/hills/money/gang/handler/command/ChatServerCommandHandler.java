@@ -8,8 +8,6 @@ import com.beverly.hills.money.gang.state.Game;
 import io.netty.channel.Channel;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createChatEvent;
 

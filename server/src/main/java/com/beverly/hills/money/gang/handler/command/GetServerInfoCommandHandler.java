@@ -1,6 +1,5 @@
 package com.beverly.hills.money.gang.handler.command;
 
-import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import io.netty.channel.Channel;

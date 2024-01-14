@@ -29,6 +29,7 @@ public class AuthInboundHandler extends SimpleChannelInboundHandler<ServerComman
             if (!msg.hasHmac()) {
                 throw new GameLogicError("No HMAC provided", GameErrorCode.AUTH_ERROR);
             }
+            // TODO generify that
             GeneratedMessageV3 command = msg.hasGameCommand() ? msg.getGameCommand()
                     : msg.hasChatCommand() ? msg.getChatCommand()
                     : msg.hasJoinGameCommand() ? msg.getJoinGameCommand()

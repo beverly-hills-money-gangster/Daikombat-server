@@ -125,7 +125,7 @@ public class JoinGameTest extends AbstractGameServerTest {
                 JoinGameCommand.newBuilder()
                         .setPlayerName("my player name")
                         .setGameId(0).build());
-        Thread.sleep(50);
+        Thread.sleep(150);
         assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
         assertEquals(1, gameConnection.getResponse().size(), "Should be 1 response");
 

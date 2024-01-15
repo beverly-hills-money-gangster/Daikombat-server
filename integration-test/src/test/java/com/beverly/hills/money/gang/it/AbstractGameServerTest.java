@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.BindException;
+import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,9 +35,33 @@ public abstract class AbstractGameServerTest {
     protected final List<GameConnection> gameConnections = new ArrayList<>();
 
 
+    public static boolean isPortAvailable(int port) {
+        try (ServerSocket ignored = new ServerSocket(port)) {
+            return true; // Port available
+        } catch (BindException e) {
+            LOG.warn("Port {} already in use. Try another one.", port, e);
+            return false; // Port already in use
+        } catch (Exception e) {
+            LOG.error("Can't check port {}", port, e);
+            return false;
+        }
+    }
+
+
+    public static int createRandomPort() {
+        for (int i = 0; i < 100; i++) {
+            int port = ThreadLocalRandom.current().nextInt(1_024, 49_151);
+            if (isPortAvailable(port)) {
+                return port;
+            }
+        }
+        throw new IllegalStateException("Can't create a random port");
+    }
+
+
     @BeforeEach
     public void setUp() throws InterruptedException {
-        port = ThreadLocalRandom.current().nextInt(1_024, 49_151);
+        port = createRandomPort();
         serverRunner = new ServerRunner(port);
         new Thread(() -> {
             try {

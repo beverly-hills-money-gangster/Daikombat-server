@@ -18,10 +18,11 @@ import java.util.stream.Collectors;
 import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createSpawnEventAllPlayers;
 import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createSpawnEventSinglePlayer;
 
+// TODO add version check
 @RequiredArgsConstructor
-public class PlayerConnectServerCommandHandler extends ServerCommandHandler {
+public class JoinGameServerCommandHandler extends ServerCommandHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PlayerConnectServerCommandHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JoinGameServerCommandHandler.class);
 
     private final GameRoomRegistry gameRoomRegistry;
 

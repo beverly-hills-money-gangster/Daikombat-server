@@ -43,8 +43,8 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     private final ScheduledExecutorService idlePlayersKillerExecutor = Executors.newScheduledThreadPool(1,
             new BasicThreadFactory.Builder().namingPattern("idle-players-killer-%d").build());
 
-    private final ServerCommandHandler playerConnectedServerCommandHandler
-            = new PlayerConnectServerCommandHandler(gameRoomRegistry);
+    private final ServerCommandHandler joinGameServerCommandHandler
+            = new JoinGameServerCommandHandler(gameRoomRegistry);
     private final ServerCommandHandler chatServerCommandHandler
             = new ChatServerCommandHandler(gameRoomRegistry);
     private final ServerCommandHandler gameServerCommandHandler
@@ -116,7 +116,7 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
             LOG.debug("Got command {}", msg);
             ServerCommandHandler serverCommandHandler;
             if (msg.hasJoinGameCommand()) {
-                serverCommandHandler = playerConnectedServerCommandHandler;
+                serverCommandHandler = joinGameServerCommandHandler;
             } else if (msg.hasGameCommand()) {
                 serverCommandHandler = gameServerCommandHandler;
             } else if (msg.hasChatCommand()) {

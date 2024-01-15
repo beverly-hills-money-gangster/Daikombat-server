@@ -12,7 +12,7 @@ import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createS
 @RequiredArgsConstructor
 public class GetServerInfoCommandHandler extends ServerCommandHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PlayerConnectServerCommandHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JoinGameServerCommandHandler.class);
 
     private final GameRoomRegistry gameRoomRegistry;
 

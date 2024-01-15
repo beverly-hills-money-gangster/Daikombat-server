@@ -4,8 +4,11 @@ plugins {
     id "io.freefair.lombok" version "8.0.1"
 }
 
+def props = new Properties()
+file("src/main/resources/version.properties").withInputStream { props.load(it) }
+
 group = 'com.beverly.hills.money.gang'
-version = '1.0-SNAPSHOT'
+version = props.getProperty("version")
 
 repositories {
     mavenCentral()

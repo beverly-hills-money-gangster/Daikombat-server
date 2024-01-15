@@ -1,10 +1,12 @@
 package com.beverly.hills.money.gang.runner;
 
 
+import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.initializer.GameServerInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelOutboundInvoker;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -19,16 +22,14 @@ import java.util.concurrent.atomic.AtomicReference;
 @RequiredArgsConstructor
 public class ServerRunner {
 
-    // TODO add version and print it in GREETING_ASCII
-
-    private static final String GREETING_ASCII = "\n\n" +
-            "██████   █████  ██ ██   ██  ██████  ███    ███ ██████   █████  ████████ \n" +
-            "██   ██ ██   ██ ██ ██  ██  ██    ██ ████  ████ ██   ██ ██   ██    ██    \n" +
-            "██   ██ ███████ ██ █████   ██    ██ ██ ████ ██ ██████  ███████    ██    \n" +
-            "██   ██ ██   ██ ██ ██  ██  ██    ██ ██  ██  ██ ██   ██ ██   ██    ██    \n" +
-            "██████  ██   ██ ██ ██   ██  ██████  ██      ██ ██████  ██   ██    ██    \n\n" +
-            "                        online game server                              \n" +
-            "                                                                        \n";
+    private static final String SKULL_ASCII =
+            "\n" +
+                    "     |     '       /  |        \n" +
+                    "     /__      ___ (  /         \n" +
+                    "     \\\\--`-'-|`---\\\\ |     DAIKOMBAT SERVER Version: " + ServerConfig.VERSION + "\n" +
+                    "      |' _/   ` __/ /          \n" +
+                    "      '._  W    ,--'           \n" +
+                    "         |_:_._/               \n";
 
     private static final Logger LOG = LoggerFactory.getLogger(ServerRunner.class);
 
@@ -43,6 +44,7 @@ public class ServerRunner {
     private final AtomicReference<GameServerInitializer> gameServerInitializerRef = new AtomicReference<>();
 
     public void runServer() throws InterruptedException {
+        long startTime = System.currentTimeMillis();
         if (!stateRef.compareAndSet(State.INIT, State.STARTING)) {
             throw new IllegalStateException("Can't run!");
         }
@@ -63,14 +65,16 @@ public class ServerRunner {
             // Bind to port
             var serverChannel = bootStrap.bind(port).sync()
                     .channel();
-            LOG.info(GREETING_ASCII);
+            LOG.info(SKULL_ASCII);
             LOG.info("Synced on port {}", port);
             serverChannelRef.set(serverChannel);
             if (!stateRef.compareAndSet(State.STARTING, State.RUNNING)) {
                 throw new IllegalStateException("Can't run!");
             }
+            LOG.info("Time taken to start server {} mls", System.currentTimeMillis() - startTime);
             startWaitingLatch.countDown();
-            serverChannel.closeFuture().sync(); // TODO do I really close it
+            serverChannel.closeFuture().sync();
+            LOG.info("Server channel closed");
         } catch (Exception e) {
             LOG.error("Error occurred while running server", e);
             throw e;
@@ -87,21 +91,28 @@ public class ServerRunner {
         return startWaitingLatch.await(1, TimeUnit.MINUTES);
     }
 
+
+    public State getState() {
+        return stateRef.get();
+    }
+
     public void stop() {
         stateRef.set(State.STOPPING);
         try {
-            gameServerInitializerRef.get().close();
+            Optional.ofNullable(gameServerInitializerRef.get())
+                    .ifPresent(GameServerInitializer::close);
         } catch (Exception e) {
             LOG.error("Can't stop game server initializer", e);
         }
         try {
-            serverChannelRef.get().close(); // TODO fix shutting down
+            Optional.ofNullable(serverChannelRef.get())
+                    .ifPresent(ChannelOutboundInvoker::close);
         } catch (Exception e) {
             LOG.error("Can't close server channel", e);
         }
     }
 
-    private enum State {
+    public enum State {
         INIT, STARTING, RUNNING, STOPPING, STOPPED
     }
 

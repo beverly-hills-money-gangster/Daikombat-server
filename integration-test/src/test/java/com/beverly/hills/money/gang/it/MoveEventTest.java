@@ -29,6 +29,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         GameConnection gameConnection1 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection1.write(
                 JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameIdToConnectTo).build());
         Thread.sleep(150);
@@ -39,6 +40,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         GameConnection gameConnection2 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection2.write(
                 JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
                         .setPlayerName("new player")
                         .setGameId(gameIdToConnectTo).build());
         Thread.sleep(150);
@@ -104,6 +106,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         GameConnection gameConnection1 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection1.write(
                 JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameIdToConnectTo).build());
         Thread.sleep(150);
@@ -114,6 +117,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         GameConnection gameConnection2 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection2.write(
                 JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
                         .setPlayerName("new player")
                         .setGameId(gameIdToConnectTo).build());
         Thread.sleep(150);

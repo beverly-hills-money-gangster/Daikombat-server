@@ -29,13 +29,14 @@ public class GameServerInfoTest extends AbstractGameServerTest {
         GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
 
         gameConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(50);
+        Thread.sleep(150);
         assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
         assertEquals(1, gameConnection.getResponse().size(), "Should be exactly one response");
         ServerResponse serverResponse = gameConnection.getResponse().poll().get();
         assertTrue(serverResponse.hasServerInfo(), "Must include server info only");
         List<ServerResponse.GameInfo> games = serverResponse.getServerInfo().getGamesList();
         assertEquals(ServerConfig.GAMES_TO_CREATE, games.size());
+        assertEquals(ServerConfig.VERSION, serverResponse.getServerInfo().getVersion());
         for (ServerResponse.GameInfo gameInfo : games) {
             assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, gameInfo.getMaxGamePlayers());
             assertEquals(0, gameInfo.getPlayersOnline(), "Should be no connected players yet");
@@ -51,7 +52,7 @@ public class GameServerInfoTest extends AbstractGameServerTest {
     public void testGetServerInfoBadAuth() throws InterruptedException, IOException {
         GameConnection gameConnection = createGameConnection("wrong password", "localhost", port);
         gameConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(50);
+        Thread.sleep(150);
         assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
         assertEquals(1, gameConnection.getResponse().size(), "Should be exactly one response");
         ServerResponse serverResponse = gameConnection.getResponse().poll().get();

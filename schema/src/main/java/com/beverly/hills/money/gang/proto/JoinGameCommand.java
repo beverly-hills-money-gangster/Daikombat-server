@@ -17,6 +17,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private JoinGameCommand() {
+    version_ = "";
     playerName_ = "";
   }
 
@@ -60,6 +61,53 @@ private static final long serialVersionUID = 0L;
     return gameId_;
   }
 
+  public static final int VERSION_FIELD_NUMBER = 2;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object version_ = "";
+  /**
+   * <code>optional string version = 2;</code>
+   * @return Whether the version field is set.
+   */
+  @java.lang.Override
+  public boolean hasVersion() {
+    return ((bitField0_ & 0x00000002) != 0);
+  }
+  /**
+   * <code>optional string version = 2;</code>
+   * @return The version.
+   */
+  @java.lang.Override
+  public java.lang.String getVersion() {
+    java.lang.Object ref = version_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      version_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>optional string version = 2;</code>
+   * @return The bytes for version.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getVersionBytes() {
+    java.lang.Object ref = version_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      version_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
   public static final int PLAYERNAME_FIELD_NUMBER = 3;
   @SuppressWarnings("serial")
   private volatile java.lang.Object playerName_ = "";
@@ -69,7 +117,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasPlayerName() {
-    return ((bitField0_ & 0x00000002) != 0);
+    return ((bitField0_ & 0x00000004) != 0);
   }
   /**
    * <code>optional string playerName = 3;</code>
@@ -125,6 +173,9 @@ private static final long serialVersionUID = 0L;
       output.writeInt32(1, gameId_);
     }
     if (((bitField0_ & 0x00000002) != 0)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, version_);
+    }
+    if (((bitField0_ & 0x00000004) != 0)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 3, playerName_);
     }
     getUnknownFields().writeTo(output);
@@ -141,6 +192,9 @@ private static final long serialVersionUID = 0L;
         .computeInt32Size(1, gameId_);
     }
     if (((bitField0_ & 0x00000002) != 0)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, version_);
+    }
+    if (((bitField0_ & 0x00000004) != 0)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, playerName_);
     }
     size += getUnknownFields().getSerializedSize();
@@ -163,6 +217,11 @@ private static final long serialVersionUID = 0L;
       if (getGameId()
           != other.getGameId()) return false;
     }
+    if (hasVersion() != other.hasVersion()) return false;
+    if (hasVersion()) {
+      if (!getVersion()
+          .equals(other.getVersion())) return false;
+    }
     if (hasPlayerName() != other.hasPlayerName()) return false;
     if (hasPlayerName()) {
       if (!getPlayerName()
@@ -182,6 +241,10 @@ private static final long serialVersionUID = 0L;
     if (hasGameId()) {
       hash = (37 * hash) + GAMEID_FIELD_NUMBER;
       hash = (53 * hash) + getGameId();
+    }
+    if (hasVersion()) {
+      hash = (37 * hash) + VERSION_FIELD_NUMBER;
+      hash = (53 * hash) + getVersion().hashCode();
     }
     if (hasPlayerName()) {
       hash = (37 * hash) + PLAYERNAME_FIELD_NUMBER;
@@ -319,6 +382,7 @@ private static final long serialVersionUID = 0L;
       super.clear();
       bitField0_ = 0;
       gameId_ = 0;
+      version_ = "";
       playerName_ = "";
       return this;
     }
@@ -359,8 +423,12 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000001;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.playerName_ = playerName_;
+        result.version_ = version_;
         to_bitField0_ |= 0x00000002;
+      }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.playerName_ = playerName_;
+        to_bitField0_ |= 0x00000004;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -412,9 +480,14 @@ private static final long serialVersionUID = 0L;
       if (other.hasGameId()) {
         setGameId(other.getGameId());
       }
+      if (other.hasVersion()) {
+        version_ = other.version_;
+        bitField0_ |= 0x00000002;
+        onChanged();
+      }
       if (other.hasPlayerName()) {
         playerName_ = other.playerName_;
-        bitField0_ |= 0x00000002;
+        bitField0_ |= 0x00000004;
         onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
@@ -448,9 +521,14 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000001;
               break;
             } // case 8
+            case 18: {
+              version_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 18
             case 26: {
               playerName_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000002;
+              bitField0_ |= 0x00000004;
               break;
             } // case 26
             default: {
@@ -510,13 +588,92 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
+    private java.lang.Object version_ = "";
+    /**
+     * <code>optional string version = 2;</code>
+     * @return Whether the version field is set.
+     */
+    public boolean hasVersion() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>optional string version = 2;</code>
+     * @return The version.
+     */
+    public java.lang.String getVersion() {
+      java.lang.Object ref = version_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        version_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>optional string version = 2;</code>
+     * @return The bytes for version.
+     */
+    public com.google.protobuf.ByteString
+        getVersionBytes() {
+      java.lang.Object ref = version_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        version_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>optional string version = 2;</code>
+     * @param value The version to set.
+     * @return This builder for chaining.
+     */
+    public Builder setVersion(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      version_ = value;
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional string version = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearVersion() {
+      version_ = getDefaultInstance().getVersion();
+      bitField0_ = (bitField0_ & ~0x00000002);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional string version = 2;</code>
+     * @param value The bytes for version to set.
+     * @return This builder for chaining.
+     */
+    public Builder setVersionBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      version_ = value;
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+
     private java.lang.Object playerName_ = "";
     /**
      * <code>optional string playerName = 3;</code>
      * @return Whether the playerName field is set.
      */
     public boolean hasPlayerName() {
-      return ((bitField0_ & 0x00000002) != 0);
+      return ((bitField0_ & 0x00000004) != 0);
     }
     /**
      * <code>optional string playerName = 3;</code>
@@ -560,7 +717,7 @@ private static final long serialVersionUID = 0L;
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       playerName_ = value;
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -570,7 +727,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder clearPlayerName() {
       playerName_ = getDefaultInstance().getPlayerName();
-      bitField0_ = (bitField0_ & ~0x00000002);
+      bitField0_ = (bitField0_ & ~0x00000004);
       onChanged();
       return this;
     }
@@ -584,7 +741,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       playerName_ = value;
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }

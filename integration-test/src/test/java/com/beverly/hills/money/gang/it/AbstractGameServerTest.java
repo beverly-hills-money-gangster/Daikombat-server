@@ -20,7 +20,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 /*
   TODO:
-  - Make sure random port is not taken before use
   - Add longevity test
 */
 
@@ -39,7 +38,7 @@ public abstract class AbstractGameServerTest {
         try (ServerSocket ignored = new ServerSocket(port)) {
             return true; // Port available
         } catch (BindException e) {
-            LOG.warn("Port {} already in use. Try another one.", port, e);
+            LOG.warn("Port {} already in use", port, e);
             return false; // Port already in use
         } catch (Exception e) {
             LOG.error("Can't check port {}", port, e);

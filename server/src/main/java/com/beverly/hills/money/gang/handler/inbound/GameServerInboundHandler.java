@@ -27,9 +27,8 @@ import static com.beverly.hills.money.gang.factory.ServerResponseFactory.*;
 
 /*
 TODO:
-   - Verify that all dependencies don't have critical issues
-   - Verify no bugs
-   - Add server-client version check
+   - Verify that all dependencies don't have critical issues: integrate snyk or checkDependencies
+   - Verify no bugs: integrate spotbugs plugin
  */
 @ChannelHandler.Sharable
 public class GameServerInboundHandler extends SimpleChannelInboundHandler<ServerCommand> implements Closeable {

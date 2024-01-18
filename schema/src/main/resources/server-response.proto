@@ -16,6 +16,7 @@ message ServerResponse {
 
   message ServerInfo {
     repeated GameInfo games = 1;
+    optional string version = 2;
   }
 
   message GameInfo {

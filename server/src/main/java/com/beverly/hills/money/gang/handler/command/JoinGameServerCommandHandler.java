@@ -1,5 +1,6 @@
 package com.beverly.hills.money.gang.handler.command;
 
+import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
@@ -7,6 +8,7 @@ import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerConnectedGameState;
+import com.beverly.hills.money.gang.util.VersionUtil;
 import io.netty.channel.Channel;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -18,7 +20,6 @@ import java.util.stream.Collectors;
 import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createSpawnEventAllPlayers;
 import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createSpawnEventSinglePlayer;
 
-// TODO add version check
 @RequiredArgsConstructor
 public class JoinGameServerCommandHandler extends ServerCommandHandler {
 
@@ -31,7 +32,10 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
         var joinGameCommand = msg.getJoinGameCommand();
         return joinGameCommand.hasGameId()
                 && joinGameCommand.hasPlayerName()
-                && StringUtils.isNotBlank(joinGameCommand.getPlayerName());
+                && StringUtils.isNotBlank(joinGameCommand.getPlayerName())
+                && joinGameCommand.hasVersion()
+                && VersionUtil.getMajorVersion(ServerConfig.VERSION)
+                == VersionUtil.getMajorVersion(joinGameCommand.getVersion());
     }
 
     @Override

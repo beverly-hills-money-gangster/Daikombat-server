@@ -35,11 +35,12 @@ public class ChatEventTest extends AbstractGameServerTest {
             GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
             gameConnection.write(
                     JoinGameCommand.newBuilder()
+                            .setVersion(ServerConfig.VERSION)
                             .setPlayerName("my player name " + i)
                             .setGameId(gameIdToConnectTo).build());
         }
 
-        Thread.sleep(50);
+        Thread.sleep(150);
 
         Map<Integer, GameConnection> players = new HashMap<>();
         for (GameConnection gameConnection : gameConnections) {
@@ -56,7 +57,7 @@ public class ChatEventTest extends AbstractGameServerTest {
                 .setGameId(gameIdToConnectTo)
                 .setPlayerId(playerId).setMessage("Message from player id " + playerId).build()));
 
-        Thread.sleep(50);
+        Thread.sleep(150);
 
         assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, players.size(), "The server must be full");
         players.forEach((playerId, gameConnection) -> {
@@ -86,11 +87,12 @@ public class ChatEventTest extends AbstractGameServerTest {
             GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
             gameConnection.write(
                     JoinGameCommand.newBuilder()
+                            .setVersion(ServerConfig.VERSION)
                             .setPlayerName("my player name " + i)
                             .setGameId(gameIdToConnectTo).build());
         }
 
-        Thread.sleep(50);
+        Thread.sleep(150);
 
         Map<Integer, GameConnection> players = new HashMap<>();
         for (GameConnection gameConnection : gameConnections) {
@@ -126,7 +128,7 @@ public class ChatEventTest extends AbstractGameServerTest {
             }
         });
 
-        Thread.sleep(50);
+        Thread.sleep(150);
 
         assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, players.size(), "The server must be full");
         players.forEach((playerId, gameConnection) -> {

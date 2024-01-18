@@ -20,6 +20,23 @@ public interface JoinGameCommandOrBuilder extends
   int getGameId();
 
   /**
+   * <code>optional string version = 2;</code>
+   * @return Whether the version field is set.
+   */
+  boolean hasVersion();
+  /**
+   * <code>optional string version = 2;</code>
+   * @return The version.
+   */
+  java.lang.String getVersion();
+  /**
+   * <code>optional string version = 2;</code>
+   * @return The bytes for version.
+   */
+  com.google.protobuf.ByteString
+      getVersionBytes();
+
+  /**
    * <code>optional string playerName = 3;</code>
    * @return Whether the playerName field is set.
    */

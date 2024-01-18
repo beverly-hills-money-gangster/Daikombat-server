@@ -30,11 +30,13 @@ public class ShootingEventTest extends AbstractGameServerTest {
         GameConnection gameConnection1 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection1.write(
                 JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameIdToConnectTo).build());
         GameConnection gameConnection2 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection2.write(
                 JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my other player name")
                         .setGameId(gameIdToConnectTo).build());
         Thread.sleep(150);
@@ -91,11 +93,13 @@ public class ShootingEventTest extends AbstractGameServerTest {
         GameConnection gameConnection1 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection1.write(
                 JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameIdToConnectTo).build());
         GameConnection gameConnection2 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection2.write(
                 JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my other player name")
                         .setGameId(gameIdToConnectTo).build());
         Thread.sleep(150);
@@ -175,11 +179,13 @@ public class ShootingEventTest extends AbstractGameServerTest {
         GameConnection gameConnection1 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection1.write(
                 JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameIdToConnectTo).build());
         GameConnection gameConnection2 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection2.write(
                 JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my other player name")
                         .setGameId(gameIdToConnectTo).build());
         Thread.sleep(150);
@@ -272,11 +278,13 @@ public class ShootingEventTest extends AbstractGameServerTest {
         GameConnection gameConnection1 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection1.write(
                 JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameIdToConnectTo).build());
         GameConnection gameConnection2 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection2.write(
                 JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my other player name")
                         .setGameId(gameIdToConnectTo).build());
         Thread.sleep(150);
@@ -371,6 +379,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         GameConnection gameConnection1 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection1.write(
                 JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameIdToConnectTo).build());
         Thread.sleep(150);
@@ -414,7 +423,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
 
         gameConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(50);
+        Thread.sleep(150);
         ServerResponse serverResponse = gameConnection.getResponse().poll().get();
         List<ServerResponse.GameInfo> games = serverResponse.getServerInfo().getGamesList();
         for (ServerResponse.GameInfo gameInfo : games) {

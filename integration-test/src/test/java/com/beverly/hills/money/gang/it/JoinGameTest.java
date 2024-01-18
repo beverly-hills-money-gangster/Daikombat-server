@@ -32,9 +32,10 @@ public class JoinGameTest extends AbstractGameServerTest {
         GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection.write(
                 JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameIdToConnectTo).build());
-        Thread.sleep(50);
+        Thread.sleep(150);
         assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
         assertEquals(1, gameConnection.getResponse().size(),
                 "Should be exactly 1 response: my spawn");
@@ -47,7 +48,7 @@ public class JoinGameTest extends AbstractGameServerTest {
 
 
         gameConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(50);
+        Thread.sleep(150);
         assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
         assertEquals(1, gameConnection.getResponse().size(), "Should be exactly one response");
         ServerResponse serverResponse = gameConnection.getResponse().poll().get();
@@ -76,9 +77,10 @@ public class JoinGameTest extends AbstractGameServerTest {
         GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection.write(
                 JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameIdToConnectTo).build());
-        Thread.sleep(50);
+        Thread.sleep(150);
         assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
         assertEquals(1, gameConnection.getResponse().size(), "Should be 1 response");
 
@@ -91,7 +93,47 @@ public class JoinGameTest extends AbstractGameServerTest {
         // need a new game connection because the previous is closed
         var newGameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         newGameConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(50);
+        Thread.sleep(150);
+        assertEquals(0, newGameConnection.getErrors().size(), "Should be no error");
+        assertEquals(1, newGameConnection.getResponse().size(), "Should be exactly one response");
+
+        ServerResponse gamesInfoServerResponse = newGameConnection.getResponse().poll().get();
+        List<ServerResponse.GameInfo> games = gamesInfoServerResponse.getServerInfo().getGamesList();
+        assertEquals(ServerConfig.GAMES_TO_CREATE, games.size());
+        for (ServerResponse.GameInfo gameInfo : games) {
+            assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, gameInfo.getMaxGamePlayers());
+            assertEquals(0, gameInfo.getPlayersOnline(), "Should be no connected players yet");
+        }
+        assertTrue(gameConnection.isDisconnected());
+    }
+
+    /**
+     * @given a running game server
+     * @when a player connects with older major version connects to a server
+     * @then the player is not connected
+     */
+    @Test
+    public void testJoinGameWrongVersion() throws IOException, InterruptedException {
+        int gameIdToConnectTo = 0;
+        GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        gameConnection.write(
+                JoinGameCommand.newBuilder()
+                        .setVersion("0.1.1-SNAPSHOT")
+                        .setPlayerName("my player name")
+                        .setGameId(gameIdToConnectTo).build());
+        Thread.sleep(150);
+        assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
+        assertEquals(1, gameConnection.getResponse().size(), "Should be 1 response");
+
+        ServerResponse serverResponse = gameConnection.getResponse().poll().get();
+        ServerResponse.ErrorEvent errorEvent = serverResponse.getErrorEvent();
+        assertEquals(GameErrorCode.COMMAND_NOT_RECOGNIZED.ordinal(), errorEvent.getErrorCode(),
+                "Command should not be recognized as client version is too old");
+
+        // need a new game connection because the previous is closed
+        var newGameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        newGameConnection.write(GetServerInfoCommand.newBuilder().build());
+        Thread.sleep(150);
         assertEquals(0, newGameConnection.getErrors().size(), "Should be no error");
         assertEquals(1, newGameConnection.getResponse().size(), "Should be exactly one response");
 
@@ -116,6 +158,7 @@ public class JoinGameTest extends AbstractGameServerTest {
             GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
             gameConnection.write(
                     JoinGameCommand.newBuilder()
+                            .setVersion(ServerConfig.VERSION)
                             .setPlayerName("my player name " + i)
                             .setGameId(0).build());
         }
@@ -123,6 +166,7 @@ public class JoinGameTest extends AbstractGameServerTest {
         GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection.write(
                 JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(0).build());
         Thread.sleep(150);
@@ -148,6 +192,7 @@ public class JoinGameTest extends AbstractGameServerTest {
         GameConnection gameConnection1 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection1.write(
                 JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
                         .setPlayerName("same name")
                         .setGameId(0).build());
 
@@ -155,6 +200,7 @@ public class JoinGameTest extends AbstractGameServerTest {
         GameConnection gameConnection2 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection2.write(
                 JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
                         .setPlayerName("same name")
                         .setGameId(0).build());
         Thread.sleep(150);
@@ -184,6 +230,7 @@ public class JoinGameTest extends AbstractGameServerTest {
             GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
             gameConnection.write(
                     JoinGameCommand.newBuilder()
+                            .setVersion(ServerConfig.VERSION)
                             .setPlayerName("my player name " + i)
                             .setGameId(gameIdToConnectTo).build());
             Thread.sleep(150);
@@ -197,9 +244,10 @@ public class JoinGameTest extends AbstractGameServerTest {
         GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection.write(
                 JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameIdToConnectTo).build());
-        Thread.sleep(50);
+        Thread.sleep(150);
         assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
         assertEquals(2, gameConnection.getResponse().size(), "Should be 2 responses: my spawn + all other players stats");
         ServerResponse mySpawnResponse = gameConnection.getResponse().poll().get();
@@ -232,7 +280,7 @@ public class JoinGameTest extends AbstractGameServerTest {
                 "All spawned players should be returned in the response");
 
         gameConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(50);
+        Thread.sleep(150);
         assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
         assertEquals(1, gameConnection.getResponse().size(), "Should be exactly one response");
         ServerResponse serverResponse = gameConnection.getResponse().poll().get();
@@ -263,6 +311,7 @@ public class JoinGameTest extends AbstractGameServerTest {
                 GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
                 gameConnection.write(
                         JoinGameCommand.newBuilder()
+                                .setVersion(ServerConfig.VERSION)
                                 .setPlayerName("my player name " + j)
                                 .setGameId(gameId).build());
                 Thread.sleep(150);
@@ -272,7 +321,7 @@ public class JoinGameTest extends AbstractGameServerTest {
 
         GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(50);
+        Thread.sleep(150);
         assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
         assertEquals(1, gameConnection.getResponse().size(), "Should be exactly one response");
         ServerResponse serverResponse = gameConnection.getResponse().poll().get();

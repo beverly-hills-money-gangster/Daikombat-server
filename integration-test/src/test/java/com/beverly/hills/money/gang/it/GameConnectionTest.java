@@ -27,6 +27,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
         GameConnection gameConnection1 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection1.write(
                 JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameToConnectTo).build());
         Thread.sleep(150);
@@ -37,6 +38,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
         GameConnection gameConnection2 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection2.write(
                 JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my other player name")
                         .setGameId(gameToConnectTo).build());
         Thread.sleep(150);

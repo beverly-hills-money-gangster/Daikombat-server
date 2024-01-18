@@ -29,6 +29,11 @@ public class ServerRunnerTest {
     }
 
 
+    /**
+     * @given an instance of ServerRunner
+     * @when run() is called
+     * @then then server starts
+     */
     @Test
     public void testRun() throws InterruptedException {
         int port = AbstractGameServerTest.createRandomPort();
@@ -51,6 +56,11 @@ public class ServerRunnerTest {
     }
 
 
+    /**
+     * @given a running server
+     * @when run() is called again
+     * @then it fails
+     */
     @Test
     public void testRunTwice() throws InterruptedException {
         int port = AbstractGameServerTest.createRandomPort();
@@ -72,6 +82,11 @@ public class ServerRunnerTest {
         assertFalse(failed.get(), "No failure expected");
     }
 
+    /**
+     * @given a running server
+     * @when stop() is called
+     * @then server stops
+     */
     @Test
     public void testStop() throws InterruptedException {
         int port = AbstractGameServerTest.createRandomPort();
@@ -95,6 +110,11 @@ public class ServerRunnerTest {
         assertEquals(ServerRunner.State.STOPPED, runner.getState());
     }
 
+    /**
+     * @given a stopped server
+     * @when stop() is called
+     * @then nothing happens as if it's idempotent
+     */
     @Test
     public void testStopTwice() throws InterruptedException {
         int port = AbstractGameServerTest.createRandomPort();

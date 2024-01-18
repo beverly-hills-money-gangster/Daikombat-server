@@ -66,6 +66,23 @@ private static final long serialVersionUID = 0L;
      */
     com.beverly.hills.money.gang.proto.ServerResponse.GameInfoOrBuilder getGamesOrBuilder(
         int index);
+
+    /**
+     * <code>optional string version = 2;</code>
+     * @return Whether the version field is set.
+     */
+    boolean hasVersion();
+    /**
+     * <code>optional string version = 2;</code>
+     * @return The version.
+     */
+    java.lang.String getVersion();
+    /**
+     * <code>optional string version = 2;</code>
+     * @return The bytes for version.
+     */
+    com.google.protobuf.ByteString
+        getVersionBytes();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.ServerInfo}
@@ -81,6 +98,7 @@ private static final long serialVersionUID = 0L;
     }
     private ServerInfo() {
       games_ = java.util.Collections.emptyList();
+      version_ = "";
     }
 
     @java.lang.Override
@@ -103,6 +121,7 @@ private static final long serialVersionUID = 0L;
               com.beverly.hills.money.gang.proto.ServerResponse.ServerInfo.class, com.beverly.hills.money.gang.proto.ServerResponse.ServerInfo.Builder.class);
     }
 
+    private int bitField0_;
     public static final int GAMES_FIELD_NUMBER = 1;
     @SuppressWarnings("serial")
     private java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.GameInfo> games_;
@@ -144,6 +163,53 @@ private static final long serialVersionUID = 0L;
       return games_.get(index);
     }
 
+    public static final int VERSION_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object version_ = "";
+    /**
+     * <code>optional string version = 2;</code>
+     * @return Whether the version field is set.
+     */
+    @java.lang.Override
+    public boolean hasVersion() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>optional string version = 2;</code>
+     * @return The version.
+     */
+    @java.lang.Override
+    public java.lang.String getVersion() {
+      java.lang.Object ref = version_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        version_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string version = 2;</code>
+     * @return The bytes for version.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getVersionBytes() {
+      java.lang.Object ref = version_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        version_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -161,6 +227,9 @@ private static final long serialVersionUID = 0L;
       for (int i = 0; i < games_.size(); i++) {
         output.writeMessage(1, games_.get(i));
       }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, version_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -173,6 +242,9 @@ private static final long serialVersionUID = 0L;
       for (int i = 0; i < games_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, games_.get(i));
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, version_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -191,6 +263,11 @@ private static final long serialVersionUID = 0L;
 
       if (!getGamesList()
           .equals(other.getGamesList())) return false;
+      if (hasVersion() != other.hasVersion()) return false;
+      if (hasVersion()) {
+        if (!getVersion()
+            .equals(other.getVersion())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -205,6 +282,10 @@ private static final long serialVersionUID = 0L;
       if (getGamesCount() > 0) {
         hash = (37 * hash) + GAMES_FIELD_NUMBER;
         hash = (53 * hash) + getGamesList().hashCode();
+      }
+      if (hasVersion()) {
+        hash = (37 * hash) + VERSION_FIELD_NUMBER;
+        hash = (53 * hash) + getVersion().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -344,6 +425,7 @@ private static final long serialVersionUID = 0L;
           gamesBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000001);
+        version_ = "";
         return this;
       }
 
@@ -390,6 +472,12 @@ private static final long serialVersionUID = 0L;
 
       private void buildPartial0(com.beverly.hills.money.gang.proto.ServerResponse.ServerInfo result) {
         int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.version_ = version_;
+          to_bitField0_ |= 0x00000001;
+        }
+        result.bitField0_ |= to_bitField0_;
       }
 
       @java.lang.Override
@@ -462,6 +550,11 @@ private static final long serialVersionUID = 0L;
             }
           }
         }
+        if (other.hasVersion()) {
+          version_ = other.version_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -501,6 +594,11 @@ private static final long serialVersionUID = 0L;
                 }
                 break;
               } // case 10
+              case 18: {
+                version_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -756,6 +854,85 @@ private static final long serialVersionUID = 0L;
           games_ = null;
         }
         return gamesBuilder_;
+      }
+
+      private java.lang.Object version_ = "";
+      /**
+       * <code>optional string version = 2;</code>
+       * @return Whether the version field is set.
+       */
+      public boolean hasVersion() {
+        return ((bitField0_ & 0x00000002) != 0);
+      }
+      /**
+       * <code>optional string version = 2;</code>
+       * @return The version.
+       */
+      public java.lang.String getVersion() {
+        java.lang.Object ref = version_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          version_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string version = 2;</code>
+       * @return The bytes for version.
+       */
+      public com.google.protobuf.ByteString
+          getVersionBytes() {
+        java.lang.Object ref = version_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          version_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string version = 2;</code>
+       * @param value The version to set.
+       * @return This builder for chaining.
+       */
+      public Builder setVersion(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        version_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string version = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearVersion() {
+        version_ = getDefaultInstance().getVersion();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string version = 2;</code>
+       * @param value The bytes for version to set.
+       * @return This builder for chaining.
+       */
+      public Builder setVersionBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        version_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
       }
       @java.lang.Override
       public final Builder setUnknownFields(

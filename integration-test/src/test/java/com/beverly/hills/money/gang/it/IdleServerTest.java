@@ -32,6 +32,7 @@ public class IdleServerTest extends AbstractGameServerTest {
         GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection.write(
                 JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameToConnectTo).build());
         Thread.sleep(150);

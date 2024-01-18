@@ -32,10 +32,12 @@ public class IdleClientTest extends AbstractGameServerTest {
         GameConnection gameConnectionObserver = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection.write(
                 JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameToConnectTo).build());
         gameConnectionObserver.write(
                 JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name observer")
                         .setGameId(gameToConnectTo).build());
         Thread.sleep(150);
@@ -120,6 +122,7 @@ public class IdleClientTest extends AbstractGameServerTest {
         GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection.write(
                 JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameToConnectTo).build());
         Thread.sleep(150);
@@ -173,6 +176,7 @@ public class IdleClientTest extends AbstractGameServerTest {
         GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection.write(
                 JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameToConnectTo).build());
         Thread.sleep(150);

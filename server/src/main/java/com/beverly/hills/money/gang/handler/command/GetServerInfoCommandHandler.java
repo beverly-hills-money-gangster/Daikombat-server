@@ -1,5 +1,6 @@
 package com.beverly.hills.money.gang.handler.command;
 
+import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import io.netty.channel.Channel;
@@ -23,7 +24,9 @@ public class GetServerInfoCommandHandler extends ServerCommandHandler {
 
     @Override
     protected void handleInternal(ServerCommand msg, Channel currentChannel) {
-        currentChannel.writeAndFlush(createServerInfo(gameRoomRegistry.getGames().map(game -> game)));
+        currentChannel.writeAndFlush(createServerInfo(
+                ServerConfig.VERSION,
+                gameRoomRegistry.getGames().map(game -> game)));
     }
 
 }

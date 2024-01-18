@@ -58,8 +58,9 @@ public interface ServerResponseFactory {
                 .build();
     }
 
-    static ServerResponse createServerInfo(Stream<GameReader> games) {
+    static ServerResponse createServerInfo(String serverVersion, Stream<GameReader> games) {
         var serverInfo = ServerResponse.ServerInfo.newBuilder();
+        serverInfo.setVersion(serverVersion);
         games.forEach(game
                 -> serverInfo.addGames(
                 ServerResponse.GameInfo.newBuilder()

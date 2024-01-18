@@ -26,6 +26,7 @@ message PushChatEventCommand {
 
 message JoinGameCommand {
   optional int32 gameId = 1;
+  optional string version = 2;
   optional string playerName = 3;
 }
 

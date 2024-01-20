@@ -1,6 +1,6 @@
 rootProject.name = 'daikombat-server'
 include 'server'
-include 'client'
+include 'net-client'
 include 'schema'
 include 'integration-test'
 include 'security'

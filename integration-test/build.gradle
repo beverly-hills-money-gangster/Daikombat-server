@@ -16,7 +16,7 @@ dependencies {
     testImplementation 'org.junit-pioneer:junit-pioneer:2.2.0'
 
     testImplementation project(":server")
-    testImplementation project(":client")
+    testImplementation project(":net-client")
 
     implementation 'ch.qos.logback:logback-classic:1.4.11'
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api

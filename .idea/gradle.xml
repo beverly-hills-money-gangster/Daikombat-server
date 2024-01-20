@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/client" />
             <option value="$PROJECT_DIR$/integration-test" />
             <option value="$PROJECT_DIR$/schema" />
+            <option value="$PROJECT_DIR$/security" />
             <option value="$PROJECT_DIR$/server" />
           </set>
         </option>

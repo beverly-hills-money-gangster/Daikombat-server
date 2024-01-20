@@ -1,4 +1,4 @@
-package com.beverly.hills.money.gang.encrypt;
+package com.beverly.hills.money.gang.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,8 +6,6 @@ import org.slf4j.LoggerFactory;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 public class ServerHMACService {
@@ -35,10 +33,13 @@ public class ServerHMACService {
         }
     }
 
-    private byte[] generateHMAC(byte[] data)
-            throws NoSuchAlgorithmException, InvalidKeyException {
-        Mac sha256HMAC = Mac.getInstance(HMAC_ALG);
-        sha256HMAC.init(secretKey);
-        return sha256HMAC.doFinal(data);
+    public byte[] generateHMAC(byte[] data) {
+        try {
+            Mac sha256HMAC = Mac.getInstance(HMAC_ALG);
+            sha256HMAC.init(secretKey);
+            return sha256HMAC.doFinal(data);
+        } catch (Exception e) {
+            throw new RuntimeException("Can't generate HMAC", e);
+        }
     }
 }

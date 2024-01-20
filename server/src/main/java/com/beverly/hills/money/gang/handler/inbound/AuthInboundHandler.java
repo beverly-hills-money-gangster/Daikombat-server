@@ -1,7 +1,7 @@
 package com.beverly.hills.money.gang.handler.inbound;
 
+import com.beverly.hills.money.gang.security.ServerHMACService;
 import com.beverly.hills.money.gang.config.ServerConfig;
-import com.beverly.hills.money.gang.encrypt.ServerHMACService;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.proto.ServerCommand;

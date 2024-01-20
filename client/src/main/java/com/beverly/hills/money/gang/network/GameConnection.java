@@ -1,6 +1,6 @@
 package com.beverly.hills.money.gang.network;
 
-import com.beverly.hills.money.gang.encrypt.ClientHMACService;
+import com.beverly.hills.money.gang.security.ServerHMACService;
 import com.beverly.hills.money.gang.entity.GameServerCreds;
 import com.beverly.hills.money.gang.proto.*;
 import com.beverly.hills.money.gang.queue.QueueAPI;
@@ -51,7 +51,7 @@ public class GameConnection {
 
     private final QueueAPI<Throwable> warningsQueueAPI = new QueueAPI<>();
 
-    private final ClientHMACService hmacService;
+    private final ServerHMACService hmacService;
 
     private final Channel channel;
 
@@ -61,7 +61,7 @@ public class GameConnection {
     private final AtomicReference<GameConnectionState> state = new AtomicReference<>();
 
     public GameConnection(final GameServerCreds gameServerCreds) throws IOException {
-        this.hmacService = new ClientHMACService(gameServerCreds.getPassword());
+        this.hmacService = new ServerHMACService(gameServerCreds.getPassword());
         LOG.info("Start connecting");
         state.set(GameConnectionState.CONNECTING);
         this.group = new NioEventLoopGroup();

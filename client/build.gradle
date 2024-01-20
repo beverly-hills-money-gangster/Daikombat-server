@@ -25,6 +25,7 @@ dependencies {
     // https://mvnrepository.com/artifact/io.netty/netty-all
     implementation 'io.netty:netty-all:4.1.100.Final'
     api project(":schema")
+    api project(":security")
 }
 
 test {

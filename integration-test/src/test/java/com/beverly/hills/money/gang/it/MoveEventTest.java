@@ -6,6 +6,7 @@ import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -23,7 +24,7 @@ public class MoveEventTest extends AbstractGameServerTest {
      * @when player 1 moves, player 2 observes
      * @then player 2 observers player 1 moves
      */
-    @Test
+    @RepeatedTest(8)
     public void testMove() throws Exception {
         int gameIdToConnectTo = 2;
         GameConnection gameConnection1 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);

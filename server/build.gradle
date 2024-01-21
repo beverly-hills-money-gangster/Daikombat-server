@@ -1,12 +1,14 @@
 plugins {
     id 'java'
     id 'java-library'
+    id 'maven-publish'
     id "io.freefair.lombok" version "8.0.1"
 }
 
 def props = new Properties()
 file("src/main/resources/version.properties").withInputStream { props.load(it) }
 
+sourceCompatibility = 14
 group = 'com.beverly.hills.money.gang'
 version = props.getProperty("version")
 

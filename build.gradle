@@ -10,22 +10,20 @@ version = '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
-    maven { url "https://jitpack.io" }
 }
 
 test {
     useJUnitPlatform()
 }
 
-subprojects {
-    publishing {
-        publications {
-            maven(MavenPublication) {
-                groupId project.group
-                artifactId project.name
-                version project.version
-                from components.findByName('release')
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = "https://maven.pkg.github.com/beverly-hills-money-gangster/Daikombat-server"
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
             }
         }
     }
-}

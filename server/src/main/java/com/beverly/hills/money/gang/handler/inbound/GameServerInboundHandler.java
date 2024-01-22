@@ -27,7 +27,7 @@ import static com.beverly.hills.money.gang.factory.ServerResponseFactory.*;
 
 /*
 TODO:
-   -
+   - Get version from properties
    - Verify that all dependencies don't have critical issues: integrate snyk or checkDependencies
    - Verify no bugs: integrate spotbugs plugin
    - Add Netty profiler

@@ -10,7 +10,12 @@
     <list default="true" id="28636950-bd78-410e-a99a-1aa3a69908d8" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/integration-test/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/integration-test/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/server/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/config/ServerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/config/ServerConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/inbound/GameServerInboundHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/inbound/GameServerInboundHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/resources/version.properties" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,7 +98,7 @@
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "reference.settings.project.maven.archetype.catalogs"
+    "settings.editor.selected.configurable": "MavenSettings"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -136,9 +141,23 @@
       <command value="mvn -v" />
       <command value="mvn integration-test:clean install" />
       <command value="mvn clean install" />
+      <command value="mvn clean install -X test" />
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.GameTest">
+  <component name="RunManager" selected="Application.Main">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.beverly.hills.money.gang.Main" />
+      <module name="server" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.beverly.hills.money.gang.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="ServerHMACService" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.beverly.hills.money.gang.security.ServerHMACService" />
       <module name="security" />
@@ -152,30 +171,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ChatEventTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":integration-test:test" />
-            <option value="--tests" />
-            <option value="&quot;com.beverly.hills.money.gang.it.ChatEventTest&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <ForceTestExec>true</ForceTestExec>
-      <method v="2" />
-    </configuration>
     <configuration name="GameTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="server" />
       <extension name="coverage">
@@ -186,6 +181,24 @@
       </extension>
       <option name="PACKAGE_NAME" value="com.beverly.hills.money.gang.state" />
       <option name="MAIN_CLASS_NAME" value="com.beverly.hills.money.gang.state.GameTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="JoinGameTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="integration-test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.beverly.hills.money.gang.it.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="ALTERNATIVE_JRE_PATH" value="14" />
+      <option name="PACKAGE_NAME" value="com.beverly.hills.money.gang.it" />
+      <option name="MAIN_CLASS_NAME" value="com.beverly.hills.money.gang.it.JoinGameTest" />
+      <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -204,17 +217,19 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="Application.Main" />
       <item itemvalue="Application.ServerHMACService" />
-      <item itemvalue="Gradle.ChatEventTest" />
       <item itemvalue="JUnit.GameTest" />
+      <item itemvalue="JUnit.JoinGameTest" />
       <item itemvalue="JUnit.it in integration-test" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Main" />
+        <item itemvalue="JUnit.JoinGameTest" />
         <item itemvalue="JUnit.GameTest" />
         <item itemvalue="JUnit.it in integration-test" />
         <item itemvalue="Application.ServerHMACService" />
-        <item itemvalue="Gradle.ChatEventTest" />
       </list>
     </recent_temporary>
   </component>

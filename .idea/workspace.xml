@@ -8,171 +8,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="28636950-bd78-410e-a99a-1aa3a69908d8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/integration-test/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/integration-test/target/test-classes/com/beverly/hills/money/gang/it/AbstractGameServerTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/integration-test/target/test-classes/com/beverly/hills/money/gang/it/ChatEventTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/integration-test/target/test-classes/com/beverly/hills/money/gang/it/GameConnectionTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/integration-test/target/test-classes/com/beverly/hills/money/gang/it/GameServerInfoTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/integration-test/target/test-classes/com/beverly/hills/money/gang/it/IdleClientTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/integration-test/target/test-classes/com/beverly/hills/money/gang/it/IdleServerTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/integration-test/target/test-classes/com/beverly/hills/money/gang/it/JoinGameTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/integration-test/target/test-classes/com/beverly/hills/money/gang/it/MoveEventTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/integration-test/target/test-classes/com/beverly/hills/money/gang/it/ServerRunnerTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/integration-test/target/test-classes/com/beverly/hills/money/gang/it/ShootingEventTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jitpack.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/net-client/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/net-client/target/classes/com/beverly/hills/money/gang/entity/GameServerCreds$GameServerCredsBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/net-client/target/classes/com/beverly/hills/money/gang/entity/GameServerCreds.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/net-client/target/classes/com/beverly/hills/money/gang/entity/HostPort$HostPortBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/net-client/target/classes/com/beverly/hills/money/gang/entity/HostPort.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/net-client/target/classes/com/beverly/hills/money/gang/network/GameConnection$1$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/net-client/target/classes/com/beverly/hills/money/gang/network/GameConnection$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/net-client/target/classes/com/beverly/hills/money/gang/network/GameConnection$GameConnectionState.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/net-client/target/classes/com/beverly/hills/money/gang/network/GameConnection.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/net-client/target/classes/com/beverly/hills/money/gang/queue/QueueAPI.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/net-client/target/classes/com/beverly/hills/money/gang/queue/QueueReader.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/net-client/target/classes/com/beverly/hills/money/gang/queue/QueueWriter.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/GetServerInfoCommand$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/GetServerInfoCommand$Builder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/GetServerInfoCommand.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/GetServerInfoCommandOrBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/JoinGameCommand$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/JoinGameCommand$Builder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/JoinGameCommand.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/JoinGameCommandOrBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/PushChatEventCommand$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/PushChatEventCommand$Builder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/PushChatEventCommand.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/PushChatEventCommandOrBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/PushGameEventCommand$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/PushGameEventCommand$Builder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/PushGameEventCommand$GameEventType$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/PushGameEventCommand$GameEventType.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/PushGameEventCommand$Vector$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/PushGameEventCommand$Vector$Builder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/PushGameEventCommand$Vector.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/PushGameEventCommand$VectorOrBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/PushGameEventCommand.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/PushGameEventCommandOrBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerCommand$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerCommand$2.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerCommand$Builder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerCommand$CommandCase.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerCommand.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerCommandOrBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerCommandOuterClass.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$2.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$Builder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$ChatEvent$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$ChatEvent$Builder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$ChatEvent.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$ChatEventOrBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$ChatEvents$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$ChatEvents$Builder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$ChatEvents.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$ChatEventsOrBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$ErrorEvent$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$ErrorEvent$Builder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$ErrorEvent.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$ErrorEventOrBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$GameEvent$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$GameEvent$Builder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$GameEvent$GameEventType$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$GameEvent$GameEventType.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$GameEvent.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$GameEventOrBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$GameEventPlayerStats$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$GameEventPlayerStats$Builder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$GameEventPlayerStats.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$GameEventPlayerStatsOrBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$GameEvents$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$GameEvents$Builder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$GameEvents.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$GameEventsOrBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$GameInfo$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$GameInfo$Builder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$GameInfo.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$GameInfoOrBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$ResponseCase.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$ServerInfo$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$ServerInfo$Builder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$ServerInfo.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$ServerInfoOrBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$Vector$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$Vector$Builder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$Vector.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse$VectorOrBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponse.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponseOrBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/com/beverly/hills/money/gang/proto/ServerResponseOuterClass.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/server-command.proto" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/schema/target/classes/server-response.proto" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/security/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/security/target/classes/com/beverly/hills/money/gang/security/ServerHMACService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/security/target/test-classes/com/beverly/hills/money/gang/security/ServerHMACServiceTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/Main.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/config/ServerConfig.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/exception/GameErrorCode.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/exception/GameLogicError.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/factory/ServerResponseFactory.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/handler/command/ChatServerCommandHandler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/handler/command/GameEventServerCommandHandler$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/handler/command/GameEventServerCommandHandler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/handler/command/GetServerInfoCommandHandler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/handler/command/JoinGameServerCommandHandler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/handler/command/ServerCommandHandler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/handler/inbound/AuthInboundHandler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/handler/inbound/GameServerInboundHandler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/initializer/GameServerInitializer.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/registry/GameRoomRegistry$OnPlayerRemoval.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/registry/GameRoomRegistry.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/registry/PlayersRegistry$PlayerStateChannel$PlayerStateChannelBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/registry/PlayersRegistry$PlayerStateChannel.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/registry/PlayersRegistry.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/runner/ServerRunner$State.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/runner/ServerRunner.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/spawner/Spawner.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/state/Game.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/state/GameReader.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/state/PlayerConnectedGameState$PlayerConnectedGameStateBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/state/PlayerConnectedGameState.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/state/PlayerShootingGameState$PlayerShootingGameStateBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/state/PlayerShootingGameState.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/state/PlayerState$PlayerCoordinates$PlayerCoordinatesBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/state/PlayerState$PlayerCoordinates.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/state/PlayerState.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/state/PlayerStateReader.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/state/Vector$VectorBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/state/Vector.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/com/beverly/hills/money/gang/util/VersionUtil.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/classes/version.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/test-classes/com/beverly/hills/money/gang/state/GameTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/target/test-classes/com/beverly/hills/money/gang/util/VersionUtilTest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/release.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradlew" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradlew.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/integration-test/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/net-client/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/schema/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/security/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/inbound/GameServerInboundHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/inbound/GameServerInboundHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/integration-test/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/integration-test/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/server/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -227,6 +65,9 @@
       </MavenImportingSettings>
     </option>
   </component>
+  <component name="MavenRunner">
+    <option name="jreName" value="14" />
+  </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -252,7 +93,7 @@
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "reference.settings.project.maven.importing"
+    "settings.editor.selected.configurable": "reference.settings.project.maven.archetype.catalogs"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -293,9 +134,11 @@
       <command value="gradle clean" />
       <command value="gradle build" />
       <command value="mvn -v" />
+      <command value="mvn integration-test:clean install" />
+      <command value="mvn clean install" />
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.ShootingEventTest">
+  <component name="RunManager" selected="JUnit.GameTest">
     <configuration name="ServerHMACService" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.beverly.hills.money.gang.security.ServerHMACService" />
       <module name="security" />
@@ -333,21 +176,29 @@
       <ForceTestExec>true</ForceTestExec>
       <method v="2" />
     </configuration>
-    <configuration name="ShootingEventTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="integration-test" />
+    <configuration name="GameTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="server" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.beverly.hills.money.gang.it.*" />
+          <option name="PATTERN" value="com.beverly.hills.money.gang.state.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
+      <option name="PACKAGE_NAME" value="com.beverly.hills.money.gang.state" />
+      <option name="MAIN_CLASS_NAME" value="com.beverly.hills.money.gang.state.GameTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="it in integration-test" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="integration-test" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="ALTERNATIVE_JRE_PATH" value="14" />
-      <option name="PACKAGE_NAME" value="com.beverly.hills.money.gang.it" />
-      <option name="MAIN_CLASS_NAME" value="com.beverly.hills.money.gang.it.ShootingEventTest" />
+      <option name="MAIN_CLASS_NAME" value="" />
       <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="--add-opens java.base/java.util=ALL-UNNAMED" />
+      <option name="TEST_OBJECT" value="directory" />
+      <dir value="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -355,11 +206,13 @@
     <list>
       <item itemvalue="Application.ServerHMACService" />
       <item itemvalue="Gradle.ChatEventTest" />
-      <item itemvalue="JUnit.ShootingEventTest" />
+      <item itemvalue="JUnit.GameTest" />
+      <item itemvalue="JUnit.it in integration-test" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.ShootingEventTest" />
+        <item itemvalue="JUnit.GameTest" />
+        <item itemvalue="JUnit.it in integration-test" />
         <item itemvalue="Application.ServerHMACService" />
         <item itemvalue="Gradle.ChatEventTest" />
       </list>

@@ -38,11 +38,6 @@ public class Spawner {
                             Vector.builder().x(-0.032291915F).y(0.99947816F).build()).build(),
 
             PlayerState.PlayerCoordinates.builder().position(
-                            Vector.builder().x(-18.421059F).y(23.226679F).build())
-                    .direction(
-                            Vector.builder().x(-0.99995416F).y(-0.009523358F).build()).build(),
-
-            PlayerState.PlayerCoordinates.builder().position(
                             Vector.builder().x(-30.80954F).y(23.183435F).build())
                     .direction(
                             Vector.builder().x(0.9999779F).y(0.0065644206F).build()).build()

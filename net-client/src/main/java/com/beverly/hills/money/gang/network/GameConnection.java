@@ -1,10 +1,10 @@
 package com.beverly.hills.money.gang.network;
 
-import com.beverly.hills.money.gang.security.ServerHMACService;
 import com.beverly.hills.money.gang.entity.GameServerCreds;
 import com.beverly.hills.money.gang.proto.*;
 import com.beverly.hills.money.gang.queue.QueueAPI;
 import com.beverly.hills.money.gang.queue.QueueReader;
+import com.beverly.hills.money.gang.security.ServerHMACService;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.GeneratedMessageV3;
 import io.netty.bootstrap.Bootstrap;
@@ -172,10 +172,11 @@ public class GameConnection {
     }
 
     public void disconnect() {
-        if (!state.compareAndSet(GameConnectionState.CONNECTED, GameConnectionState.DISCONNECTING)) {
-            LOG.info("Potential concurrent disconnect");
+        if (state.get() == GameConnectionState.DISCONNECTED) {
+            LOG.info("Already disconnected");
             return;
         }
+        state.set(GameConnectionState.DISCONNECTING);
         LOG.info("Disconnect");
         try {
             Optional.ofNullable(group).ifPresent(EventExecutorGroup::shutdownGracefully);

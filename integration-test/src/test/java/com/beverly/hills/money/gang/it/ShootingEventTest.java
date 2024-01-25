@@ -17,6 +17,7 @@ import java.util.function.Supplier;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SetEnvironmentVariable(key = "MOVES_UPDATE_FREQUENCY_MLS", value = "9999")
+@SetEnvironmentVariable(key = "PING_FREQUENCY_MLS", value = "99999")
 public class ShootingEventTest extends AbstractGameServerTest {
 
     /**

@@ -45,7 +45,7 @@ message ServerResponse {
   }
 
   message GameEvent {
-    GameEventPlayerStats player = 1;
+    optional GameEventPlayerStats player = 1;
     optional GameEventPlayerStats affectedPlayer = 2;
     GameEventType eventType = 3;
 
@@ -56,6 +56,7 @@ message ServerResponse {
       DEATH = 3;
       SPAWN = 4;
       EXIT = 5;
+      PING = 6;
     }
   }
 

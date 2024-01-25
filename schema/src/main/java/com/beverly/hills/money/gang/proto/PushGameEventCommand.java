@@ -53,6 +53,10 @@ private static final long serialVersionUID = 0L;
      * <code>SHOOT = 1;</code>
      */
     SHOOT(1),
+    /**
+     * <code>PING = 2;</code>
+     */
+    PING(2),
     UNRECOGNIZED(-1),
     ;
 
@@ -64,6 +68,10 @@ private static final long serialVersionUID = 0L;
      * <code>SHOOT = 1;</code>
      */
     public static final int SHOOT_VALUE = 1;
+    /**
+     * <code>PING = 2;</code>
+     */
+    public static final int PING_VALUE = 2;
 
 
     public final int getNumber() {
@@ -92,6 +100,7 @@ private static final long serialVersionUID = 0L;
       switch (value) {
         case 0: return MOVE;
         case 1: return SHOOT;
+        case 2: return PING;
         default: return null;
       }
     }
@@ -805,7 +814,7 @@ private static final long serialVersionUID = 0L;
   public static final int POSITION_FIELD_NUMBER = 3;
   private com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector position_;
   /**
-   * <code>.daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+   * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
    * @return Whether the position field is set.
    */
   @java.lang.Override
@@ -813,7 +822,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000004) != 0);
   }
   /**
-   * <code>.daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+   * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
    * @return The position.
    */
   @java.lang.Override
@@ -821,7 +830,7 @@ private static final long serialVersionUID = 0L;
     return position_ == null ? com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.getDefaultInstance() : position_;
   }
   /**
-   * <code>.daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+   * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
    */
   @java.lang.Override
   public com.beverly.hills.money.gang.proto.PushGameEventCommand.VectorOrBuilder getPositionOrBuilder() {
@@ -831,7 +840,7 @@ private static final long serialVersionUID = 0L;
   public static final int DIRECTION_FIELD_NUMBER = 4;
   private com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector direction_;
   /**
-   * <code>.daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+   * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
    * @return Whether the direction field is set.
    */
   @java.lang.Override
@@ -839,7 +848,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000008) != 0);
   }
   /**
-   * <code>.daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+   * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
    * @return The direction.
    */
   @java.lang.Override
@@ -847,7 +856,7 @@ private static final long serialVersionUID = 0L;
     return direction_ == null ? com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.getDefaultInstance() : direction_;
   }
   /**
-   * <code>.daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+   * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
    */
   @java.lang.Override
   public com.beverly.hills.money.gang.proto.PushGameEventCommand.VectorOrBuilder getDirectionOrBuilder() {
@@ -1496,14 +1505,14 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector, com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.Builder, com.beverly.hills.money.gang.proto.PushGameEventCommand.VectorOrBuilder> positionBuilder_;
     /**
-     * <code>.daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+     * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
      * @return Whether the position field is set.
      */
     public boolean hasPosition() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+     * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
      * @return The position.
      */
     public com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector getPosition() {
@@ -1514,7 +1523,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+     * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
      */
     public Builder setPosition(com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector value) {
       if (positionBuilder_ == null) {
@@ -1530,7 +1539,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+     * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
      */
     public Builder setPosition(
         com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.Builder builderForValue) {
@@ -1544,7 +1553,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+     * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
      */
     public Builder mergePosition(com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector value) {
       if (positionBuilder_ == null) {
@@ -1565,7 +1574,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+     * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
      */
     public Builder clearPosition() {
       bitField0_ = (bitField0_ & ~0x00000004);
@@ -1578,7 +1587,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+     * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
      */
     public com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.Builder getPositionBuilder() {
       bitField0_ |= 0x00000004;
@@ -1586,7 +1595,7 @@ private static final long serialVersionUID = 0L;
       return getPositionFieldBuilder().getBuilder();
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+     * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
      */
     public com.beverly.hills.money.gang.proto.PushGameEventCommand.VectorOrBuilder getPositionOrBuilder() {
       if (positionBuilder_ != null) {
@@ -1597,7 +1606,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+     * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector, com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.Builder, com.beverly.hills.money.gang.proto.PushGameEventCommand.VectorOrBuilder> 
@@ -1617,14 +1626,14 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector, com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.Builder, com.beverly.hills.money.gang.proto.PushGameEventCommand.VectorOrBuilder> directionBuilder_;
     /**
-     * <code>.daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+     * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
      * @return Whether the direction field is set.
      */
     public boolean hasDirection() {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+     * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
      * @return The direction.
      */
     public com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector getDirection() {
@@ -1635,7 +1644,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+     * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
      */
     public Builder setDirection(com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector value) {
       if (directionBuilder_ == null) {
@@ -1651,7 +1660,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+     * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
      */
     public Builder setDirection(
         com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.Builder builderForValue) {
@@ -1665,7 +1674,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+     * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
      */
     public Builder mergeDirection(com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector value) {
       if (directionBuilder_ == null) {
@@ -1686,7 +1695,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+     * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
      */
     public Builder clearDirection() {
       bitField0_ = (bitField0_ & ~0x00000008);
@@ -1699,7 +1708,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+     * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
      */
     public com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.Builder getDirectionBuilder() {
       bitField0_ |= 0x00000008;
@@ -1707,7 +1716,7 @@ private static final long serialVersionUID = 0L;
       return getDirectionFieldBuilder().getBuilder();
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+     * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
      */
     public com.beverly.hills.money.gang.proto.PushGameEventCommand.VectorOrBuilder getDirectionOrBuilder() {
       if (directionBuilder_ != null) {
@@ -1718,7 +1727,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+     * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector, com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.Builder, com.beverly.hills.money.gang.proto.PushGameEventCommand.VectorOrBuilder> 

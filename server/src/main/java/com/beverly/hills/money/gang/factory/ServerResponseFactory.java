@@ -85,6 +85,17 @@ public interface ServerResponseFactory {
                 .build();
     }
 
+    static ServerResponse createPing(int playersOnline) {
+        var ping = ServerResponse.GameEvents.newBuilder();
+        ping.setPlayersOnline(playersOnline)
+                .addEvents(ServerResponse.GameEvent.newBuilder()
+                        .setEventType(ServerResponse.GameEvent.GameEventType.PING)
+                        .build());
+        return ServerResponse.newBuilder()
+                .setGameEvents(ping)
+                .build();
+    }
+
     static ServerResponse createExitEvent(int playersOnline,
                                           PlayerStateReader exitPlayer) {
         return createExitEvent(playersOnline, Stream.of(exitPlayer));

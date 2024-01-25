@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @SetEnvironmentVariable(key = "MOVES_UPDATE_FREQUENCY_MLS", value = "9999")
+@SetEnvironmentVariable(key = "PING_FREQUENCY_MLS", value = "99999")
 public class GameConnectionTest extends AbstractGameServerTest {
 
     /**

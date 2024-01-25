@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import static com.beverly.hills.money.gang.factory.ServerResponseFactory.*;
 
@@ -32,9 +33,8 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
         var gameCommand = msg.getGameCommand();
         return gameCommand.hasGameId()
                 && gameCommand.hasPlayerId()
-                && gameCommand.hasPosition()
-                && gameCommand.hasDirection()
-                && gameCommand.hasEventType()
+                && (gameCommand.hasPosition() && gameCommand.hasDirection() && gameCommand.hasEventType()
+                || gameCommand.hasEventType() && gameCommand.getEventType() == PushGameEventCommand.GameEventType.PING)
                 && gameRoomRegistry.playerJoinedGame(gameCommand.getGameId(),
                 currentChannel, gameCommand.getPlayerId());
     }
@@ -90,6 +90,8 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
                         });
             }
             case MOVE -> game.bufferMove(gameCommand.getPlayerId(), playerCoordinates);
+            case PING -> game.getPlayersRegistry().getPlayerState(gameCommand.getPlayerId())
+                    .ifPresent(PlayerState::ping);
             default -> currentChannel.writeAndFlush(createErrorEvent(
                     new GameLogicError("Not supported command",
                             GameErrorCode.COMMAND_NOT_RECOGNIZED)));

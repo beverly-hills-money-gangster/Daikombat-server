@@ -9,10 +9,37 @@
   <component name="ChangeListManager">
     <list default="true" id="28636950-bd78-410e-a99a-1aa3a69908d8" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/AbstractGameServerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/AbstractGameServerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/ChatEventTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/ChatEventTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/GameConnectionTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/GameConnectionTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/GameServerInfoTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/GameServerInfoTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/IdleClientTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/IdleClientTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/IdleServerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/IdleServerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/JoinGameTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/JoinGameTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/MoveEventTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/MoveEventTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/ShootingEventTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/ShootingEventTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/net-client/src/main/java/com/beverly/hills/money/gang/network/GameConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/net-client/src/main/java/com/beverly/hills/money/gang/network/GameConnection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/src/main/java/com/beverly/hills/money/gang/proto/GetServerInfoCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/src/main/java/com/beverly/hills/money/gang/proto/GetServerInfoCommandOrBuilder.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/src/main/java/com/beverly/hills/money/gang/proto/JoinGameCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/src/main/java/com/beverly/hills/money/gang/proto/JoinGameCommandOrBuilder.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/src/main/java/com/beverly/hills/money/gang/proto/PushChatEventCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/src/main/java/com/beverly/hills/money/gang/proto/PushChatEventCommandOrBuilder.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/src/main/java/com/beverly/hills/money/gang/proto/PushGameEventCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/src/main/java/com/beverly/hills/money/gang/proto/PushGameEventCommandOrBuilder.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/src/main/java/com/beverly/hills/money/gang/proto/ServerCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/src/main/java/com/beverly/hills/money/gang/proto/ServerCommandOrBuilder.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/src/main/java/com/beverly/hills/money/gang/proto/ServerCommandOuterClass.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/src/main/java/com/beverly/hills/money/gang/proto/ServerResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/src/main/java/com/beverly/hills/money/gang/proto/ServerResponseOrBuilder.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/src/main/java/com/beverly/hills/money/gang/proto/ServerResponseOuterClass.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/src/main/resources/server-command.proto" beforeDir="false" afterPath="$PROJECT_DIR$/schema/src/main/resources/server-command.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/src/main/resources/server-response.proto" beforeDir="false" afterPath="$PROJECT_DIR$/schema/src/main/resources/server-response.proto" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/config/ServerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/config/ServerConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/factory/ServerResponseFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/factory/ServerResponseFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/command/GameEventServerCommandHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/command/GameEventServerCommandHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/inbound/GameServerInboundHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/inbound/GameServerInboundHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/spawner/Spawner.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/spawner/Spawner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/state/PlayerState.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/state/PlayerState.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -141,29 +168,16 @@
       <command value="mvn clean install" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="JUnit.IdleClientTest">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="ALTERNATIVE_JRE_PATH" value="14" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="MAIN_CLASS_NAME" value="com.beverly.hills.money.gang.Main" />
       <module name="server" />
-      <option name="PROGRAM_PARAMETERS" value="7777" />
+      <option name="PROGRAM_PARAMETERS" value="7777 -Dio.netty.leakDetection.level=paranoid" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.beverly.hills.money.gang.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="ServerHMACService" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.beverly.hills.money.gang.security.ServerHMACService" />
-      <module name="security" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.beverly.hills.money.gang.security.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -181,6 +195,24 @@
       </extension>
       <option name="PACKAGE_NAME" value="com.beverly.hills.money.gang.state" />
       <option name="MAIN_CLASS_NAME" value="com.beverly.hills.money.gang.state.GameTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="IdleClientTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="integration-test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.beverly.hills.money.gang.it.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="ALTERNATIVE_JRE_PATH" value="14" />
+      <option name="PACKAGE_NAME" value="com.beverly.hills.money.gang.it" />
+      <option name="MAIN_CLASS_NAME" value="com.beverly.hills.money.gang.it.IdleClientTest" />
+      <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -218,18 +250,18 @@
     </configuration>
     <list>
       <item itemvalue="Application.Main" />
-      <item itemvalue="Application.ServerHMACService" />
+      <item itemvalue="JUnit.IdleClientTest" />
       <item itemvalue="JUnit.GameTest" />
       <item itemvalue="JUnit.JoinGameTest" />
       <item itemvalue="JUnit.it in integration-test" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.IdleClientTest" />
         <item itemvalue="Application.Main" />
         <item itemvalue="JUnit.JoinGameTest" />
         <item itemvalue="JUnit.GameTest" />
         <item itemvalue="JUnit.it in integration-test" />
-        <item itemvalue="Application.ServerHMACService" />
       </list>
     </recent_temporary>
   </component>

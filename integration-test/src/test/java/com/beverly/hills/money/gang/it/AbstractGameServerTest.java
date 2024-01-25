@@ -20,6 +20,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 /*
   TODO:
+  - Use -Dio.netty.leakDetection.level=paranoid for testing and fail the build if the leak is detected
   - Add longevity test
 */
 

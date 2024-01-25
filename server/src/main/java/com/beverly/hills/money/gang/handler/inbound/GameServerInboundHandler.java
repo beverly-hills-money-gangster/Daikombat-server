@@ -44,6 +44,10 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     private final ScheduledExecutorService idlePlayersKillerExecutor = Executors.newScheduledThreadPool(1,
             new BasicThreadFactory.Builder().namingPattern("idle-players-killer-%d").build());
 
+    private final ScheduledExecutorService pingExecutor = Executors.newScheduledThreadPool(1,
+            new BasicThreadFactory.Builder().namingPattern("ping-%d").build());
+
+
     private final ServerCommandHandler joinGameServerCommandHandler
             = new JoinGameServerCommandHandler(gameRoomRegistry);
     private final ServerCommandHandler chatServerCommandHandler
@@ -56,6 +60,7 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     public GameServerInboundHandler() {
         scheduleSendBufferedMoves();
         scheduleIdlePlayerKiller();
+        schedulePing();
     }
 
     private void scheduleSendBufferedMoves() {
@@ -80,6 +85,18 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
                 game.flushBufferedMoves();
             }
         }), MOVES_UPDATE_FREQUENCY_MLS, MOVES_UPDATE_FREQUENCY_MLS, TimeUnit.MILLISECONDS);
+    }
+
+    private void schedulePing() {
+        bufferedMovesExecutor.scheduleAtFixedRate(() -> gameRoomRegistry.getGames().forEach(game -> {
+            if (game.getPlayersRegistry().playersOnline() == 0) {
+                return;
+            }
+            LOG.info("Ping");
+            ServerResponse ping = createPing(game.playersOnline());
+            game.getPlayersRegistry().allPlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
+                    .forEach(channel -> channel.writeAndFlush(ping));
+        }), 0, PING_FREQUENCY_MLS, TimeUnit.MILLISECONDS);
     }
 
     private void scheduleIdlePlayerKiller() {
@@ -172,6 +189,12 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
             idlePlayersKillerExecutor.shutdownNow();
         } catch (Exception e) {
             LOG.error("Can't shutdown player killer executor", e);
+        }
+
+        try {
+            pingExecutor.shutdownNow();
+        } catch (Exception e) {
+            LOG.error("Can't shutdown ping executor", e);
         }
         gameRoomRegistry.close();
     }

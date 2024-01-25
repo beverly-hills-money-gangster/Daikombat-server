@@ -36,7 +36,7 @@ public class GameConnection {
 
     private static final Logger LOG = LoggerFactory.getLogger(GameConnection.class);
 
-    private static final int MAX_SERVER_INACTIVE_MLS = NumberUtils.toInt(System.getenv("MAX_SERVER_INACTIVE_MLS"), 5_000);
+    private static final int MAX_SERVER_INACTIVE_MLS = NumberUtils.toInt(System.getenv("MAX_SERVER_INACTIVE_MLS"), 10_000);
 
     private final ScheduledExecutorService idleServerDisconnector = Executors.newScheduledThreadPool(1,
             new BasicThreadFactory.Builder().namingPattern("idle-server-disconnector-%d").build());

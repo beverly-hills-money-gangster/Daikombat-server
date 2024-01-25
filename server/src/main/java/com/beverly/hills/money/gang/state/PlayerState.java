@@ -15,7 +15,7 @@ import static com.beverly.hills.money.gang.config.ServerConfig.MAX_IDLE_TIME_MLS
 @ToString
 public class PlayerState implements PlayerStateReader {
 
-    private final AtomicLong stateChangedLastTime = new AtomicLong(System.currentTimeMillis());
+    private final AtomicLong lastActivityTimeMls = new AtomicLong(System.currentTimeMillis());
 
     private final AtomicBoolean moved = new AtomicBoolean(false);
 
@@ -43,19 +43,23 @@ public class PlayerState implements PlayerStateReader {
     }
 
     public boolean isIdleForTooLong() {
-        return (System.currentTimeMillis() - stateChangedLastTime.get()) > MAX_IDLE_TIME_MLS;
+        return (System.currentTimeMillis() - lastActivityTimeMls.get()) > MAX_IDLE_TIME_MLS;
     }
 
     public void getShot() {
-        stateChangedLastTime.set(System.currentTimeMillis());
+        lastActivityTimeMls.set(System.currentTimeMillis());
         if (health.addAndGet(-ServerConfig.DEFAULT_DAMAGE) <= 0) {
             dead.set(true);
         }
     }
 
+    public void ping() {
+        lastActivityTimeMls.set(System.currentTimeMillis());
+    }
+
 
     public void move(PlayerCoordinates playerCoordinates) {
-        stateChangedLastTime.set(System.currentTimeMillis());
+        lastActivityTimeMls.set(System.currentTimeMillis());
         playerCoordinatesRef.set(playerCoordinates);
         moved.set(true);
     }
@@ -86,7 +90,7 @@ public class PlayerState implements PlayerStateReader {
     }
 
     public void registerKill() {
-        stateChangedLastTime.set(System.currentTimeMillis());
+        lastActivityTimeMls.set(System.currentTimeMillis());
         kills.incrementAndGet();
     }
 

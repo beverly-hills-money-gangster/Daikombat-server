@@ -75,7 +75,7 @@ public final class ServerResponseOuterClass {
   static {
     java.lang.String[] descriptorData = {
       "\n/schema/src/main/resources/server-respo" +
-      "nse.proto\022\rdaikombat.dto\"\362\013\n\016ServerRespo" +
+      "nse.proto\022\rdaikombat.dto\"\214\014\n\016ServerRespo" +
       "nse\022>\n\nerrorEvent\030\001 \001(\0132(.daikombat.dto." +
       "ServerResponse.ErrorEventH\000\022=\n\nchatEvent" +
       "s\030\002 \001(\0132\'.daikombat.dto.ServerResponse.C" +
@@ -97,24 +97,25 @@ public final class ServerResponseOuterClass {
       "ikombat.dto.ServerResponse.GameEventB\020\n\016" +
       "_playersOnline\032Q\n\tChatEvent\022\025\n\010playerId\030" +
       "\001 \001(\005H\000\210\001\001\022\024\n\007message\030\002 \001(\tH\001\210\001\001B\013\n\t_pla" +
-      "yerIdB\n\n\010_message\032\321\002\n\tGameEvent\022B\n\006playe" +
+      "yerIdB\n\n\010_message\032\353\002\n\tGameEvent\022G\n\006playe" +
       "r\030\001 \001(\01322.daikombat.dto.ServerResponse.G" +
-      "ameEventPlayerStats\022O\n\016affectedPlayer\030\002 " +
-      "\001(\01322.daikombat.dto.ServerResponse.GameE" +
-      "ventPlayerStatsH\000\210\001\001\022H\n\teventType\030\003 \001(\0162" +
-      "5.daikombat.dto.ServerResponse.GameEvent" +
-      ".GameEventType\"R\n\rGameEventType\022\010\n\004MOVE\020" +
-      "\000\022\t\n\005SHOOT\020\001\022\014\n\010GET_SHOT\020\002\022\t\n\005DEATH\020\003\022\t\n" +
-      "\005SPAWN\020\004\022\010\n\004EXIT\020\005B\021\n\017_affectedPlayer\032\363\001" +
-      "\n\024GameEventPlayerStats\022\025\n\010playerId\030\001 \001(\005" +
-      "H\000\210\001\001\022\027\n\nplayerName\030\002 \001(\tH\001\210\001\001\0226\n\010positi" +
-      "on\030\003 \001(\0132$.daikombat.dto.ServerResponse." +
-      "Vector\0227\n\tdirection\030\004 \001(\0132$.daikombat.dt" +
-      "o.ServerResponse.Vector\022\023\n\006health\030\005 \001(\005H" +
-      "\002\210\001\001B\013\n\t_playerIdB\r\n\013_playerNameB\t\n\007_hea" +
-      "lth\0324\n\006Vector\022\016\n\001x\030\001 \001(\002H\000\210\001\001\022\016\n\001y\030\002 \001(\002" +
-      "H\001\210\001\001B\004\n\002_xB\004\n\002_yB\n\n\010responseB&\n\"com.bev" +
-      "erly.hills.money.gang.protoP\001b\006proto3"
+      "ameEventPlayerStatsH\000\210\001\001\022O\n\016affectedPlay" +
+      "er\030\002 \001(\01322.daikombat.dto.ServerResponse." +
+      "GameEventPlayerStatsH\001\210\001\001\022H\n\teventType\030\003" +
+      " \001(\01625.daikombat.dto.ServerResponse.Game" +
+      "Event.GameEventType\"\\\n\rGameEventType\022\010\n\004" +
+      "MOVE\020\000\022\t\n\005SHOOT\020\001\022\014\n\010GET_SHOT\020\002\022\t\n\005DEATH" +
+      "\020\003\022\t\n\005SPAWN\020\004\022\010\n\004EXIT\020\005\022\010\n\004PING\020\006B\t\n\007_pl" +
+      "ayerB\021\n\017_affectedPlayer\032\363\001\n\024GameEventPla" +
+      "yerStats\022\025\n\010playerId\030\001 \001(\005H\000\210\001\001\022\027\n\nplaye" +
+      "rName\030\002 \001(\tH\001\210\001\001\0226\n\010position\030\003 \001(\0132$.dai" +
+      "kombat.dto.ServerResponse.Vector\0227\n\tdire" +
+      "ction\030\004 \001(\0132$.daikombat.dto.ServerRespon" +
+      "se.Vector\022\023\n\006health\030\005 \001(\005H\002\210\001\001B\013\n\t_playe" +
+      "rIdB\r\n\013_playerNameB\t\n\007_health\0324\n\006Vector\022" +
+      "\016\n\001x\030\001 \001(\002H\000\210\001\001\022\016\n\001y\030\002 \001(\002H\001\210\001\001B\004\n\002_xB\004\n" +
+      "\002_yB\n\n\010responseB&\n\"com.beverly.hills.mon" +
+      "ey.gang.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

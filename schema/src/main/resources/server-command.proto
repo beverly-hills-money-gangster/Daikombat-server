@@ -33,8 +33,8 @@ message JoinGameCommand {
 message PushGameEventCommand {
   optional int32 gameId = 1;
   optional GameEventType eventType = 2;
-  Vector position = 3;
-  Vector direction = 4;
+  optional Vector position = 3;
+  optional Vector direction = 4;
   optional int32 playerId = 5;
   optional int32 affectedPlayerId = 6;
 
@@ -46,5 +46,6 @@ message PushGameEventCommand {
   enum GameEventType {
     MOVE = 0;
     SHOOT = 1;
+    PING = 2;
   }
 }

@@ -4733,17 +4733,17 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>.daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
+     * <code>optional .daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
      * @return Whether the player field is set.
      */
     boolean hasPlayer();
     /**
-     * <code>.daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
+     * <code>optional .daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
      * @return The player.
      */
     com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStats getPlayer();
     /**
-     * <code>.daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
+     * <code>optional .daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
      */
     com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStatsOrBuilder getPlayerOrBuilder();
 
@@ -4838,6 +4838,10 @@ private static final long serialVersionUID = 0L;
        * <code>EXIT = 5;</code>
        */
       EXIT(5),
+      /**
+       * <code>PING = 6;</code>
+       */
+      PING(6),
       UNRECOGNIZED(-1),
       ;
 
@@ -4865,6 +4869,10 @@ private static final long serialVersionUID = 0L;
        * <code>EXIT = 5;</code>
        */
       public static final int EXIT_VALUE = 5;
+      /**
+       * <code>PING = 6;</code>
+       */
+      public static final int PING_VALUE = 6;
 
 
       public final int getNumber() {
@@ -4897,6 +4905,7 @@ private static final long serialVersionUID = 0L;
           case 3: return DEATH;
           case 4: return SPAWN;
           case 5: return EXIT;
+          case 6: return PING;
           default: return null;
         }
       }
@@ -4957,7 +4966,7 @@ private static final long serialVersionUID = 0L;
     public static final int PLAYER_FIELD_NUMBER = 1;
     private com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStats player_;
     /**
-     * <code>.daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
+     * <code>optional .daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
      * @return Whether the player field is set.
      */
     @java.lang.Override
@@ -4965,7 +4974,7 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>.daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
+     * <code>optional .daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
      * @return The player.
      */
     @java.lang.Override
@@ -4973,7 +4982,7 @@ private static final long serialVersionUID = 0L;
       return player_ == null ? com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStats.getDefaultInstance() : player_;
     }
     /**
-     * <code>.daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
+     * <code>optional .daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
      */
     @java.lang.Override
     public com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStatsOrBuilder getPlayerOrBuilder() {
@@ -5435,14 +5444,14 @@ private static final long serialVersionUID = 0L;
       private com.google.protobuf.SingleFieldBuilderV3<
           com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStats, com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStats.Builder, com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStatsOrBuilder> playerBuilder_;
       /**
-       * <code>.daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
+       * <code>optional .daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
        * @return Whether the player field is set.
        */
       public boolean hasPlayer() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
-       * <code>.daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
+       * <code>optional .daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
        * @return The player.
        */
       public com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStats getPlayer() {
@@ -5453,7 +5462,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>.daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
+       * <code>optional .daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
        */
       public Builder setPlayer(com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStats value) {
         if (playerBuilder_ == null) {
@@ -5469,7 +5478,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
+       * <code>optional .daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
        */
       public Builder setPlayer(
           com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStats.Builder builderForValue) {
@@ -5483,7 +5492,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
+       * <code>optional .daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
        */
       public Builder mergePlayer(com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStats value) {
         if (playerBuilder_ == null) {
@@ -5504,7 +5513,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
+       * <code>optional .daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
        */
       public Builder clearPlayer() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -5517,7 +5526,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
+       * <code>optional .daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
        */
       public com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStats.Builder getPlayerBuilder() {
         bitField0_ |= 0x00000001;
@@ -5525,7 +5534,7 @@ private static final long serialVersionUID = 0L;
         return getPlayerFieldBuilder().getBuilder();
       }
       /**
-       * <code>.daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
+       * <code>optional .daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
        */
       public com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStatsOrBuilder getPlayerOrBuilder() {
         if (playerBuilder_ != null) {
@@ -5536,7 +5545,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>.daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
+       * <code>optional .daikombat.dto.ServerResponse.GameEventPlayerStats player = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStats, com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStats.Builder, com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStatsOrBuilder> 

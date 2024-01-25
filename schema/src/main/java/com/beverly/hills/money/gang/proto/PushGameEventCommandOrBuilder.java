@@ -36,32 +36,32 @@ public interface PushGameEventCommandOrBuilder extends
   com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType getEventType();
 
   /**
-   * <code>.daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+   * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
    * @return Whether the position field is set.
    */
   boolean hasPosition();
   /**
-   * <code>.daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+   * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
    * @return The position.
    */
   com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector getPosition();
   /**
-   * <code>.daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+   * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
    */
   com.beverly.hills.money.gang.proto.PushGameEventCommand.VectorOrBuilder getPositionOrBuilder();
 
   /**
-   * <code>.daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+   * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
    * @return Whether the direction field is set.
    */
   boolean hasDirection();
   /**
-   * <code>.daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+   * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
    * @return The direction.
    */
   com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector getDirection();
   /**
-   * <code>.daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+   * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
    */
   com.beverly.hills.money.gang.proto.PushGameEventCommand.VectorOrBuilder getDirectionOrBuilder();
 

@@ -71,7 +71,6 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
                 }
                 var bufferedMoves = game.getBufferedMoves();
                 if (bufferedMoves.isEmpty()) {
-                    LOG.info("Nobody moved");
                     return;
                 }
                 LOG.info("Send all moves");

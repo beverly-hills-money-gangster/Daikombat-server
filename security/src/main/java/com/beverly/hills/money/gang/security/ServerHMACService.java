@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 public class ServerHMACService {
 
@@ -26,7 +25,7 @@ public class ServerHMACService {
         }
         try {
             byte[] expectedHMAC = generateHMAC(givenData);
-            return Arrays.equals(expectedHMAC, givenHMAC);
+            return java.security.MessageDigest.isEqual(expectedHMAC, givenHMAC);
         } catch (Exception e) {
             LOG.error("Can't validate MAC", e);
             return false;

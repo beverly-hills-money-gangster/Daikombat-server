@@ -46,8 +46,7 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
 
     private final ScheduledExecutorService pingExecutor = Executors.newScheduledThreadPool(1,
             new BasicThreadFactory.Builder().namingPattern("ping-%d").build());
-
-
+    
     private final ServerCommandHandler joinGameServerCommandHandler
             = new JoinGameServerCommandHandler(gameRoomRegistry);
     private final ServerCommandHandler chatServerCommandHandler

@@ -8,7 +8,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="28636950-bd78-410e-a99a-1aa3a69908d8" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/AbstractGameServerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/AbstractGameServerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/build.yml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

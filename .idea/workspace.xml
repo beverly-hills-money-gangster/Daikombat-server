@@ -8,7 +8,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="28636950-bd78-410e-a99a-1aa3a69908d8" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.github/workflows/build.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.circleci/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.circleci/config.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -142,6 +142,9 @@
       <command value="mvn spotbugs" />
       <command value="mvn spotbugs:spotbugs" />
       <command value="mvn verify" />
+      <command value=" mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=daikombat_daikombat" />
+      <command value="mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=daikombat_daikombat" />
+      <command value="mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=daikombat_daikombat" />
     </option>
   </component>
   <component name="RunManager" selected="JUnit.MoveEventTest">

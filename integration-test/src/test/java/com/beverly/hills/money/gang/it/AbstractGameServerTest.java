@@ -25,7 +25,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 /*
   TODO:
-  - switch to Spring
   - Use -Dio.netty.leakDetection.level=paranoid for testing and fail the build if the leak is detected
 */
 

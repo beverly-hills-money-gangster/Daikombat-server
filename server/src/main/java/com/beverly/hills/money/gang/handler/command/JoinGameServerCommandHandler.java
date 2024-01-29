@@ -14,12 +14,14 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
 import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createSpawnEventAllPlayers;
 import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createSpawnEventSinglePlayer;
 
+@Component
 @RequiredArgsConstructor
 public class JoinGameServerCommandHandler extends ServerCommandHandler {
 

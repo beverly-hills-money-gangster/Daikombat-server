@@ -8,9 +8,11 @@ import com.beverly.hills.money.gang.state.Game;
 import io.netty.channel.Channel;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
 import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createChatEvent;
 
+@Component
 @RequiredArgsConstructor
 public class ChatServerCommandHandler extends ServerCommandHandler {
 

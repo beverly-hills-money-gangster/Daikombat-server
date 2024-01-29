@@ -9,6 +9,8 @@ import java.util.Properties;
 
 public interface ServerConfig {
 
+    int PORT = NumberUtils.toInt(System.getenv("PORT"), 7777);
+
     int GAMES_TO_CREATE = NumberUtils.toInt(System.getenv("GAMES_TO_CREATE"), 10);
     int MAX_PLAYERS_PER_GAME = NumberUtils.toInt(System.getenv("MAX_PLAYERS_PER_GAME"), 25);
     int MOVES_UPDATE_FREQUENCY_MLS = NumberUtils.toInt(System.getenv("MOVES_UPDATE_FREQUENCY_MLS"), 50);

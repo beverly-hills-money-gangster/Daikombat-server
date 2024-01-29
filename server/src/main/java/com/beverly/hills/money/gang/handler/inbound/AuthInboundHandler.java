@@ -1,26 +1,29 @@
 package com.beverly.hills.money.gang.handler.inbound;
 
-import com.beverly.hills.money.gang.security.ServerHMACService;
-import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.proto.ServerCommand;
+import com.beverly.hills.money.gang.security.ServerHMACService;
 import com.google.protobuf.GeneratedMessageV3;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createErrorEvent;
 
 
+@Component
+@RequiredArgsConstructor
 @ChannelHandler.Sharable
 public class AuthInboundHandler extends SimpleChannelInboundHandler<ServerCommand> {
 
-    private final ServerHMACService hmacService = new ServerHMACService(ServerConfig.PASSWORD);
-
     private static final Logger LOG = LoggerFactory.getLogger(GameServerInboundHandler.class);
+
+    private final ServerHMACService hmacService;
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ServerCommand msg) {

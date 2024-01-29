@@ -28,9 +28,9 @@ public class IdleClientTest extends AbstractGameServerTest {
     @Test
     public void testIdleClientDisconnect() throws IOException, InterruptedException {
         int gameToConnectTo = 1;
-        GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection gameConnectionIdle = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         GameConnection gameConnectionObserver = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
-        gameConnection.write(
+        gameConnectionIdle.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
@@ -42,7 +42,7 @@ public class IdleClientTest extends AbstractGameServerTest {
                         .setGameId(gameToConnectTo).build());
         Thread.sleep(150);
 
-        ServerResponse idleSpawn = gameConnection.getResponse().poll().get();
+        ServerResponse idleSpawn = gameConnectionIdle.getResponse().poll().get();
         ServerResponse.GameEvent idleSpawnGameEvent = idleSpawn.getGameEvents().getEvents(0);
         int idlePlayerId = idleSpawnGameEvent.getPlayer().getPlayerId();
 
@@ -51,11 +51,11 @@ public class IdleClientTest extends AbstractGameServerTest {
         int observerPlayerId = observerSpawnGameEvent.getPlayer().getPlayerId();
 
         emptyQueue(gameConnectionObserver.getResponse());
-        emptyQueue(gameConnection.getResponse());
+        emptyQueue(gameConnectionIdle.getResponse());
 
-        gameConnection.write(GetServerInfoCommand.newBuilder().build());
+        gameConnectionIdle.write(GetServerInfoCommand.newBuilder().build());
         Thread.sleep(150);
-        ServerResponse serverResponse = gameConnection.getResponse().poll().get();
+        ServerResponse serverResponse = gameConnectionIdle.getResponse().poll().get();
         var myGame = serverResponse.getServerInfo().getGamesList().stream().filter(gameInfo
                         -> gameInfo.getGameId() == gameToConnectTo).findFirst()
                 .orElseThrow(() -> new IllegalStateException("Can't find game by id. Response is:" + serverResponse));
@@ -86,15 +86,15 @@ public class IdleClientTest extends AbstractGameServerTest {
         assertEquals(1, myGameAfterIdle.getPlayersOnline(),
                 "Idle player should be disconnected because it was idle for too long. Only observer player is online");
 
-        emptyQueue(gameConnection.getWarning());
-        gameConnection.write(GetServerInfoCommand.newBuilder().build());
+        emptyQueue(gameConnectionIdle.getWarning());
+        gameConnectionIdle.write(GetServerInfoCommand.newBuilder().build());
         Thread.sleep(150);
-        assertEquals(1, gameConnection.getWarning().size(),
+        assertEquals(1, gameConnectionIdle.getWarning().size(),
                 "Should be one warning as we can't write using disconnected connection");
-        Throwable warning = gameConnection.getWarning().poll().get();
+        Throwable warning = gameConnectionIdle.getWarning().poll().get();
         assertTrue(warning instanceof IOException);
         assertEquals("Can't write using closed connection", warning.getMessage());
-        assertTrue(gameConnection.isDisconnected());
+        assertTrue(gameConnectionIdle.isDisconnected());
 
         assertTrue(gameConnectionObserver.isConnected(), "Observer should still be connected. It wasn't idle");
 

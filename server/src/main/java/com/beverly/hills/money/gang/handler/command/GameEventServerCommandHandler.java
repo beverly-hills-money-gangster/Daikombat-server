@@ -14,13 +14,14 @@ import io.netty.channel.Channel;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import static com.beverly.hills.money.gang.factory.ServerResponseFactory.*;
 
 
+@Component
 @RequiredArgsConstructor
 public class GameEventServerCommandHandler extends ServerCommandHandler {
 

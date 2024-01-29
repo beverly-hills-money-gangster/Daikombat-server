@@ -20,7 +20,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
     /**
      * @given a running game server with 2 connected players
      * @when player 1 disconnects from server
-     * @then player 1 gets disconnected and player 2 has the even DISCONNECT for player 1
+     * @then player 1 gets disconnected and player 2 has the event DISCONNECT for player 1
      */
     @Test
     public void testExit() throws IOException, InterruptedException {

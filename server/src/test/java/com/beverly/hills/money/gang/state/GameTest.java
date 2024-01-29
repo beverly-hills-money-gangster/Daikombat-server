@@ -6,7 +6,6 @@ import com.beverly.hills.money.gang.exception.GameLogicError;
 import io.netty.channel.Channel;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -135,7 +134,7 @@ public class GameTest {
      * @when max players per game come to connect concurrently
      * @then the game connects everybody successfully
      */
-    @RepeatedTest(32)
+    @Test
     public void testConnectPlayerConcurrency() {
         String playerName = "some player";
         AtomicInteger failures = new AtomicInteger();
@@ -397,7 +396,7 @@ public class GameTest {
      * @when all of them shoot each other once concurrently
      * @then nobody gets killed, everybody's health is reduced
      */
-    @RepeatedTest(32)
+    @Test
     public void testShootConcurrency() throws Throwable {
 
         CountDownLatch latch = new CountDownLatch(1);

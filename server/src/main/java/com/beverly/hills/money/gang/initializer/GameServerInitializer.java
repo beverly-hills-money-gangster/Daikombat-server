@@ -11,12 +11,15 @@ import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
-import java.io.Closeable;
+@Component
+@RequiredArgsConstructor
+public class GameServerInitializer extends ChannelInitializer<SocketChannel> {
 
-public class GameServerInitializer extends ChannelInitializer<SocketChannel> implements Closeable {
-
-    private final GameServerInboundHandler gameServerInboundHandler = new GameServerInboundHandler();
+    private final GameServerInboundHandler gameServerInboundHandler;
+    private final AuthInboundHandler authInboundHandler;
 
     @Override
     protected void initChannel(SocketChannel ch) {
@@ -25,12 +28,7 @@ public class GameServerInitializer extends ChannelInitializer<SocketChannel> imp
         p.addLast(new ProtobufDecoder(ServerCommand.getDefaultInstance()));
         p.addLast(new ProtobufVarint32LengthFieldPrepender());
         p.addLast(new ProtobufEncoder());
-        p.addLast(new AuthInboundHandler());
+        p.addLast(authInboundHandler);
         p.addLast(gameServerInboundHandler);
-    }
-
-    @Override
-    public void close() {
-        gameServerInboundHandler.close();
     }
 }

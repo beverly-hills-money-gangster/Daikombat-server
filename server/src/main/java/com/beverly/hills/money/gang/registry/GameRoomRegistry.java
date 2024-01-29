@@ -62,6 +62,7 @@ public class GameRoomRegistry implements Closeable {
 
     @Override
     public void close() {
+        LOG.info("Close");
         games.values().forEach(game -> {
             try {
                 game.close();

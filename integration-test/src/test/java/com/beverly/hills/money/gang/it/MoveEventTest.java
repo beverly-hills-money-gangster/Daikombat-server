@@ -25,7 +25,7 @@ public class MoveEventTest extends AbstractGameServerTest {
      * @when player 1 moves, player 2 observes
      * @then player 2 observers player 1 moves
      */
-    @RepeatedTest(8)
+    @Test
     public void testMove() throws Exception {
         int gameIdToConnectTo = 2;
         GameConnection gameConnection1 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);

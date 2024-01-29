@@ -7,8 +7,13 @@ import com.beverly.hills.money.gang.queue.QueueReader;
 import com.beverly.hills.money.gang.runner.ServerRunner;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 import java.net.BindException;
@@ -20,14 +25,20 @@ import java.util.concurrent.ThreadLocalRandom;
 
 /*
   TODO:
+  - switch to Spring
   - Use -Dio.netty.leakDetection.level=paranoid for testing and fail the build if the leak is detected
 */
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = TestConfig.class)
 public abstract class AbstractGameServerTest {
 
     protected static final Logger LOG = LoggerFactory.getLogger(AbstractGameServerTest.class);
 
     protected int port;
+
+    @Autowired
+    private ApplicationContext applicationContext;
 
     protected ServerRunner serverRunner;
 
@@ -61,10 +72,10 @@ public abstract class AbstractGameServerTest {
     @BeforeEach
     public void setUp() throws InterruptedException {
         port = createRandomPort();
-        serverRunner = new ServerRunner(port);
+        serverRunner = applicationContext.getBean(ServerRunner.class);
         new Thread(() -> {
             try {
-                serverRunner.runServer();
+                serverRunner.runServer(port);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

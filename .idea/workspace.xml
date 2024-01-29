@@ -8,12 +8,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="28636950-bd78-410e-a99a-1aa3a69908d8" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/TestConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/AppConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/scheduler/GameScheduler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/integration-test/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/integration-test/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/AbstractGameServerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/AbstractGameServerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/GameConnectionTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/GameConnectionTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/IdleClientTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/IdleClientTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/MoveEventTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/MoveEventTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/ServerRunnerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/ServerRunnerTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/server/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/config/ServerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/config/ServerConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/command/ChatServerCommandHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/command/ChatServerCommandHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/command/GameEventServerCommandHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/command/GameEventServerCommandHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/command/GetServerInfoCommandHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/command/GetServerInfoCommandHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/command/JoinGameServerCommandHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/command/JoinGameServerCommandHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/inbound/AuthInboundHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/inbound/AuthInboundHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/inbound/GameServerInboundHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/inbound/GameServerInboundHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/initializer/GameServerInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/initializer/GameServerInitializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/registry/GameRoomRegistry.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/registry/GameRoomRegistry.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/registry/PlayersRegistry.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/registry/PlayersRegistry.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/runner/ServerRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/runner/ServerRunner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/test/java/com/beverly/hills/money/gang/state/GameTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/test/java/com/beverly/hills/money/gang/state/GameTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,23 +100,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "ignore.virus.scanning.warn.message": "true",
-    "jdk.selected.JAVA_MODULE": "14",
-    "last_directory_selection": "C:/Users/35795/Documents/projects/daikombat-server/server/src/test/java/com/beverly/hills/money/gang",
-    "last_opened_file_path": "C:/Users/35795/Documents/projects/daikombat-server/net-client",
-    "project.structure.last.edited": "Problems",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.2",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "Errors"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;14&quot;,
+    &quot;last_directory_selection&quot;: &quot;C:/Users/35795/Documents/projects/daikombat-server/server/src/test/java/com/beverly/hills/money/gang&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/35795/Documents/projects/daikombat-server/net-client&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Problems&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;Errors&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\35795\Documents\projects\daikombat-server\net-client" />
@@ -144,12 +162,12 @@
       <command value="mvn server:spotbugs" />
       <command value="mvn spotbugs server" />
       <command value="mvn check" />
-      <command value="mvn verify" />
       <command value="mvn spotbugs" />
       <command value="mvn spotbugs:spotbugs" />
+      <command value="mvn verify" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="JUnit.MoveEventTest">
     <configuration name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="ALTERNATIVE_JRE_PATH" value="14" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
@@ -162,52 +180,6 @@
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="ProxyTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.beverly.hills.money.gang.ProxyTest" />
-      <module name="server" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.beverly.hills.money.gang.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="ToxiProxySetup" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="ALTERNATIVE_JRE_PATH" value="14" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
-      <envs>
-        <env name="LATENCY_MLS" value="500" />
-      </envs>
-      <option name="MAIN_CLASS_NAME" value="com.beverly.hills.money.gang.ToxiProxySetup" />
-      <module name="server" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.beverly.hills.money.gang.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="GameTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="server" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.beverly.hills.money.gang.state.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.beverly.hills.money.gang.state" />
-      <option name="MAIN_CLASS_NAME" value="com.beverly.hills.money.gang.state.GameTest" />
-      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -230,6 +202,24 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="IdleClientTest.testIdleClientDisconnect" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="integration-test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.beverly.hills.money.gang.it.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="ALTERNATIVE_JRE_PATH" value="14" />
+      <option name="PACKAGE_NAME" value="com.beverly.hills.money.gang.it" />
+      <option name="MAIN_CLASS_NAME" value="com.beverly.hills.money.gang.it.IdleClientTest" />
+      <option name="METHOD_NAME" value="testIdleClientDisconnect" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="JoinGameTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="integration-test" />
       <extension name="coverage">
@@ -248,21 +238,54 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="MoveEventTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="integration-test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.beverly.hills.money.gang.it.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="ALTERNATIVE_JRE_PATH" value="14" />
+      <option name="PACKAGE_NAME" value="com.beverly.hills.money.gang.it" />
+      <option name="MAIN_CLASS_NAME" value="com.beverly.hills.money.gang.it.MoveEventTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ServerRunnerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="integration-test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.beverly.hills.money.gang.it.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.beverly.hills.money.gang.it" />
+      <option name="MAIN_CLASS_NAME" value="com.beverly.hills.money.gang.it.ServerRunnerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Application.Main" />
-      <item itemvalue="Application.ToxiProxySetup" />
-      <item itemvalue="Application.ProxyTest" />
+      <item itemvalue="JUnit.MoveEventTest" />
+      <item itemvalue="JUnit.IdleClientTest.testIdleClientDisconnect" />
+      <item itemvalue="JUnit.ServerRunnerTest" />
       <item itemvalue="JUnit.IdleClientTest" />
-      <item itemvalue="JUnit.GameTest" />
       <item itemvalue="JUnit.JoinGameTest" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.ToxiProxySetup" />
-        <item itemvalue="Application.ProxyTest" />
+        <item itemvalue="JUnit.MoveEventTest" />
         <item itemvalue="JUnit.IdleClientTest" />
+        <item itemvalue="JUnit.IdleClientTest.testIdleClientDisconnect" />
         <item itemvalue="JUnit.JoinGameTest" />
-        <item itemvalue="JUnit.GameTest" />
+        <item itemvalue="JUnit.ServerRunnerTest" />
       </list>
     </recent_temporary>
   </component>

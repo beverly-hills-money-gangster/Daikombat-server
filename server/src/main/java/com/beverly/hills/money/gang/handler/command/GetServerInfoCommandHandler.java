@@ -7,9 +7,11 @@ import io.netty.channel.Channel;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createServerInfo;
 
+@Component
 @RequiredArgsConstructor
 public class GetServerInfoCommandHandler extends ServerCommandHandler {
 

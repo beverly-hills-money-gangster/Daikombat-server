@@ -3,6 +3,12 @@ package com.beverly.hills.money.gang.it;
 import com.beverly.hills.money.gang.runner.ServerRunner;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +18,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = TestConfig.class)
 public class ServerRunnerTest {
+
+    @Autowired
+    private ApplicationContext applicationContext;
 
     private final List<ServerRunner> runners = new ArrayList<>();
 
-    private ServerRunner createRunner(int port) {
-        var runner = new ServerRunner(port);
+    private ServerRunner createRunner() {
+        var runner = applicationContext.getBean(ServerRunner.class);
         runners.add(runner);
         return runner;
     }
@@ -37,12 +48,12 @@ public class ServerRunnerTest {
     @Test
     public void testRun() throws InterruptedException {
         int port = AbstractGameServerTest.createRandomPort();
-        var runner = createRunner(port);
+        var runner = createRunner();
         AtomicBoolean failed = new AtomicBoolean();
         assertEquals(ServerRunner.State.INIT, runner.getState());
         new Thread(() -> {
             try {
-                runner.runServer();
+                runner.runServer(port);
             } catch (Exception e) {
                 failed.set(true);
                 throw new RuntimeException(e);
@@ -64,19 +75,19 @@ public class ServerRunnerTest {
     @Test
     public void testRunTwice() throws InterruptedException {
         int port = AbstractGameServerTest.createRandomPort();
-        var runner = createRunner(port);
+        var runner = createRunner();
         AtomicBoolean failed = new AtomicBoolean();
         assertEquals(ServerRunner.State.INIT, runner.getState());
         new Thread(() -> {
             try {
-                runner.runServer();
+                runner.runServer(port);
             } catch (Exception e) {
                 failed.set(true);
                 throw new RuntimeException(e);
             }
         }).start();
         runner.waitFullyRunning();
-        Exception ex = assertThrows(IllegalStateException.class, runner::runServer,
+        Exception ex = assertThrows(IllegalStateException.class, () -> runner.runServer(port),
                 "Shouldn't be able to run the same server twice");
         assertEquals("Can't run!", ex.getMessage());
         assertFalse(failed.get(), "No failure expected");
@@ -90,13 +101,13 @@ public class ServerRunnerTest {
     @Test
     public void testStop() throws InterruptedException {
         int port = AbstractGameServerTest.createRandomPort();
-        var runner = createRunner(port);
+        var runner = createRunner();
         CountDownLatch stopLatch = new CountDownLatch(1);
         AtomicBoolean failed = new AtomicBoolean();
         assertEquals(ServerRunner.State.INIT, runner.getState());
         new Thread(() -> {
             try {
-                runner.runServer();
+                runner.runServer(port);
                 stopLatch.countDown();
             } catch (Exception e) {
                 failed.set(true);
@@ -118,13 +129,13 @@ public class ServerRunnerTest {
     @Test
     public void testStopTwice() throws InterruptedException {
         int port = AbstractGameServerTest.createRandomPort();
-        var runner = createRunner(port);
+        var runner = createRunner();
         CountDownLatch stopLatch = new CountDownLatch(1);
         AtomicBoolean failed = new AtomicBoolean();
         assertEquals(ServerRunner.State.INIT, runner.getState());
         new Thread(() -> {
             try {
-                runner.runServer();
+                runner.runServer(port);
                 stopLatch.countDown();
             } catch (Exception e) {
                 failed.set(true);

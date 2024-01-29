@@ -69,7 +69,7 @@ public class PlayersRegistry implements Closeable {
 
     @Override
     public void close() {
-        LOG.info("Close registry");
+        LOG.info("Close");
         players.values().forEach(playerStateChannel -> playerStateChannel.getChannel().close());
         players.clear();
     }

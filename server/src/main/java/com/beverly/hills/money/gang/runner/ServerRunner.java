@@ -3,6 +3,7 @@ package com.beverly.hills.money.gang.runner;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.initializer.GameServerInitializer;
+import com.beverly.hills.money.gang.scheduler.GameScheduler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
@@ -13,14 +14,23 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+import java.io.Closeable;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+@Component
 @RequiredArgsConstructor
-public class ServerRunner {
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+public class ServerRunner implements Closeable {
+
+
+    private static final Logger LOG = LoggerFactory.getLogger(ServerRunner.class);
 
     private static final String SKULL_ASCII =
             "\n" +
@@ -31,19 +41,16 @@ public class ServerRunner {
                     "      '._  W    ,--'           \n" +
                     "         |_:_._/               \n";
 
-    private static final Logger LOG = LoggerFactory.getLogger(ServerRunner.class);
+    private final GameServerInitializer gameServerInitializer;
 
-    private final int port;
+    private final GameScheduler gameScheduler;
 
     private final CountDownLatch startWaitingLatch = new CountDownLatch(1);
-
 
     private final AtomicReference<State> stateRef = new AtomicReference<>(State.INIT);
     private final AtomicReference<Channel> serverChannelRef = new AtomicReference<>();
 
-    private final AtomicReference<GameServerInitializer> gameServerInitializerRef = new AtomicReference<>();
-
-    public void runServer() throws InterruptedException {
+    public void runServer(int port) throws InterruptedException {
         long startTime = System.currentTimeMillis();
         if (!stateRef.compareAndSet(State.INIT, State.STARTING)) {
             throw new IllegalStateException("Can't run!");
@@ -55,8 +62,6 @@ public class ServerRunner {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
             ServerBootstrap bootStrap = new ServerBootstrap();
-            GameServerInitializer gameServerInitializer = new GameServerInitializer();
-            gameServerInitializerRef.set(gameServerInitializer);
             bootStrap.group(serverGroup, workerGroup)
                     .option(ChannelOption.SO_BACKLOG, 100)
                     .childOption(ChannelOption.TCP_NODELAY, true)
@@ -71,6 +76,7 @@ public class ServerRunner {
             if (!stateRef.compareAndSet(State.STARTING, State.RUNNING)) {
                 throw new IllegalStateException("Can't run!");
             }
+            gameScheduler.init();
             LOG.info("Time taken to start server {} mls", System.currentTimeMillis() - startTime);
             startWaitingLatch.countDown();
             serverChannel.closeFuture().sync();
@@ -99,17 +105,16 @@ public class ServerRunner {
     public void stop() {
         stateRef.set(State.STOPPING);
         try {
-            Optional.ofNullable(gameServerInitializerRef.get())
-                    .ifPresent(GameServerInitializer::close);
-        } catch (Exception e) {
-            LOG.error("Can't stop game server initializer", e);
-        }
-        try {
             Optional.ofNullable(serverChannelRef.get())
                     .ifPresent(ChannelOutboundInvoker::close);
         } catch (Exception e) {
             LOG.error("Can't close server channel", e);
         }
+    }
+
+    @Override
+    public void close() {
+        stop();
     }
 
     public enum State {

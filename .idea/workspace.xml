@@ -8,30 +8,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="28636950-bd78-410e-a99a-1aa3a69908d8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/TestConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/AppConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/scheduler/GameScheduler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/integration-test/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/integration-test/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/AbstractGameServerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/AbstractGameServerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/GameConnectionTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/GameConnectionTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/IdleClientTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/IdleClientTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/MoveEventTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/MoveEventTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/ServerRunnerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/integration-test/src/test/java/com/beverly/hills/money/gang/it/ServerRunnerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/server/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/config/ServerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/config/ServerConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/command/ChatServerCommandHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/command/ChatServerCommandHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/command/GameEventServerCommandHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/command/GameEventServerCommandHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/command/GetServerInfoCommandHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/command/GetServerInfoCommandHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/command/JoinGameServerCommandHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/command/JoinGameServerCommandHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/inbound/AuthInboundHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/inbound/AuthInboundHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/inbound/GameServerInboundHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/handler/inbound/GameServerInboundHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/initializer/GameServerInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/initializer/GameServerInitializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/registry/GameRoomRegistry.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/registry/GameRoomRegistry.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/registry/PlayersRegistry.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/registry/PlayersRegistry.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/runner/ServerRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/beverly/hills/money/gang/runner/ServerRunner.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/test/java/com/beverly/hills/money/gang/state/GameTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/test/java/com/beverly/hills/money/gang/state/GameTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

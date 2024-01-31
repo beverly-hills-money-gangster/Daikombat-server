@@ -11,7 +11,7 @@ public interface ClientConfig {
     int SERVER_MAX_INACTIVE_MLS = NumberUtils.toInt(System.getenv("CLIENT_MAX_SERVER_INACTIVE_MLS"), 10_000);
 
     String VERSION = Optional.ofNullable(
-            ClientConfig.class.getClassLoader().getResourceAsStream("version.properties")).map(
+            ClientConfig.class.getClassLoader().getResourceAsStream("client-version.properties")).map(
             inputStream -> {
                 try (inputStream) {
                     Properties properties = new Properties();

@@ -20,7 +20,7 @@ public interface ServerConfig {
     String PASSWORD = StringUtils.defaultIfBlank(System.getenv("GAME_SERVER_PASSWORD"), "daikombat");
 
     String VERSION = Optional.ofNullable(
-            ServerConfig.class.getClassLoader().getResourceAsStream("version.properties")).map(
+            ServerConfig.class.getClassLoader().getResourceAsStream("server-version.properties")).map(
             inputStream -> {
                 try (inputStream) {
                     Properties properties = new Properties();

@@ -79,6 +79,7 @@ public class GameConnection {
 
                                 @Override
                                 protected void channelRead0(ChannelHandlerContext ctx, ServerResponse msg) {
+                                    LOG.debug("Incoming msg {}", msg);
                                     ctx.channel().config().setOption(EpollChannelOption.TCP_QUICKACK, true);
                                     lastServerActivityMls.set(System.currentTimeMillis());
                                     serverEventsQueueAPI.push(msg);
@@ -107,10 +108,15 @@ public class GameConnection {
                     gameServerCreds.getHostPort().getHost(),
                     gameServerCreds.getHostPort().getPort()).sync().channel();
             idleServerDisconnector.scheduleAtFixedRate(() -> {
-                if (joinedGame.get() && isServerIdleForTooLong()) {
-                    LOG.info("Server is inactive");
-                    errorsQueueAPI.push(new IOException("Server is inactive for too long"));
-                    disconnect();
+                try {
+                    LOG.info("Check server status");
+                    if (joinedGame.get() && isServerIdleForTooLong()) {
+                        LOG.info("Server is inactive");
+                        errorsQueueAPI.push(new IOException("Server is inactive for too long"));
+                        disconnect();
+                    }
+                } catch (Exception e) {
+                    LOG.error("Can't check server status", e);
                 }
             }, 5_000, 5_000, TimeUnit.MILLISECONDS);
             state.set(GameConnectionState.CONNECTED);

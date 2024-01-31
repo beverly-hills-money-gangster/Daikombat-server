@@ -8,7 +8,9 @@ Daikombat Server is the server code for a simple Doom-like online shooter game w
 - Maven
 
 ### Develop
-TODO 
+
+To update all submodules' versions `mvn versions:set -DnewVersion=<version>`
+
 ### Test
 TODO
 ### Deploy

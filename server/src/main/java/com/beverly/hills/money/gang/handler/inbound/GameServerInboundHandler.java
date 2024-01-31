@@ -21,8 +21,12 @@ import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createE
 
 /*
 TODO:
-   - Verify that all dependencies don't have critical issues: integrate snyk or checkDependencies
-   - Verify no bugs: integrate spotbugs plugin
+    - Integrate with Sentry
+    - Integrate with Docker
+    - Integrate with JaCoCo
+    - Deploy to DigitalOcean
+    - Finish Readme
+    - Fix time measurements in "Time taken to start server" log
  */
 @Component
 @RequiredArgsConstructor

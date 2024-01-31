@@ -1,5 +1,6 @@
 package com.beverly.hills.money.gang.network;
 
+import com.beverly.hills.money.gang.config.ClientConfig;
 import com.beverly.hills.money.gang.entity.GameServerCreds;
 import com.beverly.hills.money.gang.proto.*;
 import com.beverly.hills.money.gang.queue.QueueAPI;
@@ -19,7 +20,6 @@ import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import io.netty.util.concurrent.EventExecutorGroup;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,9 +35,6 @@ import java.util.concurrent.atomic.AtomicReference;
 public class GameConnection {
 
     private static final Logger LOG = LoggerFactory.getLogger(GameConnection.class);
-
-    private static final int MAX_SERVER_INACTIVE_MLS = NumberUtils.toInt(System.getenv("MAX_SERVER_INACTIVE_MLS"), 10_000);
-
     private final ScheduledExecutorService idleServerDisconnector = Executors.newScheduledThreadPool(1,
             new BasicThreadFactory.Builder().namingPattern("idle-server-disconnector-%d").build());
 
@@ -125,7 +122,7 @@ public class GameConnection {
     }
 
     private boolean isServerIdleForTooLong() {
-        return (System.currentTimeMillis() - lastServerActivityMls.get()) > MAX_SERVER_INACTIVE_MLS;
+        return (System.currentTimeMillis() - lastServerActivityMls.get()) > ClientConfig.SERVER_MAX_INACTIVE_MLS;
     }
 
     public void write(PushGameEventCommand pushGameEventCommand) {

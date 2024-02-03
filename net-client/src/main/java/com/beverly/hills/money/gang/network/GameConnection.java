@@ -29,6 +29,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -37,6 +38,10 @@ public class GameConnection {
     private static final Logger LOG = LoggerFactory.getLogger(GameConnection.class);
     private final ScheduledExecutorService idleServerDisconnector = Executors.newScheduledThreadPool(1,
             new BasicThreadFactory.Builder().namingPattern("idle-server-disconnector-%d").build());
+
+    private final AtomicInteger receivedMessages = new AtomicInteger();
+
+    private final AtomicInteger sentMessages = new AtomicInteger();
 
     private final AtomicLong lastServerActivityMls = new AtomicLong();
 
@@ -83,6 +88,7 @@ public class GameConnection {
                                     ctx.channel().config().setOption(EpollChannelOption.TCP_QUICKACK, true);
                                     lastServerActivityMls.set(System.currentTimeMillis());
                                     serverEventsQueueAPI.push(msg);
+                                    receivedMessages.incrementAndGet();
                                 }
 
                                 @Override
@@ -133,6 +139,7 @@ public class GameConnection {
 
     public void write(PushGameEventCommand pushGameEventCommand) {
         writeLocal(pushGameEventCommand);
+        sentMessages.incrementAndGet();
     }
 
     public void write(PushChatEventCommand pushChatEventCommand) {
@@ -220,6 +227,14 @@ public class GameConnection {
 
     public QueueReader<ServerResponse> getResponse() {
         return serverEventsQueueAPI;
+    }
+
+    public int getReceivedMessages() {
+        return receivedMessages.get();
+    }
+
+    public int getSentMessages() {
+        return sentMessages.get();
     }
 
     private enum GameConnectionState {

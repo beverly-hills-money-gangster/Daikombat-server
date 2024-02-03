@@ -3,6 +3,7 @@ package com.beverly.hills.money.gang.scheduler;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
+import com.beverly.hills.money.gang.state.PlayerStateReader;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
@@ -10,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.Closeable;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -51,14 +54,30 @@ public class GameScheduler implements Closeable {
                     return;
                 }
                 LOG.info("Send all moves");
-                ServerResponse movesEvents = createMovesEventAllPlayers(game.playersOnline(), bufferedMoves);
-                game.getPlayersRegistry().allPlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
-                        .forEach(channel -> channel.writeAndFlush(movesEvents));
+                game.getPlayersRegistry().allPlayers().forEach(playerStateChannel -> {
+                    // don't send me MY own moves
+                    Optional.of(getAllBufferedPlayerMovesExceptMine(
+                                    bufferedMoves, playerStateChannel.getPlayerState().getPlayerId()))
+                            .filter(playerSpecificBufferedMoves -> !playerSpecificBufferedMoves.isEmpty())
+                            .ifPresent(playerSpecificBufferedMoves ->
+                                    playerStateChannel.getChannel()
+                                            .writeAndFlush(createMovesEventAllPlayers
+                                                    (game.getPlayersRegistry().playersOnline(), playerSpecificBufferedMoves)));
+                });
+
+
             } finally {
                 game.flushBufferedMoves();
             }
         }), MOVES_UPDATE_FREQUENCY_MLS, MOVES_UPDATE_FREQUENCY_MLS, TimeUnit.MILLISECONDS);
     }
+
+    private List<PlayerStateReader> getAllBufferedPlayerMovesExceptMine(List<PlayerStateReader> bufferedPlayerMoves, int myPlayerId) {
+        return bufferedPlayerMoves.stream()
+                .filter(bufferedPlayerMove -> bufferedPlayerMove.getPlayerId() != myPlayerId)
+                .collect(Collectors.toList());
+    }
+
 
     private void schedulePing() {
         pingExecutor.scheduleAtFixedRate(() -> gameRoomRegistry.getGames().forEach(game -> {

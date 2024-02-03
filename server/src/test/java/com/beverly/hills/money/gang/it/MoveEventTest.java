@@ -52,6 +52,7 @@ public class MoveEventTest extends AbstractGameServerTest {
 
         float newPositionY = mySpawnGameEvent.getPlayer().getPosition().getY() + 0.01f;
         float newPositionX = mySpawnGameEvent.getPlayer().getPosition().getX() + 0.01f;
+        emptyQueue(gameConnection1.getResponse());
         gameConnection1.write(PushGameEventCommand.newBuilder()
                 .setGameId(gameIdToConnectTo)
                 .setEventType(PushGameEventCommand.GameEventType.MOVE)
@@ -67,6 +68,8 @@ public class MoveEventTest extends AbstractGameServerTest {
                 .build());
 
         Thread.sleep(1_000);
+        assertEquals(0, gameConnection1.getResponse().size(),
+                "Moving player is not expected to get any events. Moving player doesn't receive his own moves.");
         assertEquals(1, gameConnection2.getResponse().size(),
                 "Only one response is expected(player 1 move)");
 

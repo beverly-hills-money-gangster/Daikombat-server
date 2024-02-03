@@ -8,9 +8,9 @@ import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerConnectedGameState;
+import com.beverly.hills.money.gang.state.PlayerStateReader;
 import com.beverly.hills.money.gang.util.VersionUtil;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createSpawnEventAllPlayers;
@@ -45,29 +46,38 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
     @Override
     protected void handleInternal(ServerCommand msg, Channel currentChannel) throws GameLogicError {
         Game game = gameRoomRegistry.getGame(msg.getJoinGameCommand().getGameId());
-        PlayerConnectedGameState playerConnected = game.connectPlayer(msg.getJoinGameCommand().getPlayerName(), currentChannel);
+        PlayerConnectedGameState playerConnected = game.connectPlayer(
+                msg.getJoinGameCommand().getPlayerName(), currentChannel);
         ServerResponse playerSpawnEvent = createSpawnEventSinglePlayer(playerConnected);
-        LOG.info("Send connected player to all players");
+        LOG.info("Send my spawn to myself");
 
-        game.getPlayersRegistry().allPlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
-                .forEach(playerChannel -> playerChannel.writeAndFlush(playerSpawnEvent));
+        currentChannel.writeAndFlush(playerSpawnEvent)
+                .addListener((ChannelFutureListener) channelFuture -> {
+                    if (channelFuture.isSuccess()) {
+                        playerConnected.getPlayerState().fullyConnect();
+                    }
+                });
 
-        var allOtherPlayers = game.readPlayers().filter(playerStateReader
-                        -> playerStateReader.getPlayerId() != playerConnected.getPlayerState().getPlayerId())
+        var otherPlayers = game.getPlayersRegistry()
+                .allPlayers()
+                .filter(playerStateChannel -> playerStateChannel.getChannel() != currentChannel)
                 .collect(Collectors.toList());
-        if (!allOtherPlayers.isEmpty()) {
-            LOG.info("Send all players positions to the connected player");
-            ServerResponse allPlayersSpawnEvent =
-                    createSpawnEventAllPlayers(
-                            game.playersOnline(),
-                            allOtherPlayers);
-            currentChannel.writeAndFlush(allPlayersSpawnEvent)
-                    .addListener((ChannelFutureListener) channelFuture -> {
-                if (channelFuture.isSuccess()) {
-                    // we need it, otherwise, we send PING before this event
-                    playerConnected.getPlayerState().fullyConnect();
-                }
-            });
+
+        if (otherPlayers.isEmpty()) {
+            LOG.info("No other players");
+            return;
         }
+        LOG.info("Send all players positions to the connected player");
+        ServerResponse allPlayersSpawnEvent =
+                createSpawnEventAllPlayers(game.playersOnline(), otherPlayers.stream()
+                        .map((Function<PlayersRegistry.PlayerStateChannel, PlayerStateReader>)
+                                PlayersRegistry.PlayerStateChannel::getPlayerState)
+                        .collect(Collectors.toList()));
+
+        currentChannel.writeAndFlush(allPlayersSpawnEvent);
+
+        LOG.info("Send new player spawn to everyone");
+        otherPlayers.forEach(playerStateChannel -> playerStateChannel.getChannel().writeAndFlush(playerSpawnEvent));
+
     }
 }

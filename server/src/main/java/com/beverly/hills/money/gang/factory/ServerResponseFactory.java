@@ -74,8 +74,7 @@ public interface ServerResponseFactory {
                 .build();
     }
 
-    static ServerResponse createMovesEventAllPlayers(int playersOnline,
-                                                     List<PlayerStateReader> movedPlayers) {
+    static ServerResponse createMovesEventAllPlayers(int playersOnline, List<PlayerStateReader> movedPlayers) {
         var allPlayersMoves = ServerResponse.GameEvents.newBuilder();
         movedPlayers.forEach(playerStateReader
                 -> allPlayersMoves.addEvents(createMoveGameEvent(playerStateReader)));

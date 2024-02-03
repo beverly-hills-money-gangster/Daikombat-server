@@ -18,6 +18,16 @@ jobs:
           command: mvn verify
       - store_test_results:
           path: server/target/site/jacoco/jacoco.xml
+      - store_test_results:
+          path: /server/target/site/jacoco/jacoco.xml
+      - store_test_results:
+          path: /workspace/server/target/site/jacoco/jacoco.xml
+      - store_test_results:
+          path: ~/server/target/site/jacoco/jacoco.xml
+      - persist_to_workspace:
+          root: /workspace
+          paths:
+            - server/target/site/jacoco/jacoco.xml
       - save_cache:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
           paths:

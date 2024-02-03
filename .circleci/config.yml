@@ -17,7 +17,7 @@ jobs:
       - run:
           command: mvn verify
       - persist_to_workspace:
-          root: /workspace
+          root: .
           paths: .
       - save_cache:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}

@@ -17,8 +17,8 @@ jobs:
       - run:
           command: mvn verify
       - store_artifacts:
-          path: target
-      - store_artifacts:
+          path: server/target
+      - store_test_results:
           path: server/target
       - save_cache:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}

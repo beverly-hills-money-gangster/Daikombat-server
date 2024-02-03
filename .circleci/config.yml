@@ -17,9 +17,7 @@ jobs:
       - run:
           command: mvn verify
       - store_artifacts:
-          paths:
-            - server/target/surefire-reports
-            - server/target/site/jacoco
+          path: server/target/site/jacoco
       - save_cache:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
           paths:

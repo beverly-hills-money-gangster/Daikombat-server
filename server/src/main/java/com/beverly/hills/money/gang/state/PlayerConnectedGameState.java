@@ -9,6 +9,6 @@ import lombok.Getter;
 public class PlayerConnectedGameState {
 
     @Getter
-    private final PlayerStateReader playerStateReader;
+    private final PlayerState playerState;
 
 }

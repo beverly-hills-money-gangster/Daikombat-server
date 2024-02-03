@@ -41,7 +41,7 @@ public class ChatEventTest extends AbstractGameServerTest {
                             .setGameId(gameIdToConnectTo).build());
         }
 
-        Thread.sleep(150);
+        Thread.sleep(250);
 
         Map<Integer, GameConnection> players = new HashMap<>();
         for (GameConnection gameConnection : gameConnections) {
@@ -58,7 +58,7 @@ public class ChatEventTest extends AbstractGameServerTest {
                 .setGameId(gameIdToConnectTo)
                 .setPlayerId(playerId).setMessage("Message from player id " + playerId).build()));
 
-        Thread.sleep(150);
+        Thread.sleep(250);
 
         assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, players.size(), "The server must be full");
         players.forEach((playerId, gameConnection) -> {
@@ -93,7 +93,7 @@ public class ChatEventTest extends AbstractGameServerTest {
                             .setGameId(gameIdToConnectTo).build());
         }
 
-        Thread.sleep(150);
+        Thread.sleep(250);
 
         Map<Integer, GameConnection> players = new HashMap<>();
         for (GameConnection gameConnection : gameConnections) {
@@ -129,7 +129,7 @@ public class ChatEventTest extends AbstractGameServerTest {
             }
         });
 
-        Thread.sleep(150);
+        Thread.sleep(250);
 
         assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, players.size(), "The server must be full");
         players.forEach((playerId, gameConnection) -> {

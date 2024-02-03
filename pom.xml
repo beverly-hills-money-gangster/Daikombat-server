@@ -16,7 +16,6 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>integration-test</module>
         <module>schema</module>
         <module>security</module>
         <module>net-client</module>
@@ -36,7 +35,6 @@
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>

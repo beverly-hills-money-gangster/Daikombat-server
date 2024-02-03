@@ -4,6 +4,8 @@ import com.beverly.hills.money.gang.config.ServerConfig;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -15,7 +17,11 @@ import static com.beverly.hills.money.gang.config.ServerConfig.MAX_IDLE_TIME_MLS
 @ToString
 public class PlayerState implements PlayerStateReader {
 
+    private static final Logger LOG = LoggerFactory.getLogger(PlayerState.class);
+
     private final AtomicLong lastActivityTimeMls = new AtomicLong(System.currentTimeMillis());
+
+    private final AtomicBoolean fullyConnected = new AtomicBoolean();
 
     private final AtomicBoolean moved = new AtomicBoolean(false);
 
@@ -37,6 +43,16 @@ public class PlayerState implements PlayerStateReader {
         this.playerCoordinatesRef = new AtomicReference<>(coordinates);
         this.playerId = id;
     }
+
+    public boolean isFullyConnected() {
+        return fullyConnected.get();
+    }
+
+    public void fullyConnect() {
+        fullyConnected.set(true);
+        LOG.info("Player {} fully connected now", playerId);
+    }
+
 
     public int getKills() {
         return kills.get();

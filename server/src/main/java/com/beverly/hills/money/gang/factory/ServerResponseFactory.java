@@ -165,7 +165,7 @@ public interface ServerResponseFactory {
 
         return ServerResponse.newBuilder()
                 .setGameEvents(ServerResponse.GameEvents.newBuilder()
-                        .addEvents(createSpawnEvent(playerConnected.getPlayerStateReader())))
+                        .addEvents(createSpawnEvent(playerConnected.getPlayerState())))
                 .build();
     }
 

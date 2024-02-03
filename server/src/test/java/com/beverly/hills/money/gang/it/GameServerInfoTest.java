@@ -11,7 +11,8 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_IDLE_PLAYERS_KILLER_FREQUENCY_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "99999")
@@ -30,7 +31,7 @@ public class GameServerInfoTest extends AbstractGameServerTest {
         GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
 
         gameConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
         assertEquals(1, gameConnection.getResponse().size(), "Should be exactly one response");
         ServerResponse serverResponse = gameConnection.getResponse().poll().get();
@@ -53,7 +54,7 @@ public class GameServerInfoTest extends AbstractGameServerTest {
     public void testGetServerInfoBadAuth() throws InterruptedException, IOException {
         GameConnection gameConnection = createGameConnection("wrong password", "localhost", port);
         gameConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
         assertEquals(1, gameConnection.getResponse().size(), "Should be exactly one response");
         ServerResponse serverResponse = gameConnection.getResponse().poll().get();

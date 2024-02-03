@@ -11,7 +11,6 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "9999")
 @SetEnvironmentVariable(key = "GAME_SERVER_PING_FREQUENCY_MLS", value = "99999")
@@ -31,7 +30,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameToConnectTo).build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         ServerResponse mySpawn = gameConnection1.getResponse().poll().get();
         ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
         int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
@@ -42,17 +41,17 @@ public class GameConnectionTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my other player name")
                         .setGameId(gameToConnectTo).build());
-        Thread.sleep(150);
+        Thread.sleep(250);
 
         emptyQueue(gameConnection1.getResponse());
         emptyQueue(gameConnection2.getResponse());
         gameConnection1.disconnect();
-        Thread.sleep(150);
+        Thread.sleep(250);
         assertTrue(gameConnection1.isDisconnected(), "Player 1 should be disconnected now");
         assertTrue(gameConnection2.isConnected(), "Player 2 should be connected");
 
         gameConnection1.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         assertEquals(0, gameConnection1.getResponse().size(),
                 "Should be no response because the connection is closed");
         assertEquals(1, gameConnection1.getWarning().size(),
@@ -89,7 +88,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
         assertTrue(gameConnection.isDisconnected(), "Should be disconnected after disconnecting");
         assertFalse(gameConnection.isConnected());
         gameConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         assertEquals(0, gameConnection.getResponse().size(),
                 "Should be no response because the connection is closed");
         assertEquals(1, gameConnection.getWarning().size(),

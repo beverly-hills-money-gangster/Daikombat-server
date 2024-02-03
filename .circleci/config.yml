@@ -16,8 +16,10 @@ jobs:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
       - run:
           command: mvn verify
-      - store_test_results:
-          path: target/surefire-reports
+      - store_artifacts:
+          paths:
+            - server/target/surefire-reports
+            - server/target/site/jacoco
       - save_cache:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
           paths:

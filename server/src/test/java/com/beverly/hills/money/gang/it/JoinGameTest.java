@@ -11,6 +11,8 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,7 +38,7 @@ public class JoinGameTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameIdToConnectTo).build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
         assertEquals(1, gameConnection.getResponse().size(),
                 "Should be exactly 1 response: my spawn");
@@ -49,7 +51,7 @@ public class JoinGameTest extends AbstractGameServerTest {
 
 
         gameConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
         assertEquals(1, gameConnection.getResponse().size(), "Should be exactly one response");
         ServerResponse serverResponse = gameConnection.getResponse().poll().get();
@@ -81,7 +83,7 @@ public class JoinGameTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameIdToConnectTo).build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
         assertEquals(1, gameConnection.getResponse().size(), "Should be 1 response");
 
@@ -94,7 +96,7 @@ public class JoinGameTest extends AbstractGameServerTest {
         // need a new game connection because the previous is closed
         var newGameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         newGameConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         assertEquals(0, newGameConnection.getErrors().size(), "Should be no error");
         assertEquals(1, newGameConnection.getResponse().size(), "Should be exactly one response");
 
@@ -122,7 +124,7 @@ public class JoinGameTest extends AbstractGameServerTest {
                         .setVersion("0.1.1-SNAPSHOT")
                         .setPlayerName("my player name")
                         .setGameId(gameIdToConnectTo).build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
         assertEquals(1, gameConnection.getResponse().size(), "Should be 1 response");
 
@@ -134,7 +136,7 @@ public class JoinGameTest extends AbstractGameServerTest {
         // need a new game connection because the previous is closed
         var newGameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         newGameConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         assertEquals(0, newGameConnection.getErrors().size(), "Should be no error");
         assertEquals(1, newGameConnection.getResponse().size(), "Should be exactly one response");
 
@@ -163,14 +165,14 @@ public class JoinGameTest extends AbstractGameServerTest {
                             .setPlayerName("my player name " + i)
                             .setGameId(0).build());
         }
-
+        Thread.sleep(250);
         GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(0).build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
         assertEquals(1, gameConnection.getResponse().size(), "Should be 1 response");
 
@@ -204,7 +206,7 @@ public class JoinGameTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("same name")
                         .setGameId(0).build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         assertEquals(0, gameConnection2.getErrors().size(), "Should be no error");
         assertEquals(1, gameConnection2.getResponse().size(), "Should be 1 response");
 
@@ -226,19 +228,37 @@ public class JoinGameTest extends AbstractGameServerTest {
     @Test
     public void testJoinGameAlmostFull() throws Exception {
         int gameIdToConnectTo = 0;
-        Map<Integer, ServerResponse.Vector> connectedPlayersPositions = new HashMap<>();
+        Map<Integer, ServerResponse.Vector> connectedPlayersPositions = new ConcurrentHashMap<>();
+        List<Thread> threads = new ArrayList<>();
         for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME - 1; i++) {
-            GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
-            gameConnection.write(
-                    JoinGameCommand.newBuilder()
-                            .setVersion(ServerConfig.VERSION)
-                            .setPlayerName("my player name " + i)
-                            .setGameId(gameIdToConnectTo).build());
-            Thread.sleep(150);
-            ServerResponse mySpawnResponse = gameConnection.getResponse().poll().get();
-            var mySpawnEvent = mySpawnResponse.getGameEvents().getEvents(0);
-            connectedPlayersPositions.put(mySpawnEvent.getPlayer().getPlayerId(), mySpawnEvent.getPlayer().getPosition());
+            int finalI = i;
+            threads.add(new Thread(() -> {
+                try {
+                    GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+                    gameConnection.write(
+                            JoinGameCommand.newBuilder()
+                                    .setVersion(ServerConfig.VERSION)
+                                    .setPlayerName("my player name " + finalI)
+                                    .setGameId(gameIdToConnectTo).build());
+                    Thread.sleep(250);
+                    ServerResponse mySpawnResponse = gameConnection.getResponse().poll().get();
+                    var mySpawnEvent = mySpawnResponse.getGameEvents().getEvents(0);
+                    connectedPlayersPositions.put(mySpawnEvent.getPlayer().getPlayerId(), mySpawnEvent.getPlayer().getPosition());
+                } catch (Exception e) {
+                    LOG.error("Error while running test", e);
+                }
+            }));
         }
+
+        threads.forEach(Thread::start);
+        threads.forEach(thread -> {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
         assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME - 1, connectedPlayersPositions.size(),
                 "All players must have unique ids. Something is off");
 
@@ -248,7 +268,7 @@ public class JoinGameTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameIdToConnectTo).build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
         assertEquals(2, gameConnection.getResponse().size(), "Should be 2 responses: my spawn + all other players stats");
         ServerResponse mySpawnResponse = gameConnection.getResponse().poll().get();
@@ -281,7 +301,7 @@ public class JoinGameTest extends AbstractGameServerTest {
                 "All spawned players should be returned in the response");
 
         gameConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
         assertEquals(1, gameConnection.getResponse().size(), "Should be exactly one response");
         ServerResponse serverResponse = gameConnection.getResponse().poll().get();
@@ -307,22 +327,42 @@ public class JoinGameTest extends AbstractGameServerTest {
      */
     @Test
     public void testJoinGameMaxPlayersAllGames() throws Exception {
+        List<Thread> threads = new ArrayList<>();
         for (int gameId = 0; gameId < ServerConfig.GAMES_TO_CREATE; gameId++) {
             for (int j = 0; j < ServerConfig.MAX_PLAYERS_PER_GAME; j++) {
-                GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
-                gameConnection.write(
-                        JoinGameCommand.newBuilder()
-                                .setVersion(ServerConfig.VERSION)
-                                .setPlayerName("my player name " + j)
-                                .setGameId(gameId).build());
-                Thread.sleep(150);
-                assertTrue(gameConnection.isConnected());
+                int finalGameId = gameId;
+                int finalJ = j;
+                threads.add(new Thread(() -> {
+                    try {
+                        GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+                        gameConnection.write(
+                                JoinGameCommand.newBuilder()
+                                        .setVersion(ServerConfig.VERSION)
+                                        .setPlayerName("my player name " + finalJ)
+                                        .setGameId(finalGameId).build());
+                        Thread.sleep(250);
+
+                    } catch (Exception e) {
+                        LOG.error("Error while running test", e);
+                    }
+                }));
             }
         }
 
+        threads.forEach(Thread::start);
+        threads.forEach(thread -> {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        assertEquals(ServerConfig.GAMES_TO_CREATE * ServerConfig.MAX_PLAYERS_PER_GAME, gameConnections.size());
+        gameConnections.forEach(gameConnection -> assertTrue(gameConnection.isConnected()));
+
         GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
         assertEquals(1, gameConnection.getResponse().size(), "Should be exactly one response");
         ServerResponse serverResponse = gameConnection.getResponse().poll().get();

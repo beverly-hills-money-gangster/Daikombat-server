@@ -51,8 +51,7 @@ public class GameScheduler implements Closeable {
                     return;
                 }
                 LOG.info("Send all moves");
-                ServerResponse movesEvents
-                        = createMovesEventAllPlayers(bufferedMoves);
+                ServerResponse movesEvents = createMovesEventAllPlayers(game.playersOnline(), bufferedMoves);
                 game.getPlayersRegistry().allPlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
                         .forEach(channel -> channel.writeAndFlush(movesEvents));
             } finally {
@@ -61,15 +60,6 @@ public class GameScheduler implements Closeable {
         }), MOVES_UPDATE_FREQUENCY_MLS, MOVES_UPDATE_FREQUENCY_MLS, TimeUnit.MILLISECONDS);
     }
 
-    /*
-    TODO fix bug
-    Players can get PING before their first SPAWN event
-    This is how it potentially happens:
-    1) Client joins game
-    2) This thread wakes up and sends PING
-    3) Game server thread send SPAWN
-
-     */
     private void schedulePing() {
         pingExecutor.scheduleAtFixedRate(() -> gameRoomRegistry.getGames().forEach(game -> {
             if (game.getPlayersRegistry().playersOnline() == 0) {
@@ -77,7 +67,9 @@ public class GameScheduler implements Closeable {
             }
             LOG.info("Ping");
             ServerResponse ping = createPing(game.playersOnline());
-            game.getPlayersRegistry().allPlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
+            game.getPlayersRegistry().allPlayers()
+                    .filter(playerStateChannel -> playerStateChannel.getPlayerState().isFullyConnected())
+                    .map(PlayersRegistry.PlayerStateChannel::getChannel)
                     .forEach(channel -> channel.writeAndFlush(ping));
         }), 0, PING_FREQUENCY_MLS, TimeUnit.MILLISECONDS);
     }

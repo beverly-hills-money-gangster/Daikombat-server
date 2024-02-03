@@ -21,6 +21,7 @@ import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 /*
@@ -41,7 +42,7 @@ public abstract class AbstractGameServerTest {
 
     protected ServerRunner serverRunner;
 
-    protected final List<GameConnection> gameConnections = new ArrayList<>();
+    protected final List<GameConnection> gameConnections = new CopyOnWriteArrayList<>();
 
 
     public static boolean isPortAvailable(int port) {

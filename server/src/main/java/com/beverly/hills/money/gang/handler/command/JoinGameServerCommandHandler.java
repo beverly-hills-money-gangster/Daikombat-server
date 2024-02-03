@@ -10,6 +10,8 @@ import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerConnectedGameState;
 import com.beverly.hills.money.gang.util.VersionUtil;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -51,7 +53,7 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
                 .forEach(playerChannel -> playerChannel.writeAndFlush(playerSpawnEvent));
 
         var allOtherPlayers = game.readPlayers().filter(playerStateReader
-                        -> playerStateReader.getPlayerId() != playerConnected.getPlayerStateReader().getPlayerId())
+                        -> playerStateReader.getPlayerId() != playerConnected.getPlayerState().getPlayerId())
                 .collect(Collectors.toList());
         if (!allOtherPlayers.isEmpty()) {
             LOG.info("Send all players positions to the connected player");
@@ -59,7 +61,13 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
                     createSpawnEventAllPlayers(
                             game.playersOnline(),
                             allOtherPlayers);
-            currentChannel.writeAndFlush(allPlayersSpawnEvent);
+            currentChannel.writeAndFlush(allPlayersSpawnEvent)
+                    .addListener((ChannelFutureListener) channelFuture -> {
+                if (channelFuture.isSuccess()) {
+                    // we need it, otherwise, we send PING before this event
+                    playerConnected.getPlayerState().fullyConnect();
+                }
+            });
         }
     }
 }

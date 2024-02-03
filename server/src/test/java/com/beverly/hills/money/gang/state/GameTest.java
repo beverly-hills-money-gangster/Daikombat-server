@@ -58,12 +58,12 @@ public class GameTest {
         assertEquals(1, game.getPlayersRegistry().playersOnline(), "We connected 1 player only");
         assertEquals(0, game.getBufferedMoves().size(), "Nobody moved");
         assertEquals(1, game.getPlayersRegistry().allPlayers().count(), "We connected 1 player only");
-        PlayerState playerState = game.getPlayersRegistry().getPlayerState(playerConnectedGameState.getPlayerStateReader().getPlayerId())
+        PlayerState playerState = game.getPlayersRegistry().getPlayerState(playerConnectedGameState.getPlayerState().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertFalse(playerState.hasMoved(), "Nobody moved");
         assertEquals(playerName, playerState.getPlayerName());
         assertEquals(0, playerState.getKills(), "Nobody got killed yet");
-        assertEquals(playerConnectedGameState.getPlayerStateReader().getPlayerId(), playerState.getPlayerId());
+        assertEquals(playerConnectedGameState.getPlayerState().getPlayerId(), playerState.getPlayerId());
         assertEquals(100, playerState.getHealth(), "Full 100% HP must be set by default");
     }
 
@@ -85,11 +85,11 @@ public class GameTest {
         assertEquals(1, game.getPlayersRegistry().playersOnline(), "We connected 1 player only");
         assertEquals(0, game.getBufferedMoves().size(), "Nobody moved");
         assertEquals(1, game.getPlayersRegistry().allPlayers().count(), "We connected 1 player only");
-        PlayerState playerState = game.getPlayersRegistry().getPlayerState(playerConnectedGameState.getPlayerStateReader().getPlayerId())
+        PlayerState playerState = game.getPlayersRegistry().getPlayerState(playerConnectedGameState.getPlayerState().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertFalse(playerState.hasMoved(), "Nobody moved");
         assertEquals(playerName, playerState.getPlayerName());
-        assertEquals(playerConnectedGameState.getPlayerStateReader().getPlayerId(), playerState.getPlayerId());
+        assertEquals(playerConnectedGameState.getPlayerState().getPlayerId(), playerState.getPlayerId());
         assertEquals(100, playerState.getHealth(), "Full 100% HP must be set by default");
     }
 
@@ -178,10 +178,10 @@ public class GameTest {
         Channel channel = mock(Channel.class);
         PlayerConnectedGameState playerConnectedGameState = game.connectPlayer(playerName, channel);
         PlayerShootingGameState playerShootingGameState = game.shoot(
-                playerConnectedGameState.getPlayerStateReader().getCoordinates(),
-                playerConnectedGameState.getPlayerStateReader().getPlayerId(), null);
+                playerConnectedGameState.getPlayerState().getCoordinates(),
+                playerConnectedGameState.getPlayerState().getPlayerId(), null);
         assertNull(playerShootingGameState.getPlayerShot(), "Nobody is shot");
-        PlayerState shooterState = game.getPlayersRegistry().getPlayerState(playerConnectedGameState.getPlayerStateReader().getPlayerId())
+        PlayerState shooterState = game.getPlayersRegistry().getPlayerState(playerConnectedGameState.getPlayerState().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
         assertEquals(0, shooterState.getKills(), "Nobody was killed");
@@ -202,19 +202,19 @@ public class GameTest {
         PlayerConnectedGameState shotPlayerConnectedGameState = game.connectPlayer(shotPlayerName, channel);
 
         PlayerShootingGameState playerShootingGameState = game.shoot(
-                shooterPlayerConnectedGameState.getPlayerStateReader().getCoordinates(),
-                shooterPlayerConnectedGameState.getPlayerStateReader().getPlayerId(),
-                shotPlayerConnectedGameState.getPlayerStateReader().getPlayerId());
+                shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
+                shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
+                shotPlayerConnectedGameState.getPlayerState().getPlayerId());
         assertNotNull(playerShootingGameState.getPlayerShot());
 
         assertFalse(playerShootingGameState.getPlayerShot().isDead(), "Just one shot. Nobody is dead yet");
         assertEquals(100 - ServerConfig.DEFAULT_DAMAGE, playerShootingGameState.getPlayerShot().getHealth());
-        PlayerState shooterState = game.getPlayersRegistry().getPlayerState(shooterPlayerConnectedGameState.getPlayerStateReader().getPlayerId())
+        PlayerState shooterState = game.getPlayersRegistry().getPlayerState(shooterPlayerConnectedGameState.getPlayerState().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
         assertEquals(0, shooterState.getKills(), "Nobody was killed");
         assertEquals(2, game.playersOnline());
-        PlayerState shotState = game.getPlayersRegistry().getPlayerState(shotPlayerConnectedGameState.getPlayerStateReader().getPlayerId())
+        PlayerState shotState = game.getPlayersRegistry().getPlayerState(shotPlayerConnectedGameState.getPlayerState().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(100 - ServerConfig.DEFAULT_DAMAGE, shotState.getHealth());
         assertFalse(shotState.isDead());
@@ -238,24 +238,24 @@ public class GameTest {
         // after this loop, one player is almost dead
         for (int i = 0; i < shotsToKill - 1; i++) {
             game.shoot(
-                    shooterPlayerConnectedGameState.getPlayerStateReader().getCoordinates(),
-                    shooterPlayerConnectedGameState.getPlayerStateReader().getPlayerId(),
-                    shotPlayerConnectedGameState.getPlayerStateReader().getPlayerId());
+                    shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
+                    shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
+                    shotPlayerConnectedGameState.getPlayerState().getPlayerId());
         }
         PlayerShootingGameState playerShootingGameState = game.shoot(
-                shooterPlayerConnectedGameState.getPlayerStateReader().getCoordinates(),
-                shooterPlayerConnectedGameState.getPlayerStateReader().getPlayerId(),
-                shotPlayerConnectedGameState.getPlayerStateReader().getPlayerId());
+                shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
+                shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
+                shotPlayerConnectedGameState.getPlayerState().getPlayerId());
         assertNotNull(playerShootingGameState.getPlayerShot());
 
         assertTrue(playerShootingGameState.getPlayerShot().isDead());
         assertEquals(0, playerShootingGameState.getPlayerShot().getHealth());
-        PlayerState shooterState = game.getPlayersRegistry().getPlayerState(shooterPlayerConnectedGameState.getPlayerStateReader().getPlayerId())
+        PlayerState shooterState = game.getPlayersRegistry().getPlayerState(shooterPlayerConnectedGameState.getPlayerState().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
         assertEquals(1, shooterState.getKills(), "One player was killed");
         assertEquals(2, game.playersOnline());
-        PlayerState shotState = game.getPlayersRegistry().getPlayerState(shotPlayerConnectedGameState.getPlayerStateReader().getPlayerId())
+        PlayerState shotState = game.getPlayersRegistry().getPlayerState(shotPlayerConnectedGameState.getPlayerState().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(0, shotState.getHealth());
         assertTrue(shotState.isDead());
@@ -274,13 +274,13 @@ public class GameTest {
         PlayerConnectedGameState shooterPlayerConnectedGameState = game.connectPlayer(shooterPlayerName, channel);
 
         GameLogicError gameLogicError = assertThrows(GameLogicError.class, () -> game.shoot(
-                shooterPlayerConnectedGameState.getPlayerStateReader().getCoordinates(),
-                shooterPlayerConnectedGameState.getPlayerStateReader().getPlayerId(),
-                shooterPlayerConnectedGameState.getPlayerStateReader().getPlayerId()), "You can't shoot yourself");
+                shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
+                shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
+                shooterPlayerConnectedGameState.getPlayerState().getPlayerId()), "You can't shoot yourself");
         assertEquals(gameLogicError.getErrorCode(), CAN_NOT_SHOOT_YOURSELF);
 
         PlayerState shooterState = game.getPlayersRegistry().getPlayerState(
-                        shooterPlayerConnectedGameState.getPlayerStateReader().getPlayerId())
+                        shooterPlayerConnectedGameState.getPlayerState().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
         assertEquals(1, game.playersOnline());
@@ -306,22 +306,22 @@ public class GameTest {
         // after this loop, one player is  dead
         for (int i = 0; i < shotsToKill; i++) {
             game.shoot(
-                    shooterPlayerConnectedGameState.getPlayerStateReader().getCoordinates(),
-                    shooterPlayerConnectedGameState.getPlayerStateReader().getPlayerId(),
-                    shotPlayerConnectedGameState.getPlayerStateReader().getPlayerId());
+                    shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
+                    shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
+                    shotPlayerConnectedGameState.getPlayerState().getPlayerId());
         }
         PlayerShootingGameState playerShootingGameState = game.shoot(
-                shooterPlayerConnectedGameState.getPlayerStateReader().getCoordinates(),
-                shooterPlayerConnectedGameState.getPlayerStateReader().getPlayerId(),
-                shotPlayerConnectedGameState.getPlayerStateReader().getPlayerId());
+                shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
+                shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
+                shotPlayerConnectedGameState.getPlayerState().getPlayerId());
         assertNull(playerShootingGameState, "You can't shoot a dead player");
 
-        PlayerState shooterState = game.getPlayersRegistry().getPlayerState(shooterPlayerConnectedGameState.getPlayerStateReader().getPlayerId())
+        PlayerState shooterState = game.getPlayersRegistry().getPlayerState(shooterPlayerConnectedGameState.getPlayerState().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
         assertEquals(1, shooterState.getKills(), "One player got killed");
         assertEquals(2, game.playersOnline());
-        PlayerState shotState = game.getPlayersRegistry().getPlayerState(shotPlayerConnectedGameState.getPlayerStateReader().getPlayerId())
+        PlayerState shotState = game.getPlayersRegistry().getPlayerState(shotPlayerConnectedGameState.getPlayerState().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(0, shotState.getHealth());
         assertTrue(shotState.isDead());
@@ -339,12 +339,12 @@ public class GameTest {
         PlayerConnectedGameState shooterPlayerConnectedGameState = game.connectPlayer(shooterPlayerName, channel);
 
         PlayerShootingGameState playerShootingGameState = game.shoot(
-                shooterPlayerConnectedGameState.getPlayerStateReader().getCoordinates(),
-                shooterPlayerConnectedGameState.getPlayerStateReader().getPlayerId(),
+                shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
+                shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
                 123);
         assertNull(playerShootingGameState, "You can't shoot a non-existing player");
 
-        PlayerState shooterState = game.getPlayersRegistry().getPlayerState(shooterPlayerConnectedGameState.getPlayerStateReader().getPlayerId())
+        PlayerState shooterState = game.getPlayersRegistry().getPlayerState(shooterPlayerConnectedGameState.getPlayerState().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
         assertEquals(0, shooterState.getKills(), "Nobody got killed");
@@ -369,23 +369,23 @@ public class GameTest {
         // after this loop, one player is  dead
         for (int i = 0; i < shotsToKill; i++) {
             game.shoot(
-                    shooterPlayerConnectedGameState.getPlayerStateReader().getCoordinates(),
-                    shooterPlayerConnectedGameState.getPlayerStateReader().getPlayerId(),
-                    shotPlayerConnectedGameState.getPlayerStateReader().getPlayerId());
+                    shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
+                    shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
+                    shotPlayerConnectedGameState.getPlayerState().getPlayerId());
         }
         PlayerShootingGameState playerShootingGameState = game.shoot(
-                shotPlayerConnectedGameState.getPlayerStateReader().getCoordinates(),
-                shotPlayerConnectedGameState.getPlayerStateReader().getPlayerId(),
-                shooterPlayerConnectedGameState.getPlayerStateReader().getPlayerId());
+                shotPlayerConnectedGameState.getPlayerState().getCoordinates(),
+                shotPlayerConnectedGameState.getPlayerState().getPlayerId(),
+                shooterPlayerConnectedGameState.getPlayerState().getPlayerId());
 
         assertNull(playerShootingGameState, "A dead player can't shoot anybody");
 
-        PlayerState shooterState = game.getPlayersRegistry().getPlayerState(shooterPlayerConnectedGameState.getPlayerStateReader().getPlayerId())
+        PlayerState shooterState = game.getPlayersRegistry().getPlayerState(shooterPlayerConnectedGameState.getPlayerState().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
         assertEquals(1, shooterState.getKills(), "One player got killed");
         assertEquals(2, game.playersOnline());
-        PlayerState shotState = game.getPlayersRegistry().getPlayerState(shotPlayerConnectedGameState.getPlayerStateReader().getPlayerId())
+        PlayerState shotState = game.getPlayersRegistry().getPlayerState(shotPlayerConnectedGameState.getPlayerState().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(0, shotState.getHealth());
         assertTrue(shotState.isDead());
@@ -419,9 +419,9 @@ public class GameTest {
                     PlayerConnectedGameState myTarget = connectedPlayers.get((finalI + 1) % connectedPlayers.size());
                     PlayerConnectedGameState me = connectedPlayers.get(finalI);
                     game.shoot(
-                            me.getPlayerStateReader().getCoordinates(),
-                            me.getPlayerStateReader().getPlayerId(),
-                            myTarget.getPlayerStateReader().getPlayerId());
+                            me.getPlayerState().getCoordinates(),
+                            me.getPlayerState().getPlayerId(),
+                            myTarget.getPlayerState().getPlayerId());
                 } catch (Exception e) {
                     failures.incrementAndGet();
                     throw new RuntimeException(e);
@@ -461,9 +461,9 @@ public class GameTest {
                 .builder()
                 .direction(Vector.builder().x(1f).y(0).build())
                 .position(Vector.builder().x(0f).y(1).build()).build();
-        game.bufferMove(playerConnectedGameState.getPlayerStateReader().getPlayerId(), playerCoordinates);
+        game.bufferMove(playerConnectedGameState.getPlayerState().getPlayerId(), playerCoordinates);
         assertEquals(1, game.getBufferedMoves().size(), "One move should be buffered");
-        PlayerState playerState = game.getPlayersRegistry().getPlayerState(playerConnectedGameState.getPlayerStateReader().getPlayerId())
+        PlayerState playerState = game.getPlayersRegistry().getPlayerState(playerConnectedGameState.getPlayerState().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(100, playerState.getHealth());
         assertEquals(0, playerState.getKills(), "Nobody got killed");
@@ -487,15 +487,15 @@ public class GameTest {
                 .builder()
                 .direction(Vector.builder().x(1f).y(0).build())
                 .position(Vector.builder().x(0f).y(1).build()).build();
-        game.bufferMove(playerConnectedGameState.getPlayerStateReader().getPlayerId(), playerCoordinates);
+        game.bufferMove(playerConnectedGameState.getPlayerState().getPlayerId(), playerCoordinates);
         PlayerState.PlayerCoordinates playerNewCoordinates = PlayerState.PlayerCoordinates
                 .builder()
                 .direction(Vector.builder().x(2f).y(1).build())
                 .position(Vector.builder().x(1f).y(2).build()).build();
-        game.bufferMove(playerConnectedGameState.getPlayerStateReader().getPlayerId(), playerNewCoordinates);
+        game.bufferMove(playerConnectedGameState.getPlayerState().getPlayerId(), playerNewCoordinates);
         assertEquals(1, game.getBufferedMoves().size(), "One move should be buffered");
 
-        PlayerState playerState = game.getPlayersRegistry().getPlayerState(playerConnectedGameState.getPlayerStateReader().getPlayerId())
+        PlayerState playerState = game.getPlayersRegistry().getPlayerState(playerConnectedGameState.getPlayerState().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(100, playerState.getHealth());
         assertEquals(0, playerState.getKills(), "Nobody got killed");
@@ -541,23 +541,23 @@ public class GameTest {
         // after this loop, one player is  dead
         for (int i = 0; i < shotsToKill; i++) {
             game.shoot(
-                    shooterPlayerConnectedGameState.getPlayerStateReader().getCoordinates(),
-                    shooterPlayerConnectedGameState.getPlayerStateReader().getPlayerId(),
-                    shotPlayerConnectedGameState.getPlayerStateReader().getPlayerId());
+                    shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
+                    shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
+                    shotPlayerConnectedGameState.getPlayerState().getPlayerId());
         }
         PlayerState.PlayerCoordinates playerCoordinates = PlayerState.PlayerCoordinates
                 .builder()
                 .direction(Vector.builder().x(1f).y(0).build())
                 .position(Vector.builder().x(0f).y(1).build()).build();
-        game.bufferMove(shotPlayerConnectedGameState.getPlayerStateReader().getPlayerId(), playerCoordinates);
+        game.bufferMove(shotPlayerConnectedGameState.getPlayerState().getPlayerId(), playerCoordinates);
 
-        PlayerState deadPlayerState = game.getPlayersRegistry().getPlayerState(shotPlayerConnectedGameState.getPlayerStateReader().getPlayerId())
+        PlayerState deadPlayerState = game.getPlayersRegistry().getPlayerState(shotPlayerConnectedGameState.getPlayerState().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
 
-        assertEquals(shotPlayerConnectedGameState.getPlayerStateReader().getCoordinates().getDirection(),
+        assertEquals(shotPlayerConnectedGameState.getPlayerState().getCoordinates().getDirection(),
                 deadPlayerState.getCoordinates().getDirection(),
                 "Direction should be the same as the player has moved only after getting killed");
-        assertEquals(shotPlayerConnectedGameState.getPlayerStateReader().getCoordinates().getPosition(),
+        assertEquals(shotPlayerConnectedGameState.getPlayerState().getCoordinates().getPosition(),
                 deadPlayerState.getCoordinates().getPosition(),
                 "Position should be the same as the player has moved only after getting killed");
     }
@@ -592,7 +592,7 @@ public class GameTest {
                                 .builder()
                                 .direction(Vector.builder().x(1f + j).y(0).build())
                                 .position(Vector.builder().x(0f).y(1 + j).build()).build();
-                        game.bufferMove(me.getPlayerStateReader().getPlayerId(), playerCoordinates);
+                        game.bufferMove(me.getPlayerState().getPlayerId(), playerCoordinates);
                     }
 
                 } catch (Exception e) {

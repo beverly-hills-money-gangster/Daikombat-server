@@ -23,7 +23,6 @@ import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createE
 TODO:
     - Integrate with Sentry
     - Integrate with Docker
-    - Integrate with JaCoCo
     - Deploy to DigitalOcean
     - Finish Readme
     - Fix time measurements in "Time taken to start server" log

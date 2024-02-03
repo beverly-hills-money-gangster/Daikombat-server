@@ -40,7 +40,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my other player name")
                         .setGameId(gameIdToConnectTo).build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         emptyQueue(gameConnection2.getResponse());
         ServerResponse mySpawn = gameConnection1.getResponse().poll().get();
         int playerId = mySpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
@@ -103,7 +103,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my other player name")
                         .setGameId(gameIdToConnectTo).build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         emptyQueue(gameConnection2.getResponse());
 
         ServerResponse shooterPlayerSpawn = gameConnection1.getResponse().poll().get();
@@ -161,7 +161,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
 
         emptyQueue(gameConnection1.getResponse());
         gameConnection1.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         var serverInfoResponse = gameConnection1.getResponse().poll().get();
         List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
         ServerResponse.GameInfo myGame = games.stream().filter(gameInfo -> gameInfo.getGameId() == gameIdToConnectTo).findFirst()
@@ -189,7 +189,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my other player name")
                         .setGameId(gameIdToConnectTo).build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         emptyQueue(gameConnection2.getResponse());
 
         ServerResponse shooterPlayerSpawn = gameConnection1.getResponse().poll().get();
@@ -288,7 +288,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my other player name")
                         .setGameId(gameIdToConnectTo).build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         emptyQueue(gameConnection2.getResponse());
 
         ServerResponse shooterPlayerSpawn = gameConnection1.getResponse().poll().get();
@@ -383,7 +383,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameIdToConnectTo).build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         ServerResponse shooterPlayerSpawn = gameConnection1.getResponse().poll().get();
         int shooterPlayerId = shooterPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
 
@@ -424,7 +424,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
 
         gameConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         ServerResponse serverResponse = gameConnection.getResponse().poll().get();
         List<ServerResponse.GameInfo> games = serverResponse.getServerInfo().getGamesList();
         for (ServerResponse.GameInfo gameInfo : games) {

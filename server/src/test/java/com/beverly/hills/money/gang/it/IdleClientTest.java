@@ -40,7 +40,7 @@ public class IdleClientTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name observer")
                         .setGameId(gameToConnectTo).build());
-        Thread.sleep(150);
+        Thread.sleep(250);
 
         ServerResponse idleSpawn = gameConnectionIdle.getResponse().poll().get();
         ServerResponse.GameEvent idleSpawnGameEvent = idleSpawn.getGameEvents().getEvents(0);
@@ -54,7 +54,7 @@ public class IdleClientTest extends AbstractGameServerTest {
         emptyQueue(gameConnectionIdle.getResponse());
 
         gameConnectionIdle.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         ServerResponse serverResponse = gameConnectionIdle.getResponse().poll().get();
         var myGame = serverResponse.getServerInfo().getGamesList().stream().filter(gameInfo
                         -> gameInfo.getGameId() == gameToConnectTo).findFirst()
@@ -77,7 +77,7 @@ public class IdleClientTest extends AbstractGameServerTest {
 
         GameConnection newGameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         newGameConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         ServerResponse serverResponseAfterIdle = newGameConnection.getResponse().poll().get();
         var myGameAfterIdle = serverResponseAfterIdle.getServerInfo().getGamesList().stream().filter(gameInfo
                         -> gameInfo.getGameId() == gameToConnectTo).findFirst()
@@ -88,7 +88,7 @@ public class IdleClientTest extends AbstractGameServerTest {
 
         emptyQueue(gameConnectionIdle.getWarning());
         gameConnectionIdle.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         assertEquals(1, gameConnectionIdle.getWarning().size(),
                 "Should be one warning as we can't write using disconnected connection");
         Throwable warning = gameConnectionIdle.getWarning().poll().get();
@@ -125,12 +125,12 @@ public class IdleClientTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameToConnectTo).build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         ServerResponse mySpawn = gameConnection.getResponse().poll().get();
         int playerId = mySpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
 
         gameConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         ServerResponse serverResponse = gameConnection.getResponse().poll().get();
         var myGame = serverResponse.getServerInfo().getGamesList().stream().filter(gameInfo
                         -> gameInfo.getGameId() == gameToConnectTo).findFirst()
@@ -154,7 +154,7 @@ public class IdleClientTest extends AbstractGameServerTest {
 
         GameConnection newGameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         newGameConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         ServerResponse serverResponseAfterMoving = newGameConnection.getResponse().poll().get();
         var myGameAfterMoving = serverResponseAfterMoving.getServerInfo().getGamesList().stream().filter(gameInfo
                         -> gameInfo.getGameId() == gameToConnectTo).findFirst()
@@ -179,12 +179,12 @@ public class IdleClientTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameToConnectTo).build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         ServerResponse mySpawn = gameConnection.getResponse().poll().get();
         int playerId = mySpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
 
         gameConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         ServerResponse serverResponse = gameConnection.getResponse().poll().get();
         var myGame = serverResponse.getServerInfo().getGamesList().stream().filter(gameInfo
                         -> gameInfo.getGameId() == gameToConnectTo).findFirst()
@@ -207,7 +207,7 @@ public class IdleClientTest extends AbstractGameServerTest {
 
         GameConnection newGameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         newGameConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         ServerResponse serverResponseAfterPinging = newGameConnection.getResponse().poll().get();
         var myGameAfterPinging = serverResponseAfterPinging.getServerInfo().getGamesList().stream().filter(gameInfo
                         -> gameInfo.getGameId() == gameToConnectTo).findFirst()
@@ -232,12 +232,12 @@ public class IdleClientTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameToConnectTo).build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         ServerResponse mySpawn = gameConnection.getResponse().poll().get();
         int playerId = mySpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
 
         gameConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         ServerResponse serverResponse = gameConnection.getResponse().poll().get();
         var myGame = serverResponse.getServerInfo().getGamesList().stream().filter(gameInfo
                         -> gameInfo.getGameId() == gameToConnectTo).findFirst()
@@ -263,7 +263,7 @@ public class IdleClientTest extends AbstractGameServerTest {
         assertTrue(gameConnection.isDisconnected());
         GameConnection newGameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         newGameConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         ServerResponse serverResponseAfterMoving = newGameConnection.getResponse().poll().get();
         var myGameAfterMoving = serverResponseAfterMoving.getServerInfo().getGamesList().stream().filter(gameInfo
                         -> gameInfo.getGameId() == gameToConnectTo).findFirst()

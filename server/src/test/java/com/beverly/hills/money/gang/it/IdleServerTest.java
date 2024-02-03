@@ -1,6 +1,5 @@
 package com.beverly.hills.money.gang.it;
 
-import com.beverly.hills.money.gang.config.ClientConfig;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
@@ -37,12 +36,12 @@ public class IdleServerTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameToConnectTo).build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         ServerResponse mySpawn = gameConnection.getResponse().poll().get();
         int playerId = mySpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
 
         gameConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(150);
+        Thread.sleep(250);
         ServerResponse serverResponse = gameConnection.getResponse().poll().get();
         var myGame = serverResponse.getServerInfo().getGamesList().stream().filter(gameInfo
                         -> gameInfo.getGameId() == gameToConnectTo).findFirst()

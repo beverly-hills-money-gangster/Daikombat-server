@@ -43,7 +43,7 @@ public class Game implements Closeable, GameReader {
         PlayerState connectedPlayerState = new PlayerState(playerName, spawn, playerId);
         playersRegistry.addPlayer(connectedPlayerState, playerChannel);
         return PlayerConnectedGameState.builder()
-                .playerStateReader(connectedPlayerState).build();
+                .playerState(connectedPlayerState).build();
     }
 
     public PlayerShootingGameState shoot(final PlayerState.PlayerCoordinates shootingPlayerCoordinates,

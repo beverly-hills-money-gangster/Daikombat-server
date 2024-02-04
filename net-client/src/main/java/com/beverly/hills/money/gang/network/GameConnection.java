@@ -6,6 +6,8 @@ import com.beverly.hills.money.gang.proto.*;
 import com.beverly.hills.money.gang.queue.QueueAPI;
 import com.beverly.hills.money.gang.queue.QueueReader;
 import com.beverly.hills.money.gang.security.ServerHMACService;
+import com.beverly.hills.money.gang.stats.NetworkStats;
+import com.beverly.hills.money.gang.stats.NetworkStatsReader;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.GeneratedMessageV3;
 import io.netty.bootstrap.Bootstrap;
@@ -29,7 +31,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -38,10 +39,7 @@ public class GameConnection {
     private static final Logger LOG = LoggerFactory.getLogger(GameConnection.class);
     private final ScheduledExecutorService idleServerDisconnector = Executors.newScheduledThreadPool(1,
             new BasicThreadFactory.Builder().namingPattern("idle-server-disconnector-%d").build());
-
-    private final AtomicInteger receivedMessages = new AtomicInteger();
-
-    private final AtomicInteger sentMessages = new AtomicInteger();
+    private final NetworkStats networkStats = new NetworkStats();
 
     private final AtomicLong lastServerActivityMls = new AtomicLong();
 
@@ -88,7 +86,8 @@ public class GameConnection {
                                     ctx.channel().config().setOption(EpollChannelOption.TCP_QUICKACK, true);
                                     lastServerActivityMls.set(System.currentTimeMillis());
                                     serverEventsQueueAPI.push(msg);
-                                    receivedMessages.incrementAndGet();
+                                    networkStats.incReceivedMessages();
+                                    networkStats.addInboundPayloadBytes(msg.getSerializedSize());
                                 }
 
                                 @Override
@@ -139,7 +138,6 @@ public class GameConnection {
 
     public void write(PushGameEventCommand pushGameEventCommand) {
         writeLocal(pushGameEventCommand);
-        sentMessages.incrementAndGet();
     }
 
     public void write(PushChatEventCommand pushChatEventCommand) {
@@ -155,27 +153,29 @@ public class GameConnection {
         writeLocal(getServerInfoCommand);
     }
 
-    private void writeLocal(GeneratedMessageV3 msg) {
+    private void writeLocal(GeneratedMessageV3 command) {
         if (isConnected()) {
             var serverCommand = ServerCommand.newBuilder();
-            byte[] hmac = hmacService.generateHMAC(msg.toByteArray());
+            byte[] hmac = hmacService.generateHMAC(command.toByteArray());
             serverCommand.setHmac(ByteString.copyFrom(hmac));
 
             // TODO simplify this
-            if (msg instanceof PushGameEventCommand) {
-                serverCommand.setGameCommand((PushGameEventCommand) msg);
-            } else if (msg instanceof PushChatEventCommand) {
-                serverCommand.setChatCommand((PushChatEventCommand) msg);
-            } else if (msg instanceof JoinGameCommand) {
-                serverCommand.setJoinGameCommand((JoinGameCommand) msg);
-            } else if (msg instanceof GetServerInfoCommand) {
-                serverCommand.setGetServerInfoCommand((GetServerInfoCommand) msg);
+            if (command instanceof PushGameEventCommand) {
+                serverCommand.setGameCommand((PushGameEventCommand) command);
+            } else if (command instanceof PushChatEventCommand) {
+                serverCommand.setChatCommand((PushChatEventCommand) command);
+            } else if (command instanceof JoinGameCommand) {
+                serverCommand.setJoinGameCommand((JoinGameCommand) command);
+            } else if (command instanceof GetServerInfoCommand) {
+                serverCommand.setGetServerInfoCommand((GetServerInfoCommand) command);
             } else {
-                throw new IllegalArgumentException("Not recognized message type " + msg.getClass());
+                throw new IllegalArgumentException("Not recognized message type " + command.getClass());
             }
             var message = serverCommand.build();
             LOG.debug("Write {}", message);
             channel.writeAndFlush(message);
+            networkStats.incSentMessages();
+            networkStats.addOutboundPayloadBytes(message.getSerializedSize());
         } else {
             warningsQueueAPI.push(new IOException("Can't write using closed connection"));
         }
@@ -229,13 +229,10 @@ public class GameConnection {
         return serverEventsQueueAPI;
     }
 
-    public int getReceivedMessages() {
-        return receivedMessages.get();
+    public NetworkStatsReader getNetworkStats() {
+        return networkStats;
     }
 
-    public int getSentMessages() {
-        return sentMessages.get();
-    }
 
     private enum GameConnectionState {
         CONNECTING,

@@ -18,7 +18,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.io.IOException;
 import java.net.BindException;
 import java.net.ServerSocket;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -27,6 +26,7 @@ import java.util.concurrent.ThreadLocalRandom;
 /*
   TODO:
   - Use -Dio.netty.leakDetection.level=paranoid for testing and fail the build if the leak is detected
+  - Stabilize tests
 */
 
 @ExtendWith(SpringExtension.class)

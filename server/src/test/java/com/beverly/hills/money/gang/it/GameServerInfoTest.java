@@ -43,6 +43,11 @@ public class GameServerInfoTest extends AbstractGameServerTest {
             assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, gameInfo.getMaxGamePlayers());
             assertEquals(0, gameInfo.getPlayersOnline(), "Should be no connected players yet");
         }
+        assertEquals(1, gameConnection.getNetworkStats().getReceivedMessages());
+        assertEquals(serverResponse.getSerializedSize(), gameConnection.getNetworkStats().getInboundPayloadBytes());
+        assertEquals(1, gameConnection.getNetworkStats().getSentMessages());
+        // I can't tell the size because we append HMAC, but it should be greater than zero for sure
+        assertTrue(gameConnection.getNetworkStats().getOutboundPayloadBytes() > 0);
     }
 
     /**
@@ -62,6 +67,11 @@ public class GameServerInfoTest extends AbstractGameServerTest {
         assertEquals(GameErrorCode.AUTH_ERROR.ordinal(), errorEvent.getErrorCode(), "Should be auth error");
         assertEquals("Invalid HMAC", errorEvent.getMessage());
         assertTrue(gameConnection.isDisconnected());
+        assertEquals(1, gameConnection.getNetworkStats().getReceivedMessages());
+        assertEquals(serverResponse.getSerializedSize(), gameConnection.getNetworkStats().getInboundPayloadBytes());
+        assertEquals(1, gameConnection.getNetworkStats().getSentMessages());
+        // I can't tell the size because we append HMAC, but it should be greater than zero for sure
+        assertTrue(gameConnection.getNetworkStats().getOutboundPayloadBytes() > 0);
     }
 
 }

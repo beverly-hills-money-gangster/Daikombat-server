@@ -21,6 +21,7 @@ import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createE
 
 /*
 TODO:
+    - Add MDC 'playerId' to all logs
     - Integrate with Sentry
     - Integrate with Docker
     - Deploy to DigitalOcean

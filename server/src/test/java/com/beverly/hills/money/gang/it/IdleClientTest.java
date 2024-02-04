@@ -1,5 +1,6 @@
 package com.beverly.hills.money.gang.it;
 
+import com.beverly.hills.money.gang.config.ClientConfig;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
@@ -32,12 +33,12 @@ public class IdleClientTest extends AbstractGameServerTest {
         GameConnection gameConnectionObserver = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnectionIdle.write(
                 JoinGameCommand.newBuilder()
-                        .setVersion(ServerConfig.VERSION)
+                        .setVersion(ClientConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameToConnectTo).build());
         gameConnectionObserver.write(
                 JoinGameCommand.newBuilder()
-                        .setVersion(ServerConfig.VERSION)
+                        .setVersion(ClientConfig.VERSION)
                         .setPlayerName("my player name observer")
                         .setGameId(gameToConnectTo).build());
         Thread.sleep(250);
@@ -55,16 +56,17 @@ public class IdleClientTest extends AbstractGameServerTest {
 
         gameConnectionIdle.write(GetServerInfoCommand.newBuilder().build());
         Thread.sleep(250);
-        ServerResponse serverResponse = gameConnectionIdle.getResponse().poll().get();
-        var myGame = serverResponse.getServerInfo().getGamesList().stream().filter(gameInfo
+        ServerResponse gameServerInfoResponse = gameConnectionIdle.getResponse().poll().get();
+        var myGame = gameServerInfoResponse.getServerInfo().getGamesList().stream().filter(gameInfo
                         -> gameInfo.getGameId() == gameToConnectTo).findFirst()
-                .orElseThrow(() -> new IllegalStateException("Can't find game by id. Response is:" + serverResponse));
+                .orElseThrow(() -> new IllegalStateException("Can't find game by id. Response is:" + gameServerInfoResponse));
 
         assertEquals(2, myGame.getPlayersOnline(), "2 players should be connected(idle player + observer)");
 
 
+        int observerMoves = 50;
         // move observer, idle player does nothing meanwhile
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < observerMoves; i++) {
             gameConnectionObserver.write(PushGameEventCommand.newBuilder()
                     .setPlayerId(observerPlayerId)
                     .setGameId(gameToConnectTo)
@@ -108,6 +110,10 @@ public class IdleClientTest extends AbstractGameServerTest {
                                         && gameEvent.getPlayer().getPlayerId() == idlePlayerId).orElse(false));
         assertTrue(validExitEventExists, "There must be a valid EXIT event for idle player. " +
                 "Actual response is :" + gameConnectionObserver.getResponse().list());
+
+        assertEquals(2, gameConnectionIdle.getNetworkStats().getSentMessages(),
+                "2 messages should be sent: join and get server info");
+        assertEquals(1 + observerMoves, gameConnectionObserver.getNetworkStats().getSentMessages());
     }
 
 
@@ -122,16 +128,17 @@ public class IdleClientTest extends AbstractGameServerTest {
         GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection.write(
                 JoinGameCommand.newBuilder()
-                        .setVersion(ServerConfig.VERSION)
+                        .setVersion(ClientConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameToConnectTo).build());
         Thread.sleep(250);
         ServerResponse mySpawn = gameConnection.getResponse().poll().get();
         int playerId = mySpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
 
-        gameConnection.write(GetServerInfoCommand.newBuilder().build());
+        GameConnection observerConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        observerConnection.write(GetServerInfoCommand.newBuilder().build());
         Thread.sleep(250);
-        ServerResponse serverResponse = gameConnection.getResponse().poll().get();
+        ServerResponse serverResponse = observerConnection.getResponse().poll().get();
         var myGame = serverResponse.getServerInfo().getGamesList().stream().filter(gameInfo
                         -> gameInfo.getGameId() == gameToConnectTo).findFirst()
                 .orElseThrow(() -> new IllegalStateException("Can't find game by id. Response is:" + serverResponse));
@@ -176,7 +183,7 @@ public class IdleClientTest extends AbstractGameServerTest {
         GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection.write(
                 JoinGameCommand.newBuilder()
-                        .setVersion(ServerConfig.VERSION)
+                        .setVersion(ClientConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameToConnectTo).build());
         Thread.sleep(250);
@@ -229,7 +236,7 @@ public class IdleClientTest extends AbstractGameServerTest {
         GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
         gameConnection.write(
                 JoinGameCommand.newBuilder()
-                        .setVersion(ServerConfig.VERSION)
+                        .setVersion(ClientConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameToConnectTo).build());
         Thread.sleep(250);

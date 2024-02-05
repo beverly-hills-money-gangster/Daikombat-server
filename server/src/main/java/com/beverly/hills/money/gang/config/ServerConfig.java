@@ -17,6 +17,7 @@ public interface ServerConfig {
     int IDLE_PLAYERS_KILLER_FREQUENCY_MLS = NumberUtils.toInt(System.getenv("GAME_SERVER_IDLE_PLAYERS_KILLER_FREQUENCY_MLS"), 10_000);
     int MAX_IDLE_TIME_MLS = NumberUtils.toInt(System.getenv("GAME_SERVER_MAX_IDLE_TIME_MLS"), 10_000);
     int DEFAULT_DAMAGE = NumberUtils.toInt(System.getenv("GAME_SERVER_DEFAULT_DAMAGE"), 20);
+
     String PASSWORD = StringUtils.defaultIfBlank(System.getenv("GAME_SERVER_PASSWORD"), "daikombat");
 
     String VERSION = Optional.ofNullable(

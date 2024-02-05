@@ -82,8 +82,6 @@ public class MoveEventTest extends AbstractGameServerTest {
 
         assertEquals(playerId1, player1MoveEvent.getPlayer().getPlayerId(), "Should be player 1 id");
         assertEquals(ServerResponse.GameEvent.GameEventType.MOVE, player1MoveEvent.getEventType());
-        assertEquals(100, player1MoveEvent.getPlayer().getHealth(),
-                "Health should be 100% as nobody got hit");
         assertEquals(mySpawnGameEvent.getPlayer().getDirection().getX(), player1MoveEvent.getPlayer().getDirection().getX(),
                 0.00001, "Direction should not change");
         assertEquals(mySpawnGameEvent.getPlayer().getDirection().getY(), player1MoveEvent.getPlayer().getDirection().getY(),

@@ -28,13 +28,13 @@ public interface ServerResponseFactory {
 
     static ServerResponse.GameEvent createMoveGameEvent(PlayerStateReader playerStateReader) {
         return ServerResponse.GameEvent.newBuilder()
-                .setPlayer(createPlayerStats(playerStateReader))
+                .setPlayer(createMinimalPlayerStats(playerStateReader))
                 .setEventType(ServerResponse.GameEvent.GameEventType.MOVE).build();
     }
 
     static ServerResponse.GameEvent createExitGameEvent(PlayerStateReader playerStateReader) {
         return ServerResponse.GameEvent.newBuilder()
-                .setPlayer(createPlayerStats(playerStateReader))
+                .setPlayer(createMinimalPlayerStats(playerStateReader))
                 .setEventType(ServerResponse.GameEvent.GameEventType.EXIT).build();
     }
 
@@ -117,6 +117,14 @@ public interface ServerResponseFactory {
                 .setPosition(createVector(playerReader.getCoordinates().getPosition()))
                 .setDirection(createVector(playerReader.getCoordinates().getDirection()))
                 .setHealth(playerReader.getHealth())
+                .setPlayerId(playerReader.getPlayerId())
+                .build();
+    }
+
+    static ServerResponse.GameEventPlayerStats createMinimalPlayerStats(PlayerStateReader playerReader) {
+        return ServerResponse.GameEventPlayerStats.newBuilder()
+                .setPosition(createVector(playerReader.getCoordinates().getPosition()))
+                .setDirection(createVector(playerReader.getCoordinates().getDirection()))
                 .setPlayerId(playerReader.getPlayerId())
                 .build();
     }

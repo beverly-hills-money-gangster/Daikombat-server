@@ -78,7 +78,11 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
                                         game.playersOnline(),
                                         shootingGameState.getShootingPlayer(),
                                         shootingGameState.getPlayerShot());
-                                game.getPlayersRegistry().allPlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
+                                game.getPlayersRegistry().allPlayers()
+                                        .filter(playerStateChannel
+                                                // don't send me my own shot back
+                                                -> playerStateChannel.getPlayerState().getPlayerId() != gameCommand.getPlayerId())
+                                        .map(PlayersRegistry.PlayerStateChannel::getChannel)
                                         .forEach(channel -> channel.writeAndFlush(shotEvent));
                             }
                         }, () -> {
@@ -86,7 +90,11 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
                             var shootingEvent = createShootingEvent(
                                     game.playersOnline(),
                                     shootingGameState.getShootingPlayer());
-                            game.getPlayersRegistry().allPlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
+                            game.getPlayersRegistry().allPlayers()
+                                    .filter(playerStateChannel
+                                            // don't send me my own shot back
+                                            -> playerStateChannel.getPlayerState().getPlayerId() != gameCommand.getPlayerId())
+                                    .map(PlayersRegistry.PlayerStateChannel::getChannel)
                                     .forEach(channel -> channel.writeAndFlush(shootingEvent));
                         });
             }

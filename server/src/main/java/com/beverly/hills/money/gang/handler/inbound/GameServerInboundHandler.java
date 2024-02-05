@@ -27,6 +27,7 @@ TODO:
     - Deploy to DigitalOcean
     - Finish Readme
     - Fix time measurements in "Time taken to start server" log
+    - Don't send redundant data
  */
 @Component
 @RequiredArgsConstructor

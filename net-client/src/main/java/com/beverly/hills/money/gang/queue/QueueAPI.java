@@ -29,4 +29,9 @@ public class QueueAPI<T> implements QueueReader<T>, QueueWriter<T> {
         queue.add(event);
     }
 
+    @Override
+    public String toString() {
+        return queue.toString();
+    }
+
 }

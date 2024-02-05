@@ -1,4 +1,6 @@
-# Daikombat Server
+
+
+# Daikombat Server [![](https://jitpack.io/v/beverly-hills-money-gangster/Daikombat-server.svg)](https://jitpack.io/#beverly-hills-money-gangster/Daikombat-server)
 
 Daikombat Server is the server code repository for a simple Doom-like online shooter game with a non-stop deathmatch mode. It is built using Maven, Netty, Spring, and Java 14.
 

@@ -22,16 +22,10 @@ jobs:
             mkdir -p ~/test-results/junit/
             find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
           when: always
-      # Create a directory for JAR files
-      - run: mkdir -p jar-artifacts
-      # Copy JAR files to the artifacts directory
-      - run: cp -r server/target/*jar-with-dependencies.jar jar-artifacts/
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
           path: server/target/site/jacoco
-      - store_artifacts:
-          path: jar-artifacts
       - save_cache:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
           paths:

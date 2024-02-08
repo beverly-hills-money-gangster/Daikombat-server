@@ -27,7 +27,8 @@ TODO:
     - Deploy to DigitalOcean
     - Finish Readme
     - Fix time measurements in "Time taken to start server" log
-    - Don't send redundant data
+    - Add code coverage badge
+    - Use maven 3.6.3 in development
  */
 @Component
 @RequiredArgsConstructor

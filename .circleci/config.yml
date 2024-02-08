@@ -4,7 +4,7 @@ version: 2.1
 jobs:
   test-java:
     docker:
-      - image: cimg/openjdk:14.0
+      - image: maven:3.6.3-openjdk-14
     steps:
       - checkout
       - run:
@@ -36,7 +36,31 @@ jobs:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
           paths:
             - ~/.m2/repository
+  build-and-publish:
+    docker:
+      - image: docker:20.10.12
+    steps:
+      - setup_remote_docker
+      - checkout
+      - run:
+          name: Build and push Docker image
+          command: |
+            echo "${GITHUB_TOKEN}" | docker login ghcr.io -u beverly-hills-money-gangster --password-stdin
+            docker build -t ghcr.io/beverly-hills-money-gangster/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_TAG} .
+            docker push ghcr.io/beverly-hills-money-gangster/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_TAG}
+
 workflows:
-  build-and-test:
+  test:
     jobs:
-      - test-java
+      - test-java:
+        filters:
+          tags:
+            ignore: /^v.*/
+  publish-to-docker:
+    jobs:
+      - build-and-publish:
+          filters:
+            tags:
+              only: /^(\d+)\.(\d+)\.(\d+)$/
+            branches:
+              ignore: /.*/

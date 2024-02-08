@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  daikombat-game-server:
+    image: ghcr.io/beverly-hills-money-gangster/daikombat_server
+    restart: "always"
+    ports:
+      - "0.0.0.0:7777:7777" # default server port. exposed to public internet
+      - "127.0.0.1:9999:9999" # JMX port. localhost only

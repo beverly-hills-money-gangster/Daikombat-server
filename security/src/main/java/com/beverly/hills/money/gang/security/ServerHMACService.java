@@ -1,15 +1,10 @@
 package com.beverly.hills.money.gang.security;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 
 public class ServerHMACService {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ServerHMACService.class);
 
     private static final String HMAC_ALG = "HmacSHA256";
 
@@ -27,7 +22,7 @@ public class ServerHMACService {
             byte[] expectedHMAC = generateHMAC(givenData);
             return java.security.MessageDigest.isEqual(expectedHMAC, givenHMAC);
         } catch (Exception e) {
-            LOG.error("Can't validate MAC", e);
+            e.printStackTrace();
             return false;
         }
     }

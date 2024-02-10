@@ -19,18 +19,6 @@ import org.springframework.stereotype.Component;
 import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createErrorEvent;
 import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createExitEvent;
 
-/*
-TODO:
-    - Remove JAR run
-    - Add MDC 'playerId' to all logs
-    - Integrate with Sentry
-    - Integrate with Docker
-    - Deploy to DigitalOcean
-    - Finish Readme
-    - Fix time measurements in "Time taken to start server" log
-    - Add code coverage badge
-    - Use maven 3.6.3 in development
- */
 @Component
 @RequiredArgsConstructor
 @ChannelHandler.Sharable

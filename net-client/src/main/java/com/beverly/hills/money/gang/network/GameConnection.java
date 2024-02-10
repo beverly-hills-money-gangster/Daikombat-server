@@ -22,8 +22,6 @@ import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import io.netty.util.concurrent.EventExecutorGroup;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -35,8 +33,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class GameConnection {
-
-    private static final Logger LOG = LoggerFactory.getLogger(GameConnection.class);
     private final ScheduledExecutorService idleServerDisconnector = Executors.newScheduledThreadPool(1,
             new BasicThreadFactory.Builder().namingPattern("idle-server-disconnector-%d").build());
     private final NetworkStats networkStats = new NetworkStats();
@@ -62,7 +58,6 @@ public class GameConnection {
 
     public GameConnection(final GameServerCreds gameServerCreds) throws IOException {
         this.hmacService = new ServerHMACService(gameServerCreds.getPassword());
-        LOG.info("Start connecting");
         state.set(GameConnectionState.CONNECTING);
         this.group = new NioEventLoopGroup();
         try {
@@ -82,7 +77,6 @@ public class GameConnection {
 
                                 @Override
                                 protected void channelRead0(ChannelHandlerContext ctx, ServerResponse msg) {
-                                    LOG.debug("Incoming msg {}", msg);
                                     ctx.channel().config().setOption(EpollChannelOption.TCP_QUICKACK, true);
                                     lastServerActivityMls.set(System.currentTimeMillis());
                                     serverEventsQueueAPI.push(msg);
@@ -92,7 +86,7 @@ public class GameConnection {
 
                                 @Override
                                 public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-                                    LOG.error("Error occurred", cause);
+                                    cause.printStackTrace();
                                     try {
                                         errorsQueueAPI.push(cause);
                                     } finally {
@@ -102,7 +96,6 @@ public class GameConnection {
 
                                 @Override
                                 public void channelInactive(ChannelHandlerContext ctx) {
-                                    LOG.error("Channel closed");
                                     disconnect();
                                 }
 
@@ -114,19 +107,17 @@ public class GameConnection {
                     gameServerCreds.getHostPort().getPort()).sync().channel();
             idleServerDisconnector.scheduleAtFixedRate(() -> {
                 try {
-                    LOG.info("Check server status");
                     if (joinedGame.get() && isServerIdleForTooLong()) {
-                        LOG.info("Server is inactive");
                         errorsQueueAPI.push(new IOException("Server is inactive for too long"));
                         disconnect();
                     }
                 } catch (Exception e) {
-                    LOG.error("Can't check server status", e);
+                    e.printStackTrace();
                 }
             }, 5_000, 5_000, TimeUnit.MILLISECONDS);
             state.set(GameConnectionState.CONNECTED);
         } catch (Exception e) {
-            LOG.error("Error occurred", e);
+            e.printStackTrace();
             disconnect();
             throw new IOException("Can't connect to " + gameServerCreds.getHostPort(), e);
         }
@@ -172,7 +163,6 @@ public class GameConnection {
                 throw new IllegalArgumentException("Not recognized message type " + command.getClass());
             }
             var message = serverCommand.build();
-            LOG.debug("Write {}", message);
             channel.writeAndFlush(message);
             networkStats.incSentMessages();
             networkStats.addOutboundPayloadBytes(message.getSerializedSize());
@@ -183,26 +173,24 @@ public class GameConnection {
 
     public void disconnect() {
         if (state.get() == GameConnectionState.DISCONNECTED) {
-            LOG.info("Already disconnected");
             return;
         }
         state.set(GameConnectionState.DISCONNECTING);
-        LOG.info("Disconnect");
         try {
             Optional.ofNullable(group).ifPresent(EventExecutorGroup::shutdownGracefully);
         } catch (Exception e) {
-            LOG.error("Can't shutdown bootstrap group", e);
+            e.printStackTrace();
         }
         try {
             Optional.ofNullable(channel).ifPresent(ChannelOutboundInvoker::close);
 
         } catch (Exception e) {
-            LOG.error("Can't close channel", e);
+           e.printStackTrace();
         }
         try {
             idleServerDisconnector.shutdown();
         } catch (Exception e) {
-            LOG.error("Can't shutdown idle server disconnector", e);
+           e.printStackTrace();
         }
         state.set(GameConnectionState.DISCONNECTED);
     }

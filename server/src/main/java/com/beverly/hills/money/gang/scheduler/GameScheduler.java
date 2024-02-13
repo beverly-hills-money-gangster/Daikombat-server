@@ -53,7 +53,6 @@ public class GameScheduler implements Closeable {
                 if (bufferedMoves.isEmpty()) {
                     return;
                 }
-                LOG.info("Send all moves");
                 game.getPlayersRegistry().allPlayers().forEach(playerStateChannel -> {
                     // don't send me MY own moves
                     Optional.of(getAllBufferedPlayerMovesExceptMine(

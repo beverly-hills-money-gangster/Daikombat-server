@@ -4,6 +4,22 @@ services:
   daikombat-game-server:
     image: ghcr.io/beverly-hills-money-gangster/daikombat_server
     restart: "always"
+    volumes:
+      - ./jvmheap:/app/jvmheap
+    command:
+      [ "java",
+        # configure JMX remote
+        "-Dcom.sun.management.jmxremote.local.only=false",
+        "-Dcom.sun.management.jmxremote.ssl=false",
+        "-Dcom.sun.management.jmxremote.authenticate=false",
+        "-Dcom.sun.management.jmxremote.port=9999",
+        "-Dcom.sun.management.jmxremote.rmi.port=9999",
+        "-Dcom.sun.management.jmxremote.host=0.0.0.0",
+        "-Djava.rmi.server.hostname=127.0.0.1",
+        # drop a heap dump file on OOM
+        "-XX:+HeapDumpOnOutOfMemoryError",
+        "-XX:HeapDumpPath=/app/jvmheap",
+        "-jar", "server.jar" ]
     ports:
       - "0.0.0.0:7777:7777" # default server port. exposed to public internet
       - "127.0.0.1:9999:9999" # JMX port. localhost only

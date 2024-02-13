@@ -13,5 +13,5 @@ RUN mvn clean package -DskipTests
 FROM openjdk:14-slim
 WORKDIR /app
 COPY --from=build app/server/target/server-*-jar-with-dependencies.jar /app/server.jar
-
-CMD ["java", "-Djava.rmi.server.hostname=0.0.0.0","-Dcom.sun.management.jmxremote","-Dcom.sun.management.jmxremote.port=9999","-Dcom.sun.management.jmxremote.rmi.port=9999","-Dcom.sun.management.jmxremote.authenticate=false","-Dcom.sun.management.jmxremote.ssl=false","-jar", "server.jar"]
+RUN mkdir /app/jvmheap
+CMD ["java", "-jar", "server.jar"]

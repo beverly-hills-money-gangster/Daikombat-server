@@ -50,6 +50,28 @@ All submodules, including network client, can be used as maven/gradle dependenci
 Server image is deployed on every release to [Github container registry](https://ghcr.io/beverly-hills-money-gangster/daikombat_server).
 A sample [docker-compose file](/docker-compose.yaml) can be found in the root folder.
 
+## Monitoring
+
+### Server monitoring
+
+Server JVM metrics can be monitored through JMX remotely. See [docker-compose file](/docker-compose.yaml). 
+In the sample, JMX agent is running on port 9999 listening to incoming connections initiated by 127.0.0.1. 
+If server is running in the cloud, then it's possible to port-forward JMX using the following command:
+
+```
+ssh -L 9999:127.0.0.1:9999 <user>@<remote_host>
+```
+
+Apart from JMX metrics, the server is configured to drop a heap dump file on out-of-memory.
+
+### Client monitoring
+
+`GameConnection.java` has `networkStats` field that gathers basic network stats including:
+- number of sent protobuf messages
+- number of received protobuf message
+- total outbound payload size
+- total inbound payload size
+
 ## Development
 
 ### Handy Maven commands

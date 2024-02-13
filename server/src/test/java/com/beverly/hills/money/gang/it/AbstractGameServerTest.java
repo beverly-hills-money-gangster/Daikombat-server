@@ -33,6 +33,8 @@ import java.util.concurrent.ThreadLocalRandom;
 @ContextConfiguration(classes = TestConfig.class)
 public abstract class AbstractGameServerTest {
 
+    private static int MAX_QUEUE_WAIT_TIME_MLS = 30_000;
+
     protected static final Logger LOG = LoggerFactory.getLogger(AbstractGameServerTest.class);
 
     protected int port;
@@ -97,6 +99,21 @@ public abstract class AbstractGameServerTest {
         while (queueReader.poll().isPresent()) {
             // just read them all and that's it
         }
+    }
+
+    protected void waitUntilQueueNonEmpty(QueueReader<?> queueReader) {
+        long stopWaitTimeMls = System.currentTimeMillis() + MAX_QUEUE_WAIT_TIME_MLS;
+        while (System.currentTimeMillis() < stopWaitTimeMls) {
+            if (queueReader.size() != 0) {
+                return;
+            }
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        throw new IllegalStateException("Timeout waiting for response");
     }
 
     protected GameConnection createGameConnection(String password, String host, int port) throws IOException {

@@ -33,7 +33,7 @@ public class MoveEventTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameIdToConnectTo).build());
-        Thread.sleep(250);
+        waitUntilQueueNonEmpty(gameConnection1.getResponse());
         ServerResponse mySpawn = gameConnection1.getResponse().poll().get();
         ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
         int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
@@ -44,7 +44,7 @@ public class MoveEventTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("new player")
                         .setGameId(gameIdToConnectTo).build());
-        Thread.sleep(250);
+        waitUntilQueueNonEmpty(gameConnection2.getResponse());
         emptyQueue(gameConnection2.getResponse());
         Thread.sleep(1_000);
         assertEquals(0, gameConnection2.getResponse().size(),
@@ -111,7 +111,7 @@ public class MoveEventTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameIdToConnectTo).build());
-        Thread.sleep(250);
+        waitUntilQueueNonEmpty(gameConnection1.getResponse());
         ServerResponse mySpawn = gameConnection1.getResponse().poll().get();
         ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
         int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
@@ -122,7 +122,7 @@ public class MoveEventTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("new player")
                         .setGameId(gameIdToConnectTo).build());
-        Thread.sleep(250);
+        waitUntilQueueNonEmpty(gameConnection2.getResponse());
         emptyQueue(gameConnection2.getResponse());
         Thread.sleep(1_000);
         assertEquals(0, gameConnection2.getResponse().size(),

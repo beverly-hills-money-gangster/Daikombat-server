@@ -30,7 +30,7 @@ public class ChatEventTest extends AbstractGameServerTest {
      * @then all messages are correctly received by players
      */
     @Test
-    public void testChatManyPlayers() throws InterruptedException, IOException {
+    public void testChatManyPlayers() throws IOException, InterruptedException {
         int gameIdToConnectTo = 0;
         for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
             GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
@@ -41,7 +41,7 @@ public class ChatEventTest extends AbstractGameServerTest {
                             .setGameId(gameIdToConnectTo).build());
         }
 
-        Thread.sleep(250);
+        Thread.sleep(2_500);
 
         Map<Integer, GameConnection> players = new HashMap<>();
         for (GameConnection gameConnection : gameConnections) {
@@ -58,7 +58,7 @@ public class ChatEventTest extends AbstractGameServerTest {
                 .setGameId(gameIdToConnectTo)
                 .setPlayerId(playerId).setMessage("Message from player id " + playerId).build()));
 
-        Thread.sleep(250);
+        Thread.sleep(2_500);
 
         assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, players.size(), "The server must be full");
         players.forEach((playerId, gameConnection) -> {
@@ -95,7 +95,7 @@ public class ChatEventTest extends AbstractGameServerTest {
                             .setGameId(gameIdToConnectTo).build());
         }
 
-        Thread.sleep(250);
+        Thread.sleep(2_500);
 
         Map<Integer, GameConnection> players = new HashMap<>();
         for (GameConnection gameConnection : gameConnections) {
@@ -131,7 +131,7 @@ public class ChatEventTest extends AbstractGameServerTest {
             }
         });
 
-        Thread.sleep(250);
+        Thread.sleep(2_500);
 
         assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, players.size(), "The server must be full");
         players.forEach((playerId, gameConnection) -> {

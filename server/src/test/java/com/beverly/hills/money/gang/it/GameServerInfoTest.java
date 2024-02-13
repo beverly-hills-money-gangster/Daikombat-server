@@ -27,11 +27,11 @@ public class GameServerInfoTest extends AbstractGameServerTest {
      * @then player 1 gets server info for all games
      */
     @Test
-    public void testGetServerInfo() throws InterruptedException, IOException {
+    public void testGetServerInfo() throws IOException {
         GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
 
         gameConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(250);
+        waitUntilQueueNonEmpty(gameConnection.getResponse());
         assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
         assertEquals(1, gameConnection.getResponse().size(), "Should be exactly one response");
         ServerResponse serverResponse = gameConnection.getResponse().poll().get();
@@ -59,7 +59,7 @@ public class GameServerInfoTest extends AbstractGameServerTest {
     public void testGetServerInfoBadAuth() throws InterruptedException, IOException {
         GameConnection gameConnection = createGameConnection("wrong password", "localhost", port);
         gameConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(250);
+        waitUntilQueueNonEmpty(gameConnection.getResponse());
         assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
         assertEquals(1, gameConnection.getResponse().size(), "Should be exactly one response");
         ServerResponse serverResponse = gameConnection.getResponse().poll().get();

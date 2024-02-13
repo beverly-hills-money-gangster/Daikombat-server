@@ -30,7 +30,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameToConnectTo).build());
-        Thread.sleep(250);
+        waitUntilQueueNonEmpty(gameConnection1.getResponse());
         ServerResponse mySpawn = gameConnection1.getResponse().poll().get();
         ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
         int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
@@ -41,7 +41,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my other player name")
                         .setGameId(gameToConnectTo).build());
-        Thread.sleep(250);
+        waitUntilQueueNonEmpty(gameConnection2.getResponse());
 
         emptyQueue(gameConnection1.getResponse());
         emptyQueue(gameConnection2.getResponse());

@@ -40,7 +40,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my other player name")
                         .setGameId(gameIdToConnectTo).build());
-        Thread.sleep(250);
+        waitUntilQueueNonEmpty(shooterConnection.getResponse());
+        waitUntilQueueNonEmpty(observerConnection.getResponse());
         emptyQueue(observerConnection.getResponse());
         ServerResponse mySpawn = shooterConnection.getResponse().poll().get();
         int playerId = mySpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
@@ -63,7 +64,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
                                 .setY(newPositionY)
                                 .build())
                 .build());
-        Thread.sleep(250);
+        waitUntilQueueNonEmpty(observerConnection.getResponse());
         assertEquals(1, observerConnection.getResponse().size(), "Only 1(shooting) event is expected");
         ServerResponse serverResponse = observerConnection.getResponse().poll().get();
         assertTrue(serverResponse.hasGameEvents(), "A game event is expected");
@@ -107,7 +108,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my other player name")
                         .setGameId(gameIdToConnectTo).build());
-        Thread.sleep(250);
+        waitUntilQueueNonEmpty(shooterConnection.getResponse());
+        waitUntilQueueNonEmpty(getShotConnection.getResponse());
         emptyQueue(getShotConnection.getResponse());
 
         ServerResponse shooterPlayerSpawn = shooterConnection.getResponse().poll().get();
@@ -120,6 +122,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         var shooterSpawnEvent = shooterPlayerSpawn.getGameEvents().getEvents(0);
         float newPositionX = shooterSpawnEvent.getPlayer().getPosition().getX() + 0.1f;
         float newPositionY = shooterSpawnEvent.getPlayer().getPosition().getY() - 0.1f;
+        emptyQueue(shooterConnection.getResponse());
         shooterConnection.write(PushGameEventCommand.newBuilder()
                 .setPlayerId(shooterPlayerId)
                 .setGameId(gameIdToConnectTo)
@@ -136,7 +139,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
                                 .build())
                 .setAffectedPlayerId(shotPlayerId)
                 .build());
-        Thread.sleep(250);
+        waitUntilQueueNonEmpty(getShotConnection.getResponse());
         assertEquals(1, getShotConnection.getResponse().size(), "Only 1(shooting) event is expected");
         ServerResponse serverResponse = getShotConnection.getResponse().poll().get();
         assertTrue(serverResponse.hasGameEvents(), "A game event is expected");
@@ -166,10 +169,11 @@ public class ShootingEventTest extends AbstractGameServerTest {
 
         assertEquals(2, shooterConnection.getNetworkStats().getSentMessages(),
                 "Only 2 messages must be sent by shooter: join + shoot");
-        assertTrue(shooterConnection.getResponse().list().isEmpty(), "Shooter shouldn't receive any new messages");
+        assertTrue(shooterConnection.getResponse().list().isEmpty(), "Shooter shouldn't receive any new messages. " +
+                "Actual response "+ shooterConnection.getResponse().list());
         emptyQueue(shooterConnection.getResponse());
         shooterConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(250);
+        waitUntilQueueNonEmpty(shooterConnection.getResponse());
         var serverInfoResponse = shooterConnection.getResponse().poll().get();
         List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
         ServerResponse.GameInfo myGame = games.stream().filter(gameInfo -> gameInfo.getGameId() == gameIdToConnectTo).findFirst()
@@ -197,7 +201,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my other player name")
                         .setGameId(gameIdToConnectTo).build());
-        Thread.sleep(250);
+        waitUntilQueueNonEmpty(deadConnection.getResponse());
+        waitUntilQueueNonEmpty(killerConnection.getResponse());
         emptyQueue(deadConnection.getResponse());
 
         ServerResponse shooterPlayerSpawn = killerConnection.getResponse().poll().get();
@@ -228,7 +233,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
                                     .build())
                     .setAffectedPlayerId(shotPlayerId)
                     .build());
-            Thread.sleep(250);
+            waitUntilQueueNonEmpty(deadConnection.getResponse());
             assertTrue(deadConnection.isConnected(), "Player is shot but still alive");
             assertTrue(killerConnection.isConnected(), "Killer must be connected");
             ServerResponse serverResponse = deadConnection.getResponse().poll().get();
@@ -257,7 +262,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
                                 .build())
                 .setAffectedPlayerId(shotPlayerId)
                 .build());
-        Thread.sleep(250);
+        waitUntilQueueNonEmpty(deadConnection.getResponse());
         assertTrue(deadConnection.isDisconnected(), "Dead players should be disconnected");
         assertTrue(killerConnection.isConnected(), "Killer must be connected");
 
@@ -278,7 +283,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         assertEquals(shooterPlayerId, killerShootingEvent.getPlayer().getPlayerId());
 
         killerConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(250);
+        waitUntilQueueNonEmpty(killerConnection.getResponse());
         var serverInfoResponse = killerConnection.getResponse().poll().get();
         List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
         ServerResponse.GameInfo myGame = games.stream().filter(gameInfo -> gameInfo.getGameId() == gameIdToConnectTo).findFirst()
@@ -306,7 +311,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my other player name")
                         .setGameId(gameIdToConnectTo).build());
-        Thread.sleep(250);
+        waitUntilQueueNonEmpty(gameConnection1.getResponse());
+        waitUntilQueueNonEmpty(gameConnection2.getResponse());
         emptyQueue(gameConnection2.getResponse());
 
         ServerResponse shooterPlayerSpawn = gameConnection1.getResponse().poll().get();
@@ -336,7 +342,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
                                     .build())
                     .setAffectedPlayerId(shotPlayerId)
                     .build());
-            Thread.sleep(250);
+            waitUntilQueueNonEmpty(gameConnection2.getResponse());
             ServerResponse serverResponse = gameConnection2.getResponse().poll().get();
             var shootingEvent = serverResponse.getGameEvents().getEvents(0);
             if (i == shotsToKill - 1) {
@@ -379,7 +385,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
 
         emptyQueue(gameConnection1.getResponse());
         gameConnection1.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(250);
+        waitUntilQueueNonEmpty(gameConnection1.getResponse());
         var serverInfoResponse = gameConnection1.getResponse().poll().get();
         List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
         ServerResponse.GameInfo myGame = games.stream().filter(gameInfo -> gameInfo.getGameId() == gameIdToConnectTo).findFirst()
@@ -395,24 +401,24 @@ public class ShootingEventTest extends AbstractGameServerTest {
     @Test
     public void testShootYourself() throws Exception {
         int gameIdToConnectTo = 0;
-        GameConnection gameConnection1 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
-        gameConnection1.write(
+        GameConnection selfShootingConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        selfShootingConnection.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameIdToConnectTo).build());
-        Thread.sleep(250);
-        ServerResponse shooterPlayerSpawn = gameConnection1.getResponse().poll().get();
+        waitUntilQueueNonEmpty(selfShootingConnection.getResponse());
+        ServerResponse shooterPlayerSpawn = selfShootingConnection.getResponse().poll().get();
         int shooterPlayerId = shooterPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
 
-        emptyQueue(gameConnection1.getResponse());
+        emptyQueue(selfShootingConnection.getResponse());
 
 
         var shooterSpawnEvent = shooterPlayerSpawn.getGameEvents().getEvents(0);
         float newPositionX = shooterSpawnEvent.getPlayer().getPosition().getX() + 0.1f;
         float newPositionY = shooterSpawnEvent.getPlayer().getPosition().getY() - 0.1f;
 
-        gameConnection1.write(PushGameEventCommand.newBuilder()
+        selfShootingConnection.write(PushGameEventCommand.newBuilder()
                 .setPlayerId(shooterPlayerId)
                 .setGameId(gameIdToConnectTo)
                 .setEventType(PushGameEventCommand.GameEventType.SHOOT)
@@ -429,11 +435,11 @@ public class ShootingEventTest extends AbstractGameServerTest {
                 .setAffectedPlayerId(shooterPlayerId) // shoot yourself
                 .build());
 
-        Thread.sleep(250);
-        assertTrue(gameConnection1.isDisconnected());
-        assertEquals(1, gameConnection1.getResponse().size(), "Should be one error response");
+        waitUntilQueueNonEmpty(selfShootingConnection.getResponse());
+        assertTrue(selfShootingConnection.isDisconnected());
+        assertEquals(1, selfShootingConnection.getResponse().size(), "Should be one error response");
 
-        ServerResponse errorResponse = gameConnection1.getResponse().poll().get();
+        ServerResponse errorResponse = selfShootingConnection.getResponse().poll().get();
         assertTrue(errorResponse.hasErrorEvent());
         ServerResponse.ErrorEvent errorEvent = errorResponse.getErrorEvent();
         assertEquals(GameErrorCode.CAN_NOT_SHOOT_YOURSELF.ordinal(), errorEvent.getErrorCode(),
@@ -442,7 +448,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
 
         gameConnection.write(GetServerInfoCommand.newBuilder().build());
-        Thread.sleep(250);
+        waitUntilQueueNonEmpty(gameConnection.getResponse());
         ServerResponse serverResponse = gameConnection.getResponse().poll().get();
         List<ServerResponse.GameInfo> games = serverResponse.getServerInfo().getGamesList();
         for (ServerResponse.GameInfo gameInfo : games) {

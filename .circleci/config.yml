@@ -46,10 +46,7 @@ jobs:
 workflows:
   test:
     jobs:
-      - test-java:
-        filters:
-          tags:
-            ignore: /^v.*/
+      - test-java
   publish-to-docker:
     jobs:
       - build-and-publish:

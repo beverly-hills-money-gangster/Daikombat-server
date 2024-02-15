@@ -27,7 +27,7 @@ public class MoveEventTest extends AbstractGameServerTest {
     @Test
     public void testMove() throws Exception {
         int gameIdToConnectTo = 2;
-        GameConnection gameConnection1 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection gameConnection1 = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         gameConnection1.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
@@ -38,7 +38,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
         int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
 
-        GameConnection gameConnection2 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection gameConnection2 = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         gameConnection2.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
@@ -105,7 +105,7 @@ public class MoveEventTest extends AbstractGameServerTest {
     @Test
     public void testMoveWrongPlayerId() throws Exception {
         int gameIdToConnectTo = 2;
-        GameConnection gameConnection1 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection gameConnection1 = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         gameConnection1.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
@@ -116,7 +116,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
         int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
 
-        GameConnection gameConnection2 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection gameConnection2 = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         gameConnection2.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)

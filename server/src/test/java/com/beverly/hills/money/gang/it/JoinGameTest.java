@@ -12,7 +12,6 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,7 +31,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     @Test
     public void testJoinGame() throws Exception {
         int gameIdToConnectTo = 0;
-        GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         gameConnection.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
@@ -77,7 +76,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     @Test
     public void testJoinGameNotExistingGame() throws IOException, InterruptedException {
         int gameIdToConnectTo = 666;
-        GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         gameConnection.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
@@ -94,7 +93,7 @@ public class JoinGameTest extends AbstractGameServerTest {
         assertEquals("Not existing game room", errorEvent.getMessage());
 
         // need a new game connection because the previous is closed
-        var newGameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        var newGameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         newGameConnection.write(GetServerInfoCommand.newBuilder().build());
         waitUntilQueueNonEmpty(newGameConnection.getResponse());
         assertEquals(0, newGameConnection.getErrors().size(), "Should be no error");
@@ -118,7 +117,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     @Test
     public void testJoinGameWrongVersion() throws IOException, InterruptedException {
         int gameIdToConnectTo = 0;
-        GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         gameConnection.write(
                 JoinGameCommand.newBuilder()
                         .setVersion("0.1.1-SNAPSHOT")
@@ -134,7 +133,7 @@ public class JoinGameTest extends AbstractGameServerTest {
                 "Command should not be recognized as client version is too old");
 
         // need a new game connection because the previous is closed
-        var newGameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        var newGameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         newGameConnection.write(GetServerInfoCommand.newBuilder().build());
         waitUntilQueueNonEmpty(newGameConnection.getResponse());
         assertEquals(0, newGameConnection.getErrors().size(), "Should be no error");
@@ -158,7 +157,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     @Test
     public void testJoinGameTooMany() throws IOException, InterruptedException {
         for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
-            GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+            GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
             gameConnection.write(
                     JoinGameCommand.newBuilder()
                             .setVersion(ServerConfig.VERSION)
@@ -167,7 +166,7 @@ public class JoinGameTest extends AbstractGameServerTest {
         }
         gameConnections.forEach(gameConnection -> waitUntilQueueNonEmpty(gameConnection.getResponse()));
 
-        GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         gameConnection.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
@@ -193,7 +192,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     @Test
     public void testJoinSameName() throws IOException, InterruptedException {
 
-        GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         gameConnection.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
@@ -201,7 +200,7 @@ public class JoinGameTest extends AbstractGameServerTest {
                         .setGameId(0).build());
 
 
-        GameConnection sameNameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection sameNameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         sameNameConnection.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
@@ -236,7 +235,7 @@ public class JoinGameTest extends AbstractGameServerTest {
             int finalI = i;
             threads.add(new Thread(() -> {
                 try {
-                    GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+                    GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
                     gameConnection.write(
                             JoinGameCommand.newBuilder()
                                     .setVersion(ServerConfig.VERSION)
@@ -264,7 +263,7 @@ public class JoinGameTest extends AbstractGameServerTest {
         assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME - 1, connectedPlayersPositions.size(),
                 "All players must have unique ids. Something is off");
 
-        GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         gameConnection.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
@@ -336,14 +335,13 @@ public class JoinGameTest extends AbstractGameServerTest {
                 int finalJ = j;
                 threads.add(new Thread(() -> {
                     try {
-                        GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+                        GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
                         gameConnection.write(
                                 JoinGameCommand.newBuilder()
                                         .setVersion(ServerConfig.VERSION)
                                         .setPlayerName("my player name " + finalJ)
                                         .setGameId(finalGameId).build());
-                        waitUntilQueueNonEmpty(gameConnection.getResponse());
-
+                        Thread.sleep(500);
                     } catch (Exception e) {
                         LOG.error("Error while running test", e);
                     }
@@ -362,7 +360,7 @@ public class JoinGameTest extends AbstractGameServerTest {
         assertEquals(ServerConfig.GAMES_TO_CREATE * ServerConfig.MAX_PLAYERS_PER_GAME, gameConnections.size());
         gameConnections.forEach(gameConnection -> assertTrue(gameConnection.isConnected()));
 
-        GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         gameConnection.write(GetServerInfoCommand.newBuilder().build());
         waitUntilQueueNonEmpty(gameConnection.getResponse());
         assertEquals(0, gameConnection.getErrors().size(), "Should be no error");

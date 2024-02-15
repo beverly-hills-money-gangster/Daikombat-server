@@ -28,7 +28,7 @@ public class GameServerInfoTest extends AbstractGameServerTest {
      */
     @Test
     public void testGetServerInfo() throws IOException {
-        GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
 
         gameConnection.write(GetServerInfoCommand.newBuilder().build());
         waitUntilQueueNonEmpty(gameConnection.getResponse());
@@ -65,7 +65,7 @@ public class GameServerInfoTest extends AbstractGameServerTest {
         ServerResponse serverResponse = gameConnection.getResponse().poll().get();
         ServerResponse.ErrorEvent errorEvent = serverResponse.getErrorEvent();
         assertEquals(GameErrorCode.AUTH_ERROR.ordinal(), errorEvent.getErrorCode(), "Should be auth error");
-        assertEquals("Invalid HMAC", errorEvent.getMessage());
+        assertEquals("Incorrect server pin code", errorEvent.getMessage());
         assertTrue(gameConnection.isDisconnected());
         assertEquals(1, gameConnection.getNetworkStats().getReceivedMessages());
         assertEquals(serverResponse.getSerializedSize(), gameConnection.getNetworkStats().getInboundPayloadBytes());

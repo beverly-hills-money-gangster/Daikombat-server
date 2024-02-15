@@ -24,7 +24,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
     @Test
     public void testExit() throws IOException, InterruptedException {
         int gameToConnectTo = 1;
-        GameConnection gameConnection1 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection gameConnection1 = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         gameConnection1.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
@@ -35,7 +35,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
         ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
         int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
 
-        GameConnection gameConnection2 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection gameConnection2 = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         gameConnection2.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
@@ -80,7 +80,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
      */
     @Test
     public void testDisconnectTwice() throws IOException, InterruptedException {
-        GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         assertTrue(gameConnection.isConnected(), "Should be connected by default");
         assertFalse(gameConnection.isDisconnected());
         gameConnection.disconnect();
@@ -105,7 +105,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
      */
     @Test
     public void testGetServerInfoNotExistingServer() {
-        assertThrows(IOException.class, () -> createGameConnection(ServerConfig.PASSWORD, "666.666.666.666", port));
+        assertThrows(IOException.class, () -> createGameConnection(ServerConfig.PIN_CODE, "666.666.666.666", port));
     }
 
     /**
@@ -115,6 +115,6 @@ public class GameConnectionTest extends AbstractGameServerTest {
      */
     @Test
     public void testGetServerInfoWrongPort() {
-        assertThrows(IOException.class, () -> createGameConnection(ServerConfig.PASSWORD, "localhost", 666));
+        assertThrows(IOException.class, () -> createGameConnection(ServerConfig.PIN_CODE, "localhost", 666));
     }
 }

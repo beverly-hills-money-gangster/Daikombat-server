@@ -28,13 +28,13 @@ public class ShootingEventTest extends AbstractGameServerTest {
     @Test
     public void testShootMiss() throws IOException, InterruptedException {
         int gameIdToConnectTo = 0;
-        GameConnection shooterConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection shooterConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         shooterConnection.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameIdToConnectTo).build());
-        GameConnection observerConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection observerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         observerConnection.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
@@ -96,13 +96,13 @@ public class ShootingEventTest extends AbstractGameServerTest {
     @Test
     public void testShootHit() throws Exception {
         int gameIdToConnectTo = 0;
-        GameConnection shooterConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection shooterConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         shooterConnection.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameIdToConnectTo).build());
-        GameConnection getShotConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection getShotConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         getShotConnection.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
@@ -189,13 +189,13 @@ public class ShootingEventTest extends AbstractGameServerTest {
     @Test
     public void testShootKill() throws Exception {
         int gameIdToConnectTo = 0;
-        GameConnection killerConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection killerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         killerConnection.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameIdToConnectTo).build());
-        GameConnection deadConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection deadConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         deadConnection.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
@@ -299,13 +299,13 @@ public class ShootingEventTest extends AbstractGameServerTest {
     @Test
     public void testShootDeadPlayer() throws Exception {
         int gameIdToConnectTo = 0;
-        GameConnection gameConnection1 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection gameConnection1 = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         gameConnection1.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameIdToConnectTo).build());
-        GameConnection gameConnection2 = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection gameConnection2 = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         gameConnection2.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
@@ -401,7 +401,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     @Test
     public void testShootYourself() throws Exception {
         int gameIdToConnectTo = 0;
-        GameConnection selfShootingConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection selfShootingConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         selfShootingConnection.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
@@ -445,7 +445,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         assertEquals(GameErrorCode.CAN_NOT_SHOOT_YOURSELF.ordinal(), errorEvent.getErrorCode(),
                 "You can't shoot yourself");
 
-        GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
 
         gameConnection.write(GetServerInfoCommand.newBuilder().build());
         waitUntilQueueNonEmpty(gameConnection.getResponse());

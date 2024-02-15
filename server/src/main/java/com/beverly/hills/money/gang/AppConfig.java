@@ -20,7 +20,7 @@ public class AppConfig {
 
     @Bean
     public ServerHMACService serverHMACService() {
-        return new ServerHMACService(ServerConfig.PASSWORD);
+        return new ServerHMACService(ServerConfig.PIN_CODE);
     }
 }
 

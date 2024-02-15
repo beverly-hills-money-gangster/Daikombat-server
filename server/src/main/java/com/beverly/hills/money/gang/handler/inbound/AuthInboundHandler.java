@@ -42,7 +42,7 @@ public class AuthInboundHandler extends SimpleChannelInboundHandler<ServerComman
             if (command == null) {
                 throw new GameLogicError("No command specified", GameErrorCode.AUTH_ERROR);
             } else if (!hmacService.isValidMac(command.toByteArray(), msg.getHmac().toByteArray())) {
-                throw new GameLogicError("Invalid HMAC", GameErrorCode.AUTH_ERROR);
+                throw new GameLogicError("Incorrect server pin code", GameErrorCode.AUTH_ERROR);
             }
             ctx.fireChannelRead(msg);
         } catch (GameLogicError ex) {

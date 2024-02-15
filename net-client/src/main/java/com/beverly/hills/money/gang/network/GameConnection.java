@@ -37,6 +37,9 @@ import java.util.concurrent.atomic.AtomicReference;
 public class GameConnection {
 
     private static final Logger LOG = LoggerFactory.getLogger(GameConnection.class);
+
+    private static final int MAX_CONNECTION_TIME_MLS = 5_000;
+
     private final ScheduledExecutorService idleServerDisconnector = Executors.newScheduledThreadPool(1,
             new BasicThreadFactory.Builder().namingPattern("idle-server-disconnector-%d").build());
     private final NetworkStats networkStats = new NetworkStats();
@@ -68,6 +71,7 @@ public class GameConnection {
         try {
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(group)
+                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, MAX_CONNECTION_TIME_MLS)
                     .option(ChannelOption.TCP_NODELAY, true)
                     .channel(NioSocketChannel.class)
                     .handler(new ChannelInitializer<SocketChannel>() {
@@ -109,9 +113,11 @@ public class GameConnection {
                             });
                         }
                     });
+            long startTime = System.currentTimeMillis();
             this.channel = bootstrap.connect(
                     gameServerCreds.getHostPort().getHost(),
                     gameServerCreds.getHostPort().getPort()).sync().channel();
+            LOG.info("Connected to server in {} mls", System.currentTimeMillis() - startTime);
             idleServerDisconnector.scheduleAtFixedRate(() -> {
                 try {
                     LOG.info("Check server status");

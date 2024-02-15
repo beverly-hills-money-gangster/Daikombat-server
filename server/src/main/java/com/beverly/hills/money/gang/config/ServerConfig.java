@@ -18,7 +18,10 @@ public interface ServerConfig {
     int MAX_IDLE_TIME_MLS = NumberUtils.toInt(System.getenv("GAME_SERVER_MAX_IDLE_TIME_MLS"), 10_000);
     int DEFAULT_DAMAGE = NumberUtils.toInt(System.getenv("GAME_SERVER_DEFAULT_DAMAGE"), 20);
 
-    String PASSWORD = StringUtils.defaultIfBlank(System.getenv("GAME_SERVER_PASSWORD"), "daikombat");
+    String PIN_CODE = Optional.of(StringUtils.defaultIfBlank(System.getenv("GAME_SERVER_PIN_CODE"), "5555"))
+            .filter(pin -> StringUtils.isNotBlank(pin) && StringUtils.length(pin) >= 4 && pin.matches("\\d+"))
+            .orElseThrow(() -> new IllegalArgumentException(
+                    "Pin code should: 1) be not empty 2) be at least 4 symbols 3) consist of digits only"));
 
     String VERSION = Optional.ofNullable(
             ServerConfig.class.getClassLoader().getResourceAsStream("server-version.properties")).map(

@@ -97,12 +97,10 @@ public class GameScheduler implements Closeable {
             if (game.getPlayersRegistry().playersOnline() == 0) {
                 return;
             }
-            LOG.info("Disconnect idle players");
             var idlePlayers = game.getPlayersRegistry().allPlayers()
                     .filter(playerStateChannel -> playerStateChannel.getPlayerState().isIdleForTooLong())
                     .collect(Collectors.toList());
             if (idlePlayers.isEmpty()) {
-                LOG.info("No player to disconnect");
                 return;
             }
             LOG.info("Players to disconnect {}", idlePlayers);

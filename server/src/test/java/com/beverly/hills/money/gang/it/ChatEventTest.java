@@ -33,7 +33,7 @@ public class ChatEventTest extends AbstractGameServerTest {
     public void testChatManyPlayers() throws IOException, InterruptedException {
         int gameIdToConnectTo = 0;
         for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
-            GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+            GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
             gameConnection.write(
                     JoinGameCommand.newBuilder()
                             .setVersion(ServerConfig.VERSION)
@@ -87,7 +87,7 @@ public class ChatEventTest extends AbstractGameServerTest {
     public void testChatManyPlayersConcurrent() throws IOException, InterruptedException {
         int gameIdToConnectTo = 0;
         for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
-            GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+            GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
             gameConnection.write(
                     JoinGameCommand.newBuilder()
                             .setVersion(ServerConfig.VERSION)

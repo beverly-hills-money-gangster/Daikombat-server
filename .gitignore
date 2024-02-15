@@ -5,6 +5,7 @@ target/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+toxiproxy-server-windows-amd64.exe
 
 ### IntelliJ IDEA ###
 .idea/*

@@ -29,8 +29,8 @@ public class IdleClientTest extends AbstractGameServerTest {
     @Test
     public void testIdleClientDisconnect() throws IOException, InterruptedException {
         int gameToConnectTo = 1;
-        GameConnection gameConnectionIdle = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
-        GameConnection gameConnectionObserver = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection gameConnectionIdle = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
+        GameConnection gameConnectionObserver = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         gameConnectionIdle.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ClientConfig.VERSION)
@@ -79,7 +79,7 @@ public class IdleClientTest extends AbstractGameServerTest {
             Thread.sleep(200);
         }
 
-        GameConnection newGameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection newGameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         newGameConnection.write(GetServerInfoCommand.newBuilder().build());
         waitUntilQueueNonEmpty(newGameConnection.getResponse());
         ServerResponse serverResponseAfterIdle = newGameConnection.getResponse().poll().get();
@@ -127,7 +127,7 @@ public class IdleClientTest extends AbstractGameServerTest {
     @Test
     public void testNotIdleClientMoving() throws IOException, InterruptedException {
         int gameToConnectTo = 1;
-        GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         gameConnection.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ClientConfig.VERSION)
@@ -137,7 +137,7 @@ public class IdleClientTest extends AbstractGameServerTest {
         ServerResponse mySpawn = gameConnection.getResponse().poll().get();
         int playerId = mySpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
 
-        GameConnection observerConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection observerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         observerConnection.write(GetServerInfoCommand.newBuilder().build());
         waitUntilQueueNonEmpty(observerConnection.getResponse());
         ServerResponse serverResponse = observerConnection.getResponse().poll().get();
@@ -161,7 +161,7 @@ public class IdleClientTest extends AbstractGameServerTest {
         }
         assertTrue(gameConnection.isConnected());
 
-        GameConnection newGameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection newGameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         newGameConnection.write(GetServerInfoCommand.newBuilder().build());
         waitUntilQueueNonEmpty(newGameConnection.getResponse());
         ServerResponse serverResponseAfterMoving = newGameConnection.getResponse().poll().get();
@@ -182,7 +182,7 @@ public class IdleClientTest extends AbstractGameServerTest {
     @Test
     public void testNotIdleClientPing() throws IOException, InterruptedException {
         int gameToConnectTo = 1;
-        GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         gameConnection.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ClientConfig.VERSION)
@@ -214,7 +214,7 @@ public class IdleClientTest extends AbstractGameServerTest {
         }
         assertTrue(gameConnection.isConnected());
 
-        GameConnection newGameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection newGameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         newGameConnection.write(GetServerInfoCommand.newBuilder().build());
         waitUntilQueueNonEmpty(newGameConnection.getResponse());
         ServerResponse serverResponseAfterPinging = newGameConnection.getResponse().poll().get();
@@ -235,7 +235,7 @@ public class IdleClientTest extends AbstractGameServerTest {
     @Test
     public void testMoveThenIdleClient() throws IOException, InterruptedException {
         int gameToConnectTo = 1;
-        GameConnection gameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         gameConnection.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ClientConfig.VERSION)
@@ -271,7 +271,7 @@ public class IdleClientTest extends AbstractGameServerTest {
         Thread.sleep(10_000);
 
         assertTrue(gameConnection.isDisconnected());
-        GameConnection newGameConnection = createGameConnection(ServerConfig.PASSWORD, "localhost", port);
+        GameConnection newGameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         newGameConnection.write(GetServerInfoCommand.newBuilder().build());
         waitUntilQueueNonEmpty(newGameConnection.getResponse());
         ServerResponse serverResponseAfterMoving = newGameConnection.getResponse().poll().get();

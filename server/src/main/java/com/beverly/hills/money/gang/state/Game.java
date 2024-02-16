@@ -3,42 +3,55 @@ package com.beverly.hills.money.gang.state;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
+import com.beverly.hills.money.gang.generator.IdGenerator;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import com.beverly.hills.money.gang.spawner.Spawner;
 import io.netty.channel.Channel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.io.Closeable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@RequiredArgsConstructor
+@Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class Game implements Closeable, GameReader {
 
     private static final Logger LOG = LoggerFactory.getLogger(Game.class);
 
+    private final Spawner spawner;
+
     @Getter
     private final int id;
-    private final AtomicInteger playerIdGenerator = new AtomicInteger();
+    private final IdGenerator playerIdGenerator;
 
     @Getter
     private final PlayersRegistry playersRegistry = new PlayersRegistry();
 
-    private final Spawner spawner = new Spawner();
-
     private final AtomicBoolean gameClosed = new AtomicBoolean();
+
+    public Game(
+            final Spawner spawner,
+            @Qualifier("gameIdGenerator") final IdGenerator gameIdGenerator,
+            @Qualifier("playerIdGenerator") final IdGenerator playerIdGenerator) {
+        this.spawner = spawner;
+        this.id = gameIdGenerator.getNext();
+        this.playerIdGenerator = playerIdGenerator;
+    }
 
     public PlayerConnectedGameState connectPlayer(final String playerName, final Channel playerChannel) throws GameLogicError {
         validateGameNotClosed();
-        int playerId = playerIdGenerator.incrementAndGet();
+        int playerId = playerIdGenerator.getNext();
         PlayerState.PlayerCoordinates spawn = spawner.spawn();
         PlayerState connectedPlayerState = new PlayerState(playerName, spawn, playerId);
         playersRegistry.addPlayer(connectedPlayerState, playerChannel);

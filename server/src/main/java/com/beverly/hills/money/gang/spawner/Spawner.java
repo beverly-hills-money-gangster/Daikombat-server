@@ -2,10 +2,12 @@ package com.beverly.hills.money.gang.spawner;
 
 import com.beverly.hills.money.gang.state.PlayerState;
 import com.beverly.hills.money.gang.state.Vector;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Random;
 
+@Component
 public class Spawner {
 
     private static final Random RANDOM = new Random();

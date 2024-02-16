@@ -27,33 +27,33 @@ public class MoveEventTest extends AbstractGameServerTest {
     @Test
     public void testMove() throws Exception {
         int gameIdToConnectTo = 2;
-        GameConnection gameConnection1 = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
-        gameConnection1.write(
+        GameConnection movingPlayerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
+        movingPlayerConnection.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameIdToConnectTo).build());
-        waitUntilQueueNonEmpty(gameConnection1.getResponse());
-        ServerResponse mySpawn = gameConnection1.getResponse().poll().get();
+        waitUntilQueueNonEmpty(movingPlayerConnection.getResponse());
+        ServerResponse mySpawn = movingPlayerConnection.getResponse().poll().get();
         ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
         int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
 
-        GameConnection gameConnection2 = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
-        gameConnection2.write(
+        GameConnection observerPlayerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
+        observerPlayerConnection.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("new player")
                         .setGameId(gameIdToConnectTo).build());
-        waitUntilQueueNonEmpty(gameConnection2.getResponse());
-        emptyQueue(gameConnection2.getResponse());
+        waitUntilQueueNonEmpty(observerPlayerConnection.getResponse());
+        emptyQueue(observerPlayerConnection.getResponse());
         Thread.sleep(1_000);
-        assertEquals(0, gameConnection2.getResponse().size(),
-                "No activity happened in the game so no response yet. Actual response is " + gameConnection2.getResponse().list());
+        assertEquals(0, observerPlayerConnection.getResponse().size(),
+                "No activity happened in the game so no response yet. Actual response is " + observerPlayerConnection.getResponse().list());
 
         float newPositionY = mySpawnGameEvent.getPlayer().getPosition().getY() + 0.01f;
         float newPositionX = mySpawnGameEvent.getPlayer().getPosition().getX() + 0.01f;
-        emptyQueue(gameConnection1.getResponse());
-        gameConnection1.write(PushGameEventCommand.newBuilder()
+        emptyQueue(movingPlayerConnection.getResponse());
+        movingPlayerConnection.write(PushGameEventCommand.newBuilder()
                 .setGameId(gameIdToConnectTo)
                 .setEventType(PushGameEventCommand.GameEventType.MOVE)
                 .setPlayerId(playerId1)
@@ -68,12 +68,12 @@ public class MoveEventTest extends AbstractGameServerTest {
                 .build());
 
         Thread.sleep(1_000);
-        assertEquals(0, gameConnection1.getResponse().size(),
+        assertEquals(0, movingPlayerConnection.getResponse().size(),
                 "Moving player is not expected to get any events. Moving player doesn't receive his own moves.");
-        assertEquals(1, gameConnection2.getResponse().size(),
+        assertEquals(1, observerPlayerConnection.getResponse().size(),
                 "Only one response is expected(player 1 move)");
 
-        ServerResponse moveServerResponse = gameConnection2.getResponse().poll().get();
+        ServerResponse moveServerResponse = observerPlayerConnection.getResponse().poll().get();
         assertEquals(2, moveServerResponse.getGameEvents().getPlayersOnline());
         assertTrue(moveServerResponse.hasGameEvents(), "Should be a game event");
         assertEquals(1, moveServerResponse.getGameEvents().getEventsCount(),
@@ -93,8 +93,74 @@ public class MoveEventTest extends AbstractGameServerTest {
                 0.00001);
 
         Thread.sleep(1_000);
-        assertEquals(0, gameConnection2.getResponse().size(),
+        assertEquals(0, observerPlayerConnection.getResponse().size(),
                 "No action so no response is expected");
+    }
+
+    /**
+     * @given a running server with 2 connected players
+     * @when player 1 move too fast, player 2 observes
+     * @then player 1 is disconnected, player 2 sees player exit
+     */
+    @Test
+    public void testMoveTooFast() throws Exception {
+        int gameIdToConnectTo = 2;
+        GameConnection cheatingPlayerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
+        cheatingPlayerConnection.write(
+                JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
+                        .setPlayerName("my player name")
+                        .setGameId(gameIdToConnectTo).build());
+        waitUntilQueueNonEmpty(cheatingPlayerConnection.getResponse());
+        ServerResponse mySpawn = cheatingPlayerConnection.getResponse().poll().get();
+        ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
+        int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
+
+        GameConnection observerPlayerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
+        observerPlayerConnection.write(
+                JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
+                        .setPlayerName("new player")
+                        .setGameId(gameIdToConnectTo).build());
+        waitUntilQueueNonEmpty(observerPlayerConnection.getResponse());
+        emptyQueue(observerPlayerConnection.getResponse());
+        Thread.sleep(1_000);
+        assertEquals(0, observerPlayerConnection.getResponse().size(),
+                "No activity happened in the game so no response yet. Actual response is " + observerPlayerConnection.getResponse().list());
+
+        // moving too fast
+        float newPositionY = mySpawnGameEvent.getPlayer().getPosition().getY() + 10f;
+        float newPositionX = mySpawnGameEvent.getPlayer().getPosition().getX() + 10f;
+        emptyQueue(cheatingPlayerConnection.getResponse());
+        cheatingPlayerConnection.write(PushGameEventCommand.newBuilder()
+                .setGameId(gameIdToConnectTo)
+                .setEventType(PushGameEventCommand.GameEventType.MOVE)
+                .setPlayerId(playerId1)
+                .setPosition(PushGameEventCommand.Vector.newBuilder()
+                        .setY(newPositionY)
+                        .setX(newPositionX)
+                        .build())
+                .setDirection(PushGameEventCommand.Vector.newBuilder()
+                        .setY(mySpawnGameEvent.getPlayer().getDirection().getY())
+                        .setX(mySpawnGameEvent.getPlayer().getDirection().getX())
+                        .build())
+                .build());
+
+        Thread.sleep(1_000);
+        assertTrue(cheatingPlayerConnection.isDisconnected(), "Cheating player should be disconnected");
+        assertTrue(observerPlayerConnection.isConnected());
+
+
+        ServerResponse exitServerResponse = observerPlayerConnection.getResponse().poll().get();
+        assertEquals(1, exitServerResponse.getGameEvents().getPlayersOnline(),
+                "Only 1 player is expected to be online now. Cheating player should exit.");
+        assertTrue(exitServerResponse.hasGameEvents(), "Should be a game event");
+        assertEquals(1, exitServerResponse.getGameEvents().getEventsCount(),
+                "Only one game even is expected(player 1 exit)");
+        ServerResponse.GameEvent playerExitEvent = exitServerResponse.getGameEvents().getEvents(0);
+
+        assertEquals(playerId1, playerExitEvent.getPlayer().getPlayerId(), "Should be player 1 id");
+        assertEquals(ServerResponse.GameEvent.GameEventType.EXIT, playerExitEvent.getEventType());
     }
 
     /**
@@ -105,34 +171,34 @@ public class MoveEventTest extends AbstractGameServerTest {
     @Test
     public void testMoveWrongPlayerId() throws Exception {
         int gameIdToConnectTo = 2;
-        GameConnection gameConnection1 = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
-        gameConnection1.write(
+        GameConnection movingPlayerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
+        movingPlayerConnection.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameIdToConnectTo).build());
-        waitUntilQueueNonEmpty(gameConnection1.getResponse());
-        ServerResponse mySpawn = gameConnection1.getResponse().poll().get();
+        waitUntilQueueNonEmpty(movingPlayerConnection.getResponse());
+        ServerResponse mySpawn = movingPlayerConnection.getResponse().poll().get();
         ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
         int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
 
-        GameConnection gameConnection2 = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
-        gameConnection2.write(
+        GameConnection wrongGameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
+        wrongGameConnection.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("new player")
                         .setGameId(gameIdToConnectTo).build());
-        waitUntilQueueNonEmpty(gameConnection2.getResponse());
-        emptyQueue(gameConnection2.getResponse());
+        waitUntilQueueNonEmpty(wrongGameConnection.getResponse());
+        emptyQueue(wrongGameConnection.getResponse());
         Thread.sleep(1_000);
-        assertEquals(0, gameConnection2.getResponse().size(),
-                "No activity happened in the game so no response yet. Actual response is " + gameConnection2.getResponse().list());
+        assertEquals(0, wrongGameConnection.getResponse().size(),
+                "No activity happened in the game so no response yet. Actual response is " + wrongGameConnection.getResponse().list());
 
         float newPositionY = mySpawnGameEvent.getPlayer().getPosition().getY() + 0.01f;
         float newPositionX = mySpawnGameEvent.getPlayer().getPosition().getX() + 0.01f;
 
         // wrong game connection
-        gameConnection2.write(PushGameEventCommand.newBuilder()
+        wrongGameConnection.write(PushGameEventCommand.newBuilder()
                 .setGameId(gameIdToConnectTo)
                 .setEventType(PushGameEventCommand.GameEventType.MOVE)
                 .setPlayerId(playerId1)
@@ -147,11 +213,11 @@ public class MoveEventTest extends AbstractGameServerTest {
                 .build());
 
         Thread.sleep(250);
-        assertEquals(1, gameConnection2.getResponse().size(),
+        assertEquals(1, wrongGameConnection.getResponse().size(),
                 "Only one response is expected(error)");
-        var errorEvent = gameConnection2.getResponse().poll().get().getErrorEvent();
+        var errorEvent = wrongGameConnection.getResponse().poll().get().getErrorEvent();
         assertEquals(GameErrorCode.COMMAND_NOT_RECOGNIZED.ordinal(), errorEvent.getErrorCode());
-        assertTrue(gameConnection2.isDisconnected(),
+        assertTrue(wrongGameConnection.isDisconnected(),
                 "The player should be disconnected because it provided a wrong player id");
     }
 

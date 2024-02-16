@@ -66,15 +66,21 @@ public class IdleClientTest extends AbstractGameServerTest {
         assertEquals(2, myGame.getPlayersOnline(), "2 players should be connected(idle player + observer)");
 
 
+        float newPositionY = observerSpawnGameEvent.getPlayer().getPosition().getY();
+        float newPositionX = observerSpawnGameEvent.getPlayer().getPosition().getX();
+
         int observerMoves = 50;
         // move observer, idle player does nothing meanwhile
         for (int i = 0; i < observerMoves; i++) {
+            newPositionY += 0.1f;
+            newPositionX += 0.1f;
             gameConnectionObserver.write(PushGameEventCommand.newBuilder()
                     .setPlayerId(observerPlayerId)
                     .setGameId(gameToConnectTo)
                     .setEventType(PushGameEventCommand.GameEventType.MOVE)
                     .setDirection(PushGameEventCommand.Vector.newBuilder().setX(0).setY(1).build())
-                    .setPosition(PushGameEventCommand.Vector.newBuilder().setX(i).setY(i).build())
+                    .setPosition(PushGameEventCommand.Vector.newBuilder()
+                            .setX(newPositionX).setY(newPositionY).build())
                     .build());
             Thread.sleep(200);
         }
@@ -134,8 +140,8 @@ public class IdleClientTest extends AbstractGameServerTest {
                         .setPlayerName("my player name")
                         .setGameId(gameToConnectTo).build());
         waitUntilQueueNonEmpty(gameConnection.getResponse());
-        ServerResponse mySpawn = gameConnection.getResponse().poll().get();
-        int playerId = mySpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
+        var mySpawn = gameConnection.getResponse().poll().get().getGameEvents().getEvents(0);
+        int playerId = mySpawn.getPlayer().getPlayerId();
 
         GameConnection observerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         observerConnection.write(GetServerInfoCommand.newBuilder().build());
@@ -147,15 +153,19 @@ public class IdleClientTest extends AbstractGameServerTest {
 
         assertEquals(1, myGame.getPlayersOnline(), "Only the current player should be connected");
 
+        float newPositionY = mySpawn.getPlayer().getPosition().getY();
+        float newPositionX = mySpawn.getPlayer().getPosition().getX();
         // move
         for (int i = 0; i < 50; i++) {
-
+            newPositionY += 0.1f;
+            newPositionX += 0.1f;
             gameConnection.write(PushGameEventCommand.newBuilder()
                     .setPlayerId(playerId)
                     .setGameId(gameToConnectTo)
                     .setEventType(PushGameEventCommand.GameEventType.MOVE)
                     .setDirection(PushGameEventCommand.Vector.newBuilder().setX(0).setY(1).build())
-                    .setPosition(PushGameEventCommand.Vector.newBuilder().setX(i).setY(i).build())
+                    .setPosition(PushGameEventCommand.Vector.newBuilder()
+                            .setX(newPositionX).setY(newPositionY).build())
                     .build());
             Thread.sleep(200);
         }

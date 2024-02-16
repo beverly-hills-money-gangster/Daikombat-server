@@ -1,11 +1,14 @@
 package com.beverly.hills.money.gang.registry;
 
+import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerState;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
 import java.io.Closeable;
 import java.util.HashMap;
@@ -15,14 +18,19 @@ import java.util.stream.Stream;
 
 import static com.beverly.hills.money.gang.exception.GameErrorCode.NOT_EXISTING_GAME_ROOM;
 
+@Component
 public class GameRoomRegistry implements Closeable {
 
     private static final Logger LOG = LoggerFactory.getLogger(GameRoomRegistry.class);
     private final Map<Integer, Game> games = new HashMap<>();
 
-    public GameRoomRegistry(int gamesToCreate) {
-        for (int i = 0; i < gamesToCreate; i++) {
-            games.put(i, new Game(i));
+    private final ApplicationContext applicationContext;
+
+    public GameRoomRegistry(final ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+        for (int i = 0; i < ServerConfig.GAMES_TO_CREATE; i++) {
+            var game = applicationContext.getBean(Game.class);
+            games.put(game.gameId(), game);
         }
     }
 

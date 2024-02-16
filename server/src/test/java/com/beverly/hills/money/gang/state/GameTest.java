@@ -3,6 +3,8 @@ package com.beverly.hills.money.gang.state;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
+import com.beverly.hills.money.gang.generator.IdGenerator;
+import com.beverly.hills.money.gang.spawner.Spawner;
 import io.netty.channel.Channel;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +29,7 @@ public class GameTest {
 
     @BeforeEach
     public void setUp() {
-        game = new Game(random.nextInt());
+        game = new Game(new Spawner(), new IdGenerator(), new IdGenerator());
     }
 
     @AfterEach

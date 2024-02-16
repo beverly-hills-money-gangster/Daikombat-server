@@ -164,7 +164,7 @@ public class JoinGameTest extends AbstractGameServerTest {
                             .setPlayerName("my player name " + i)
                             .setGameId(0).build());
         }
-        gameConnections.forEach(gameConnection -> waitUntilQueueNonEmpty(gameConnection.getResponse()));
+        Thread.sleep(1_000);
 
         GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         gameConnection.write(
@@ -341,6 +341,7 @@ public class JoinGameTest extends AbstractGameServerTest {
                                         .setVersion(ServerConfig.VERSION)
                                         .setPlayerName("my player name " + finalJ)
                                         .setGameId(finalGameId).build());
+                        waitUntilQueueNonEmpty(gameConnection.getResponse());
                         Thread.sleep(500);
                     } catch (Exception e) {
                         LOG.error("Error while running test", e);

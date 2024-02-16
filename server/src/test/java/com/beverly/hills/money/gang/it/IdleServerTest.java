@@ -37,8 +37,8 @@ public class IdleServerTest extends AbstractGameServerTest {
                         .setPlayerName("my player name")
                         .setGameId(gameToConnectTo).build());
         waitUntilQueueNonEmpty(gameConnection.getResponse());
-        ServerResponse mySpawn = gameConnection.getResponse().poll().get();
-        int playerId = mySpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
+        var mySpawn = gameConnection.getResponse().poll().get().getGameEvents().getEvents(0);
+        int playerId = mySpawn.getPlayer().getPlayerId();
 
         gameConnection.write(GetServerInfoCommand.newBuilder().build());
         waitUntilQueueNonEmpty(gameConnection.getResponse());
@@ -50,15 +50,19 @@ public class IdleServerTest extends AbstractGameServerTest {
         assertEquals(1, myGame.getPlayersOnline(), "Only the current player should be connected");
         emptyQueue(gameConnection.getResponse());
 
+        float newPositionY = mySpawn.getPlayer().getPosition().getY();
+        float newPositionX = mySpawn.getPlayer().getPosition().getX();
         // move
         for (int i = 0; i < 60; i++) {
-
+            newPositionY += 0.1f;
+            newPositionX += 0.1f;
             gameConnection.write(PushGameEventCommand.newBuilder()
                     .setPlayerId(playerId)
                     .setGameId(gameToConnectTo)
                     .setEventType(PushGameEventCommand.GameEventType.MOVE)
                     .setDirection(PushGameEventCommand.Vector.newBuilder().setX(0).setY(1).build())
-                    .setPosition(PushGameEventCommand.Vector.newBuilder().setX(i).setY(i).build())
+                    .setPosition(PushGameEventCommand.Vector.newBuilder()
+                            .setX(newPositionX).setY(newPositionY).build())
                     .build());
             Thread.sleep(200);
         }

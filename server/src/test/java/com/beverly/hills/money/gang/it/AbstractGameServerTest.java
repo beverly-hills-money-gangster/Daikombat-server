@@ -116,6 +116,7 @@ public abstract class AbstractGameServerTest {
         throw new IllegalStateException("Timeout waiting for response");
     }
 
+
     protected GameConnection createGameConnection(String password, String host, int port) throws IOException {
         GameConnection gameConnection = new GameConnection(GameServerCreds.builder()
                 .password(password)

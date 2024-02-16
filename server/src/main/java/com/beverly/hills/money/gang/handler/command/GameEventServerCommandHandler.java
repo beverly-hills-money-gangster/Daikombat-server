@@ -1,5 +1,6 @@
 package com.beverly.hills.money.gang.handler.command;
 
+import com.beverly.hills.money.gang.cheat.AntiCheat;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
@@ -27,14 +28,49 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(GameEventServerCommandHandler.class);
 
+    private final AntiCheat antiCheat;
+
     private final GameRoomRegistry gameRoomRegistry;
+
+    protected boolean isFairPlay(PushGameEventCommand gameCommand) {
+
+        if (!gameCommand.hasPosition()) {
+            return true;
+        }
+        try {
+            var game = gameRoomRegistry.getGame(gameCommand.getGameId());
+            var player = game.getPlayersRegistry().getPlayerState(gameCommand.getPlayerId())
+                    .orElseThrow(() -> new IllegalStateException("Player does not exist"));
+            var newPlayerPosition = Vector.builder()
+                    .x(gameCommand.getPosition().getX())
+                    .y(gameCommand.getPosition().getY())
+                    .build();
+            if (antiCheat.isMovingTooFast(newPlayerPosition, player.getCoordinates().getPosition())) {
+                LOG.error("Player {} is moving too fast", player.getPlayerId());
+                return false;
+            }
+            if (gameCommand.getEventType() == PushGameEventCommand.GameEventType.SHOOT && gameCommand.hasAffectedPlayerId()) {
+                return game.getPlayersRegistry()
+                        .getPlayerState(gameCommand.getAffectedPlayerId())
+                        .map(affectedPlayerState ->
+                                !antiCheat.isShootingTooFar(
+                                        newPlayerPosition, affectedPlayerState.getCoordinates().getPosition()))
+                        .orElse(true);
+            }
+
+            return true;
+        } catch (GameLogicError gameLogicError) {
+            LOG.error("Error occurred while running anti-cheat", gameLogicError);
+            return false;
+        }
+    }
 
     @Override
     protected boolean isValidCommand(ServerCommand msg, Channel currentChannel) {
         var gameCommand = msg.getGameCommand();
         return gameCommand.hasGameId()
                 && gameCommand.hasPlayerId()
-                && (gameCommand.hasPosition() && gameCommand.hasDirection() && gameCommand.hasEventType()
+                && (gameCommand.hasPosition() && gameCommand.hasDirection() && gameCommand.hasEventType() && isFairPlay(gameCommand)
                 || gameCommand.hasEventType() && gameCommand.getEventType() == PushGameEventCommand.GameEventType.PING)
                 && gameRoomRegistry.playerJoinedGame(gameCommand.getGameId(),
                 currentChannel, gameCommand.getPlayerId());

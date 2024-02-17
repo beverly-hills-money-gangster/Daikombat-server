@@ -54,6 +54,8 @@ A sample [docker-compose file](/docker-compose.yaml) can be found in the root fo
 
 ### Server monitoring
 
+#### JVM metrics
+
 Server JVM metrics can be monitored through JMX remotely. See [docker-compose file](/docker-compose.yaml). 
 In the sample, JMX agent is running on port 9999 listening to incoming connections initiated by 127.0.0.1. 
 If server is running in the cloud, then it's possible to port-forward JMX using the following command:
@@ -62,7 +64,14 @@ If server is running in the cloud, then it's possible to port-forward JMX using 
 ssh -L 9999:127.0.0.1:9999 <user>@<remote_host>
 ```
 
+#### Heap dumps
+
 Apart from JMX metrics, the server is configured to drop a heap dump file on out-of-memory.
+
+
+#### Micrometer
+
+All command handlers publish Micrometer timer metrics through JMX. See "metrics" in Jconsole "MBeans" tab.
 
 ### Client monitoring
 

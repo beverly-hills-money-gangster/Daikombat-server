@@ -21,8 +21,7 @@ import org.springframework.stereotype.Component;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createSpawnEventAllPlayers;
-import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createSpawnEventSinglePlayer;
+import static com.beverly.hills.money.gang.factory.ServerResponseFactory.*;
 
 @Component
 @RequiredArgsConstructor
@@ -77,7 +76,8 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
         currentChannel.writeAndFlush(allPlayersSpawnEvent);
 
         LOG.info("Send new player spawn to everyone");
-        otherPlayers.forEach(playerStateChannel -> playerStateChannel.getChannel().writeAndFlush(playerSpawnEvent));
+        ServerResponse playerSpawnEventForOthers = createSpawnEventSinglePlayerMinimal(playerConnected);
+        otherPlayers.forEach(playerStateChannel -> playerStateChannel.getChannel().writeAndFlush(playerSpawnEventForOthers));
 
     }
 }

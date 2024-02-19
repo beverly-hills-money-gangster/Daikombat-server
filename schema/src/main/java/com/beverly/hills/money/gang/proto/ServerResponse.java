@@ -4772,6 +4772,21 @@ private static final long serialVersionUID = 0L;
      * @return The eventType.
      */
     com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType getEventType();
+
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 4;</code>
+     * @return Whether the leaderBoard field is set.
+     */
+    boolean hasLeaderBoard();
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 4;</code>
+     * @return The leaderBoard.
+     */
+    com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard getLeaderBoard();
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 4;</code>
+     */
+    com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardOrBuilder getLeaderBoardOrBuilder();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.GameEvent}
@@ -5033,6 +5048,32 @@ private static final long serialVersionUID = 0L;
       return result == null ? com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType.UNRECOGNIZED : result;
     }
 
+    public static final int LEADERBOARD_FIELD_NUMBER = 4;
+    private com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard leaderBoard_;
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 4;</code>
+     * @return Whether the leaderBoard field is set.
+     */
+    @java.lang.Override
+    public boolean hasLeaderBoard() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 4;</code>
+     * @return The leaderBoard.
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard getLeaderBoard() {
+      return leaderBoard_ == null ? com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard.getDefaultInstance() : leaderBoard_;
+    }
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 4;</code>
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardOrBuilder getLeaderBoardOrBuilder() {
+      return leaderBoard_ == null ? com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard.getDefaultInstance() : leaderBoard_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -5056,6 +5097,9 @@ private static final long serialVersionUID = 0L;
       if (eventType_ != com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType.MOVE.getNumber()) {
         output.writeEnum(3, eventType_);
       }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        output.writeMessage(4, getLeaderBoard());
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -5076,6 +5120,10 @@ private static final long serialVersionUID = 0L;
       if (eventType_ != com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType.MOVE.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(3, eventType_);
+      }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, getLeaderBoard());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -5103,6 +5151,11 @@ private static final long serialVersionUID = 0L;
             .equals(other.getAffectedPlayer())) return false;
       }
       if (eventType_ != other.eventType_) return false;
+      if (hasLeaderBoard() != other.hasLeaderBoard()) return false;
+      if (hasLeaderBoard()) {
+        if (!getLeaderBoard()
+            .equals(other.getLeaderBoard())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -5124,6 +5177,10 @@ private static final long serialVersionUID = 0L;
       }
       hash = (37 * hash) + EVENTTYPE_FIELD_NUMBER;
       hash = (53 * hash) + eventType_;
+      if (hasLeaderBoard()) {
+        hash = (37 * hash) + LEADERBOARD_FIELD_NUMBER;
+        hash = (53 * hash) + getLeaderBoard().hashCode();
+      }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -5256,6 +5313,7 @@ private static final long serialVersionUID = 0L;
                 .alwaysUseFieldBuilders) {
           getPlayerFieldBuilder();
           getAffectedPlayerFieldBuilder();
+          getLeaderBoardFieldBuilder();
         }
       }
       @java.lang.Override
@@ -5273,6 +5331,11 @@ private static final long serialVersionUID = 0L;
           affectedPlayerBuilder_ = null;
         }
         eventType_ = 0;
+        leaderBoard_ = null;
+        if (leaderBoardBuilder_ != null) {
+          leaderBoardBuilder_.dispose();
+          leaderBoardBuilder_ = null;
+        }
         return this;
       }
 
@@ -5321,6 +5384,12 @@ private static final long serialVersionUID = 0L;
         }
         if (((from_bitField0_ & 0x00000004) != 0)) {
           result.eventType_ = eventType_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.leaderBoard_ = leaderBoardBuilder_ == null
+              ? leaderBoard_
+              : leaderBoardBuilder_.build();
+          to_bitField0_ |= 0x00000004;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -5378,6 +5447,9 @@ private static final long serialVersionUID = 0L;
         if (other.eventType_ != 0) {
           setEventTypeValue(other.getEventTypeValue());
         }
+        if (other.hasLeaderBoard()) {
+          mergeLeaderBoard(other.getLeaderBoard());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -5423,6 +5495,13 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000004;
                 break;
               } // case 24
+              case 34: {
+                input.readMessage(
+                    getLeaderBoardFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -5734,6 +5813,127 @@ private static final long serialVersionUID = 0L;
         onChanged();
         return this;
       }
+
+      private com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard leaderBoard_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard, com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard.Builder, com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardOrBuilder> leaderBoardBuilder_;
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 4;</code>
+       * @return Whether the leaderBoard field is set.
+       */
+      public boolean hasLeaderBoard() {
+        return ((bitField0_ & 0x00000008) != 0);
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 4;</code>
+       * @return The leaderBoard.
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard getLeaderBoard() {
+        if (leaderBoardBuilder_ == null) {
+          return leaderBoard_ == null ? com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard.getDefaultInstance() : leaderBoard_;
+        } else {
+          return leaderBoardBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 4;</code>
+       */
+      public Builder setLeaderBoard(com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard value) {
+        if (leaderBoardBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          leaderBoard_ = value;
+        } else {
+          leaderBoardBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 4;</code>
+       */
+      public Builder setLeaderBoard(
+          com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard.Builder builderForValue) {
+        if (leaderBoardBuilder_ == null) {
+          leaderBoard_ = builderForValue.build();
+        } else {
+          leaderBoardBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 4;</code>
+       */
+      public Builder mergeLeaderBoard(com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard value) {
+        if (leaderBoardBuilder_ == null) {
+          if (((bitField0_ & 0x00000008) != 0) &&
+            leaderBoard_ != null &&
+            leaderBoard_ != com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard.getDefaultInstance()) {
+            getLeaderBoardBuilder().mergeFrom(value);
+          } else {
+            leaderBoard_ = value;
+          }
+        } else {
+          leaderBoardBuilder_.mergeFrom(value);
+        }
+        if (leaderBoard_ != null) {
+          bitField0_ |= 0x00000008;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 4;</code>
+       */
+      public Builder clearLeaderBoard() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        leaderBoard_ = null;
+        if (leaderBoardBuilder_ != null) {
+          leaderBoardBuilder_.dispose();
+          leaderBoardBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 4;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard.Builder getLeaderBoardBuilder() {
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return getLeaderBoardFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 4;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardOrBuilder getLeaderBoardOrBuilder() {
+        if (leaderBoardBuilder_ != null) {
+          return leaderBoardBuilder_.getMessageOrBuilder();
+        } else {
+          return leaderBoard_ == null ?
+              com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard.getDefaultInstance() : leaderBoard_;
+        }
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 4;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard, com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard.Builder, com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardOrBuilder> 
+          getLeaderBoardFieldBuilder() {
+        if (leaderBoardBuilder_ == null) {
+          leaderBoardBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard, com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard.Builder, com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardOrBuilder>(
+                  getLeaderBoard(),
+                  getParentForChildren(),
+                  isClean());
+          leaderBoard_ = null;
+        }
+        return leaderBoardBuilder_;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -5793,6 +5993,1393 @@ private static final long serialVersionUID = 0L;
 
     @java.lang.Override
     public com.beverly.hills.money.gang.proto.ServerResponse.GameEvent getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface LeaderBoardOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:daikombat.dto.ServerResponse.LeaderBoard)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+     */
+    java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem> 
+        getItemsList();
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+     */
+    com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem getItems(int index);
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+     */
+    int getItemsCount();
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+     */
+    java.util.List<? extends com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItemOrBuilder> 
+        getItemsOrBuilderList();
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+     */
+    com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItemOrBuilder getItemsOrBuilder(
+        int index);
+  }
+  /**
+   * Protobuf type {@code daikombat.dto.ServerResponse.LeaderBoard}
+   */
+  public static final class LeaderBoard extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:daikombat.dto.ServerResponse.LeaderBoard)
+      LeaderBoardOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use LeaderBoard.newBuilder() to construct.
+    private LeaderBoard(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private LeaderBoard() {
+      items_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new LeaderBoard();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_LeaderBoard_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_LeaderBoard_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard.class, com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard.Builder.class);
+    }
+
+    public static final int ITEMS_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem> items_;
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem> getItemsList() {
+      return items_;
+    }
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItemOrBuilder> 
+        getItemsOrBuilderList() {
+      return items_;
+    }
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+     */
+    @java.lang.Override
+    public int getItemsCount() {
+      return items_.size();
+    }
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem getItems(int index) {
+      return items_.get(index);
+    }
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItemOrBuilder getItemsOrBuilder(
+        int index) {
+      return items_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < items_.size(); i++) {
+        output.writeMessage(1, items_.get(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < items_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, items_.get(i));
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard)) {
+        return super.equals(obj);
+      }
+      com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard other = (com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard) obj;
+
+      if (!getItemsList()
+          .equals(other.getItemsList())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getItemsCount() > 0) {
+        hash = (37 * hash) + ITEMS_FIELD_NUMBER;
+        hash = (53 * hash) + getItemsList().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code daikombat.dto.ServerResponse.LeaderBoard}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:daikombat.dto.ServerResponse.LeaderBoard)
+        com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_LeaderBoard_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_LeaderBoard_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard.class, com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard.Builder.class);
+      }
+
+      // Construct using com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        if (itemsBuilder_ == null) {
+          items_ = java.util.Collections.emptyList();
+        } else {
+          items_ = null;
+          itemsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_LeaderBoard_descriptor;
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard getDefaultInstanceForType() {
+        return com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard build() {
+        com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard buildPartial() {
+        com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard result = new com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard(this);
+        buildPartialRepeatedFields(result);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartialRepeatedFields(com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard result) {
+        if (itemsBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            items_ = java.util.Collections.unmodifiableList(items_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.items_ = items_;
+        } else {
+          result.items_ = itemsBuilder_.build();
+        }
+      }
+
+      private void buildPartial0(com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard result) {
+        int from_bitField0_ = bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard) {
+          return mergeFrom((com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard other) {
+        if (other == com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard.getDefaultInstance()) return this;
+        if (itemsBuilder_ == null) {
+          if (!other.items_.isEmpty()) {
+            if (items_.isEmpty()) {
+              items_ = other.items_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureItemsIsMutable();
+              items_.addAll(other.items_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.items_.isEmpty()) {
+            if (itemsBuilder_.isEmpty()) {
+              itemsBuilder_.dispose();
+              itemsBuilder_ = null;
+              items_ = other.items_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              itemsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getItemsFieldBuilder() : null;
+            } else {
+              itemsBuilder_.addAllMessages(other.items_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem m =
+                    input.readMessage(
+                        com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem.parser(),
+                        extensionRegistry);
+                if (itemsBuilder_ == null) {
+                  ensureItemsIsMutable();
+                  items_.add(m);
+                } else {
+                  itemsBuilder_.addMessage(m);
+                }
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem> items_ =
+        java.util.Collections.emptyList();
+      private void ensureItemsIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          items_ = new java.util.ArrayList<com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem>(items_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem, com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem.Builder, com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItemOrBuilder> itemsBuilder_;
+
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+       */
+      public java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem> getItemsList() {
+        if (itemsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(items_);
+        } else {
+          return itemsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+       */
+      public int getItemsCount() {
+        if (itemsBuilder_ == null) {
+          return items_.size();
+        } else {
+          return itemsBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem getItems(int index) {
+        if (itemsBuilder_ == null) {
+          return items_.get(index);
+        } else {
+          return itemsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+       */
+      public Builder setItems(
+          int index, com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem value) {
+        if (itemsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureItemsIsMutable();
+          items_.set(index, value);
+          onChanged();
+        } else {
+          itemsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+       */
+      public Builder setItems(
+          int index, com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem.Builder builderForValue) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          itemsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+       */
+      public Builder addItems(com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem value) {
+        if (itemsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureItemsIsMutable();
+          items_.add(value);
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+       */
+      public Builder addItems(
+          int index, com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem value) {
+        if (itemsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureItemsIsMutable();
+          items_.add(index, value);
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+       */
+      public Builder addItems(
+          com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem.Builder builderForValue) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.add(builderForValue.build());
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+       */
+      public Builder addItems(
+          int index, com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem.Builder builderForValue) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+       */
+      public Builder addAllItems(
+          java.lang.Iterable<? extends com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem> values) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, items_);
+          onChanged();
+        } else {
+          itemsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+       */
+      public Builder clearItems() {
+        if (itemsBuilder_ == null) {
+          items_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          itemsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+       */
+      public Builder removeItems(int index) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.remove(index);
+          onChanged();
+        } else {
+          itemsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem.Builder getItemsBuilder(
+          int index) {
+        return getItemsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItemOrBuilder getItemsOrBuilder(
+          int index) {
+        if (itemsBuilder_ == null) {
+          return items_.get(index);  } else {
+          return itemsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+       */
+      public java.util.List<? extends com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItemOrBuilder> 
+           getItemsOrBuilderList() {
+        if (itemsBuilder_ != null) {
+          return itemsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(items_);
+        }
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem.Builder addItemsBuilder() {
+        return getItemsFieldBuilder().addBuilder(
+            com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem.Builder addItemsBuilder(
+          int index) {
+        return getItemsFieldBuilder().addBuilder(
+            index, com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.LeaderBoardItem items = 1;</code>
+       */
+      public java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem.Builder> 
+           getItemsBuilderList() {
+        return getItemsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem, com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem.Builder, com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItemOrBuilder> 
+          getItemsFieldBuilder() {
+        if (itemsBuilder_ == null) {
+          itemsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem, com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem.Builder, com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItemOrBuilder>(
+                  items_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          items_ = null;
+        }
+        return itemsBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:daikombat.dto.ServerResponse.LeaderBoard)
+    }
+
+    // @@protoc_insertion_point(class_scope:daikombat.dto.ServerResponse.LeaderBoard)
+    private static final com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard();
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<LeaderBoard>
+        PARSER = new com.google.protobuf.AbstractParser<LeaderBoard>() {
+      @java.lang.Override
+      public LeaderBoard parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<LeaderBoard> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<LeaderBoard> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface LeaderBoardItemOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:daikombat.dto.ServerResponse.LeaderBoardItem)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional int32 playerId = 1;</code>
+     * @return Whether the playerId field is set.
+     */
+    boolean hasPlayerId();
+    /**
+     * <code>optional int32 playerId = 1;</code>
+     * @return The playerId.
+     */
+    int getPlayerId();
+
+    /**
+     * <code>optional int32 kills = 2;</code>
+     * @return Whether the kills field is set.
+     */
+    boolean hasKills();
+    /**
+     * <code>optional int32 kills = 2;</code>
+     * @return The kills.
+     */
+    int getKills();
+  }
+  /**
+   * Protobuf type {@code daikombat.dto.ServerResponse.LeaderBoardItem}
+   */
+  public static final class LeaderBoardItem extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:daikombat.dto.ServerResponse.LeaderBoardItem)
+      LeaderBoardItemOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use LeaderBoardItem.newBuilder() to construct.
+    private LeaderBoardItem(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private LeaderBoardItem() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new LeaderBoardItem();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_LeaderBoardItem_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_LeaderBoardItem_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem.class, com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int PLAYERID_FIELD_NUMBER = 1;
+    private int playerId_ = 0;
+    /**
+     * <code>optional int32 playerId = 1;</code>
+     * @return Whether the playerId field is set.
+     */
+    @java.lang.Override
+    public boolean hasPlayerId() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>optional int32 playerId = 1;</code>
+     * @return The playerId.
+     */
+    @java.lang.Override
+    public int getPlayerId() {
+      return playerId_;
+    }
+
+    public static final int KILLS_FIELD_NUMBER = 2;
+    private int kills_ = 0;
+    /**
+     * <code>optional int32 kills = 2;</code>
+     * @return Whether the kills field is set.
+     */
+    @java.lang.Override
+    public boolean hasKills() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>optional int32 kills = 2;</code>
+     * @return The kills.
+     */
+    @java.lang.Override
+    public int getKills() {
+      return kills_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeInt32(1, playerId_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        output.writeInt32(2, kills_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, playerId_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, kills_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem)) {
+        return super.equals(obj);
+      }
+      com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem other = (com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem) obj;
+
+      if (hasPlayerId() != other.hasPlayerId()) return false;
+      if (hasPlayerId()) {
+        if (getPlayerId()
+            != other.getPlayerId()) return false;
+      }
+      if (hasKills() != other.hasKills()) return false;
+      if (hasKills()) {
+        if (getKills()
+            != other.getKills()) return false;
+      }
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasPlayerId()) {
+        hash = (37 * hash) + PLAYERID_FIELD_NUMBER;
+        hash = (53 * hash) + getPlayerId();
+      }
+      if (hasKills()) {
+        hash = (37 * hash) + KILLS_FIELD_NUMBER;
+        hash = (53 * hash) + getKills();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code daikombat.dto.ServerResponse.LeaderBoardItem}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:daikombat.dto.ServerResponse.LeaderBoardItem)
+        com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItemOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_LeaderBoardItem_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_LeaderBoardItem_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem.class, com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem.Builder.class);
+      }
+
+      // Construct using com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        playerId_ = 0;
+        kills_ = 0;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_LeaderBoardItem_descriptor;
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem getDefaultInstanceForType() {
+        return com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem build() {
+        com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem buildPartial() {
+        com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem result = new com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem result) {
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.playerId_ = playerId_;
+          to_bitField0_ |= 0x00000001;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.kills_ = kills_;
+          to_bitField0_ |= 0x00000002;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem) {
+          return mergeFrom((com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem other) {
+        if (other == com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem.getDefaultInstance()) return this;
+        if (other.hasPlayerId()) {
+          setPlayerId(other.getPlayerId());
+        }
+        if (other.hasKills()) {
+          setKills(other.getKills());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                playerId_ = input.readInt32();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              case 16: {
+                kills_ = input.readInt32();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private int playerId_ ;
+      /**
+       * <code>optional int32 playerId = 1;</code>
+       * @return Whether the playerId field is set.
+       */
+      @java.lang.Override
+      public boolean hasPlayerId() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <code>optional int32 playerId = 1;</code>
+       * @return The playerId.
+       */
+      @java.lang.Override
+      public int getPlayerId() {
+        return playerId_;
+      }
+      /**
+       * <code>optional int32 playerId = 1;</code>
+       * @param value The playerId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPlayerId(int value) {
+
+        playerId_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 playerId = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPlayerId() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        playerId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int kills_ ;
+      /**
+       * <code>optional int32 kills = 2;</code>
+       * @return Whether the kills field is set.
+       */
+      @java.lang.Override
+      public boolean hasKills() {
+        return ((bitField0_ & 0x00000002) != 0);
+      }
+      /**
+       * <code>optional int32 kills = 2;</code>
+       * @return The kills.
+       */
+      @java.lang.Override
+      public int getKills() {
+        return kills_;
+      }
+      /**
+       * <code>optional int32 kills = 2;</code>
+       * @param value The kills to set.
+       * @return This builder for chaining.
+       */
+      public Builder setKills(int value) {
+
+        kills_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 kills = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearKills() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        kills_ = 0;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:daikombat.dto.ServerResponse.LeaderBoardItem)
+    }
+
+    // @@protoc_insertion_point(class_scope:daikombat.dto.ServerResponse.LeaderBoardItem)
+    private static final com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem();
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<LeaderBoardItem>
+        PARSER = new com.google.protobuf.AbstractParser<LeaderBoardItem>() {
+      @java.lang.Override
+      public LeaderBoardItem parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<LeaderBoardItem> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<LeaderBoardItem> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardItem getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 

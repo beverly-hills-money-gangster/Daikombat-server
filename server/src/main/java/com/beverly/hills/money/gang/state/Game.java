@@ -16,10 +16,12 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.Closeable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -56,6 +58,7 @@ public class Game implements Closeable, GameReader {
         PlayerState connectedPlayerState = new PlayerState(playerName, spawn, playerId);
         playersRegistry.addPlayer(connectedPlayerState, playerChannel);
         return PlayerConnectedGameState.builder()
+                .leaderBoard(getLeaderBoard())
                 .playerState(connectedPlayerState).build();
     }
 
@@ -64,6 +67,7 @@ public class Game implements Closeable, GameReader {
                                          final Integer shotPlayerId) throws GameLogicError {
         validateGameNotClosed();
         PlayerState shootingPlayerState = getPlayer(shootingPlayerId).orElse(null);
+        List<GameLeaderBoardItem> leaderBoard = new ArrayList<>();
         if (shootingPlayerState == null) {
             LOG.warn("Non-existing player can't shoot");
             return null;
@@ -91,6 +95,7 @@ public class Game implements Closeable, GameReader {
             shotPlayer.getShot();
             if (shotPlayer.isDead()) {
                 shootingPlayerState.registerKill();
+                leaderBoard.addAll(getLeaderBoard());
             }
             return shotPlayer;
         }).orElse(null);
@@ -100,9 +105,22 @@ public class Game implements Closeable, GameReader {
             return null;
         }
         return PlayerShootingGameState.builder()
+                .leaderBoard(leaderBoard)
                 .shootingPlayer(shootingPlayerState)
                 .playerShot(shotPlayerState)
                 .build();
+    }
+
+    private List<GameLeaderBoardItem> getLeaderBoard() {
+        return playersRegistry.allPlayers()
+                .filter(playerStateChannel -> !playerStateChannel.getPlayerState().isDead())
+                .sorted((player1, player2) -> -Integer.compare(
+                        player1.getPlayerState().getKills(), player2.getPlayerState().getKills()))
+                .map(playerStateChannel -> GameLeaderBoardItem.builder()
+                        .playerId(playerStateChannel.getPlayerState().getPlayerId())
+                        .kills(playerStateChannel.getPlayerState().getKills())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     public void bufferMove(final int movingPlayerId, final PlayerState.PlayerCoordinates playerCoordinates) throws GameLogicError {

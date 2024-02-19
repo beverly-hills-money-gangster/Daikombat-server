@@ -104,7 +104,8 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
                                 LOG.debug("Player {} is dead", shotPlayer.getPlayerId());
                                 var deadEvent = createDeadEvent(
                                         shootingGameState.getShootingPlayer(),
-                                        shootingGameState.getPlayerShot());
+                                        shootingGameState.getPlayerShot(),
+                                        shootingGameState.getLeaderBoard());
                                 game.getPlayersRegistry().allPlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
                                         .forEach(channel -> channel.writeAndFlush(deadEvent));
                                 game.getPlayersRegistry().removePlayer(shotPlayer.getPlayerId());

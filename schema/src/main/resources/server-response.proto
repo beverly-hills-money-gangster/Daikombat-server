@@ -48,6 +48,7 @@ message ServerResponse {
     optional GameEventPlayerStats player = 1;
     optional GameEventPlayerStats affectedPlayer = 2;
     GameEventType eventType = 3;
+    optional LeaderBoard leaderBoard = 4;
 
     enum GameEventType {
       MOVE = 0;
@@ -58,6 +59,15 @@ message ServerResponse {
       EXIT = 5;
       PING = 6;
     }
+  }
+
+  message LeaderBoard {
+    repeated LeaderBoardItem items = 1;
+  }
+
+  message LeaderBoardItem {
+    optional int32 playerId = 1;
+    optional int32 kills = 2;
   }
 
   message GameEventPlayerStats {

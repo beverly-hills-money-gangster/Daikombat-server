@@ -11,8 +11,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
@@ -22,8 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class GameTest {
-
-    private final Random random = new Random();
 
     private Game game;
 
@@ -67,6 +66,14 @@ public class GameTest {
         assertEquals(0, playerState.getKills(), "Nobody got killed yet");
         assertEquals(playerConnectedGameState.getPlayerState().getPlayerId(), playerState.getPlayerId());
         assertEquals(100, playerState.getHealth(), "Full 100% HP must be set by default");
+        assertEquals(1, playerConnectedGameState.getLeaderBoard().size(),
+                "Leader board has 1 item as we have 1 player only");
+        assertEquals(
+                playerConnectedGameState.getPlayerState().getPlayerId(),
+                playerConnectedGameState.getLeaderBoard().get(0).getPlayerId());
+        assertEquals(
+                0,
+                playerConnectedGameState.getLeaderBoard().get(0).getKills());
     }
 
     /**
@@ -188,6 +195,9 @@ public class GameTest {
         assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
         assertEquals(0, shooterState.getKills(), "Nobody was killed");
         assertEquals(1, game.playersOnline());
+
+        assertTrue(playerShootingGameState.getLeaderBoard().isEmpty(),
+                "Nothing in the leader board. It's returned only on first spawn or death");
     }
 
     /**
@@ -200,8 +210,11 @@ public class GameTest {
         String shooterPlayerName = "shooter player";
         String shotPlayerName = "shot player";
         Channel channel = mock(Channel.class);
+        Set<Integer> connectedPlayerIds = new HashSet<>();
         PlayerConnectedGameState shooterPlayerConnectedGameState = game.connectPlayer(shooterPlayerName, channel);
         PlayerConnectedGameState shotPlayerConnectedGameState = game.connectPlayer(shotPlayerName, channel);
+        connectedPlayerIds.add(shotPlayerConnectedGameState.getPlayerState().getPlayerId());
+        connectedPlayerIds.add(shooterPlayerConnectedGameState.getPlayerState().getPlayerId());
 
         PlayerShootingGameState playerShootingGameState = game.shoot(
                 shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
@@ -220,6 +233,9 @@ public class GameTest {
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(100 - ServerConfig.DEFAULT_DAMAGE, shotState.getHealth());
         assertFalse(shotState.isDead());
+
+        assertTrue(playerShootingGameState.getLeaderBoard().isEmpty(),
+                "Nothing in the leader board. It's returned only on first spawn or death");
     }
 
     /**
@@ -261,8 +277,83 @@ public class GameTest {
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(0, shotState.getHealth());
         assertTrue(shotState.isDead());
+
+        assertEquals(1, playerShootingGameState.getLeaderBoard().size(),
+                "1 player is connected so it should 1 item in the leader board");
+
+        assertEquals(
+                playerShootingGameState.getShootingPlayer().getPlayerId(),
+                playerShootingGameState.getLeaderBoard().get(0).getPlayerId());
+        assertEquals(
+                1,
+                playerShootingGameState.getLeaderBoard().get(0).getKills(),
+                "There was one kill");
     }
 
+
+    /**
+     * @given 3 players(killer, victim, and observer)
+     * @when one player kills the other
+     * @then the shot player dies, killer gets 1 kill, leader board has 2 elements: killer 1st place, observer - 2nd
+     */
+    @Test
+    public void testShootDeadJoin3PlayersLeaderBoard() throws Throwable {
+        String shooterPlayerName = "shooter player";
+        String shotPlayerName = "shot player";
+        String observerPlayerName = "observer player";
+        Channel channel = mock(Channel.class);
+        PlayerConnectedGameState shooterPlayerConnectedGameState = game.connectPlayer(shooterPlayerName, channel);
+        PlayerConnectedGameState observerPlayerConnectedGameState = game.connectPlayer(observerPlayerName, channel);
+        PlayerConnectedGameState shotPlayerConnectedGameState = game.connectPlayer(shotPlayerName, channel);
+
+        int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_DAMAGE);
+
+        // after this loop, one player is almost dead
+        for (int i = 0; i < shotsToKill - 1; i++) {
+            game.shoot(
+                    shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
+                    shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
+                    shotPlayerConnectedGameState.getPlayerState().getPlayerId());
+        }
+        PlayerShootingGameState playerShootingGameState = game.shoot(
+                shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
+                shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
+                shotPlayerConnectedGameState.getPlayerState().getPlayerId());
+        assertNotNull(playerShootingGameState.getPlayerShot());
+
+        assertTrue(playerShootingGameState.getPlayerShot().isDead());
+        assertEquals(0, playerShootingGameState.getPlayerShot().getHealth());
+        PlayerState shooterState = game.getPlayersRegistry().getPlayerState(shooterPlayerConnectedGameState.getPlayerState().getPlayerId())
+                .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
+        assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
+        assertEquals(1, shooterState.getKills(), "One player was killed");
+        assertEquals(3, game.playersOnline());
+        PlayerState shotState = game.getPlayersRegistry().getPlayerState(shotPlayerConnectedGameState.getPlayerState().getPlayerId())
+                .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
+        assertEquals(0, shotState.getHealth());
+        assertTrue(shotState.isDead());
+
+        assertEquals(2, playerShootingGameState.getLeaderBoard().size(),
+                "2 player are connected so it should 2 item in the leader board");
+
+        assertEquals(
+                playerShootingGameState.getShootingPlayer().getPlayerId(),
+                playerShootingGameState.getLeaderBoard().get(0).getPlayerId(),
+                "Killer player should be first");
+        assertEquals(
+                1,
+                playerShootingGameState.getLeaderBoard().get(0).getKills(),
+                "There was one kill");
+
+        assertEquals(
+                observerPlayerConnectedGameState.getPlayerState().getPlayerId(),
+                playerShootingGameState.getLeaderBoard().get(1).getPlayerId(),
+                "Observer player should be second");
+        assertEquals(
+                0,
+                playerShootingGameState.getLeaderBoard().get(1).getKills(),
+                "Observer hasn't killed anybody");
+    }
 
     /**
      * @given a player

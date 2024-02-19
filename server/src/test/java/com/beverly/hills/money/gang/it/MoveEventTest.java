@@ -216,7 +216,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         assertEquals(1, wrongGameConnection.getResponse().size(),
                 "Only one response is expected(error)");
         var errorEvent = wrongGameConnection.getResponse().poll().get().getErrorEvent();
-        assertEquals(GameErrorCode.COMMAND_NOT_RECOGNIZED.ordinal(), errorEvent.getErrorCode());
+        assertEquals(GameErrorCode.COMMON_ERROR.ordinal(), errorEvent.getErrorCode());
         assertTrue(wrongGameConnection.isDisconnected(),
                 "The player should be disconnected because it provided a wrong player id");
     }

@@ -32,54 +32,38 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
 
     private final GameRoomRegistry gameRoomRegistry;
 
-    protected boolean isFairPlay(PushGameEventCommand gameCommand) {
-
-        if (!gameCommand.hasPosition()) {
-            return true;
-        }
-        try {
-            var game = gameRoomRegistry.getGame(gameCommand.getGameId());
-            var player = game.getPlayersRegistry().getPlayerState(gameCommand.getPlayerId())
-                    .orElseThrow(() -> new IllegalStateException("Player does not exist"));
-            var newPlayerPosition = Vector.builder()
-                    .x(gameCommand.getPosition().getX())
-                    .y(gameCommand.getPosition().getY())
-                    .build();
-            if (antiCheat.isMovingTooFast(newPlayerPosition, player.getCoordinates().getPosition())) {
-                LOG.error("Player {} is moving too fast", player.getPlayerId());
-                return false;
-            }
-            if (gameCommand.getEventType() == PushGameEventCommand.GameEventType.SHOOT && gameCommand.hasAffectedPlayerId()) {
-                return game.getPlayersRegistry()
-                        .getPlayerState(gameCommand.getAffectedPlayerId())
-                        .map(affectedPlayerState ->
-                                !antiCheat.isShootingTooFar(
-                                        newPlayerPosition, affectedPlayerState.getCoordinates().getPosition()))
-                        .orElse(true);
-            }
-
-            return true;
-        } catch (GameLogicError gameLogicError) {
-            LOG.error("Error occurred while running anti-cheat", gameLogicError);
-            return false;
-        }
-    }
-
     @Override
     protected boolean isValidCommand(ServerCommand msg, Channel currentChannel) {
         var gameCommand = msg.getGameCommand();
         return gameCommand.hasGameId()
                 && gameCommand.hasPlayerId()
-                && (gameCommand.hasPosition() && gameCommand.hasDirection() && gameCommand.hasEventType() && isFairPlay(gameCommand)
-                || gameCommand.hasEventType() && gameCommand.getEventType() == PushGameEventCommand.GameEventType.PING)
-                && gameRoomRegistry.playerJoinedGame(gameCommand.getGameId(),
-                currentChannel, gameCommand.getPlayerId());
+                && (gameCommand.hasPosition() && gameCommand.hasDirection() && gameCommand.hasEventType()
+                || gameCommand.hasEventType() && gameCommand.getEventType() == PushGameEventCommand.GameEventType.PING);
     }
 
     @Override
     protected void handleInternal(ServerCommand msg, Channel currentChannel) throws GameLogicError {
         Game game = gameRoomRegistry.getGame(msg.getGameCommand().getGameId());
         PushGameEventCommand gameCommand = msg.getGameCommand();
+        var player = game.getPlayersRegistry().getPlayerState(gameCommand.getPlayerId()).orElse(null);
+        if (player == null) {
+            /*
+            this can happen due to network latency.
+            for example:
+            1) killer and victim players join the server
+            2) killer kills the victim
+            3) victim is killed on the server but due to network latency it doesn't know it yet
+            4) victim continues to move or shoot before getting DEATH event
+            for now, we just ignore such events.
+             */
+            LOG.warn("Player {} doesn't exist. Ignore command.", gameCommand.getPlayerId());
+            return;
+        } else if (!gameRoomRegistry.playerJoinedGame(gameCommand.getGameId(),
+                currentChannel, gameCommand.getPlayerId())) {
+            throw new GameLogicError("Player hasn't join the game", GameErrorCode.COMMON_ERROR);
+        } else if (gameCommand.hasPosition() && !isFairPlay(gameCommand, player)) {
+            throw new GameLogicError("Cheating detected", GameErrorCode.CHEATING);
+        }
         PushGameEventCommand.GameEventType gameEventType = gameCommand.getEventType();
         PlayerState.PlayerCoordinates playerCoordinates = PlayerState.PlayerCoordinates
                 .builder()
@@ -141,6 +125,37 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
             default -> currentChannel.writeAndFlush(createErrorEvent(
                     new GameLogicError("Not supported command",
                             GameErrorCode.COMMAND_NOT_RECOGNIZED)));
+        }
+    }
+
+    protected boolean isFairPlay(PushGameEventCommand gameCommand, PlayerState player) {
+        try {
+            var game = gameRoomRegistry.getGame(gameCommand.getGameId());
+            var newPlayerPosition = Vector.builder()
+                    .x(gameCommand.getPosition().getX())
+                    .y(gameCommand.getPosition().getY())
+                    .build();
+            if (antiCheat.isMovingTooFast(newPlayerPosition, player.getCoordinates().getPosition())) {
+                LOG.error("Player {} is moving too fast", player.getPlayerId());
+                return false;
+            }
+            if (gameCommand.getEventType() == PushGameEventCommand.GameEventType.SHOOT && gameCommand.hasAffectedPlayerId()) {
+                var possibleShot = game.getPlayersRegistry()
+                        .getPlayerState(gameCommand.getAffectedPlayerId())
+                        .map(affectedPlayerState ->
+                                !antiCheat.isShootingTooFar(
+                                        newPlayerPosition, affectedPlayerState.getCoordinates().getPosition()))
+                        .orElse(true);
+                if (!possibleShot) {
+                    LOG.error("Player {} can't shoot from that position", player.getPlayerId());
+                    return false;
+                }
+            }
+
+            return true;
+        } catch (GameLogicError gameLogicError) {
+            LOG.error("Error occurred while running anti-cheat", gameLogicError);
+            return false;
         }
     }
 }

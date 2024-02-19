@@ -2,10 +2,7 @@ package com.beverly.hills.money.gang.factory;
 
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.proto.ServerResponse;
-import com.beverly.hills.money.gang.state.GameReader;
-import com.beverly.hills.money.gang.state.PlayerConnectedGameState;
-import com.beverly.hills.money.gang.state.PlayerStateReader;
-import com.beverly.hills.money.gang.state.Vector;
+import com.beverly.hills.money.gang.state.*;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -18,11 +15,29 @@ public interface ServerResponseFactory {
                 .setY(vector.getY()).build();
     }
 
-    static ServerResponse.GameEvent createSpawnEvent(PlayerStateReader playerStateReader) {
+
+    static ServerResponse.LeaderBoard createLeaderBoard(List<GameLeaderBoardItem> leaderBoard) {
+        var leaderBoardResponse = ServerResponse.LeaderBoard.newBuilder();
+        leaderBoard.forEach(leaderBoardItem
+                -> leaderBoardResponse.addItems(ServerResponse.LeaderBoardItem.newBuilder()
+                .setPlayerId(leaderBoardItem.getPlayerId())
+                .setKills(leaderBoardItem.getKills())
+                .build()));
+        return leaderBoardResponse.build();
+    }
+
+    static ServerResponse.GameEvent createSpawnEvent(PlayerStateReader playerStateReader,
+                                                     List<GameLeaderBoardItem> leaderBoard) {
+
         return ServerResponse.GameEvent.newBuilder()
                 .setEventType(ServerResponse.GameEvent.GameEventType.SPAWN)
+                .setLeaderBoard(createLeaderBoard(leaderBoard))
                 .setPlayer(createPlayerStats(playerStateReader))
                 .build();
+    }
+
+    static ServerResponse.GameEvent createSpawnEvent(PlayerStateReader playerStateReader) {
+        return createSpawnEvent(playerStateReader, List.of());
     }
 
 
@@ -131,12 +146,14 @@ public interface ServerResponseFactory {
 
     static ServerResponse createDeadEvent(
             PlayerStateReader shooterPlayerReader,
-            PlayerStateReader deadPlayerReader) {
+            PlayerStateReader deadPlayerReader,
+            List<GameLeaderBoardItem> leaderBoard) {
         var deadPlayerEvent = ServerResponse.GameEvents.newBuilder()
                 .addEvents(ServerResponse.GameEvent.newBuilder()
                         .setEventType(ServerResponse.GameEvent.GameEventType.DEATH)
                         .setPlayer(createPlayerStats(shooterPlayerReader))
-                        .setAffectedPlayer(createPlayerStats(deadPlayerReader)));
+                        .setAffectedPlayer(createPlayerStats(deadPlayerReader))
+                        .setLeaderBoard(createLeaderBoard(leaderBoard)));
         return ServerResponse.newBuilder()
                 .setGameEvents(deadPlayerEvent)
                 .build();
@@ -169,11 +186,18 @@ public interface ServerResponseFactory {
     }
 
     static ServerResponse createSpawnEventSinglePlayer(PlayerConnectedGameState playerConnected) {
-
         return ServerResponse.newBuilder()
                 .setGameEvents(ServerResponse.GameEvents.newBuilder()
-                        .addEvents(createSpawnEvent(playerConnected.getPlayerState())))
-                .build();
+                        .addEvents(createSpawnEvent(
+                                playerConnected.getPlayerState(),
+                                playerConnected.getLeaderBoard()))).build();
+    }
+
+    static ServerResponse createSpawnEventSinglePlayerMinimal(PlayerConnectedGameState playerConnected) {
+        return ServerResponse.newBuilder()
+                .setGameEvents(ServerResponse.GameEvents.newBuilder()
+                        .addEvents(createSpawnEvent(
+                                playerConnected.getPlayerState()))).build();
     }
 
     static ServerResponse createChatEvent(String message, int fromPlayerId) {

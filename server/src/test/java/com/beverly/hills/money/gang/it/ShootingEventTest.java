@@ -72,6 +72,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         assertEquals(2, serverResponse.getGameEvents().getPlayersOnline(), "2 players are connected now");
         var shootingEvent = serverResponse.getGameEvents().getEvents(0);
         assertEquals(ServerResponse.GameEvent.GameEventType.SHOOT, shootingEvent.getEventType());
+        assertFalse(shootingEvent.hasLeaderBoard(), "No leader board as nobody got killed");
         assertEquals(playerId, shootingEvent.getPlayer().getPlayerId());
 
         assertEquals(mySpawnEvent.getPlayer().getDirection().getX(), shootingEvent.getPlayer().getDirection().getX(),
@@ -109,15 +110,15 @@ public class ShootingEventTest extends AbstractGameServerTest {
                         .setPlayerName("my other player name")
                         .setGameId(gameIdToConnectTo).build());
         waitUntilQueueNonEmpty(shooterConnection.getResponse());
-        waitUntilQueueNonEmpty(getShotConnection.getResponse());
-        emptyQueue(getShotConnection.getResponse());
-
         ServerResponse shooterPlayerSpawn = shooterConnection.getResponse().poll().get();
         int shooterPlayerId = shooterPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
 
-
+        waitUntilQueueNonEmpty(getShotConnection.getResponse());
         ServerResponse shotPlayerSpawn = shooterConnection.getResponse().poll().get();
         int shotPlayerId = shotPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
+
+        emptyQueue(getShotConnection.getResponse());
+
 
         var shooterSpawnEvent = shooterPlayerSpawn.getGameEvents().getEvents(0);
         float newPositionX = shooterSpawnEvent.getPlayer().getPosition().getX() + 0.1f;
@@ -147,6 +148,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         assertEquals(2, serverResponse.getGameEvents().getPlayersOnline(), "2 players are connected now");
         var shootingEvent = serverResponse.getGameEvents().getEvents(0);
         assertEquals(ServerResponse.GameEvent.GameEventType.GET_SHOT, shootingEvent.getEventType());
+        assertFalse(shootingEvent.hasLeaderBoard(), "No leader board as nobody got killed");
         assertEquals(shooterPlayerId, shootingEvent.getPlayer().getPlayerId());
 
         assertEquals(shooterSpawnEvent.getPlayer().getDirection().getX(), shootingEvent.getPlayer().getDirection().getX(),
@@ -263,21 +265,22 @@ public class ShootingEventTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameIdToConnectTo).build());
+
         GameConnection deadConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         deadConnection.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my other player name")
                         .setGameId(gameIdToConnectTo).build());
-        waitUntilQueueNonEmpty(deadConnection.getResponse());
         waitUntilQueueNonEmpty(killerConnection.getResponse());
-        emptyQueue(deadConnection.getResponse());
-
         ServerResponse shooterPlayerSpawn = killerConnection.getResponse().poll().get();
         int shooterPlayerId = shooterPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
 
+        waitUntilQueueNonEmpty(deadConnection.getResponse());
         ServerResponse shotPlayerSpawn = killerConnection.getResponse().poll().get();
         int shotPlayerId = shotPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
+
+        emptyQueue(deadConnection.getResponse());
         emptyQueue(killerConnection.getResponse());
 
         var shooterSpawnEvent = shooterPlayerSpawn.getGameEvents().getEvents(0);
@@ -338,6 +341,15 @@ public class ShootingEventTest extends AbstractGameServerTest {
         var deadShootingEvent = deadPlayerServerResponse.getGameEvents().getEvents(0);
         assertEquals(ServerResponse.GameEvent.GameEventType.DEATH, deadShootingEvent.getEventType(),
                 "Shot player must be dead");
+        assertTrue(deadShootingEvent.hasLeaderBoard(), "We must have leader board as somebody got killed");
+        assertEquals(1, deadShootingEvent.getLeaderBoard().getItemsCount(),
+                "Only alive players must be in the leader board");
+        assertEquals(1, deadShootingEvent.getLeaderBoard().getItems(0).getKills(),
+                "Killer player killed one");
+        assertEquals(shooterPlayerId, deadShootingEvent.getLeaderBoard().getItems(0).getPlayerId(),
+                "Killer player killed one");
+
+
         assertEquals(shooterPlayerId, deadShootingEvent.getPlayer().getPlayerId());
         assertEquals(100, deadShootingEvent.getPlayer().getHealth(), "Shooter player health is full");
         assertTrue(deadShootingEvent.hasAffectedPlayer(), "One player must be shot");
@@ -357,6 +369,27 @@ public class ShootingEventTest extends AbstractGameServerTest {
         ServerResponse.GameInfo myGame = games.stream().filter(gameInfo -> gameInfo.getGameId() == gameIdToConnectTo).findFirst()
                 .orElseThrow((Supplier<Exception>) () -> new IllegalStateException("Can't find the game we connected to"));
         assertEquals(1, myGame.getPlayersOnline(), "Must be 1 player only as 1 player got killed (it was 2)");
+
+
+        GameConnection observerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
+        observerConnection.write(
+                JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
+                        .setPlayerName("observer player name")
+                        .setGameId(gameIdToConnectTo).build());
+        waitUntilQueueNonEmpty(observerConnection.getResponse());
+
+        var observerPlayerSpawn = observerConnection.getResponse().poll().get().getGameEvents().getEvents(0);
+        int observerPlayerId = observerPlayerSpawn.getPlayer().getPlayerId();
+        assertTrue(observerPlayerSpawn.hasLeaderBoard(), "Newly connected players must have leader board");
+        assertEquals(2, observerPlayerSpawn.getLeaderBoard().getItemsCount(),
+                "There must be 2 items in the board at this moment: killer + observer");
+
+        assertEquals(shooterPlayerId, observerPlayerSpawn.getLeaderBoard().getItems(0).getPlayerId());
+        assertEquals(1, observerPlayerSpawn.getLeaderBoard().getItems(0).getKills());
+
+        assertEquals(observerPlayerId, observerPlayerSpawn.getLeaderBoard().getItems(1).getPlayerId());
+        assertEquals(0, observerPlayerSpawn.getLeaderBoard().getItems(1).getKills());
     }
 
     /**

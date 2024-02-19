@@ -9,8 +9,7 @@ import com.beverly.hills.money.gang.proto.ServerResponse;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_IDLE_PLAYERS_KILLER_FREQUENCY_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "99999")
@@ -82,6 +81,7 @@ public class MoveEventTest extends AbstractGameServerTest {
 
         assertEquals(playerId1, player1MoveEvent.getPlayer().getPlayerId(), "Should be player 1 id");
         assertEquals(ServerResponse.GameEvent.GameEventType.MOVE, player1MoveEvent.getEventType());
+        assertFalse(player1MoveEvent.hasLeaderBoard(), "We shouldn't receive leader boards on moves");
         assertEquals(mySpawnGameEvent.getPlayer().getDirection().getX(), player1MoveEvent.getPlayer().getDirection().getX(),
                 0.00001, "Direction should not change");
         assertEquals(mySpawnGameEvent.getPlayer().getDirection().getY(), player1MoveEvent.getPlayer().getDirection().getY(),

@@ -12,6 +12,7 @@ import com.beverly.hills.money.gang.state.PlayerShootingGameState;
 import com.beverly.hills.money.gang.state.PlayerState;
 import com.beverly.hills.money.gang.state.Vector;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFutureListener;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,67 +66,80 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
             throw new GameLogicError("Cheating detected", GameErrorCode.CHEATING);
         }
         PushGameEventCommand.GameEventType gameEventType = gameCommand.getEventType();
-        PlayerState.PlayerCoordinates playerCoordinates = PlayerState.PlayerCoordinates
-                .builder()
-                .direction(Vector.builder()
-                        .x(gameCommand.getDirection().getX()).y(gameCommand.getDirection().getY()).build())
-                .position(Vector.builder()
-                        .x(gameCommand.getPosition().getX()).y(gameCommand.getPosition().getY()).build())
-                .build();
         switch (gameEventType) {
-            case SHOOT -> {
-                PlayerShootingGameState shootingGameState = game.shoot(
-                        playerCoordinates,
-                        gameCommand.getPlayerId(),
-                        gameCommand.hasAffectedPlayerId() ? gameCommand.getAffectedPlayerId() : null);
-                if (shootingGameState == null) {
-                    LOG.debug("No shooting game state");
-                    return;
-                }
-                Optional.ofNullable(shootingGameState.getPlayerShot())
-                        .ifPresentOrElse(shotPlayer -> {
-                            if (shotPlayer.isDead()) {
-                                LOG.debug("Player {} is dead", shotPlayer.getPlayerId());
-                                var deadEvent = createDeadEvent(
-                                        shootingGameState.getShootingPlayer(),
-                                        shootingGameState.getPlayerShot(),
-                                        shootingGameState.getLeaderBoard());
-                                game.getPlayersRegistry().allPlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
-                                        .forEach(channel -> channel.writeAndFlush(deadEvent));
-                                game.getPlayersRegistry().removePlayer(shotPlayer.getPlayerId());
-                            } else {
-                                LOG.debug("Player {} got shot", shotPlayer.getPlayerId());
-                                var shotEvent = createGetShotEvent(
-                                        game.playersOnline(),
-                                        shootingGameState.getShootingPlayer(),
-                                        shootingGameState.getPlayerShot());
-                                game.getPlayersRegistry().allPlayers()
-                                        .filter(playerStateChannel
-                                                // don't send me my own shot back
-                                                -> playerStateChannel.getPlayerState().getPlayerId() != gameCommand.getPlayerId())
-                                        .map(PlayersRegistry.PlayerStateChannel::getChannel)
-                                        .forEach(channel -> channel.writeAndFlush(shotEvent));
-                            }
-                        }, () -> {
-                            LOG.debug("Nobody got shot");
-                            var shootingEvent = createShootingEvent(
-                                    game.playersOnline(),
-                                    shootingGameState.getShootingPlayer());
-                            game.getPlayersRegistry().allPlayers()
-                                    .filter(playerStateChannel
-                                            // don't send me my own shot back
-                                            -> playerStateChannel.getPlayerState().getPlayerId() != gameCommand.getPlayerId())
-                                    .map(PlayersRegistry.PlayerStateChannel::getChannel)
-                                    .forEach(channel -> channel.writeAndFlush(shootingEvent));
-                        });
-            }
-            case MOVE -> game.bufferMove(gameCommand.getPlayerId(), playerCoordinates);
+            case SHOOT -> handleShootingEvents(game, gameCommand, currentChannel);
+            case MOVE -> game.bufferMove(gameCommand.getPlayerId(), createCoordinates(gameCommand));
             case PING -> game.getPlayersRegistry().getPlayerState(gameCommand.getPlayerId())
                     .ifPresent(PlayerState::ping);
             default -> currentChannel.writeAndFlush(createErrorEvent(
                     new GameLogicError("Not supported command",
                             GameErrorCode.COMMAND_NOT_RECOGNIZED)));
         }
+    }
+
+    private void handleShootingEvents(Game game, PushGameEventCommand gameCommand, Channel currentChannel)
+            throws GameLogicError {
+        PlayerShootingGameState shootingGameState = game.shoot(
+                createCoordinates(gameCommand),
+                gameCommand.getPlayerId(),
+                gameCommand.hasAffectedPlayerId() ? gameCommand.getAffectedPlayerId() : null);
+        if (shootingGameState == null) {
+            LOG.debug("No shooting game state");
+            return;
+        }
+        Optional.ofNullable(shootingGameState.getPlayerShot())
+                .ifPresentOrElse(shotPlayer -> {
+                    if (shotPlayer.isDead()) {
+                        LOG.debug("Player {} is dead", shotPlayer.getPlayerId());
+                        var deadEvent = createDeadEvent(
+                                shootingGameState.getShootingPlayer(),
+                                shootingGameState.getPlayerShot(),
+                                shootingGameState.getLeaderBoard());
+                        // send DEAD event to the dead player and disconnect it
+                        game.getPlayersRegistry().findPlayer(shotPlayer.getPlayerId())
+                                .ifPresent(playerStateChannel -> playerStateChannel.getChannel().writeAndFlush(deadEvent)
+                                        .addListener((ChannelFutureListener) channelFuture
+                                                -> game.getPlayersRegistry().removePlayer(shotPlayer.getPlayerId())));
+                        // send DEAD event to the rest of players
+                        game.getPlayersRegistry().allPlayers()
+                                .filter(playerStateChannel ->
+                                        playerStateChannel.getPlayerState().getPlayerId() != shotPlayer.getPlayerId())
+                                .forEach(playerStateChannel -> playerStateChannel.getChannel().writeAndFlush(deadEvent));
+                    } else {
+                        LOG.debug("Player {} got shot", shotPlayer.getPlayerId());
+                        var shotEvent = createGetShotEvent(
+                                game.playersOnline(),
+                                shootingGameState.getShootingPlayer(),
+                                shootingGameState.getPlayerShot());
+                        game.getPlayersRegistry().allPlayers()
+                                .filter(playerStateChannel
+                                        // don't send me my own shot back
+                                        -> playerStateChannel.getPlayerState().getPlayerId() != gameCommand.getPlayerId())
+                                .map(PlayersRegistry.PlayerStateChannel::getChannel)
+                                .forEach(channel -> channel.writeAndFlush(shotEvent));
+                    }
+                }, () -> {
+                    LOG.debug("Nobody got shot");
+                    var shootingEvent = createShootingEvent(
+                            game.playersOnline(),
+                            shootingGameState.getShootingPlayer());
+                    game.getPlayersRegistry().allPlayers()
+                            .filter(playerStateChannel
+                                    // don't send me my own shot back
+                                    -> playerStateChannel.getPlayerState().getPlayerId() != gameCommand.getPlayerId())
+                            .map(PlayersRegistry.PlayerStateChannel::getChannel)
+                            .forEach(channel -> channel.writeAndFlush(shootingEvent));
+                });
+    }
+
+    private PlayerState.PlayerCoordinates createCoordinates(PushGameEventCommand gameCommand) {
+        return PlayerState.PlayerCoordinates
+                .builder()
+                .direction(Vector.builder()
+                        .x(gameCommand.getDirection().getX()).y(gameCommand.getDirection().getY()).build())
+                .position(Vector.builder()
+                        .x(gameCommand.getPosition().getX()).y(gameCommand.getPosition().getY()).build())
+                .build();
     }
 
     protected boolean isFairPlay(PushGameEventCommand gameCommand, PlayerState player) {

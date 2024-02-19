@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "9999")
+@SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_PING_FREQUENCY_MLS", value = "99999")
 public class ShootingEventTest extends AbstractGameServerTest {
 
@@ -235,7 +235,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
                 .build());
         Thread.sleep(1_000);
         waitUntilQueueNonEmpty(getShotConnection.getResponse());
-        assertEquals(1, getShotConnection.getResponse().size(), "Only 1(exit) event is expected");
+        assertEquals(1, getShotConnection.getResponse().size(), "Only 1(exit) event is expected. " +
+                "Actual response: " + getShotConnection.getResponse().list());
 
         ServerResponse serverResponse = getShotConnection.getResponse().poll().get();
         assertTrue(serverResponse.hasGameEvents(), "A game event is expected");

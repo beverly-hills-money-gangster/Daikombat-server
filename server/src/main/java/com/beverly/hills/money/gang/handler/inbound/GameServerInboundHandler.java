@@ -6,10 +6,7 @@ import com.beverly.hills.money.gang.handler.command.*;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.*;
 import io.netty.channel.epoll.EpollChannelOption;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -62,8 +59,8 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
             serverCommandHandler.handle(msg, ctx.channel());
         } catch (GameLogicError e) {
             LOG.warn("Game logic error", e);
-            ctx.writeAndFlush(createErrorEvent(e));
-            removeChannel(ctx.channel());
+            ctx.writeAndFlush(createErrorEvent(e))
+                    .addListener((ChannelFutureListener) channelFuture -> removeChannel(ctx.channel()));
         }
     }
 

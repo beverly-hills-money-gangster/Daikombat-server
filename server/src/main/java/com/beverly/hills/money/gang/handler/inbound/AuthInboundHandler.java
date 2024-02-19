@@ -5,6 +5,7 @@ import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.security.ServerHMACService;
 import com.google.protobuf.GeneratedMessageV3;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -47,8 +48,8 @@ public class AuthInboundHandler extends SimpleChannelInboundHandler<ServerComman
             ctx.fireChannelRead(msg);
         } catch (GameLogicError ex) {
             LOG.error("Game logic error", ex);
-            ctx.writeAndFlush(createErrorEvent(ex));
-            ctx.close();
+            ctx.writeAndFlush(createErrorEvent(ex))
+                    .addListener((ChannelFutureListener) channelFuture -> ctx.close());
         }
     }
 

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Random;
 
+// TODO spawn in the least populated place
 @Component
 public class Spawner {
 

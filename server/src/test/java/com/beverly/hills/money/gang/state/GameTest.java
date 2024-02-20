@@ -26,9 +26,12 @@ public class GameTest {
 
     private Game game;
 
+    private Spawner spawner;
+
     @BeforeEach
     public void setUp() {
-        game = new Game(new Spawner(), new IdGenerator(), new IdGenerator());
+        spawner = spy(new Spawner());
+        game = new Game(spawner, new IdGenerator(), new IdGenerator());
     }
 
     @AfterEach
@@ -74,6 +77,47 @@ public class GameTest {
         assertEquals(
                 0,
                 playerConnectedGameState.getLeaderBoard().get(0).getKills());
+    }
+
+    /**
+     * @given a game with a lot of players
+     * @when a new player comes in to connect to the game
+     * @then the player is connected to the game and get the least populated spawn
+     **/
+    @Test
+    public void testConnectPlayerSpawnLeastPopulatedPlace() throws Throwable {
+        String playerName = "some player";
+        Channel channel = mock(Channel.class);
+
+        for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME - 1; i++) {
+            // spawn everywhere except for the last spawn position
+            doReturn(Spawner.SPAWNS.get(i % (Spawner.SPAWNS.size() - 1))).when(spawner).spawn(any());
+            game.connectPlayer(playerName + " " + i, channel);
+        }
+
+        doCallRealMethod().when(spawner).spawn(any());
+        var connectedPlayer = game.connectPlayer(playerName, channel);
+        assertEquals(Spawner.SPAWNS.get(Spawner.SPAWNS.size() - 1),
+                connectedPlayer.getPlayerState().getCoordinates(),
+                "Should be spawned to the last spawn position because it's least populated");
+    }
+
+    /**
+     * @given game server with no players
+     * @when many players connect to the game
+     * @then all of them get unique spawns
+     **/
+    @Test
+    public void testConnectPlayerUniqueSpawns() throws Throwable {
+        String playerName = "some player";
+        Channel channel = mock(Channel.class);
+        Set<Vector> spawns = new HashSet<>();
+        int playersToJoin = Math.min(ServerConfig.MAX_PLAYERS_PER_GAME, Spawner.SPAWNS.size());
+        for (int i = 0; i < playersToJoin; i++) {
+            spawns.add(game.connectPlayer(playerName + " " + i, channel).getPlayerState().getCoordinates().getPosition());
+        }
+        assertEquals(playersToJoin, spawns.size(),
+                "All spawn should be unique as every player must get the the least populated position");
     }
 
     /**

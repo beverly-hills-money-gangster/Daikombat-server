@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -54,7 +53,7 @@ public class Game implements Closeable, GameReader {
     public PlayerConnectedGameState connectPlayer(final String playerName, final Channel playerChannel) throws GameLogicError {
         validateGameNotClosed();
         int playerId = playerIdGenerator.getNext();
-        PlayerState.PlayerCoordinates spawn = spawner.spawn();
+        PlayerState.PlayerCoordinates spawn = spawner.spawn(this);
         PlayerState connectedPlayerState = new PlayerState(playerName, spawn, playerId);
         playersRegistry.addPlayer(connectedPlayerState, playerChannel);
         return PlayerConnectedGameState.builder()

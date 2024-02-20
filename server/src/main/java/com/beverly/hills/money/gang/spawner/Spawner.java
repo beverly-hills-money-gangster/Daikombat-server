@@ -1,19 +1,24 @@
 package com.beverly.hills.money.gang.spawner;
 
+import com.beverly.hills.money.gang.registry.PlayersRegistry;
+import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerState;
+import com.beverly.hills.money.gang.state.PlayerStateReader;
 import com.beverly.hills.money.gang.state.Vector;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Random;
+import java.util.TreeMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 // TODO spawn in the least populated place
 @Component
 public class Spawner {
 
-    private static final Random RANDOM = new Random();
+    private static final double CLOSE_PROXIMITY = 3;
 
-    private final List<PlayerState.PlayerCoordinates> playerCoordinates = List.of(
+    public static final List<PlayerState.PlayerCoordinates> SPAWNS = List.of(
 
             PlayerState.PlayerCoordinates.builder().position(
                             Vector.builder().x(-24.657965F).y(23.160273F).build())
@@ -46,7 +51,22 @@ public class Spawner {
                             Vector.builder().x(0.9999779F).y(0.0065644206F).build()).build()
     );
 
-    public PlayerState.PlayerCoordinates spawn() {
-        return playerCoordinates.get(RANDOM.nextInt(playerCoordinates.size()));
+
+    public PlayerState.PlayerCoordinates spawn(Game game) {
+        var players = game.getPlayersRegistry()
+                .allPlayers()
+                .map((Function<PlayersRegistry.PlayerStateChannel, PlayerStateReader>)
+                        PlayersRegistry.PlayerStateChannel::getPlayerState)
+                .collect(Collectors.toList());
+        // get the least populated spawn
+        var playersAroundSpawn = new TreeMap<Integer, PlayerState.PlayerCoordinates>();
+        SPAWNS.forEach(spawn -> {
+            var playersAround = (int) players.stream()
+                    .filter(player -> Vector.getDistance(
+                            spawn.getPosition(), player.getCoordinates().getPosition()) <= CLOSE_PROXIMITY)
+                    .count();
+            playersAroundSpawn.put(playersAround, spawn);
+        });
+        return playersAroundSpawn.firstEntry().getValue();
     }
 }

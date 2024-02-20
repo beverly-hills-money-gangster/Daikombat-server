@@ -2,6 +2,7 @@ package com.beverly.hills.money.gang.state;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import org.slf4j.Logger;
@@ -111,6 +112,8 @@ public class PlayerState implements PlayerStateReader {
     }
 
     @Builder
+    @ToString
+    @EqualsAndHashCode
     public static class PlayerCoordinates {
         @Getter
         private final Vector direction;

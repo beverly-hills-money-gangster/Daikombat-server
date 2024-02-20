@@ -46,10 +46,8 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
     protected void handleInternal(ServerCommand msg, Channel currentChannel) throws GameLogicError {
         Game game = gameRoomRegistry.getGame(msg.getGameCommand().getGameId());
         PushGameEventCommand gameCommand = msg.getGameCommand();
-        var player = game.getPlayersRegistry().getPlayerState(gameCommand.getPlayerId()).orElse(null);
-        if (player == null) {
-            /*
-            this can happen due to network latency.
+         /*
+            player can be null/non-existing due to network latency.
             for example:
             1) killer and victim players join the server
             2) killer kills the victim
@@ -57,13 +55,16 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
             4) victim continues to move or shoot before getting DEATH event
             for now, we just ignore such events.
              */
+        if (!gameRoomRegistry.playerJoinedGame(gameCommand.getGameId(),
+                currentChannel, gameCommand.getPlayerId())) {
             LOG.warn("Player {} doesn't exist. Ignore command.", gameCommand.getPlayerId());
             return;
-        } else if (!gameRoomRegistry.playerJoinedGame(gameCommand.getGameId(),
-                currentChannel, gameCommand.getPlayerId())) {
-            throw new GameLogicError("Player hasn't join the game", GameErrorCode.COMMON_ERROR);
-        } else if (gameCommand.hasPosition() && !isFairPlay(gameCommand, player)) {
-            throw new GameLogicError("Cheating detected", GameErrorCode.CHEATING);
+        } else if (gameCommand.hasPosition()) {
+            var fairPlay = game.getPlayersRegistry().getPlayerState(gameCommand.getPlayerId())
+                    .map(playerState -> isFairPlay(gameCommand, playerState)).orElse(true);
+            if (!fairPlay) {
+                throw new GameLogicError("Cheating detected", GameErrorCode.CHEATING);
+            }
         }
         PushGameEventCommand.GameEventType gameEventType = gameCommand.getEventType();
         switch (gameEventType) {

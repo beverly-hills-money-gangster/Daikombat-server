@@ -166,19 +166,19 @@ public class MoveEventTest extends AbstractGameServerTest {
     /**
      * @given a running server with 2 connected players
      * @when player 2 uses player 1 id to move
-     * @then player 1 is disconnected
+     * @then player 1 move is not published
      */
     @Test
     public void testMoveWrongPlayerId() throws Exception {
         int gameIdToConnectTo = 2;
-        GameConnection movingPlayerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
-        movingPlayerConnection.write(
+        GameConnection observerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
+        observerConnection.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my player name")
                         .setGameId(gameIdToConnectTo).build());
-        waitUntilQueueNonEmpty(movingPlayerConnection.getResponse());
-        ServerResponse mySpawn = movingPlayerConnection.getResponse().poll().get();
+        waitUntilQueueNonEmpty(observerConnection.getResponse());
+        ServerResponse mySpawn = observerConnection.getResponse().poll().get();
         ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
         int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
 
@@ -188,8 +188,11 @@ public class MoveEventTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("new player")
                         .setGameId(gameIdToConnectTo).build());
+
         waitUntilQueueNonEmpty(wrongGameConnection.getResponse());
+        waitUntilQueueNonEmpty(observerConnection.getResponse());
         emptyQueue(wrongGameConnection.getResponse());
+        emptyQueue(observerConnection.getResponse());
         Thread.sleep(1_000);
         assertEquals(0, wrongGameConnection.getResponse().size(),
                 "No activity happened in the game so no response yet. Actual response is " + wrongGameConnection.getResponse().list());
@@ -213,12 +216,14 @@ public class MoveEventTest extends AbstractGameServerTest {
                 .build());
 
         Thread.sleep(250);
-        assertEquals(1, wrongGameConnection.getResponse().size(),
-                "Only one response is expected(error)");
-        var errorEvent = wrongGameConnection.getResponse().poll().get().getErrorEvent();
-        assertEquals(GameErrorCode.COMMON_ERROR.ordinal(), errorEvent.getErrorCode());
-        assertTrue(wrongGameConnection.isDisconnected(),
-                "The player should be disconnected because it provided a wrong player id");
+
+        assertTrue(wrongGameConnection.isConnected());
+        assertTrue(observerConnection.isConnected());
+        assertEquals(0, observerConnection.getResponse().size(),
+                "No movements should be published. Actual:" + observerConnection.getResponse().list());
+        assertEquals(0, wrongGameConnection.getResponse().size(),
+                "No movements should be published. Actual:" + wrongGameConnection.getResponse().list());
+
     }
 
 }

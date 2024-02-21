@@ -68,6 +68,7 @@ message ServerResponse {
   message LeaderBoardItem {
     optional int32 playerId = 1;
     optional int32 kills = 2;
+    optional string playerName = 3;
   }
 
   message GameEventPlayerStats {

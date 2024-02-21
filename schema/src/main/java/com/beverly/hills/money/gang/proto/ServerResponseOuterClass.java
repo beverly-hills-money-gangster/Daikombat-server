@@ -85,7 +85,7 @@ public final class ServerResponseOuterClass {
   static {
     java.lang.String[] descriptorData = {
       "\n/schema/src/main/resources/server-respo" +
-      "nse.proto\022\rdaikombat.dto\"\203\016\n\016ServerRespo" +
+      "nse.proto\022\rdaikombat.dto\"\253\016\n\016ServerRespo" +
       "nse\022>\n\nerrorEvent\030\001 \001(\0132(.daikombat.dto." +
       "ServerResponse.ErrorEventH\000\022=\n\nchatEvent" +
       "s\030\002 \001(\0132\'.daikombat.dto.ServerResponse.C" +
@@ -120,9 +120,10 @@ public final class ServerResponseOuterClass {
       "\020\004\022\010\n\004EXIT\020\005\022\010\n\004PING\020\006B\t\n\007_playerB\021\n\017_af" +
       "fectedPlayerB\016\n\014_leaderBoard\032K\n\013LeaderBo" +
       "ard\022<\n\005items\030\001 \003(\0132-.daikombat.dto.Serve" +
-      "rResponse.LeaderBoardItem\032S\n\017LeaderBoard" +
+      "rResponse.LeaderBoardItem\032{\n\017LeaderBoard" +
       "Item\022\025\n\010playerId\030\001 \001(\005H\000\210\001\001\022\022\n\005kills\030\002 \001" +
-      "(\005H\001\210\001\001B\013\n\t_playerIdB\010\n\006_kills\032\363\001\n\024GameE" +
+      "(\005H\001\210\001\001\022\027\n\nplayerName\030\003 \001(\tH\002\210\001\001B\013\n\t_pla" +
+      "yerIdB\010\n\006_killsB\r\n\013_playerName\032\363\001\n\024GameE" +
       "ventPlayerStats\022\025\n\010playerId\030\001 \001(\005H\000\210\001\001\022\027" +
       "\n\nplayerName\030\002 \001(\tH\001\210\001\001\0226\n\010position\030\003 \001(" +
       "\0132$.daikombat.dto.ServerResponse.Vector\022" +
@@ -196,7 +197,7 @@ public final class ServerResponseOuterClass {
     internal_static_daikombat_dto_ServerResponse_LeaderBoardItem_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_ServerResponse_LeaderBoardItem_descriptor,
-        new java.lang.String[] { "PlayerId", "Kills", });
+        new java.lang.String[] { "PlayerId", "Kills", "PlayerName", });
     internal_static_daikombat_dto_ServerResponse_GameEventPlayerStats_descriptor =
       internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(9);
     internal_static_daikombat_dto_ServerResponse_GameEventPlayerStats_fieldAccessorTable = new

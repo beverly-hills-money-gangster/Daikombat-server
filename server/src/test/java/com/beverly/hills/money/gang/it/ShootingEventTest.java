@@ -203,19 +203,21 @@ public class ShootingEventTest extends AbstractGameServerTest {
                         .setVersion(ServerConfig.VERSION)
                         .setPlayerName("my other player name")
                         .setGameId(gameIdToConnectTo).build());
-        waitUntilQueueNonEmpty(shooterConnection.getResponse());
-        waitUntilQueueNonEmpty(getShotConnection.getResponse());
-        emptyQueue(getShotConnection.getResponse());
 
+        waitUntilQueueNonEmpty(shooterConnection.getResponse());
         ServerResponse shooterPlayerSpawn = shooterConnection.getResponse().poll().get();
         int shooterPlayerId = shooterPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
 
-
+        waitUntilQueueNonEmpty(getShotConnection.getResponse());
         ServerResponse shotPlayerSpawn = shooterConnection.getResponse().poll().get();
         int shotPlayerId = shotPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
-
         var shooterSpawnEvent = shooterPlayerSpawn.getGameEvents().getEvents(0);
+
+
+        waitUntilQueueNonEmpty(shooterConnection.getResponse());
+        emptyQueue(getShotConnection.getResponse());
         emptyQueue(shooterConnection.getResponse());
+
         shooterConnection.write(PushGameEventCommand.newBuilder()
                 .setPlayerId(shooterPlayerId)
                 .setGameId(gameIdToConnectTo)
@@ -260,11 +262,12 @@ public class ShootingEventTest extends AbstractGameServerTest {
     @Test
     public void testShootKill() throws Exception {
         int gameIdToConnectTo = 0;
+        String shooterPlayerName = "killer";
         GameConnection killerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         killerConnection.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
-                        .setPlayerName("my player name")
+                        .setPlayerName(shooterPlayerName)
                         .setGameId(gameIdToConnectTo).build());
 
         GameConnection deadConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
@@ -365,12 +368,12 @@ public class ShootingEventTest extends AbstractGameServerTest {
                 .orElseThrow((Supplier<Exception>) () -> new IllegalStateException("Can't find the game we connected to"));
         assertEquals(1, myGame.getPlayersOnline(), "Must be 1 player only as 1 player got killed (it was 2)");
 
-
+        String observerPlayerName = "observer";
         GameConnection observerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         observerConnection.write(
                 JoinGameCommand.newBuilder()
                         .setVersion(ServerConfig.VERSION)
-                        .setPlayerName("observer player name")
+                        .setPlayerName(observerPlayerName)
                         .setGameId(gameIdToConnectTo).build());
         waitUntilQueueNonEmpty(observerConnection.getResponse());
 
@@ -381,9 +384,11 @@ public class ShootingEventTest extends AbstractGameServerTest {
                 "There must be 2 items in the board at this moment: killer + observer");
 
         assertEquals(shooterPlayerId, observerPlayerSpawn.getLeaderBoard().getItems(0).getPlayerId());
+        assertEquals(shooterPlayerName, observerPlayerSpawn.getLeaderBoard().getItems(0).getPlayerName());
         assertEquals(1, observerPlayerSpawn.getLeaderBoard().getItems(0).getKills());
 
         assertEquals(observerPlayerId, observerPlayerSpawn.getLeaderBoard().getItems(1).getPlayerId());
+        assertEquals(observerPlayerName, observerPlayerSpawn.getLeaderBoard().getItems(1).getPlayerName());
         assertEquals(0, observerPlayerSpawn.getLeaderBoard().getItems(1).getKills());
     }
 

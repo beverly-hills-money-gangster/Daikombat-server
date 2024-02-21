@@ -21,6 +21,7 @@ public interface ServerResponseFactory {
         leaderBoard.forEach(leaderBoardItem
                 -> leaderBoardResponse.addItems(ServerResponse.LeaderBoardItem.newBuilder()
                 .setPlayerId(leaderBoardItem.getPlayerId())
+                .setPlayerName(leaderBoardItem.getName())
                 .setKills(leaderBoardItem.getKills())
                 .build()));
         return leaderBoardResponse.build();

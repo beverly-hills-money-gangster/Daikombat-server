@@ -66,7 +66,6 @@ public class Game implements Closeable, GameReader {
                                          final Integer shotPlayerId) throws GameLogicError {
         validateGameNotClosed();
         PlayerState shootingPlayerState = getPlayer(shootingPlayerId).orElse(null);
-        List<GameLeaderBoardItem> leaderBoard = new ArrayList<>();
         if (shootingPlayerState == null) {
             LOG.warn("Non-existing player can't shoot");
             return null;
@@ -94,7 +93,6 @@ public class Game implements Closeable, GameReader {
             shotPlayer.getShot();
             if (shotPlayer.isDead()) {
                 shootingPlayerState.registerKill();
-                leaderBoard.addAll(getLeaderBoard());
             }
             return shotPlayer;
         }).orElse(null);
@@ -116,6 +114,7 @@ public class Game implements Closeable, GameReader {
                         player1.getPlayerState().getKills(), player2.getPlayerState().getKills()))
                 .map(playerStateChannel -> GameLeaderBoardItem.builder()
                         .playerId(playerStateChannel.getPlayerState().getPlayerId())
+                        .name(playerStateChannel.getPlayerState().getPlayerName())
                         .kills(playerStateChannel.getPlayerState().getKills())
                         .build())
                 .collect(Collectors.toList());

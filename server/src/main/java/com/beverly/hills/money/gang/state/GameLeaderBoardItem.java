@@ -11,5 +11,7 @@ public class GameLeaderBoardItem {
 
     private final int playerId;
 
+    private final String name;
+
     private final int kills;
 }

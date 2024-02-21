@@ -104,7 +104,6 @@ public class Game implements Closeable, GameReader {
             return null;
         }
         return PlayerShootingGameState.builder()
-                .leaderBoard(leaderBoard)
                 .shootingPlayer(shootingPlayerState)
                 .playerShot(shotPlayerState)
                 .build();

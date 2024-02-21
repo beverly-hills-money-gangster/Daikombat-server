@@ -342,13 +342,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         var deadShootingEvent = deadPlayerServerResponse.getGameEvents().getEvents(0);
         assertEquals(ServerResponse.GameEvent.GameEventType.DEATH, deadShootingEvent.getEventType(),
                 "Shot player must be dead");
-        assertTrue(deadShootingEvent.hasLeaderBoard(), "We must have leader board as somebody got killed");
-        assertEquals(1, deadShootingEvent.getLeaderBoard().getItemsCount(),
-                "Only alive players must be in the leader board");
-        assertEquals(1, deadShootingEvent.getLeaderBoard().getItems(0).getKills(),
-                "Killer player killed one");
-        assertEquals(shooterPlayerId, deadShootingEvent.getLeaderBoard().getItems(0).getPlayerId(),
-                "Killer player killed one");
+        assertFalse(deadShootingEvent.hasLeaderBoard(), "Leader board are published only on spawns");
 
 
         assertEquals(shooterPlayerId, deadShootingEvent.getPlayer().getPlayerId());

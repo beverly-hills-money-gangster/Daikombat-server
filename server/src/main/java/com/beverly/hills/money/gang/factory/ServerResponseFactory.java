@@ -146,14 +146,12 @@ public interface ServerResponseFactory {
 
     static ServerResponse createDeadEvent(
             PlayerStateReader shooterPlayerReader,
-            PlayerStateReader deadPlayerReader,
-            List<GameLeaderBoardItem> leaderBoard) {
+            PlayerStateReader deadPlayerReader) {
         var deadPlayerEvent = ServerResponse.GameEvents.newBuilder()
                 .addEvents(ServerResponse.GameEvent.newBuilder()
                         .setEventType(ServerResponse.GameEvent.GameEventType.DEATH)
                         .setPlayer(createPlayerStats(shooterPlayerReader))
-                        .setAffectedPlayer(createPlayerStats(deadPlayerReader))
-                        .setLeaderBoard(createLeaderBoard(leaderBoard)));
+                        .setAffectedPlayer(createPlayerStats(deadPlayerReader)));
         return ServerResponse.newBuilder()
                 .setGameEvents(deadPlayerEvent)
                 .build();

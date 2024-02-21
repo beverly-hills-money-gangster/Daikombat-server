@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-// TODO remove leader board from here
 import static com.beverly.hills.money.gang.factory.ServerResponseFactory.*;
 
 
@@ -95,8 +94,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
                         LOG.debug("Player {} is dead", shotPlayer.getPlayerId());
                         var deadEvent = createDeadEvent(
                                 shootingGameState.getShootingPlayer(),
-                                shootingGameState.getPlayerShot(),
-                                shootingGameState.getLeaderBoard());
+                                shootingGameState.getPlayerShot());
                         // send DEAD event to the dead player and disconnect it
                         game.getPlayersRegistry().findPlayer(shotPlayer.getPlayerId())
                                 .ifPresent(playerStateChannel -> playerStateChannel.getChannel().writeAndFlush(deadEvent)

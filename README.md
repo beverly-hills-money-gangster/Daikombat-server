@@ -20,7 +20,7 @@ All communications (server-to-client and client-to-server) are totally non-block
 - TCP is a bad choice for fast-paced online shooter games due to head-of-line blocking. In the future, the protocol is likely to be changed to either UDP or QUIC.
 - The server is totally not scalable at this moment. High availability and load balancing are not provided.
 - The server is NOT authoritative
-- Very basic anti-cheat
+- No anti-cheat
 
 ## Configuration
 

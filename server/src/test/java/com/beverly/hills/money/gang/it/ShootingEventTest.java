@@ -7,6 +7,7 @@ import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -189,6 +190,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
      * @then player 1 is disconnected for cheating, player 2 receives EXIT event from player 1
      */
     @Test
+    @Disabled("Enable when anti-cheat is ready")
     public void testShootHitTooFar() throws Exception {
         int gameIdToConnectTo = 0;
         GameConnection shooterConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);

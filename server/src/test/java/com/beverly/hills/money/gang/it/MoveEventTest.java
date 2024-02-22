@@ -6,6 +6,7 @@ import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -103,6 +104,7 @@ public class MoveEventTest extends AbstractGameServerTest {
      * @then player 1 is disconnected, player 2 sees player exit
      */
     @Test
+    @Disabled("Enable when anti-cheat is ready")
     public void testMoveTooFast() throws Exception {
         int gameIdToConnectTo = 2;
         GameConnection cheatingPlayerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);

@@ -16,7 +16,10 @@ public interface ServerConfig {
     int PING_FREQUENCY_MLS = NumberUtils.toInt(System.getenv("GAME_SERVER_PING_FREQUENCY_MLS"), 2_500);
     int IDLE_PLAYERS_KILLER_FREQUENCY_MLS = NumberUtils.toInt(System.getenv("GAME_SERVER_IDLE_PLAYERS_KILLER_FREQUENCY_MLS"), 10_000);
     int MAX_IDLE_TIME_MLS = NumberUtils.toInt(System.getenv("GAME_SERVER_MAX_IDLE_TIME_MLS"), 10_000);
-    int DEFAULT_DAMAGE = NumberUtils.toInt(System.getenv("GAME_SERVER_DEFAULT_DAMAGE"), 20);
+
+    int DEFAULT_SHOTGUN_DAMAGE = NumberUtils.toInt(System.getenv("GAME_SERVER_DEFAULT_SHOTGUN_DAMAGE"), 20);
+
+    int DEFAULT_PUNCH_DAMAGE = NumberUtils.toInt(System.getenv("GAME_SERVER_DEFAULT_PUNCH_DAMAGE"), 50);
 
     String PIN_CODE = Optional.of(StringUtils.defaultIfBlank(System.getenv("GAME_SERVER_PIN_CODE"), "5555"))
             .filter(pin -> StringUtils.isNotBlank(pin) && StringUtils.length(pin) >= 4 && pin.matches("\\d+"))

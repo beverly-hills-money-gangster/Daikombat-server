@@ -4842,9 +4842,9 @@ private static final long serialVersionUID = 0L;
        */
       GET_SHOT(2),
       /**
-       * <code>DEATH = 3;</code>
+       * <code>KILL_SHOOTING = 3;</code>
        */
-      DEATH(3),
+      KILL_SHOOTING(3),
       /**
        * <code>SPAWN = 4;</code>
        */
@@ -4857,6 +4857,14 @@ private static final long serialVersionUID = 0L;
        * <code>PING = 6;</code>
        */
       PING(6),
+      /**
+       * <code>GET_PUNCHED = 7;</code>
+       */
+      GET_PUNCHED(7),
+      /**
+       * <code>KILL_PUNCHING = 8;</code>
+       */
+      KILL_PUNCHING(8),
       UNRECOGNIZED(-1),
       ;
 
@@ -4873,9 +4881,9 @@ private static final long serialVersionUID = 0L;
        */
       public static final int GET_SHOT_VALUE = 2;
       /**
-       * <code>DEATH = 3;</code>
+       * <code>KILL_SHOOTING = 3;</code>
        */
-      public static final int DEATH_VALUE = 3;
+      public static final int KILL_SHOOTING_VALUE = 3;
       /**
        * <code>SPAWN = 4;</code>
        */
@@ -4888,6 +4896,14 @@ private static final long serialVersionUID = 0L;
        * <code>PING = 6;</code>
        */
       public static final int PING_VALUE = 6;
+      /**
+       * <code>GET_PUNCHED = 7;</code>
+       */
+      public static final int GET_PUNCHED_VALUE = 7;
+      /**
+       * <code>KILL_PUNCHING = 8;</code>
+       */
+      public static final int KILL_PUNCHING_VALUE = 8;
 
 
       public final int getNumber() {
@@ -4917,10 +4933,12 @@ private static final long serialVersionUID = 0L;
           case 0: return MOVE;
           case 1: return SHOOT;
           case 2: return GET_SHOT;
-          case 3: return DEATH;
+          case 3: return KILL_SHOOTING;
           case 4: return SPAWN;
           case 5: return EXIT;
           case 6: return PING;
+          case 7: return GET_PUNCHED;
+          case 8: return KILL_PUNCHING;
           default: return null;
         }
       }

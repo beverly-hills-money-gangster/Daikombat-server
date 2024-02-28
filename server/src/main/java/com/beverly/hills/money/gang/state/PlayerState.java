@@ -65,7 +65,14 @@ public class PlayerState implements PlayerStateReader {
 
     public void getShot() {
         lastActivityTimeMls.set(System.currentTimeMillis());
-        if (health.addAndGet(-ServerConfig.DEFAULT_DAMAGE) <= 0) {
+        if (health.addAndGet(-ServerConfig.DEFAULT_SHOTGUN_DAMAGE) <= 0) {
+            dead.set(true);
+        }
+    }
+
+    public void getPunched() {
+        lastActivityTimeMls.set(System.currentTimeMillis());
+        if (health.addAndGet(-ServerConfig.DEFAULT_PUNCH_DAMAGE) <= 0) {
             dead.set(true);
         }
     }

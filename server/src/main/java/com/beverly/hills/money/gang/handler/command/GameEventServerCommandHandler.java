@@ -1,15 +1,14 @@
 package com.beverly.hills.money.gang.handler.command;
 
+import com.beverly.hills.money.gang.cheat.AntiCheat;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerCommand;
+import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
-import com.beverly.hills.money.gang.state.Game;
-import com.beverly.hills.money.gang.state.PlayerShootingGameState;
-import com.beverly.hills.money.gang.state.PlayerState;
-import com.beverly.hills.money.gang.state.Vector;
+import com.beverly.hills.money.gang.state.*;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +29,8 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
 
     private final GameRoomRegistry gameRoomRegistry;
 
+    private final AntiCheat antiCheat;
+
     @Override
     protected boolean isValidCommand(ServerCommand msg, Channel currentChannel) {
         var gameCommand = msg.getGameCommand();
@@ -49,7 +50,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
             1) killer and victim players join the server
             2) killer kills the victim
             3) victim is killed on the server but due to network latency it doesn't know it yet
-            4) victim continues to move or shoot before getting DEATH event
+            4) victim continues to move or shoot before getting KILL event
             for now, we just ignore such events.
              */
         if (!gameRoomRegistry.playerJoinedGame(gameCommand.getGameId(),
@@ -59,7 +60,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
         }
         PushGameEventCommand.GameEventType gameEventType = gameCommand.getEventType();
         switch (gameEventType) {
-            case SHOOT -> handleShootingEvents(game, gameCommand, currentChannel);
+            case SHOOT, PUNCH -> handleAttackingEvents(game, gameCommand);
             case MOVE -> game.bufferMove(gameCommand.getPlayerId(), createCoordinates(gameCommand));
             case PING -> game.getPlayersRegistry().getPlayerState(gameCommand.getPlayerId())
                     .ifPresent(PlayerState::ping);
@@ -69,58 +70,112 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
         }
     }
 
-    private void handleShootingEvents(Game game, PushGameEventCommand gameCommand, Channel currentChannel)
+    private void handleAttackingEvents(Game game, PushGameEventCommand gameCommand)
             throws GameLogicError {
-        PlayerShootingGameState shootingGameState = game.shoot(
-                createCoordinates(gameCommand),
-                gameCommand.getPlayerId(),
-                gameCommand.hasAffectedPlayerId() ? gameCommand.getAffectedPlayerId() : null);
-        if (shootingGameState == null) {
-            LOG.debug("No shooting game state");
+        if (isCheating(gameCommand, game)) {
+            LOG.info("Cheating detected");
             return;
         }
-        Optional.ofNullable(shootingGameState.getPlayerShot())
-                .ifPresentOrElse(shotPlayer -> {
-                    if (shotPlayer.isDead()) {
-                        LOG.debug("Player {} is dead", shotPlayer.getPlayerId());
-                        var deadEvent = createDeadEvent(
-                                shootingGameState.getShootingPlayer(),
-                                shootingGameState.getPlayerShot());
-                        // send DEAD event to the dead player and disconnect it
-                        game.getPlayersRegistry().findPlayer(shotPlayer.getPlayerId())
+        AttackType attackType = getAttackType(gameCommand);
+
+        PlayerAttackingGameState attackGameState = game.attack(
+                createCoordinates(gameCommand),
+                gameCommand.getPlayerId(),
+                gameCommand.hasAffectedPlayerId() ? gameCommand.getAffectedPlayerId() : null,
+                attackType);
+        if (attackGameState == null) {
+            LOG.debug("No attacking game state");
+            return;
+        }
+        Optional.ofNullable(attackGameState.getPlayerAttacked())
+                .ifPresentOrElse(attackedPlayer -> {
+                    if (attackedPlayer.isDead()) {
+                        LOG.debug("Player {} is dead", attackedPlayer.getPlayerId());
+                        ServerResponse deadEvent;
+
+                        switch (attackType) {
+                            case PUNCH -> deadEvent = createKillPunchingEvent(
+                                    attackGameState.getAttackingPlayer(),
+                                    attackGameState.getPlayerAttacked());
+                            case SHOOT -> deadEvent = createKillShootingEvent(
+                                    attackGameState.getAttackingPlayer(),
+                                    attackGameState.getPlayerAttacked());
+                            default -> throw new IllegalArgumentException("Not supported attack type " + attackType);
+                        }
+                        game.getPlayersRegistry().findPlayer(attackedPlayer.getPlayerId())
                                 .ifPresent(playerStateChannel -> playerStateChannel.getChannel().writeAndFlush(deadEvent)
                                         .addListener((ChannelFutureListener) channelFuture
-                                                -> game.getPlayersRegistry().removePlayer(shotPlayer.getPlayerId())));
-                        // send DEAD event to the rest of players
+                                                -> game.getPlayersRegistry().removePlayer(attackedPlayer.getPlayerId())));
+                        // send KILL event to the rest of players
                         game.getPlayersRegistry().allPlayers()
                                 .filter(playerStateChannel ->
-                                        playerStateChannel.getPlayerState().getPlayerId() != shotPlayer.getPlayerId())
+                                        playerStateChannel.getPlayerState().getPlayerId() != attackedPlayer.getPlayerId())
                                 .forEach(playerStateChannel -> playerStateChannel.getChannel().writeAndFlush(deadEvent));
                     } else {
-                        LOG.debug("Player {} got shot", shotPlayer.getPlayerId());
-                        var shotEvent = createGetShotEvent(
+                        LOG.debug("Player {} got attacked", attackedPlayer.getPlayerId());
+                        var attackEvent = createGetAttackedEvent(
                                 game.playersOnline(),
-                                shootingGameState.getShootingPlayer(),
-                                shootingGameState.getPlayerShot());
+                                attackGameState.getAttackingPlayer(),
+                                attackGameState.getPlayerAttacked(),
+                                attackType);
                         game.getPlayersRegistry().allPlayers()
                                 .filter(playerStateChannel
-                                        // don't send me my own shot back
+                                        // don't send me my own attack back
                                         -> playerStateChannel.getPlayerState().getPlayerId() != gameCommand.getPlayerId())
                                 .map(PlayersRegistry.PlayerStateChannel::getChannel)
-                                .forEach(channel -> channel.writeAndFlush(shotEvent));
+                                .forEach(channel -> channel.writeAndFlush(attackEvent));
                     }
                 }, () -> {
-                    LOG.debug("Nobody got shot");
+                    LOG.debug("Nobody got attacked");
                     var shootingEvent = createShootingEvent(
                             game.playersOnline(),
-                            shootingGameState.getShootingPlayer());
+                            attackGameState.getAttackingPlayer());
                     game.getPlayersRegistry().allPlayers()
                             .filter(playerStateChannel
-                                    // don't send me my own shot back
+                                    // don't send me my own attack back
                                     -> playerStateChannel.getPlayerState().getPlayerId() != gameCommand.getPlayerId())
                             .map(PlayersRegistry.PlayerStateChannel::getChannel)
                             .forEach(channel -> channel.writeAndFlush(shootingEvent));
                 });
+    }
+
+    private boolean isCheating(PushGameEventCommand gameCommand, Game game) {
+        var newPlayerPosition = Vector.builder()
+                .x(gameCommand.getPosition().getX())
+                .y(gameCommand.getPosition().getY())
+                .build();
+        if (!gameCommand.hasAffectedPlayerId()) {
+            return false;
+        }
+        return game.getPlayersRegistry()
+                .getPlayerState(gameCommand.getAffectedPlayerId())
+                .map(affectedPlayerState -> {
+                    switch (gameCommand.getEventType()) {
+                        case PUNCH -> {
+                            return antiCheat.isPunchingTooFar(
+                                    newPlayerPosition, affectedPlayerState.getCoordinates().getPosition());
+                        }
+                        case SHOOT -> {
+                            return antiCheat.isShootingTooFar(
+                                    newPlayerPosition, affectedPlayerState.getCoordinates().getPosition());
+                        }
+                        default -> {
+                            return false;
+                        }
+                    }
+                }).orElse(false);
+    }
+
+    private AttackType getAttackType(PushGameEventCommand gameCommand) {
+        switch (gameCommand.getEventType()) {
+            case SHOOT -> {
+                return AttackType.SHOOT;
+            }
+            case PUNCH -> {
+                return AttackType.PUNCH;
+            }
+            default -> throw new IllegalArgumentException("Not supported attack type " + gameCommand.getEventType());
+        }
     }
 
     private PlayerState.PlayerCoordinates createCoordinates(PushGameEventCommand gameCommand) {

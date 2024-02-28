@@ -54,10 +54,12 @@ message ServerResponse {
       MOVE = 0;
       SHOOT = 1;
       GET_SHOT = 2;
-      DEATH = 3;
+      KILL_SHOOTING = 3;
       SPAWN = 4;
       EXIT = 5;
       PING = 6;
+      GET_PUNCHED = 7;
+      KILL_PUNCHING = 8;
     }
   }
 

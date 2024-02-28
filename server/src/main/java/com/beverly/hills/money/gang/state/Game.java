@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.Closeable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -61,49 +60,54 @@ public class Game implements Closeable, GameReader {
                 .playerState(connectedPlayerState).build();
     }
 
-    public PlayerShootingGameState shoot(final PlayerState.PlayerCoordinates shootingPlayerCoordinates,
-                                         final int shootingPlayerId,
-                                         final Integer shotPlayerId) throws GameLogicError {
+    public PlayerAttackingGameState attack(final PlayerState.PlayerCoordinates attackingPlayerCoordinates,
+                                           final int attackingPlayerId,
+                                           final Integer attackedPlayerId,
+                                           final AttackType attackType) throws GameLogicError {
         validateGameNotClosed();
-        PlayerState shootingPlayerState = getPlayer(shootingPlayerId).orElse(null);
-        if (shootingPlayerState == null) {
-            LOG.warn("Non-existing player can't shoot");
+        PlayerState attackingPlayerState = getPlayer(attackingPlayerId).orElse(null);
+        if (attackingPlayerState == null) {
+            LOG.warn("Non-existing player can't attack");
             return null;
-        } else if (shootingPlayerState.isDead()) {
-            LOG.warn("Dead players can't shoot");
+        } else if (attackingPlayerState.isDead()) {
+            LOG.warn("Dead players can't attack");
             return null;
-        } else if (Objects.equals(shootingPlayerId, shotPlayerId)) {
-            LOG.warn("You can't shoot yourself");
-            throw new GameLogicError("You can't shoot yourself", GameErrorCode.CAN_NOT_SHOOT_YOURSELF);
+        } else if (Objects.equals(attackingPlayerId, attackedPlayerId)) {
+            LOG.warn("You can't attack yourself");
+            throw new GameLogicError("You can't attack yourself", GameErrorCode.CAN_NOT_ATTACK_YOURSELF);
         }
 
-        move(shootingPlayerId, shootingPlayerCoordinates);
-        if (shotPlayerId == null) {
-            LOG.debug("Nobody got shot");
+        move(attackingPlayerId, attackingPlayerCoordinates);
+        if (attackedPlayerId == null) {
+            LOG.debug("Nobody got attacked");
             // if nobody was shot
-            return PlayerShootingGameState.builder()
-                    .shootingPlayer(shootingPlayerState)
-                    .playerShot(null).build();
+            return PlayerAttackingGameState.builder()
+                    .attackingPlayer(attackingPlayerState)
+                    .playerAttacked(null).build();
         }
-        var shotPlayerState = getPlayer(shotPlayerId).map(shotPlayer -> {
-            if (shotPlayer.isDead()) {
-                LOG.warn("You can't shoot a dead player");
+        var attackedPlayerState = getPlayer(attackedPlayerId).map(attackedPlayer -> {
+            if (attackedPlayer.isDead()) {
+                LOG.warn("You can't attack a dead player");
                 return null;
             }
-            shotPlayer.getShot();
-            if (shotPlayer.isDead()) {
-                shootingPlayerState.registerKill();
+            switch (attackType) {
+                case PUNCH -> attackedPlayer.getPunched();
+                case SHOOT -> attackedPlayer.getShot();
+                default -> throw new IllegalArgumentException("Not supported attack type " + attackType);
             }
-            return shotPlayer;
+            if (attackedPlayer.isDead()) {
+                attackingPlayerState.registerKill();
+            }
+            return attackedPlayer;
         }).orElse(null);
 
-        if (shotPlayerState == null) {
-            LOG.warn("Can't shoot a non-existing player");
+        if (attackedPlayerState == null) {
+            LOG.warn("Can't attack a non-existing player");
             return null;
         }
-        return PlayerShootingGameState.builder()
-                .shootingPlayer(shootingPlayerState)
-                .playerShot(shotPlayerState)
+        return PlayerAttackingGameState.builder()
+                .attackingPlayer(attackingPlayerState)
+                .playerAttacked(attackedPlayerState)
                 .build();
     }
 

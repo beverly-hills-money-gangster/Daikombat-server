@@ -57,6 +57,10 @@ private static final long serialVersionUID = 0L;
      * <code>PING = 2;</code>
      */
     PING(2),
+    /**
+     * <code>PUNCH = 3;</code>
+     */
+    PUNCH(3),
     UNRECOGNIZED(-1),
     ;
 
@@ -72,6 +76,10 @@ private static final long serialVersionUID = 0L;
      * <code>PING = 2;</code>
      */
     public static final int PING_VALUE = 2;
+    /**
+     * <code>PUNCH = 3;</code>
+     */
+    public static final int PUNCH_VALUE = 3;
 
 
     public final int getNumber() {
@@ -101,6 +109,7 @@ private static final long serialVersionUID = 0L;
         case 0: return MOVE;
         case 1: return SHOOT;
         case 2: return PING;
+        case 3: return PUNCH;
         default: return null;
       }
     }

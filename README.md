@@ -20,7 +20,7 @@ All communications (server-to-client and client-to-server) are totally non-block
 - TCP is a bad choice for fast-paced online shooter games due to head-of-line blocking. In the future, the protocol is likely to be changed to either UDP or QUIC.
 - The server is totally not scalable at this moment. High availability and load balancing are not provided.
 - The server is NOT authoritative
-- No anti-cheat
+- Basic anti-cheat
 
 ## Configuration
 
@@ -33,7 +33,8 @@ Game server can be configured using the following environment variables:
 - `GAME_SERVER_PING_FREQUENCY_MLS` Frequency(in milliseconds) at which server pings all connected players. Default - `2_500`.
 - `GAME_SERVER_IDLE_PLAYERS_KILLER_FREQUENCY_MLS` Frequency(in milliseconds) at which server checks if player connection is idle. Default - `10_000`.
 - `GAME_SERVER_MAX_IDLE_TIME_MLS` Maximum idle time(in milliseconds) for a player. "Idle" - no network activity, which includes in-game events + ping responds. For example, if player connects to a game and doesn't move but responds to PING requests, then it's NOT considered idle. This check is mostly needed when a TCP connection was closed incorrectly(no FIN). Default - `10_000`.
-- `GAME_SERVER_DEFAULT_DAMAGE` Shot damage. Default - `20`.
+- `GAME_SERVER_DEFAULT_SHOTGUN_DAMAGE` Gunshot damage. Default - `20`.
+- `GAME_SERVER_DEFAULT_PUNCH_DAMAGE` Punch damage. Default - `50`.
 - `GAME_SERVER_PIN_CODE` Server access pin code(digits only, no less than 4). Used in HMAC that is appended to every message. Default - `5555`.
 
 Game client is also configurable through environments variables:

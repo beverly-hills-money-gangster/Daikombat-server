@@ -70,7 +70,7 @@ public final class ServerCommandOuterClass {
       "\n\017JoinGameCommand\022\023\n\006gameId\030\001 \001(\005H\000\210\001\001\022\024" +
       "\n\007version\030\002 \001(\tH\001\210\001\001\022\027\n\nplayerName\030\003 \001(\t" +
       "H\002\210\001\001B\t\n\007_gameIdB\n\n\010_versionB\r\n\013_playerN" +
-      "ame\"\357\003\n\024PushGameEventCommand\022\023\n\006gameId\030\001" +
+      "ame\"\372\003\n\024PushGameEventCommand\022\023\n\006gameId\030\001" +
       " \001(\005H\000\210\001\001\022I\n\teventType\030\002 \001(\01621.daikombat" +
       ".dto.PushGameEventCommand.GameEventTypeH" +
       "\001\210\001\001\022A\n\010position\030\003 \001(\0132*.daikombat.dto.P" +
@@ -79,11 +79,11 @@ public final class ServerCommandOuterClass {
       "Command.VectorH\003\210\001\001\022\025\n\010playerId\030\005 \001(\005H\004\210" +
       "\001\001\022\035\n\020affectedPlayerId\030\006 \001(\005H\005\210\001\001\0324\n\006Vec" +
       "tor\022\016\n\001x\030\001 \001(\002H\000\210\001\001\022\016\n\001y\030\002 \001(\002H\001\210\001\001B\004\n\002_" +
-      "xB\004\n\002_y\".\n\rGameEventType\022\010\n\004MOVE\020\000\022\t\n\005SH" +
-      "OOT\020\001\022\010\n\004PING\020\002B\t\n\007_gameIdB\014\n\n_eventType" +
-      "B\013\n\t_positionB\014\n\n_directionB\013\n\t_playerId" +
-      "B\023\n\021_affectedPlayerIdB&\n\"com.beverly.hil" +
-      "ls.money.gang.protoP\001b\006proto3"
+      "xB\004\n\002_y\"9\n\rGameEventType\022\010\n\004MOVE\020\000\022\t\n\005SH" +
+      "OOT\020\001\022\010\n\004PING\020\002\022\t\n\005PUNCH\020\003B\t\n\007_gameIdB\014\n" +
+      "\n_eventTypeB\013\n\t_positionB\014\n\n_directionB\013" +
+      "\n\t_playerIdB\023\n\021_affectedPlayerIdB&\n\"com." +
+      "beverly.hills.money.gang.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

@@ -47,5 +47,6 @@ message PushGameEventCommand {
     MOVE = 0;
     SHOOT = 1;
     PING = 2;
+    PUNCH = 3;
   }
 }

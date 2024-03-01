@@ -145,12 +145,31 @@ public interface ServerResponseFactory {
                 .build();
     }
 
-    static ServerResponse createDeadEvent(
+    static ServerResponse createKillShootingEvent(
             PlayerStateReader shooterPlayerReader,
             PlayerStateReader deadPlayerReader) {
+        return createKillEvent(
+                shooterPlayerReader,
+                deadPlayerReader,
+                ServerResponse.GameEvent.GameEventType.KILL_SHOOTING);
+    }
+
+    static ServerResponse createKillPunchingEvent(
+            PlayerStateReader shooterPlayerReader,
+            PlayerStateReader deadPlayerReader) {
+        return createKillEvent(
+                shooterPlayerReader,
+                deadPlayerReader,
+                ServerResponse.GameEvent.GameEventType.KILL_PUNCHING);
+    }
+
+    static ServerResponse createKillEvent(
+            PlayerStateReader shooterPlayerReader,
+            PlayerStateReader deadPlayerReader,
+            ServerResponse.GameEvent.GameEventType killType) {
         var deadPlayerEvent = ServerResponse.GameEvents.newBuilder()
                 .addEvents(ServerResponse.GameEvent.newBuilder()
-                        .setEventType(ServerResponse.GameEvent.GameEventType.DEATH)
+                        .setEventType(killType)
                         .setPlayer(createPlayerStats(shooterPlayerReader))
                         .setAffectedPlayer(createPlayerStats(deadPlayerReader)));
         return ServerResponse.newBuilder()
@@ -158,12 +177,19 @@ public interface ServerResponseFactory {
                 .build();
     }
 
-    static ServerResponse createGetShotEvent(int playersOnline,
-                                             PlayerStateReader shooterPlayerReader,
-                                             PlayerStateReader shotPlayerReader) {
+    static ServerResponse createGetAttackedEvent(int playersOnline,
+                                                 PlayerStateReader shooterPlayerReader,
+                                                 PlayerStateReader shotPlayerReader,
+                                                 AttackType attackType) {
+        ServerResponse.GameEvent.GameEventType attackEventType;
+        switch (attackType) {
+            case PUNCH -> attackEventType = ServerResponse.GameEvent.GameEventType.GET_PUNCHED;
+            case SHOOT -> attackEventType = ServerResponse.GameEvent.GameEventType.GET_SHOT;
+            default -> throw new IllegalArgumentException("Not supported attack type " + attackType);
+        }
         var deadPlayerEvent = ServerResponse.GameEvents.newBuilder()
                 .addEvents(ServerResponse.GameEvent.newBuilder()
-                        .setEventType(ServerResponse.GameEvent.GameEventType.GET_SHOT)
+                        .setEventType(attackEventType)
                         .setPlayer(createPlayerStats(shooterPlayerReader))
                         .setAffectedPlayer(createPlayerStats(shotPlayerReader)));
         deadPlayerEvent.setPlayersOnline(playersOnline);
@@ -174,9 +200,20 @@ public interface ServerResponseFactory {
 
     static ServerResponse createShootingEvent(int playersOnline,
                                               PlayerStateReader shooterPlayerReader) {
+        return createAttackingEvent(playersOnline, shooterPlayerReader, ServerResponse.GameEvent.GameEventType.SHOOT);
+    }
+
+    static ServerResponse createPunchingEvent(int playersOnline,
+                                              PlayerStateReader puncherPlayerReader) {
+        return createAttackingEvent(playersOnline, puncherPlayerReader, ServerResponse.GameEvent.GameEventType.PUNCH);
+    }
+
+    static ServerResponse createAttackingEvent(int playersOnline,
+                                               PlayerStateReader shooterPlayerReader,
+                                               ServerResponse.GameEvent.GameEventType attackType) {
         var deadPlayerEvent = ServerResponse.GameEvents.newBuilder()
                 .addEvents(ServerResponse.GameEvent.newBuilder()
-                        .setEventType(ServerResponse.GameEvent.GameEventType.SHOOT)
+                        .setEventType(attackType)
                         .setPlayer(createPlayerStats(shooterPlayerReader)));
         deadPlayerEvent.setPlayersOnline(playersOnline);
         return ServerResponse.newBuilder()

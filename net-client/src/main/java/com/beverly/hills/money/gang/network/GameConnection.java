@@ -81,6 +81,7 @@ public class GameConnection {
                 @Override
                 protected void initChannel(SocketChannel ch) {
                     ChannelPipeline p = ch.pipeline();
+                    ch.config().setAutoClose(false);
                     p.addLast(new ProtobufVarint32FrameDecoder());
                     p.addLast(new ProtobufDecoder(ServerResponse.getDefaultInstance()));
                     p.addLast(new ProtobufVarint32LengthFieldPrepender());

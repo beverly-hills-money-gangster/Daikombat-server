@@ -26,6 +26,9 @@ public interface ServerConfig {
             .orElseThrow(() -> new IllegalArgumentException(
                     "Pin code should: 1) be not empty 2) be at least 4 symbols 3) consist of digits only"));
 
+    boolean FAST_TCP = Boolean.parseBoolean(StringUtils.defaultIfBlank(
+            System.getenv("GAME_SERVER_FAST_TCP"), "true"));
+
     String VERSION = Optional.ofNullable(
             ServerConfig.class.getClassLoader().getResourceAsStream("server-version.properties")).map(
             inputStream -> {

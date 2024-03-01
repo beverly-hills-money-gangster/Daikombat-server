@@ -1,5 +1,6 @@
 package com.beverly.hills.money.gang.handler.inbound;
 
+import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.handler.command.*;
@@ -42,7 +43,9 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ServerCommand msg) {
         try {
-            ctx.channel().config().setOption(EpollChannelOption.TCP_QUICKACK, true);
+            if (ServerConfig.FAST_TCP) {
+                ctx.channel().config().setOption(EpollChannelOption.TCP_QUICKACK, true);
+            }
             LOG.debug("Got command {}", msg);
             ServerCommandHandler serverCommandHandler;
             if (msg.hasJoinGameCommand()) {

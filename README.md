@@ -36,10 +36,13 @@ Game server can be configured using the following environment variables:
 - `GAME_SERVER_DEFAULT_SHOTGUN_DAMAGE` Gunshot damage. Default - `20`.
 - `GAME_SERVER_DEFAULT_PUNCH_DAMAGE` Punch damage. Default - `50`.
 - `GAME_SERVER_PIN_CODE` Server access pin code(digits only, no less than 4). Used in HMAC that is appended to every message. Default - `5555`.
+- `GAME_SERVER_FAST_TCP` Enables fast TCP configurations(used mostly for testing, not recommended to be set to `false` in prod). Default - `true`.
 
 Game client is also configurable through environments variables:
 
 - `CLIENT_MAX_SERVER_INACTIVE_MLS` Maximum server inactivity time(in milliseconds). Default - `10_000`.
+- `CLIENT_FAST_TCP` Enables fast TCP configurations(used mostly for testing, not recommended to be set to `false` in prod). Default - `true`.
+
 
 ## Deployment and integration
 

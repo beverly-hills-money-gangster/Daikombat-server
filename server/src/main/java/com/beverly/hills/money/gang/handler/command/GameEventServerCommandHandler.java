@@ -104,8 +104,11 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
                         }
                         game.getPlayersRegistry().findPlayer(attackedPlayer.getPlayerId())
                                 .ifPresent(playerStateChannel -> playerStateChannel.getChannel().writeAndFlush(deadEvent)
-                                        .addListener((ChannelFutureListener) channelFuture
-                                                -> game.getPlayersRegistry().removePlayer(attackedPlayer.getPlayerId())));
+                                        .addListener((ChannelFutureListener) channelFuture -> {
+                                            if (channelFuture.isSuccess()) {
+                                                game.getPlayersRegistry().removePlayer(attackedPlayer.getPlayerId());
+                                            }
+                                        }));
                         // send KILL event to the rest of players
                         game.getPlayersRegistry().allPlayers()
                                 .filter(playerStateChannel ->

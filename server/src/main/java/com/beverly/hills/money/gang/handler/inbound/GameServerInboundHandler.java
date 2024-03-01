@@ -63,7 +63,11 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
         } catch (GameLogicError e) {
             LOG.warn("Game logic error", e);
             ctx.writeAndFlush(createErrorEvent(e))
-                    .addListener((ChannelFutureListener) channelFuture -> removeChannel(ctx.channel()));
+                    .addListener((ChannelFutureListener) channelFuture -> {
+                        if (channelFuture.isSuccess()) {
+                            removeChannel(ctx.channel());
+                        }
+                    });
         }
     }
 

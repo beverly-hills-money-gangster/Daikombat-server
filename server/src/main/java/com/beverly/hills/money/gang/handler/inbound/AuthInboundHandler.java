@@ -49,7 +49,11 @@ public class AuthInboundHandler extends SimpleChannelInboundHandler<ServerComman
         } catch (GameLogicError ex) {
             LOG.error("Game logic error", ex);
             ctx.writeAndFlush(createErrorEvent(ex))
-                    .addListener((ChannelFutureListener) channelFuture -> ctx.close());
+                    .addListener((ChannelFutureListener) channelFuture -> {
+                        if (channelFuture.isSuccess()) {
+                            ctx.close();
+                        }
+                    });
         }
     }
 

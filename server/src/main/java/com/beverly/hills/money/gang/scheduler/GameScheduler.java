@@ -83,7 +83,6 @@ public class GameScheduler implements Closeable {
             if (game.getPlayersRegistry().playersOnline() == 0) {
                 return;
             }
-            LOG.info("Ping");
             ServerResponse ping = createPing(game.playersOnline());
             game.getPlayersRegistry().allPlayers()
                     .filter(playerStateChannel -> playerStateChannel.getPlayerState().isFullyConnected())

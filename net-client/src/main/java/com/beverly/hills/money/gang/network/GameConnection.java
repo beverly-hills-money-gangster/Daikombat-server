@@ -71,48 +71,50 @@ public class GameConnection {
         try {
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(group)
-                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, MAX_CONNECTION_TIME_MLS)
-                    .option(ChannelOption.TCP_NODELAY, true)
-                    .channel(NioSocketChannel.class)
-                    .handler(new ChannelInitializer<SocketChannel>() {
+                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, MAX_CONNECTION_TIME_MLS);
+            if (ClientConfig.FAST_TCP) {
+                LOG.info("Fast TCP is enabled");
+                bootstrap.option(ChannelOption.TCP_NODELAY, true);
+            }
+            bootstrap.channel(NioSocketChannel.class);
+            bootstrap.handler(new ChannelInitializer<SocketChannel>() {
+                @Override
+                protected void initChannel(SocketChannel ch) {
+                    ChannelPipeline p = ch.pipeline();
+                    ch.config().setAutoClose(false);
+                    p.addLast(new ProtobufVarint32FrameDecoder());
+                    p.addLast(new ProtobufDecoder(ServerResponse.getDefaultInstance()));
+                    p.addLast(new ProtobufVarint32LengthFieldPrepender());
+                    p.addLast(new ProtobufEncoder());
+                    p.addLast(new SimpleChannelInboundHandler<ServerResponse>() {
+
                         @Override
-                        protected void initChannel(SocketChannel ch) {
-                            ChannelPipeline p = ch.pipeline();
-                            p.addLast(new ProtobufVarint32FrameDecoder());
-                            p.addLast(new ProtobufDecoder(ServerResponse.getDefaultInstance()));
-                            p.addLast(new ProtobufVarint32LengthFieldPrepender());
-                            p.addLast(new ProtobufEncoder());
-                            p.addLast(new SimpleChannelInboundHandler<ServerResponse>() {
-
-                                @Override
-                                protected void channelRead0(ChannelHandlerContext ctx, ServerResponse msg) {
-                                    LOG.debug("Incoming msg {}", msg);
-                                    ctx.channel().config().setOption(EpollChannelOption.TCP_QUICKACK, true);
-                                    lastServerActivityMls.set(System.currentTimeMillis());
-                                    serverEventsQueueAPI.push(msg);
-                                    networkStats.incReceivedMessages();
-                                    networkStats.addInboundPayloadBytes(msg.getSerializedSize());
-                                }
-
-                                @Override
-                                public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-                                    LOG.error("Error occurred", cause);
-                                    try {
-                                        errorsQueueAPI.push(cause);
-                                    } finally {
-                                        disconnect();
-                                    }
-                                }
-
-                                @Override
-                                public void channelInactive(ChannelHandlerContext ctx) {
-                                    LOG.error("Channel closed");
-                                    disconnect();
-                                }
-
-                            });
+                        protected void channelRead0(ChannelHandlerContext ctx, ServerResponse msg) {
+                            LOG.debug("Incoming msg {}", msg);
+                            if (ClientConfig.FAST_TCP) {
+                                ctx.channel().config().setOption(EpollChannelOption.TCP_QUICKACK, true);
+                            }
+                            lastServerActivityMls.set(System.currentTimeMillis());
+                            serverEventsQueueAPI.push(msg);
+                            networkStats.incReceivedMessages();
+                            networkStats.addInboundPayloadBytes(msg.getSerializedSize());
                         }
+
+                        @Override
+                        public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+                            LOG.error("Error occurred", cause);
+                            errorsQueueAPI.push(cause);
+                        }
+
+                        @Override
+                        public void channelInactive(ChannelHandlerContext ctx) {
+                            LOG.error("Channel closed");
+                            disconnect();
+                        }
+
                     });
+                }
+            });
             long startTime = System.currentTimeMillis();
             this.channel = bootstrap.connect(
                     gameServerCreds.getHostPort().getHost(),

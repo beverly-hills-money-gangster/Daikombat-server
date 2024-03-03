@@ -63,11 +63,9 @@ public class ServerRunner implements Closeable {
         try {
             ServerBootstrap bootStrap = new ServerBootstrap();
             bootStrap.group(serverGroup, workerGroup)
-                    .option(ChannelOption.SO_BACKLOG, 100);
-            if (ServerConfig.FAST_TCP) {
-                LOG.info("Fast TCP is enabled");
-                bootStrap.childOption(ChannelOption.TCP_NODELAY, true);
-            }
+                    .option(ChannelOption.SO_BACKLOG, 100)
+                    .childOption(ChannelOption.TCP_NODELAY, ServerConfig.FAST_TCP);
+
             bootStrap.channel(NioServerSocketChannel.class);
             bootStrap.childHandler(gameServerInitializer);
             // Bind to port

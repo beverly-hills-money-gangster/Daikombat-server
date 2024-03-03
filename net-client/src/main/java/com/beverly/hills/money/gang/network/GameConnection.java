@@ -71,11 +71,8 @@ public class GameConnection {
         try {
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(group)
-                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, MAX_CONNECTION_TIME_MLS);
-            if (ClientConfig.FAST_TCP) {
-                LOG.info("Fast TCP is enabled");
-                bootstrap.option(ChannelOption.TCP_NODELAY, true);
-            }
+                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, MAX_CONNECTION_TIME_MLS)
+                    .option(ChannelOption.TCP_NODELAY, ClientConfig.FAST_TCP);
             bootstrap.channel(NioSocketChannel.class);
             bootstrap.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
@@ -86,6 +83,12 @@ public class GameConnection {
                     p.addLast(new ProtobufVarint32LengthFieldPrepender());
                     p.addLast(new ProtobufEncoder());
                     p.addLast(new SimpleChannelInboundHandler<ServerResponse>() {
+
+                        @Override
+                        public void channelActive(ChannelHandlerContext ctx) throws Exception {
+                            LOG.info("Channel is active. Options {}", ctx.channel().config().getOptions());
+                            super.channelActive(ctx);
+                        }
 
                         @Override
                         protected void channelRead0(ChannelHandlerContext ctx, ServerResponse msg) {

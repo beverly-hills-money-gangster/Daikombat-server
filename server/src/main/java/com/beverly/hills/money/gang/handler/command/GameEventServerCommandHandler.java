@@ -52,7 +52,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
             4) victim continues to move or shoot before getting KILL event
             for now, we just ignore such events.
              */
-        if (!gameRoomRegistry.playerJoinedGame(gameCommand.getGameId(),
+        if (!gameRoomRegistry.isJoinedPlayerLive(gameCommand.getGameId(),
                 currentChannel, gameCommand.getPlayerId())) {
             LOG.warn("Player {} doesn't exist. Ignore command.", gameCommand.getPlayerId());
             return;

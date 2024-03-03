@@ -311,7 +311,7 @@ public class GameTest {
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
         assertEquals(1, shooterState.getKills(), "One player was killed");
-        assertEquals(2, game.playersOnline());
+        assertEquals(1, game.playersOnline(), "After death, only 1 player is alive");
         PlayerState shotState = game.getPlayersRegistry().getPlayerState(shotPlayerConnectedGameState.getPlayerState().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(0, shotState.getHealth());
@@ -336,8 +336,8 @@ public class GameTest {
         assertEquals(
                 0, observerPlayerConnectedGameState.getLeaderBoard().get(1).getKills());
 
-        assertEquals(2, game.getPlayersRegistry().allLivePlayers().count(),"We have 2 live players now: killer and observer");
-        assertEquals(3, game.getPlayersRegistry().allPlayers().count(),"We have 3 live players now: killer, observer, and dead player." +
+        assertEquals(2, game.getPlayersRegistry().allLivePlayers().count(), "We have 2 live players now: killer and observer");
+        assertEquals(3, game.getPlayersRegistry().allPlayers().count(), "We have 3 live players now: killer, observer, and dead player." +
                 " Dead player will be removed later.");
     }
 
@@ -377,7 +377,7 @@ public class GameTest {
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
         assertEquals(1, shooterState.getKills(), "One player was killed");
-        assertEquals(2, game.playersOnline());
+        assertEquals(1, game.playersOnline(), "After death, only 1 player is online");
         PlayerState shotState = game.getPlayersRegistry().getPlayerState(shotPlayerConnectedGameState.getPlayerState().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(0, shotState.getHealth());
@@ -466,7 +466,7 @@ public class GameTest {
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
         assertEquals(1, shooterState.getKills(), "One player got killed");
-        assertEquals(2, game.playersOnline());
+        assertEquals(1, game.playersOnline(), "After death, only 1 player is online");
         PlayerState shotState = game.getPlayersRegistry().getPlayerState(shotPlayerConnectedGameState.getPlayerState().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(0, shotState.getHealth());
@@ -530,7 +530,7 @@ public class GameTest {
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
         assertEquals(1, shooterState.getKills(), "One player got killed");
-        assertEquals(2, game.playersOnline());
+        assertEquals(1, game.playersOnline(), "After death, only 1 player is online");
         PlayerState shotState = game.getPlayersRegistry().getPlayerState(shotPlayerConnectedGameState.getPlayerState().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(0, shotState.getHealth());

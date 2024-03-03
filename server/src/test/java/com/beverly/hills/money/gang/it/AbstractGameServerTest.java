@@ -33,7 +33,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @ContextConfiguration(classes = TestConfig.class)
 public abstract class AbstractGameServerTest {
 
-    private static int MAX_QUEUE_WAIT_TIME_MLS = 30_000;
+    private static final int MAX_QUEUE_WAIT_TIME_MLS = 30_000;
 
     protected static final Logger LOG = LoggerFactory.getLogger(AbstractGameServerTest.class);
 

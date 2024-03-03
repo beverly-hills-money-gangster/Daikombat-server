@@ -39,6 +39,11 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     private final GameEventServerCommandHandler gameServerCommandHandler;
     private final GetServerInfoCommandHandler getServerInfoCommandHandler;
 
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        LOG.info("Channel is active. Options {}",  ctx.channel().config().getOptions());
+        super.channelActive(ctx);
+    }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ServerCommand msg) {

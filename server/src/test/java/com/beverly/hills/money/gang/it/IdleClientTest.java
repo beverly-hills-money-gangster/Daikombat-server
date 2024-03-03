@@ -12,9 +12,10 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @SetEnvironmentVariable(key = "GAME_SERVER_IDLE_PLAYERS_KILLER_FREQUENCY_MLS", value = "1000")
@@ -124,6 +125,110 @@ public class IdleClientTest extends AbstractGameServerTest {
         assertEquals(1 + observerMoves, gameConnectionObserver.getNetworkStats().getSentMessages());
     }
 
+
+    /**
+     * @given player 1 and player 2 connected to game server
+     * @when player 1 kills player 2
+     * @then player 1 stays online, player 2 connection gets disconnected after some time
+     */
+    @Test
+    public void testIdleDeadClient() throws IOException, InterruptedException {
+
+        int gameIdToConnectTo = 0;
+        String puncherPlayerName = "killer";
+        GameConnection puncherConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
+        puncherConnection.write(
+                JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
+                        .setPlayerName(puncherPlayerName)
+                        .setGameId(gameIdToConnectTo).build());
+
+        GameConnection deadConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
+        deadConnection.write(
+                JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
+                        .setPlayerName("my other player name")
+                        .setGameId(gameIdToConnectTo).build());
+        waitUntilQueueNonEmpty(puncherConnection.getResponse());
+        ServerResponse puncherPlayerSpawn = puncherConnection.getResponse().poll().get();
+        int puncherPlayerId = puncherPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
+
+        waitUntilQueueNonEmpty(deadConnection.getResponse());
+        ServerResponse punchedPlayerSpawn = puncherConnection.getResponse().poll().get();
+        int punchedPlayerId = punchedPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
+
+        emptyQueue(deadConnection.getResponse());
+        emptyQueue(puncherConnection.getResponse());
+
+        var puncherSpawnEvent = puncherPlayerSpawn.getGameEvents().getEvents(0);
+        float newPositionX = puncherSpawnEvent.getPlayer().getPosition().getX() + 0.1f;
+        float newPositionY = puncherSpawnEvent.getPlayer().getPosition().getY() - 0.1f;
+        int punchesToKill = (int) Math.ceil(100D / ServerConfig.DEFAULT_PUNCH_DAMAGE);
+        for (int i = 0; i < punchesToKill - 1; i++) {
+            puncherConnection.write(PushGameEventCommand.newBuilder()
+                    .setPlayerId(puncherPlayerId)
+                    .setGameId(gameIdToConnectTo)
+                    .setEventType(PushGameEventCommand.GameEventType.PUNCH)
+                    .setDirection(
+                            PushGameEventCommand.Vector.newBuilder()
+                                    .setX(puncherSpawnEvent.getPlayer().getDirection().getX())
+                                    .setY(puncherSpawnEvent.getPlayer().getDirection().getY())
+                                    .build())
+                    .setPosition(
+                            PushGameEventCommand.Vector.newBuilder()
+                                    .setX(newPositionX)
+                                    .setY(newPositionY)
+                                    .build())
+                    .setAffectedPlayerId(punchedPlayerId)
+                    .build());
+            waitUntilQueueNonEmpty(deadConnection.getResponse());
+        }
+        // this one kills player 2
+        puncherConnection.write(PushGameEventCommand.newBuilder()
+                .setPlayerId(puncherPlayerId)
+                .setGameId(gameIdToConnectTo)
+                .setEventType(PushGameEventCommand.GameEventType.PUNCH)
+                .setDirection(
+                        PushGameEventCommand.Vector.newBuilder()
+                                .setX(puncherSpawnEvent.getPlayer().getDirection().getX())
+                                .setY(puncherSpawnEvent.getPlayer().getDirection().getY())
+                                .build())
+                .setPosition(
+                        PushGameEventCommand.Vector.newBuilder()
+                                .setX(newPositionX)
+                                .setY(newPositionY)
+                                .build())
+                .setAffectedPlayerId(punchedPlayerId)
+                .build());
+        waitUntilQueueNonEmpty(deadConnection.getResponse());
+        assertFalse(deadConnection.isDisconnected(), "Dead players should be kept connected for graceful shutdown");
+        assertTrue(puncherConnection.isConnected(), "Killer must be connected");
+
+        int killerMoves = 50;
+        // move killer, dead player does nothing meanwhile
+        for (int i = 0; i < killerMoves; i++) {
+            newPositionY += 0.1f;
+            newPositionX += 0.1f;
+            puncherConnection.write(PushGameEventCommand.newBuilder()
+                    .setPlayerId(puncherPlayerId)
+                    .setGameId(gameIdToConnectTo)
+                    .setEventType(PushGameEventCommand.GameEventType.MOVE)
+                    .setDirection(PushGameEventCommand.Vector.newBuilder().setX(0).setY(1).build())
+                    .setPosition(PushGameEventCommand.Vector.newBuilder()
+                            .setX(newPositionX).setY(newPositionY).build())
+                    .build());
+            Thread.sleep(200);
+        }
+        assertTrue(deadConnection.isDisconnected(), "Dead players be shut down after such delay");
+        assertTrue(puncherConnection.isConnected(), "Killer must be connected");
+        boolean exitEventFound = puncherConnection.getResponse().list().stream()
+                .filter(ServerResponse::hasGameEvents)
+                .map(ServerResponse::getGameEvents)
+                .flatMap((Function<ServerResponse.GameEvents, Stream<ServerResponse.GameEvent>>) gameEvents
+                        -> gameEvents.getEventsList().stream())
+                .anyMatch(gameEvent -> gameEvent.getEventType() == ServerResponse.GameEvent.GameEventType.EXIT);
+        assertFalse(exitEventFound, "No EXIT event should be found. Dead players die, they don't exit");
+    }
 
     /**
      * @given a running game server and 1 connected player

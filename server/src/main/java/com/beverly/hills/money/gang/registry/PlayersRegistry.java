@@ -47,21 +47,26 @@ public class PlayersRegistry implements Closeable {
         return players.values().stream();
     }
 
+    public Stream<PlayerStateChannel> allLivePlayers() {
+        return allPlayers().filter(playerStateChannel -> !playerStateChannel.getPlayerState().isDead());
+    }
+
     public Optional<PlayerStateChannel> findPlayer(int playerId) {
         return Optional.ofNullable(players.get(playerId));
     }
 
     public int playersOnline() {
-        return players.size();
+        return (int) allLivePlayers().count();
     }
 
-    public boolean playerExists(Channel channel, int playerId) {
+    public boolean isJoinedPlayerLive(Channel channel, int playerId) {
         return Optional.ofNullable(players.get(playerId))
-                .map(playerStateChannel -> playerStateChannel.channel == channel)
+                .map(playerStateChannel -> playerStateChannel.channel == channel
+                        && !playerStateChannel.playerState.isDead())
                 .orElse(false);
     }
 
-    public Optional<PlayerState> removePlayer(int playerId) {
+    public Optional<PlayerState> removeClosePlayer(int playerId) {
         LOG.info("Remove player {}", playerId);
         PlayerStateChannel playerStateChannel = players.remove(playerId);
         if (playerStateChannel != null) {

@@ -73,8 +73,12 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
 
     private void removeChannel(Channel channelToRemove) {
         boolean playerWasFound = gameRoomRegistry.removeChannel(channelToRemove, (game, playerState) -> {
+            if (playerState.isDead()) {
+                // if player is dead, then no exit event has to be sent
+                return;
+            }
             var disconnectEvent = createExitEvent(game.playersOnline(), playerState);
-            game.getPlayersRegistry().allPlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
+            game.getPlayersRegistry().allLivePlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
                     .forEach(channel -> channel.writeAndFlush(disconnectEvent));
         });
         if (!playerWasFound) {

@@ -50,7 +50,7 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
         ServerResponse playerSpawnEvent = createSpawnEventSinglePlayer(playerConnected);
         LOG.info("Send my spawn to myself");
         var otherPlayers = game.getPlayersRegistry()
-                .allPlayers()
+                .allLivePlayers()
                 .filter(playerStateChannel -> playerStateChannel.getChannel() != currentChannel)
                 .collect(Collectors.toList());
 
@@ -72,7 +72,7 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
                         currentChannel.writeAndFlush(allPlayersSpawnEvent);
                     } else {
                         LOG.error("Failed to connect player", channelFuture.cause());
-                        game.getPlayersRegistry().removePlayer(playerConnected.getPlayerState().getPlayerId());
+                        game.getPlayersRegistry().removeClosePlayer(playerConnected.getPlayerState().getPlayerId());
                     }
                 });
 

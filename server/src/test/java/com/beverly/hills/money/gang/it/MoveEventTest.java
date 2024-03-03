@@ -1,7 +1,6 @@
 package com.beverly.hills.money.gang.it;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
-import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;

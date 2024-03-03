@@ -112,7 +112,7 @@ public class Game implements Closeable, GameReader {
     }
 
     private List<GameLeaderBoardItem> getLeaderBoard() {
-        return playersRegistry.allPlayers()
+        return playersRegistry.allLivePlayers()
                 .filter(playerStateChannel -> !playerStateChannel.getPlayerState().isDead())
                 .sorted((player1, player2) -> -Integer.compare(
                         player1.getPlayerState().getKills(), player2.getPlayerState().getKills()))
@@ -130,12 +130,12 @@ public class Game implements Closeable, GameReader {
     }
 
     public List<PlayerStateReader> getBufferedMoves() {
-        return playersRegistry.allPlayers().map(PlayersRegistry.PlayerStateChannel::getPlayerState)
+        return playersRegistry.allLivePlayers().map(PlayersRegistry.PlayerStateChannel::getPlayerState)
                 .filter(PlayerState::hasMoved).collect(Collectors.toList());
     }
 
     public void flushBufferedMoves() {
-        playersRegistry.allPlayers().map(PlayersRegistry.PlayerStateChannel::getPlayerState)
+        playersRegistry.allLivePlayers().map(PlayersRegistry.PlayerStateChannel::getPlayerState)
                 .forEach(PlayerState::flushMove);
     }
 
@@ -153,16 +153,9 @@ public class Game implements Closeable, GameReader {
         return ServerConfig.MAX_PLAYERS_PER_GAME;
     }
 
-    public Stream<PlayerStateReader> readPlayers() {
-        return playersRegistry.allPlayers().map(PlayersRegistry.PlayerStateChannel::getPlayerState)
-                .map(playerState -> playerState);
-    }
-
-
     public Optional<PlayerStateReader> readPlayer(int playerId) {
         return getPlayer(playerId).map(playerState -> playerState);
     }
-
 
     @Override
     public void close() {

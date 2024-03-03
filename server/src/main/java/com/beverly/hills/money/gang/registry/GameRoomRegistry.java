@@ -38,9 +38,9 @@ public class GameRoomRegistry implements Closeable {
         return games.values().stream();
     }
 
-    public boolean playerJoinedGame(int gameId, Channel channel, int playerId) {
+    public boolean isJoinedPlayerLive(int gameId, Channel channel, int playerId) {
         return Optional.ofNullable(games.get(gameId))
-                .map(game -> game.getPlayersRegistry().playerExists(channel, playerId))
+                .map(game -> game.getPlayersRegistry().isJoinedPlayerLive(channel, playerId))
                 .orElse(false);
     }
 
@@ -55,7 +55,7 @@ public class GameRoomRegistry implements Closeable {
             if (playerToRemove.isPresent()) {
                 playerFound = true;
                 game.getPlayersRegistry()
-                        .removePlayer(playerToRemove.get().getPlayerState().getPlayerId())
+                        .removeClosePlayer(playerToRemove.get().getPlayerState().getPlayerId())
                         .ifPresent(playerState -> onFound.onRemoval(game, playerState));
                 break;
             }

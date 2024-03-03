@@ -551,7 +551,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
                 .setAffectedPlayerId(shotPlayerId)
                 .build());
         waitUntilQueueNonEmpty(deadConnection.getResponse());
-        assertTrue(deadConnection.isDisconnected(), "Dead players should be disconnected");
+        assertTrue(deadConnection.isConnected(), "Dead players should be disconnected");
         assertTrue(killerConnection.isConnected(), "Killer must be connected");
 
         ServerResponse deadPlayerServerResponse = deadConnection.getResponse().poll().get();
@@ -689,7 +689,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
                 .setAffectedPlayerId(punchedPlayerId)
                 .build());
         waitUntilQueueNonEmpty(deadConnection.getResponse());
-        assertTrue(deadConnection.isDisconnected(), "Dead players should be disconnected");
+        assertFalse(deadConnection.isDisconnected(), "Dead players should be kept connected for graceful shutdown");
         assertTrue(puncherConnection.isConnected(), "Killer must be connected");
 
         ServerResponse deadPlayerServerResponse = deadConnection.getResponse().poll().get();

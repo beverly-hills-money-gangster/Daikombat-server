@@ -54,7 +54,7 @@ public class Spawner {
 
     public PlayerState.PlayerCoordinates spawn(Game game) {
         var players = game.getPlayersRegistry()
-                .allPlayers()
+                .allLivePlayers()
                 .map((Function<PlayersRegistry.PlayerStateChannel, PlayerStateReader>)
                         PlayersRegistry.PlayerStateChannel::getPlayerState)
                 .collect(Collectors.toList());

@@ -10,7 +10,6 @@ import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import com.beverly.hills.money.gang.state.*;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFutureListener;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,14 +102,9 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
                             default -> throw new IllegalArgumentException("Not supported attack type " + attackType);
                         }
                         game.getPlayersRegistry().findPlayer(attackedPlayer.getPlayerId())
-                                .ifPresent(playerStateChannel -> playerStateChannel.getChannel().writeAndFlush(deadEvent)
-                                        .addListener((ChannelFutureListener) channelFuture -> {
-                                            if (channelFuture.isSuccess()) {
-                                                game.getPlayersRegistry().removePlayer(attackedPlayer.getPlayerId());
-                                            }
-                                        }));
+                                .ifPresent(playerStateChannel -> playerStateChannel.getChannel().writeAndFlush(deadEvent));
                         // send KILL event to the rest of players
-                        game.getPlayersRegistry().allPlayers()
+                        game.getPlayersRegistry().allLivePlayers()
                                 .filter(playerStateChannel ->
                                         playerStateChannel.getPlayerState().getPlayerId() != attackedPlayer.getPlayerId())
                                 .forEach(playerStateChannel -> playerStateChannel.getChannel().writeAndFlush(deadEvent));
@@ -121,7 +115,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
                                 attackGameState.getAttackingPlayer(),
                                 attackGameState.getPlayerAttacked(),
                                 attackType);
-                        game.getPlayersRegistry().allPlayers()
+                        game.getPlayersRegistry().allLivePlayers()
                                 .filter(playerStateChannel
                                         // don't send me my own attack back
                                         -> playerStateChannel.getPlayerState().getPlayerId() != gameCommand.getPlayerId())
@@ -140,7 +134,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
                                 attackGameState.getAttackingPlayer());
                         default -> throw new IllegalArgumentException("Not supported attack type " + attackType);
                     }
-                    game.getPlayersRegistry().allPlayers()
+                    game.getPlayersRegistry().allLivePlayers()
                             .filter(playerStateChannel
                                     // don't send me my own attack back
                                     -> playerStateChannel.getPlayerState().getPlayerId() != gameCommand.getPlayerId())

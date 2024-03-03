@@ -55,7 +55,7 @@ public class GameRoomRegistry implements Closeable {
             if (playerToRemove.isPresent()) {
                 playerFound = true;
                 game.getPlayersRegistry()
-                        .removePlayer(playerToRemove.get().getPlayerState().getPlayerId())
+                        .removeClosePlayer(playerToRemove.get().getPlayerState().getPlayerId())
                         .ifPresent(playerState -> onFound.onRemoval(game, playerState));
                 break;
             }

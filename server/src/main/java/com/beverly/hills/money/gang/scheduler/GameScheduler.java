@@ -53,7 +53,7 @@ public class GameScheduler implements Closeable {
                 if (bufferedMoves.isEmpty()) {
                     return;
                 }
-                game.getPlayersRegistry().allPlayers().forEach(playerStateChannel -> {
+                game.getPlayersRegistry().allLivePlayers().forEach(playerStateChannel -> {
                     // don't send me MY own moves
                     Optional.of(getAllBufferedPlayerMovesExceptMine(
                                     bufferedMoves, playerStateChannel.getPlayerState().getPlayerId()))
@@ -84,7 +84,7 @@ public class GameScheduler implements Closeable {
                 return;
             }
             ServerResponse ping = createPing(game.playersOnline());
-            game.getPlayersRegistry().allPlayers()
+            game.getPlayersRegistry().allLivePlayers()
                     .filter(playerStateChannel -> playerStateChannel.getPlayerState().isFullyConnected())
                     .map(PlayersRegistry.PlayerStateChannel::getChannel)
                     .forEach(channel -> channel.writeAndFlush(ping));
@@ -106,12 +106,14 @@ public class GameScheduler implements Closeable {
             ServerResponse disconnectedEvents = createExitEvent(
                     game.playersOnline(),
                     idlePlayers.stream()
+                            // only live players can exit. dead players are disconnected silently
+                            .filter(playerStateChannel -> !playerStateChannel.getPlayerState().isDead())
                             .map(PlayersRegistry.PlayerStateChannel::getPlayerState));
 
             idlePlayers.forEach(playerStateChannel
                     -> game.getPlayersRegistry()
-                    .removePlayer(playerStateChannel.getPlayerState().getPlayerId()));
-            game.getPlayersRegistry().allPlayers()
+                    .removeClosePlayer(playerStateChannel.getPlayerState().getPlayerId()));
+            game.getPlayersRegistry().allLivePlayers()
                     .forEach(playerStateChannel -> playerStateChannel.getChannel().writeAndFlush(disconnectedEvents));
 
         }), IDLE_PLAYERS_KILLER_FREQUENCY_MLS, IDLE_PLAYERS_KILLER_FREQUENCY_MLS, TimeUnit.MILLISECONDS);

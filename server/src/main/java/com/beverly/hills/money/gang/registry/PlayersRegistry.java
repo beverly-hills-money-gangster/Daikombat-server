@@ -14,6 +14,7 @@ import java.io.Closeable;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static com.beverly.hills.money.gang.config.ServerConfig.MAX_PLAYERS_PER_GAME;
@@ -47,12 +48,16 @@ public class PlayersRegistry implements Closeable {
         return players.values().stream();
     }
 
+    public Stream<PlayerStateChannel> allLivePlayers() {
+        return allPlayers().filter(playerStateChannel -> !playerStateChannel.getPlayerState().isDead());
+    }
+
     public Optional<PlayerStateChannel> findPlayer(int playerId) {
         return Optional.ofNullable(players.get(playerId));
     }
 
     public int playersOnline() {
-        return players.size();
+        return (int) allLivePlayers().count();
     }
 
     public boolean playerExists(Channel channel, int playerId) {
@@ -61,7 +66,7 @@ public class PlayersRegistry implements Closeable {
                 .orElse(false);
     }
 
-    public Optional<PlayerState> removePlayer(int playerId) {
+    public Optional<PlayerState> removeClosePlayer(int playerId) {
         LOG.info("Remove player {}", playerId);
         PlayerStateChannel playerStateChannel = players.remove(playerId);
         if (playerStateChannel != null) {

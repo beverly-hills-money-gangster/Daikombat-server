@@ -39,7 +39,7 @@ public class ChatServerCommandHandler extends ServerCommandHandler {
             return;
         }
         game.readPlayer(chatCommand.getPlayerId())
-                .ifPresent(playerStateReader -> game.getPlayersRegistry().allPlayers()
+                .ifPresent(playerStateReader -> game.getPlayersRegistry().allLivePlayers()
                         .map(PlayersRegistry.PlayerStateChannel::getChannel)
                         .filter(playerChannel -> playerChannel != currentChannel)
                         .forEach(playerChannel -> playerChannel.writeAndFlush(createChatEvent(

@@ -9,6 +9,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelOutboundInvoker;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.epoll.EpollChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.RequiredArgsConstructor;
@@ -64,8 +65,8 @@ public class ServerRunner implements Closeable {
             ServerBootstrap bootStrap = new ServerBootstrap();
             bootStrap.group(serverGroup, workerGroup)
                     .option(ChannelOption.SO_BACKLOG, 100)
-                    .childOption(ChannelOption.TCP_NODELAY, ServerConfig.FAST_TCP);
-
+                    .childOption(ChannelOption.TCP_NODELAY, ServerConfig.FAST_TCP)
+                    .childOption(EpollChannelOption.TCP_QUICKACK, ServerConfig.FAST_TCP);
             bootStrap.channel(NioServerSocketChannel.class);
             bootStrap.childHandler(gameServerInitializer);
             // Bind to port

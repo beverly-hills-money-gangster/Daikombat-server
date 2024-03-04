@@ -2,10 +2,12 @@ version: '3.8'
 
 services:
   daikombat-game-server:
-    image: ghcr.io/beverly-hills-money-gangster/daikombat_server
+    image: ghcr.io/beverly-hills-money-gangster/daikombat_server:${TAG_NAME}
     restart: "always"
     volumes:
       - ./jvmheap:/app/jvmheap
+    env_file:
+      - configs.env
     command:
       [ "java",
         # configure JMX remote
@@ -19,6 +21,8 @@ services:
         # drop a heap dump file on OOM
         "-XX:+HeapDumpOnOutOfMemoryError",
         "-XX:HeapDumpPath=/app/jvmheap",
+        # heap size config
+        "-Xmx512m",
         "-jar", "server.jar" ]
     ports:
       - "0.0.0.0:7777:7777" # default server port. exposed to public internet

@@ -41,16 +41,14 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        LOG.info("Channel is active. Options {}",  ctx.channel().config().getOptions());
+        LOG.info("Channel is active. Options {}", ctx.channel().config().getOptions());
         super.channelActive(ctx);
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ServerCommand msg) {
         try {
-            if (ServerConfig.FAST_TCP) {
-                ctx.channel().config().setOption(EpollChannelOption.TCP_QUICKACK, true);
-            }
+            ctx.channel().config().setOption(EpollChannelOption.TCP_QUICKACK, ServerConfig.FAST_TCP);
             LOG.debug("Got command {}", msg);
             ServerCommandHandler serverCommandHandler;
             if (msg.hasJoinGameCommand()) {

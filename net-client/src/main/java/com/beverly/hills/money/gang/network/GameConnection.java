@@ -72,7 +72,8 @@ public class GameConnection {
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(group)
                     .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, MAX_CONNECTION_TIME_MLS)
-                    .option(ChannelOption.TCP_NODELAY, ClientConfig.FAST_TCP);
+                    .option(ChannelOption.TCP_NODELAY, ClientConfig.FAST_TCP)
+                    .option(EpollChannelOption.TCP_QUICKACK, ClientConfig.FAST_TCP);
             bootstrap.channel(NioSocketChannel.class);
             bootstrap.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
@@ -93,9 +94,7 @@ public class GameConnection {
                         @Override
                         protected void channelRead0(ChannelHandlerContext ctx, ServerResponse msg) {
                             LOG.debug("Incoming msg {}", msg);
-                            if (ClientConfig.FAST_TCP) {
-                                ctx.channel().config().setOption(EpollChannelOption.TCP_QUICKACK, true);
-                            }
+                            ctx.channel().config().setOption(EpollChannelOption.TCP_QUICKACK, ClientConfig.FAST_TCP);
                             lastServerActivityMls.set(System.currentTimeMillis());
                             serverEventsQueueAPI.push(msg);
                             networkStats.incReceivedMessages();

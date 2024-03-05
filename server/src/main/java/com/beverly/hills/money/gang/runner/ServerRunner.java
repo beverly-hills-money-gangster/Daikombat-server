@@ -51,7 +51,6 @@ public class ServerRunner implements Closeable {
     private final AtomicReference<Channel> serverChannelRef = new AtomicReference<>();
 
     public void runServer(int port) throws InterruptedException {
-        long startTime = System.currentTimeMillis();
         if (!stateRef.compareAndSet(State.INIT, State.STARTING)) {
             throw new IllegalStateException("Can't run!");
         }
@@ -78,7 +77,6 @@ public class ServerRunner implements Closeable {
                 throw new IllegalStateException("Can't run!");
             }
             gameScheduler.init();
-            LOG.info("Time taken to start server {} mls", System.currentTimeMillis() - startTime);
             startWaitingLatch.countDown();
             serverChannel.closeFuture().sync();
             LOG.info("Server channel closed");

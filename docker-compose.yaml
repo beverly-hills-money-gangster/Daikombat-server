@@ -2,10 +2,12 @@ version: '3.8'
 
 services:
   daikombat-game-server:
-    image: ghcr.io/beverly-hills-money-gangster/daikombat_server
+    image: ghcr.io/beverly-hills-money-gangster/daikombat_server:${TAG}
     restart: "always"
     volumes:
       - ./jvmheap:/app/jvmheap
+    env_file:
+      - configs.env
     command:
       [ "java",
         # configure JMX remote

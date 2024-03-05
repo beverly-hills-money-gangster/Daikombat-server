@@ -37,6 +37,7 @@ Game server can be configured using the following environment variables:
 - `GAME_SERVER_DEFAULT_PUNCH_DAMAGE` Punch damage. Default - `50`.
 - `GAME_SERVER_PIN_CODE` Server access pin code(digits only, no less than 4). Used in HMAC that is appended to every message. Default - `5555`.
 - `GAME_SERVER_FAST_TCP` Enables fast TCP configurations(used mostly for testing, not recommended to be set to `false` in prod). Default - `true`.
+- `SENTRY_DSN` Sentry DSN. Not specified by default.
 
 Game client is also configurable through environments variables:
 
@@ -76,6 +77,10 @@ Apart from JMX metrics, the server is configured to drop a heap dump file on out
 #### Micrometer
 
 All command handlers publish Micrometer timer metrics through JMX. See "metrics" in Jconsole "MBeans" tab.
+
+#### Sentry
+
+All errors are automatically published to Sentry. See `SENTRY_DSN` env var.
 
 ### Client monitoring
 

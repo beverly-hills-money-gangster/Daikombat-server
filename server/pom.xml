@@ -88,6 +88,11 @@
             <artifactId>spring-context</artifactId>
             <version>5.3.31</version>
         </dependency>
+        <dependency>
+            <groupId>io.sentry</groupId>
+            <artifactId>sentry-logback</artifactId>
+            <version>7.5.0</version>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/io.micrometer/micrometer-registry-jmx -->
         <dependency>

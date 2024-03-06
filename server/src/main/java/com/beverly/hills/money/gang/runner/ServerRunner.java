@@ -32,14 +32,6 @@ public class ServerRunner implements Closeable {
 
     private static final Logger LOG = LoggerFactory.getLogger(ServerRunner.class);
 
-    private static final String SKULL_ASCII =
-            "\n" +
-                    "     |     '       /  |        \n" +
-                    "     /__      ___ (  /         \n" +
-                    "     \\\\--`-'-|`---\\\\ |     DAIKOMBAT SERVER Version: " + ServerConfig.VERSION + "\n" +
-                    "      |' _/   ` __/ /          \n" +
-                    "      '._  W    ,--'           \n" +
-                    "         |_:_._/               \n";
 
     private final GameServerInitializer gameServerInitializer;
 
@@ -69,7 +61,7 @@ public class ServerRunner implements Closeable {
             // Bind to port
             var serverChannel = bootStrap.bind(port).sync()
                     .channel();
-            LOG.info(SKULL_ASCII);
+            LOG.info("Server version: {}", ServerConfig.VERSION);
             LOG.info("Synced on port {}", port);
             serverChannelRef.set(serverChannel);
             if (!stateRef.compareAndSet(State.STARTING, State.RUNNING)) {

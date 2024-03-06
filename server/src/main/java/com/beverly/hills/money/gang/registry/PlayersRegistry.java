@@ -3,6 +3,7 @@ package com.beverly.hills.money.gang.registry;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.state.PlayerState;
+import com.beverly.hills.money.gang.state.PlayerStateReader;
 import io.netty.channel.Channel;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import java.io.Closeable;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static com.beverly.hills.money.gang.config.ServerConfig.MAX_PLAYERS_PER_GAME;
@@ -59,11 +61,10 @@ public class PlayersRegistry implements Closeable {
         return (int) allLivePlayers().count();
     }
 
-    public boolean isJoinedPlayerLive(Channel channel, int playerId) {
+    public Optional<PlayerStateReader> findPlayer(Channel channel, int playerId) {
         return Optional.ofNullable(players.get(playerId))
-                .map(playerStateChannel -> playerStateChannel.channel == channel
-                        && !playerStateChannel.playerState.isDead())
-                .orElse(false);
+                .filter(playerStateChannel -> playerStateChannel.channel == channel)
+                .map(playerStateChannel -> playerStateChannel.playerState);
     }
 
     public Optional<PlayerState> removeClosePlayer(int playerId) {

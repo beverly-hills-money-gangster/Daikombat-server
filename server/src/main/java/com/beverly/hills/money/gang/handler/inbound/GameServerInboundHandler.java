@@ -18,12 +18,9 @@ import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createE
 
 /*
 TODO:
-    - Add MDC 'playerId' to all logs
     - Integrate with Sentry
-    - Fix time measurements in "Time taken to start server" log
     - Add code coverage badge
     - Use maven 3.6.3 in development
-    - Drop hprof file on death
  */
 @Component
 @RequiredArgsConstructor

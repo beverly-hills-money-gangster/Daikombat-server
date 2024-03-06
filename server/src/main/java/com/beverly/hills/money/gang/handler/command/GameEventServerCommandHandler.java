@@ -13,6 +13,7 @@ import io.netty.channel.Channel;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -23,6 +24,10 @@ import static com.beverly.hills.money.gang.factory.ServerResponseFactory.*;
 @Component
 @RequiredArgsConstructor
 public class GameEventServerCommandHandler extends ServerCommandHandler {
+
+    private static final String MDC_GAME_ID = "GAME_ID";
+    private static final String MDC_PLAYER_ID = "PLAYER_ID";
+    private static final String MDC_PLAYER_NAME = "PLAYER_NAME";
 
     private static final Logger LOG = LoggerFactory.getLogger(GameEventServerCommandHandler.class);
 
@@ -52,27 +57,39 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
             4) victim continues to move or shoot before getting KILL event
             for now, we just ignore such events.
              */
-        if (!gameRoomRegistry.isJoinedPlayerLive(gameCommand.getGameId(),
-                currentChannel, gameCommand.getPlayerId())) {
+        Optional<PlayerStateReader> playerStateOpt = gameRoomRegistry.getLiveJoinedPlayer(gameCommand.getGameId(),
+                currentChannel, gameCommand.getPlayerId());
+
+        if (playerStateOpt.isEmpty()) {
             LOG.warn("Player {} doesn't exist. Ignore command.", gameCommand.getPlayerId());
             return;
         }
-        PushGameEventCommand.GameEventType gameEventType = gameCommand.getEventType();
-        switch (gameEventType) {
-            case SHOOT, PUNCH -> handleAttackingEvents(game, gameCommand);
-            case MOVE -> game.bufferMove(gameCommand.getPlayerId(), createCoordinates(gameCommand));
-            case PING -> game.getPlayersRegistry().getPlayerState(gameCommand.getPlayerId())
-                    .ifPresent(PlayerState::ping);
-            default -> currentChannel.writeAndFlush(createErrorEvent(
-                    new GameLogicError("Not supported command",
-                            GameErrorCode.COMMAND_NOT_RECOGNIZED)));
+        try {
+            MDC.put(MDC_GAME_ID, String.valueOf(gameCommand.getGameId()));
+            MDC.put(MDC_PLAYER_ID, String.valueOf(playerStateOpt.get().getPlayerId()));
+            MDC.put(MDC_PLAYER_NAME, playerStateOpt.get().getPlayerName());
+
+            PushGameEventCommand.GameEventType gameEventType = gameCommand.getEventType();
+            switch (gameEventType) {
+                case SHOOT, PUNCH -> handleAttackingEvents(game, gameCommand);
+                case MOVE -> game.bufferMove(gameCommand.getPlayerId(), createCoordinates(gameCommand));
+                case PING -> game.getPlayersRegistry().getPlayerState(gameCommand.getPlayerId())
+                        .ifPresent(PlayerState::ping);
+                default -> currentChannel.writeAndFlush(createErrorEvent(
+                        new GameLogicError("Not supported command",
+                                GameErrorCode.COMMAND_NOT_RECOGNIZED)));
+            }
+        } finally {
+            MDC.remove(MDC_PLAYER_ID);
+            MDC.remove(MDC_GAME_ID);
+            MDC.remove(MDC_PLAYER_NAME);
         }
     }
 
     private void handleAttackingEvents(Game game, PushGameEventCommand gameCommand)
             throws GameLogicError {
         if (isCheating(gameCommand, game)) {
-            LOG.info("Cheating detected");
+            LOG.warn("Cheating detected");
             return;
         }
         AttackType attackType = getAttackType(gameCommand);

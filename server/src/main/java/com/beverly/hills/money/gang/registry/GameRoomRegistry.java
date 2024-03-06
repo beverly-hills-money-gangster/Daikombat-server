@@ -4,6 +4,7 @@ import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerState;
+import com.beverly.hills.money.gang.state.PlayerStateReader;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import java.io.Closeable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static com.beverly.hills.money.gang.exception.GameErrorCode.NOT_EXISTING_GAME_ROOM;
@@ -38,10 +40,10 @@ public class GameRoomRegistry implements Closeable {
         return games.values().stream();
     }
 
-    public boolean isJoinedPlayerLive(int gameId, Channel channel, int playerId) {
+    public Optional<PlayerStateReader> getLiveJoinedPlayer(int gameId, Channel channel, int playerId) {
         return Optional.ofNullable(games.get(gameId))
-                .map(game -> game.getPlayersRegistry().isJoinedPlayerLive(channel, playerId))
-                .orElse(false);
+                .flatMap(game -> game.getPlayersRegistry().findPlayer(channel, playerId))
+                .filter(playerStateReader -> !playerStateReader.isDead());
     }
 
 

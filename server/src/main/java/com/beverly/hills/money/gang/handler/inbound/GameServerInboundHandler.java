@@ -8,7 +8,6 @@ import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import io.netty.channel.*;
-import io.netty.channel.epoll.EpollChannelOption;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +47,6 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ServerCommand msg) {
         try {
-            ctx.channel().config().setOption(EpollChannelOption.TCP_QUICKACK, ServerConfig.FAST_TCP);
             LOG.debug("Got command {}", msg);
             ServerCommandHandler serverCommandHandler;
             if (msg.hasJoinGameCommand()) {

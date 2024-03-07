@@ -1,5 +1,6 @@
 package com.beverly.hills.money.gang.handler.inbound;
 
+import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.proto.ServerCommand;
@@ -9,6 +10,7 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.epoll.EpollChannelOption;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +31,7 @@ public class AuthInboundHandler extends SimpleChannelInboundHandler<ServerComman
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ServerCommand msg) {
         try {
+            ctx.channel().config().setOption(EpollChannelOption.TCP_QUICKACK, ServerConfig.FAST_TCP);
             LOG.debug("Auth command {}", msg);
             if (!msg.hasHmac()) {
                 throw new GameLogicError("No HMAC provided", GameErrorCode.AUTH_ERROR);

@@ -9,8 +9,9 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelOutboundInvoker;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollServerDomainSocketChannel;
+import io.netty.channel.epoll.EpollServerSocketChannel;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,14 +50,14 @@ public class ServerRunner implements Closeable {
         LOG.info("Starting server on port {}", port);
         // Create event loop groups. One for incoming connections handling and
         // second for handling actual event by workers
-        EventLoopGroup serverGroup = new NioEventLoopGroup(1);
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        EventLoopGroup serverGroup = new EpollEventLoopGroup(1);
+        EventLoopGroup workerGroup = new EpollEventLoopGroup();
         try {
             ServerBootstrap bootStrap = new ServerBootstrap();
             bootStrap.group(serverGroup, workerGroup)
                     .option(ChannelOption.SO_BACKLOG, 100)
                     .childOption(ChannelOption.TCP_NODELAY, ServerConfig.FAST_TCP);
-            bootStrap.channel(NioServerSocketChannel.class);
+            bootStrap.channel(EpollServerSocketChannel.class);
             bootStrap.childHandler(gameServerInitializer);
             // Bind to port
             var serverChannel = bootStrap.bind(port).sync()

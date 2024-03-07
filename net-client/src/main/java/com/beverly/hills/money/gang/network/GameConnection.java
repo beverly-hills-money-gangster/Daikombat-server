@@ -143,7 +143,6 @@ public class GameConnection {
             LOG.info("Connected to server in {} mls", System.currentTimeMillis() - startTime);
             pingScheduler.scheduleAtFixedRate(() -> {
                         try {
-                            LOG.info("Ping");
                             if (hasPendingPing.get()) {
                                 LOG.warn("Old ping request is still pending");
                                 return;

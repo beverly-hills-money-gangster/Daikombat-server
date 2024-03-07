@@ -135,24 +135,29 @@ public interface ServerResponseFactory {
     }
 
     static ServerResponse createKillShootingEvent(
+            int playersOnline,
             PlayerStateReader shooterPlayerReader,
             PlayerStateReader deadPlayerReader) {
         return createKillEvent(
+                playersOnline,
                 shooterPlayerReader,
                 deadPlayerReader,
                 ServerResponse.GameEvent.GameEventType.KILL_SHOOTING);
     }
 
     static ServerResponse createKillPunchingEvent(
+            int playersOnline,
             PlayerStateReader shooterPlayerReader,
             PlayerStateReader deadPlayerReader) {
         return createKillEvent(
+                playersOnline,
                 shooterPlayerReader,
                 deadPlayerReader,
                 ServerResponse.GameEvent.GameEventType.KILL_PUNCHING);
     }
 
     static ServerResponse createKillEvent(
+            int playersOnline,
             PlayerStateReader shooterPlayerReader,
             PlayerStateReader deadPlayerReader,
             ServerResponse.GameEvent.GameEventType killType) {
@@ -160,7 +165,8 @@ public interface ServerResponseFactory {
                 .addEvents(ServerResponse.GameEvent.newBuilder()
                         .setEventType(killType)
                         .setPlayer(createPlayerStats(shooterPlayerReader))
-                        .setAffectedPlayer(createPlayerStats(deadPlayerReader)));
+                        .setAffectedPlayer(createPlayerStats(deadPlayerReader)))
+                .setPlayersOnline(playersOnline);
         return ServerResponse.newBuilder()
                 .setGameEvents(deadPlayerEvent)
                 .build();

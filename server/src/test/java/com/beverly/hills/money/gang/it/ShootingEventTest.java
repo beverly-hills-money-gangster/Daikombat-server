@@ -568,6 +568,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
 
         ServerResponse killerPlayerServerResponse = killerConnection.getResponse().poll().get();
         var killerShootingEvent = killerPlayerServerResponse.getGameEvents().getEvents(0);
+        assertEquals(1, killerPlayerServerResponse.getGameEvents().getPlayersOnline(),
+                "Only one player should be online. The other one must be dead.");
         assertEquals(ServerResponse.GameEvent.GameEventType.KILL_SHOOTING, killerShootingEvent.getEventType(),
                 "Shot player must be dead. Actual response is " + killerPlayerServerResponse);
         assertEquals(shooterPlayerId, killerShootingEvent.getPlayer().getPlayerId());
@@ -693,6 +695,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
 
         ServerResponse deadPlayerServerResponse = deadConnection.getResponse().poll().get();
         var deadPunchingEvent = deadPlayerServerResponse.getGameEvents().getEvents(0);
+        assertEquals(1, deadPlayerServerResponse.getGameEvents().getPlayersOnline(),
+                "Only one player should be online. The other one must be dead.");
         assertEquals(ServerResponse.GameEvent.GameEventType.KILL_PUNCHING, deadPunchingEvent.getEventType(),
                 "Punched player must be dead");
         assertFalse(deadPunchingEvent.hasLeaderBoard(), "Leader board are published only on spawns");

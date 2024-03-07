@@ -108,9 +108,11 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
 
                         switch (attackType) {
                             case PUNCH -> deadEvent = createKillPunchingEvent(
+                                    game.playersOnline(),
                                     attackGameState.getAttackingPlayer(),
                                     attackGameState.getPlayerAttacked());
                             case SHOOT -> deadEvent = createKillShootingEvent(
+                                    game.playersOnline(),
                                     attackGameState.getAttackingPlayer(),
                                     attackGameState.getPlayerAttacked());
                             default -> throw new IllegalArgumentException("Not supported attack type " + attackType);

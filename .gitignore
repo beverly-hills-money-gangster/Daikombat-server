@@ -6,7 +6,7 @@ target/
 !**/src/main/**/build/
 !**/src/test/**/build/
 toxiproxy-server-windows-amd64.exe
-
+out
 ### IntelliJ IDEA ###
 .idea/*
 .idea/modules.xml

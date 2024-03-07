@@ -1,6 +1,5 @@
 package com.beverly.hills.money.gang.handler.inbound;
 
-import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.handler.command.*;
@@ -8,6 +7,8 @@ import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import io.netty.channel.*;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +19,6 @@ import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createE
 
 /*
 TODO:
-    - Integrate with Sentry
     - Add code coverage badge
     - Use maven 3.6.3 in development
  */
@@ -34,6 +34,7 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     private final ChatServerCommandHandler chatServerCommandHandler;
     private final GameEventServerCommandHandler gameServerCommandHandler;
     private final GetServerInfoCommandHandler getServerInfoCommandHandler;
+    private final PingCommandHandler pingCommandHandler;
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -54,6 +55,8 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
                 serverCommandHandler = chatServerCommandHandler;
             } else if (msg.hasGetServerInfoCommand()) {
                 serverCommandHandler = getServerInfoCommandHandler;
+            } else if (msg.hasPingCommand()) {
+                serverCommandHandler = pingCommandHandler;
             } else {
                 throw new GameLogicError("Command is not recognized", GameErrorCode.COMMAND_NOT_RECOGNIZED);
             }
@@ -66,6 +69,19 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
                             removeChannel(ctx.channel());
                         }
                     });
+        }
+    }
+
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        if (evt instanceof IdleStateEvent) {
+            IdleStateEvent e = (IdleStateEvent) evt;
+            if (e.state() == IdleState.READER_IDLE) {
+                LOG.info("Channel is idle");
+                removeChannel(ctx.channel());
+            }
+        } else {
+            super.userEventTriggered(ctx, evt);
         }
     }
 

@@ -19,6 +19,9 @@ import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.EventExecutorGroup;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
@@ -37,15 +40,16 @@ public class GameConnection {
 
     private static final Logger LOG = LoggerFactory.getLogger(GameConnection.class);
 
+    private final ScheduledExecutorService pingScheduler = Executors.newScheduledThreadPool(1,
+            new BasicThreadFactory.Builder().namingPattern("ping-%d").build());
+
+    private final AtomicLong pingRequestedTimeMls = new AtomicLong();
+
+    private final AtomicBoolean hasPendingPing = new AtomicBoolean(false);
+
     private static final int MAX_CONNECTION_TIME_MLS = 5_000;
 
-    private final ScheduledExecutorService idleServerDisconnector = Executors.newScheduledThreadPool(1,
-            new BasicThreadFactory.Builder().namingPattern("idle-server-disconnector-%d").build());
     private final NetworkStats networkStats = new NetworkStats();
-
-    private final AtomicLong lastServerActivityMls = new AtomicLong();
-
-    private final AtomicBoolean joinedGame = new AtomicBoolean();
 
     private final QueueAPI<ServerResponse> serverEventsQueueAPI = new QueueAPI<>();
 
@@ -81,6 +85,8 @@ public class GameConnection {
                     p.addLast(new ProtobufDecoder(ServerResponse.getDefaultInstance()));
                     p.addLast(new ProtobufVarint32LengthFieldPrepender());
                     p.addLast(new ProtobufEncoder());
+                    p.addLast(new IdleStateHandler(
+                            ClientConfig.SERVER_MAX_INACTIVE_MLS / 1000, 0, 0));
                     p.addLast(new SimpleChannelInboundHandler<ServerResponse>() {
 
                         @Override
@@ -92,8 +98,12 @@ public class GameConnection {
                         @Override
                         protected void channelRead0(ChannelHandlerContext ctx, ServerResponse msg) {
                             LOG.debug("Incoming msg {}", msg);
-                            lastServerActivityMls.set(System.currentTimeMillis());
-                            serverEventsQueueAPI.push(msg);
+                            if (msg.hasPing()) {
+                                networkStats.setPingMls((int) (System.currentTimeMillis() - pingRequestedTimeMls.get()));
+                                hasPendingPing.set(false);
+                            } else {
+                                serverEventsQueueAPI.push(msg);
+                            }
                             networkStats.incReceivedMessages();
                             networkStats.addInboundPayloadBytes(msg.getSerializedSize());
                         }
@@ -110,6 +120,19 @@ public class GameConnection {
                             disconnect();
                         }
 
+                        @Override
+                        public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+                            if (evt instanceof IdleStateEvent) {
+                                IdleStateEvent e = (IdleStateEvent) evt;
+                                if (e.state() == IdleState.READER_IDLE) {
+                                    LOG.info("Server is inactive");
+                                    errorsQueueAPI.push(new IOException("Server is inactive for too long"));
+                                    disconnect();
+                                }
+                            } else {
+                                super.userEventTriggered(ctx, evt);
+                            }
+                        }
                     });
                 }
             });
@@ -118,18 +141,22 @@ public class GameConnection {
                     gameServerCreds.getHostPort().getHost(),
                     gameServerCreds.getHostPort().getPort()).sync().channel();
             LOG.info("Connected to server in {} mls", System.currentTimeMillis() - startTime);
-            idleServerDisconnector.scheduleAtFixedRate(() -> {
-                try {
-                    LOG.info("Check server status");
-                    if (joinedGame.get() && isServerIdleForTooLong()) {
-                        LOG.info("Server is inactive");
-                        errorsQueueAPI.push(new IOException("Server is inactive for too long"));
-                        disconnect();
-                    }
-                } catch (Exception e) {
-                    LOG.error("Can't check server status", e);
-                }
-            }, 5_000, 5_000, TimeUnit.MILLISECONDS);
+            pingScheduler.scheduleAtFixedRate(() -> {
+                        try {
+                            LOG.info("Ping");
+                            if (hasPendingPing.get()) {
+                                LOG.warn("Old ping request is still pending");
+                                return;
+                            }
+                            hasPendingPing.set(true);
+                            pingRequestedTimeMls.set(System.currentTimeMillis());
+                            writeLocal(PingCommand.newBuilder().build());
+                        } catch (Exception e) {
+                            LOG.error("Can't ping server", e);
+                        }
+                    }, ClientConfig.SERVER_MAX_INACTIVE_MLS / 3, ClientConfig.SERVER_MAX_INACTIVE_MLS / 3,
+                    TimeUnit.MILLISECONDS);
+
             state.set(GameConnectionState.CONNECTED);
         } catch (Exception e) {
             LOG.error("Error occurred", e);
@@ -138,8 +165,12 @@ public class GameConnection {
         }
     }
 
-    private boolean isServerIdleForTooLong() {
-        return (System.currentTimeMillis() - lastServerActivityMls.get()) > ClientConfig.SERVER_MAX_INACTIVE_MLS;
+    public void shutdownPingScheduler() {
+        try {
+            pingScheduler.shutdown();
+        } catch (Exception e) {
+            LOG.error("Can't shutdown ping scheduler", e);
+        }
     }
 
     public void write(PushGameEventCommand pushGameEventCommand) {
@@ -152,7 +183,6 @@ public class GameConnection {
 
     public void write(JoinGameCommand joinGameCommand) {
         writeLocal(joinGameCommand);
-        joinedGame.set(true);
     }
 
     public void write(GetServerInfoCommand getServerInfoCommand) {
@@ -174,6 +204,8 @@ public class GameConnection {
                 serverCommand.setJoinGameCommand((JoinGameCommand) command);
             } else if (command instanceof GetServerInfoCommand) {
                 serverCommand.setGetServerInfoCommand((GetServerInfoCommand) command);
+            } else if (command instanceof PingCommand) {
+                serverCommand.setPingCommand((PingCommand) command);
             } else {
                 throw new IllegalArgumentException("Not recognized message type " + command.getClass());
             }
@@ -201,15 +233,10 @@ public class GameConnection {
         }
         try {
             Optional.ofNullable(channel).ifPresent(ChannelOutboundInvoker::close);
-
         } catch (Exception e) {
             LOG.error("Can't close channel", e);
         }
-        try {
-            idleServerDisconnector.shutdown();
-        } catch (Exception e) {
-            LOG.error("Can't shutdown idle server disconnector", e);
-        }
+        shutdownPingScheduler();
         state.set(GameConnectionState.DISCONNECTED);
     }
 
@@ -241,9 +268,6 @@ public class GameConnection {
 
 
     private enum GameConnectionState {
-        CONNECTING,
-        CONNECTED,
-        DISCONNECTING,
-        DISCONNECTED
+        CONNECTING, CONNECTED, DISCONNECTING, DISCONNECTED
     }
 }

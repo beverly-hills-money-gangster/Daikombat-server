@@ -1,6 +1,7 @@
 package com.beverly.hills.money.gang.initializer;
 
 
+import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.handler.inbound.AuthInboundHandler;
 import com.beverly.hills.money.gang.handler.inbound.GameServerInboundHandler;
 import com.beverly.hills.money.gang.proto.ServerCommand;
@@ -11,6 +12,7 @@ import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
+import io.netty.handler.timeout.IdleStateHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +31,7 @@ public class GameServerInitializer extends ChannelInitializer<SocketChannel> {
         p.addLast(new ProtobufVarint32LengthFieldPrepender());
         p.addLast(new ProtobufEncoder());
         p.addLast(authInboundHandler);
+        p.addLast(new IdleStateHandler(ServerConfig.MAX_IDLE_TIME_MLS / 1000, 0, 0));
         p.addLast(gameServerInboundHandler);
     }
 }

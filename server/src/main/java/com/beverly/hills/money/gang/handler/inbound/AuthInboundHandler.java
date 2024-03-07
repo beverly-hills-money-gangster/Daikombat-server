@@ -38,6 +38,7 @@ public class AuthInboundHandler extends SimpleChannelInboundHandler<ServerComman
                     : msg.hasChatCommand() ? msg.getChatCommand()
                     : msg.hasJoinGameCommand() ? msg.getJoinGameCommand()
                     : msg.hasGetServerInfoCommand() ? msg.getGetServerInfoCommand()
+                    : msg.hasPingCommand() ? msg.getPingCommand()
                     : null;
 
             if (command == null) {

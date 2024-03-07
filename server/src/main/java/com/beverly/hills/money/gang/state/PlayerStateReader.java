@@ -14,5 +14,4 @@ public interface PlayerStateReader {
 
     boolean hasMoved();
 
-    boolean isIdleForTooLong();
 }

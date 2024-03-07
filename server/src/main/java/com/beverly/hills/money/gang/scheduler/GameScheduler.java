@@ -29,22 +29,17 @@ public class GameScheduler implements Closeable {
 
     private final GameRoomRegistry gameRoomRegistry;
 
-    private final ScheduledExecutorService bufferedMovesExecutor = Executors.newScheduledThreadPool(1,
-            new BasicThreadFactory.Builder().namingPattern("moves-buffer-%d").build());
-    private final ScheduledExecutorService idlePlayersKillerExecutor = Executors.newScheduledThreadPool(1,
-            new BasicThreadFactory.Builder().namingPattern("idle-players-killer-%d").build());
-    private final ScheduledExecutorService pingExecutor = Executors.newScheduledThreadPool(1,
-            new BasicThreadFactory.Builder().namingPattern("ping-%d").build());
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1,
+            new BasicThreadFactory.Builder().namingPattern("scheduler-%d").build());
 
     public void init() {
         LOG.info("Init scheduler");
         scheduleSendBufferedMoves();
-        scheduleIdlePlayerKiller();
         schedulePing();
     }
 
     private void scheduleSendBufferedMoves() {
-        bufferedMovesExecutor.scheduleAtFixedRate(() -> gameRoomRegistry.getGames().forEach(game -> {
+        scheduler.scheduleAtFixedRate(() -> gameRoomRegistry.getGames().forEach(game -> {
             try {
                 if (game.getPlayersRegistry().playersOnline() == 0) {
                     return;
@@ -79,7 +74,7 @@ public class GameScheduler implements Closeable {
 
 
     private void schedulePing() {
-        pingExecutor.scheduleAtFixedRate(() -> gameRoomRegistry.getGames().forEach(game -> {
+        scheduler.scheduleAtFixedRate(() -> gameRoomRegistry.getGames().forEach(game -> {
             if (game.getPlayersRegistry().playersOnline() == 0) {
                 return;
             }
@@ -91,52 +86,14 @@ public class GameScheduler implements Closeable {
         }), 0, PING_FREQUENCY_MLS, TimeUnit.MILLISECONDS);
     }
 
-    private void scheduleIdlePlayerKiller() {
-        idlePlayersKillerExecutor.scheduleAtFixedRate(() -> gameRoomRegistry.getGames().forEach(game -> {
-            if (game.getPlayersRegistry().playersOnline() == 0) {
-                return;
-            }
-            var idlePlayers = game.getPlayersRegistry().allPlayers()
-                    .filter(playerStateChannel -> playerStateChannel.getPlayerState().isIdleForTooLong())
-                    .collect(Collectors.toList());
-            if (idlePlayers.isEmpty()) {
-                return;
-            }
-            LOG.info("Players to disconnect {}", idlePlayers);
-            ServerResponse disconnectedEvents = createExitEvent(
-                    game.playersOnline(),
-                    idlePlayers.stream()
-                            // only live players can exit. dead players are disconnected silently
-                            .filter(playerStateChannel -> !playerStateChannel.getPlayerState().isDead())
-                            .map(PlayersRegistry.PlayerStateChannel::getPlayerState));
-
-            idlePlayers.forEach(playerStateChannel
-                    -> game.getPlayersRegistry()
-                    .removeClosePlayer(playerStateChannel.getPlayerState().getPlayerId()));
-            game.getPlayersRegistry().allLivePlayers()
-                    .forEach(playerStateChannel -> playerStateChannel.getChannel().writeAndFlush(disconnectedEvents));
-
-        }), IDLE_PLAYERS_KILLER_FREQUENCY_MLS, IDLE_PLAYERS_KILLER_FREQUENCY_MLS, TimeUnit.MILLISECONDS);
-    }
 
     @Override
     public void close() {
         LOG.info("Close");
         try {
-            bufferedMovesExecutor.shutdownNow();
+            scheduler.shutdownNow();
         } catch (Exception e) {
-            LOG.error("Can't shutdown buffered moves executor", e);
-        }
-        try {
-            idlePlayersKillerExecutor.shutdownNow();
-        } catch (Exception e) {
-            LOG.error("Can't shutdown player killer executor", e);
-        }
-
-        try {
-            pingExecutor.shutdownNow();
-        } catch (Exception e) {
-            LOG.error("Can't shutdown ping executor", e);
+            LOG.error("Can't shutdown scheduler", e);
         }
     }
 

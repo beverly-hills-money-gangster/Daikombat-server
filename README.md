@@ -31,8 +31,7 @@ Game server can be configured using the following environment variables:
 - `GAME_SERVER_MAX_PLAYERS_PER_GAME` Maximum number of players to join a game. Default - `25`. Total number of players on the server is `GAME_SERVER_GAMES_TO_CREATE*GAME_SERVER_MAX_PLAYERS_PER_GAME`.
 - `GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS` Frequency(in milliseconds) at which server notifies players about other players' positioning on the map. Default - `100`.
 - `GAME_SERVER_PING_FREQUENCY_MLS` Frequency(in milliseconds) at which server pings all connected players. Default - `2_500`.
-- `GAME_SERVER_IDLE_PLAYERS_KILLER_FREQUENCY_MLS` Frequency(in milliseconds) at which server checks if player connection is idle. Default - `10_000`.
-- `GAME_SERVER_MAX_IDLE_TIME_MLS` Maximum idle time(in milliseconds) for a player. "Idle" - no network activity, which includes in-game events + ping responds. For example, if player connects to a game and doesn't move but responds to PING requests, then it's NOT considered idle. This check is mostly needed when a TCP connection was closed incorrectly(no FIN). Default - `10_000`.
+- `GAME_SERVER_MAX_IDLE_TIME_MLS` Maximum idle time(in milliseconds) for a player. "Idle" - no network activity, which includes in-game events + ping responds. For example, if player connects to a game and doesn't move but responds to PING requests, then it's NOT considered idle. This check is mostly needed when a TCP connection was closed abruptly(no FIN). Default - `10_000`.
 - `GAME_SERVER_DEFAULT_SHOTGUN_DAMAGE` Gunshot damage. Default - `20`.
 - `GAME_SERVER_DEFAULT_PUNCH_DAMAGE` Punch damage. Default - `50`.
 - `GAME_SERVER_PIN_CODE` Server access pin code(digits only, no less than 4). Used in HMAC that is appended to every message. Default - `5555`.

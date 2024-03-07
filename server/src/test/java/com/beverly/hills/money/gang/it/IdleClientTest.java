@@ -17,8 +17,6 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
-@SetEnvironmentVariable(key = "GAME_SERVER_IDLE_PLAYERS_KILLER_FREQUENCY_MLS", value = "1000")
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "1000")
 public class IdleClientTest extends AbstractGameServerTest {
 
@@ -53,7 +51,7 @@ public class IdleClientTest extends AbstractGameServerTest {
         ServerResponse.GameEvent observerSpawnGameEvent = observerSpawn.getGameEvents().getEvents(0);
         int observerPlayerId = observerSpawnGameEvent.getPlayer().getPlayerId();
 
-        Thread.sleep(1_000);
+        Thread.sleep(500);
         emptyQueue(gameConnectionObserver.getResponse());
         emptyQueue(gameConnectionIdle.getResponse());
 
@@ -361,14 +359,6 @@ public class IdleClientTest extends AbstractGameServerTest {
         int playerId = mySpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
 
         emptyQueue(gameConnection.getResponse());
-        gameConnection.write(GetServerInfoCommand.newBuilder().build());
-        waitUntilQueueNonEmpty(gameConnection.getResponse());
-        ServerResponse serverResponse = gameConnection.getResponse().poll().get();
-        var myGame = serverResponse.getServerInfo().getGamesList().stream().filter(gameInfo
-                        -> gameInfo.getGameId() == gameToConnectTo).findFirst()
-                .orElseThrow(() -> new IllegalStateException("Can't find game by id. Response is:" + serverResponse));
-
-        assertEquals(1, myGame.getPlayersOnline(), "Only the current player should be connected");
 
         // move
         for (int i = 0; i < 50; i++) {

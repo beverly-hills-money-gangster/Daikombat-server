@@ -59,10 +59,6 @@ public class PlayerState implements PlayerStateReader {
         return kills.get();
     }
 
-    public boolean isIdleForTooLong() {
-        return (System.currentTimeMillis() - lastActivityTimeMls.get()) > MAX_IDLE_TIME_MLS;
-    }
-
     public void getShot() {
         lastActivityTimeMls.set(System.currentTimeMillis());
         if (health.addAndGet(-ServerConfig.DEFAULT_SHOTGUN_DAMAGE) <= 0) {

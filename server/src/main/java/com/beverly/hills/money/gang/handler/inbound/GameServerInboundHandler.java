@@ -8,6 +8,8 @@ import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import io.netty.channel.*;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +23,7 @@ TODO:
     - Integrate with Sentry
     - Add code coverage badge
     - Use maven 3.6.3 in development
+    - Redesign PING: clients should be sending those events and measure RTT
  */
 @Component
 @RequiredArgsConstructor
@@ -66,6 +69,17 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
                             removeChannel(ctx.channel());
                         }
                     });
+        }
+    }
+
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) {
+        if (evt instanceof IdleStateEvent) {
+            IdleStateEvent e = (IdleStateEvent) evt;
+            if (e.state() == IdleState.READER_IDLE) {
+                LOG.info("Channel is idle");
+                removeChannel(ctx.channel());
+            }
         }
     }
 

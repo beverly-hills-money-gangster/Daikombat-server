@@ -19,16 +19,15 @@ import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.EventExecutorGroup;
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Optional;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -39,8 +38,6 @@ public class GameConnection {
 
     private static final int MAX_CONNECTION_TIME_MLS = 5_000;
 
-    private final ScheduledExecutorService idleServerDisconnector = Executors.newScheduledThreadPool(1,
-            new BasicThreadFactory.Builder().namingPattern("idle-server-disconnector-%d").build());
     private final NetworkStats networkStats = new NetworkStats();
 
     private final AtomicLong lastServerActivityMls = new AtomicLong();
@@ -81,6 +78,8 @@ public class GameConnection {
                     p.addLast(new ProtobufDecoder(ServerResponse.getDefaultInstance()));
                     p.addLast(new ProtobufVarint32LengthFieldPrepender());
                     p.addLast(new ProtobufEncoder());
+                    p.addLast(new IdleStateHandler(
+                            ClientConfig.SERVER_MAX_INACTIVE_MLS / 1000, 0, 0));
                     p.addLast(new SimpleChannelInboundHandler<ServerResponse>() {
 
                         @Override
@@ -110,6 +109,17 @@ public class GameConnection {
                             disconnect();
                         }
 
+                        @Override
+                        public void userEventTriggered(ChannelHandlerContext ctx, Object evt) {
+                            if (evt instanceof IdleStateEvent) {
+                                IdleStateEvent e = (IdleStateEvent) evt;
+                                if (joinedGame.get() && e.state() == IdleState.READER_IDLE) {
+                                    LOG.info("Server is inactive");
+                                    errorsQueueAPI.push(new IOException("Server is inactive for too long"));
+                                    disconnect();
+                                }
+                            }
+                        }
                     });
                 }
             });
@@ -118,18 +128,6 @@ public class GameConnection {
                     gameServerCreds.getHostPort().getHost(),
                     gameServerCreds.getHostPort().getPort()).sync().channel();
             LOG.info("Connected to server in {} mls", System.currentTimeMillis() - startTime);
-            idleServerDisconnector.scheduleAtFixedRate(() -> {
-                try {
-                    LOG.info("Check server status");
-                    if (joinedGame.get() && isServerIdleForTooLong()) {
-                        LOG.info("Server is inactive");
-                        errorsQueueAPI.push(new IOException("Server is inactive for too long"));
-                        disconnect();
-                    }
-                } catch (Exception e) {
-                    LOG.error("Can't check server status", e);
-                }
-            }, 5_000, 5_000, TimeUnit.MILLISECONDS);
             state.set(GameConnectionState.CONNECTED);
         } catch (Exception e) {
             LOG.error("Error occurred", e);
@@ -205,11 +203,6 @@ public class GameConnection {
         } catch (Exception e) {
             LOG.error("Can't close channel", e);
         }
-        try {
-            idleServerDisconnector.shutdown();
-        } catch (Exception e) {
-            LOG.error("Can't shutdown idle server disconnector", e);
-        }
         state.set(GameConnectionState.DISCONNECTED);
     }
 
@@ -241,9 +234,6 @@ public class GameConnection {
 
 
     private enum GameConnectionState {
-        CONNECTING,
-        CONNECTED,
-        DISCONNECTING,
-        DISCONNECTED
+        CONNECTING, CONNECTED, DISCONNECTING, DISCONNECTED
     }
 }

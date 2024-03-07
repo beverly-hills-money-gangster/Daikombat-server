@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.beverly.hills.money.gang.config.ServerConfig.MOVES_UPDATE_FREQUENCY_MLS;
-import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createMovesEventAllPlayers;
+import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createMovesEventAllPlayers;
 
 @Component
 @RequiredArgsConstructor

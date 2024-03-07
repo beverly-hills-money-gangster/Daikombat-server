@@ -42,6 +42,7 @@ public class JoinGameTest extends AbstractGameServerTest {
 
         ServerResponse mySpawn = gameConnection.getResponse().poll().get();
         assertEquals(1, mySpawn.getGameEvents().getEventsCount(), "Should be only my spawn");
+        assertEquals(1, mySpawn.getGameEvents().getPlayersOnline(), "Only me should be online");
         ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
         assertEquals("my player name", mySpawnGameEvent.getPlayer().getPlayerName());
         assertEquals(100, mySpawnGameEvent.getPlayer().getHealth());
@@ -67,12 +68,43 @@ public class JoinGameTest extends AbstractGameServerTest {
     }
 
     /**
+     * @given a running game server with 5 joined players
+     * @when a new player connects to a server
+     * @then the player sees "6 players online message"
+     */
+    @Test
+    public void testJoinGameAfterManyPlayersJoined() throws Exception {
+        int gameIdToConnectTo = 0;
+        int playersToConnect = 5;
+        for (int i = 0; i < playersToConnect; i++) {
+            GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
+            gameConnection.write(
+                    JoinGameCommand.newBuilder()
+                            .setVersion(ServerConfig.VERSION)
+                            .setPlayerName("player name " + i)
+                            .setGameId(gameIdToConnectTo).build());
+            waitUntilQueueNonEmpty(gameConnection.getResponse());
+            assertEquals(i + 1, gameConnection.getResponse().poll().get().getGameEvents().getPlayersOnline());
+        }
+        GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
+        gameConnection.write(
+                JoinGameCommand.newBuilder()
+                        .setVersion(ServerConfig.VERSION)
+                        .setPlayerName("my player name")
+                        .setGameId(gameIdToConnectTo).build());
+        waitUntilQueueNonEmpty(gameConnection.getResponse());
+        assertEquals(playersToConnect + 1,
+                gameConnection.getResponse().poll().get().getGameEvents().getPlayersOnline(),
+                "I should see other players that are currently online");
+    }
+
+    /**
      * @given a running game server
      * @when a player connects to a server using wrong game id
      * @then the player is not connected
      */
     @Test
-    public void testJoinGameNotExistingGame() throws IOException, InterruptedException {
+    public void testJoinGameNotExistingGame() throws IOException {
         int gameIdToConnectTo = 666;
         GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         gameConnection.write(
@@ -113,7 +145,7 @@ public class JoinGameTest extends AbstractGameServerTest {
      * @then the player is not connected
      */
     @Test
-    public void testJoinGameWrongVersion() throws IOException, InterruptedException {
+    public void testJoinGameWrongVersion() throws IOException {
         int gameIdToConnectTo = 0;
         GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
         gameConnection.write(

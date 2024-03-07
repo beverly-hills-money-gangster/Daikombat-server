@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.beverly.hills.money.gang.factory.ServerResponseFactory.*;
+import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.*;
 
 @Component
 @RequiredArgsConstructor
@@ -47,7 +47,8 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
         Game game = gameRoomRegistry.getGame(msg.getJoinGameCommand().getGameId());
         PlayerConnectedGameState playerConnected = game.connectPlayer(
                 msg.getJoinGameCommand().getPlayerName(), currentChannel);
-        ServerResponse playerSpawnEvent = createSpawnEventSinglePlayer(playerConnected);
+        ServerResponse playerSpawnEvent = createSpawnEventSinglePlayer(
+                game.playersOnline(), playerConnected);
         LOG.info("Send my spawn to myself");
         var otherPlayers = game.getPlayersRegistry()
                 .allLivePlayers()

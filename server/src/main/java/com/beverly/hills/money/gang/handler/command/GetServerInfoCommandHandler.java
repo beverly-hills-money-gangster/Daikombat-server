@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createServerInfo;
+import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createServerInfo;
 
 @Component
 @RequiredArgsConstructor

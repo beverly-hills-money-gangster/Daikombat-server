@@ -1,4 +1,4 @@
-package com.beverly.hills.money.gang.factory;
+package com.beverly.hills.money.gang.factory.response;
 
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.proto.ServerResponse;
@@ -210,9 +210,10 @@ public interface ServerResponseFactory {
                 .build();
     }
 
-    static ServerResponse createSpawnEventSinglePlayer(PlayerConnectedGameState playerConnected) {
+    static ServerResponse createSpawnEventSinglePlayer(int playersOnline, PlayerConnectedGameState playerConnected) {
         return ServerResponse.newBuilder()
                 .setGameEvents(ServerResponse.GameEvents.newBuilder()
+                        .setPlayersOnline(playersOnline)
                         .addEvents(createSpawnEvent(
                                 playerConnected.getPlayerState(),
                                 playerConnected.getLeaderBoard()))).build();

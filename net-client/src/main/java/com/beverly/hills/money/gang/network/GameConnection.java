@@ -140,7 +140,8 @@ public class GameConnection {
             this.channel = bootstrap.connect(
                     gameServerCreds.getHostPort().getHost(),
                     gameServerCreds.getHostPort().getPort()).sync().channel();
-            LOG.info("Connected to server in {} mls", System.currentTimeMillis() - startTime);
+            LOG.info("Connected to server in {} mls. Fast TCP enabled: {}",
+                    System.currentTimeMillis() - startTime, ClientConfig.FAST_TCP);
             pingScheduler.scheduleAtFixedRate(() -> {
                         try {
                             if (hasPendingPing.get()) {

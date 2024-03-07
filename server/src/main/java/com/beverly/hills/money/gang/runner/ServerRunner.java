@@ -4,14 +4,12 @@ package com.beverly.hills.money.gang.runner;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.initializer.GameServerInitializer;
 import com.beverly.hills.money.gang.scheduler.GameScheduler;
+import com.beverly.hills.money.gang.transport.ServerTransport;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelOutboundInvoker;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.epoll.EpollEventLoopGroup;
-import io.netty.channel.epoll.EpollServerDomainSocketChannel;
-import io.netty.channel.epoll.EpollServerSocketChannel;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,9 +28,9 @@ import java.util.concurrent.atomic.AtomicReference;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ServerRunner implements Closeable {
 
-
     private static final Logger LOG = LoggerFactory.getLogger(ServerRunner.class);
 
+    private final ServerTransport serverTransport;
 
     private final GameServerInitializer gameServerInitializer;
 
@@ -50,20 +48,20 @@ public class ServerRunner implements Closeable {
         LOG.info("Starting server on port {}", port);
         // Create event loop groups. One for incoming connections handling and
         // second for handling actual event by workers
-        EventLoopGroup serverGroup = new EpollEventLoopGroup(1);
-        EventLoopGroup workerGroup = new EpollEventLoopGroup();
+        EventLoopGroup serverGroup = serverTransport.createEventLoopGroup(1);
+        EventLoopGroup workerGroup = serverTransport.createEventLoopGroup();
         try {
             ServerBootstrap bootStrap = new ServerBootstrap();
             bootStrap.group(serverGroup, workerGroup)
                     .option(ChannelOption.SO_BACKLOG, 100)
                     .childOption(ChannelOption.TCP_NODELAY, ServerConfig.FAST_TCP);
-            bootStrap.channel(EpollServerSocketChannel.class);
+            bootStrap.channel(serverTransport.getServerSocketChannelClass());
             bootStrap.childHandler(gameServerInitializer);
             // Bind to port
             var serverChannel = bootStrap.bind(port).sync()
                     .channel();
             LOG.info("Server version: {}", ServerConfig.VERSION);
-            LOG.info("Synced on port {}", port);
+            LOG.info("Server started on port: {}. Fast TCP enabled: {}", port, ServerConfig.FAST_TCP);
             serverChannelRef.set(serverChannel);
             if (!stateRef.compareAndSet(State.STARTING, State.RUNNING)) {
                 throw new IllegalStateException("Can't run!");

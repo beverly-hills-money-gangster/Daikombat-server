@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-import static com.beverly.hills.money.gang.factory.ServerResponseFactory.*;
+import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.*;
 
 
 @Component

@@ -1,8 +1,8 @@
 package com.beverly.hills.money.gang.handler.inbound;
 
-import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
+import com.beverly.hills.money.gang.transport.ServerTransport;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.security.ServerHMACService;
 import com.google.protobuf.GeneratedMessageV3;
@@ -10,13 +10,12 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.channel.epoll.EpollChannelOption;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createErrorEvent;
+import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createErrorEvent;
 
 
 @Component
@@ -28,10 +27,12 @@ public class AuthInboundHandler extends SimpleChannelInboundHandler<ServerComman
 
     private final ServerHMACService hmacService;
 
+    private final ServerTransport serverTransport;
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ServerCommand msg) {
         try {
-            ctx.channel().config().setOption(EpollChannelOption.TCP_QUICKACK, ServerConfig.FAST_TCP);
+            serverTransport.setExtraTCPOptions(ctx.channel().config());
             LOG.debug("Auth command {}", msg);
             if (!msg.hasHmac()) {
                 throw new GameLogicError("No HMAC provided", GameErrorCode.AUTH_ERROR);

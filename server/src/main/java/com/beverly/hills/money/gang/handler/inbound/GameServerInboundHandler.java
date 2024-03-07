@@ -1,14 +1,13 @@
 package com.beverly.hills.money.gang.handler.inbound;
 
-import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
+import com.beverly.hills.money.gang.transport.ServerTransport;
 import com.beverly.hills.money.gang.handler.command.*;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import io.netty.channel.*;
-import io.netty.channel.epoll.EpollChannelOption;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createErrorEvent;
-import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createExitEvent;
+import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createErrorEvent;
+import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createExitEvent;
 
 /*
 TODO:
@@ -31,6 +30,7 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
 
     private static final Logger LOG = LoggerFactory.getLogger(GameServerInboundHandler.class);
 
+    private final ServerTransport serverTransport;
     private final GameRoomRegistry gameRoomRegistry;
     private final JoinGameServerCommandHandler joinGameServerCommandHandler;
     private final ChatServerCommandHandler chatServerCommandHandler;
@@ -40,7 +40,7 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        ctx.channel().config().setOption(EpollChannelOption.TCP_QUICKACK, ServerConfig.FAST_TCP);
+        serverTransport.setExtraTCPOptions(ctx.channel().config());
         LOG.info("Channel is active. Options {}", ctx.channel().config().getOptions());
         super.channelActive(ctx);
     }
@@ -48,7 +48,7 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ServerCommand msg) {
         try {
-            ctx.channel().config().setOption(EpollChannelOption.TCP_QUICKACK, ServerConfig.FAST_TCP);
+            serverTransport.setExtraTCPOptions(ctx.channel().config());
             LOG.debug("Got command {}", msg);
             ServerCommandHandler serverCommandHandler;
             if (msg.hasJoinGameCommand()) {

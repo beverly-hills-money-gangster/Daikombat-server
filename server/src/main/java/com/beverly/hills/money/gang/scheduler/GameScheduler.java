@@ -1,8 +1,6 @@
 package com.beverly.hills.money.gang.scheduler;
 
-import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
-import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
@@ -18,8 +16,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static com.beverly.hills.money.gang.config.ServerConfig.*;
-import static com.beverly.hills.money.gang.factory.ServerResponseFactory.*;
+import static com.beverly.hills.money.gang.config.ServerConfig.MOVES_UPDATE_FREQUENCY_MLS;
+import static com.beverly.hills.money.gang.factory.ServerResponseFactory.createMovesEventAllPlayers;
 
 @Component
 @RequiredArgsConstructor
@@ -35,7 +33,6 @@ public class GameScheduler implements Closeable {
     public void init() {
         LOG.info("Init scheduler");
         scheduleSendBufferedMoves();
-        schedulePing();
     }
 
     private void scheduleSendBufferedMoves() {
@@ -70,20 +67,6 @@ public class GameScheduler implements Closeable {
         return bufferedPlayerMoves.stream()
                 .filter(bufferedPlayerMove -> bufferedPlayerMove.getPlayerId() != myPlayerId)
                 .collect(Collectors.toList());
-    }
-
-
-    private void schedulePing() {
-        scheduler.scheduleAtFixedRate(() -> gameRoomRegistry.getGames().forEach(game -> {
-            if (game.getPlayersRegistry().playersOnline() == 0) {
-                return;
-            }
-            ServerResponse ping = createPing(game.playersOnline());
-            game.getPlayersRegistry().allLivePlayers()
-                    .filter(playerStateChannel -> playerStateChannel.getPlayerState().isFullyConnected())
-                    .map(PlayersRegistry.PlayerStateChannel::getChannel)
-                    .forEach(channel -> channel.writeAndFlush(ping));
-        }), 0, PING_FREQUENCY_MLS, TimeUnit.MILLISECONDS);
     }
 
 

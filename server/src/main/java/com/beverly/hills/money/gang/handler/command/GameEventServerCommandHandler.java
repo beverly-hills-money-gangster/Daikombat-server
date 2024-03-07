@@ -40,8 +40,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
         var gameCommand = msg.getGameCommand();
         return gameCommand.hasGameId()
                 && gameCommand.hasPlayerId()
-                && (gameCommand.hasPosition() && gameCommand.hasDirection() && gameCommand.hasEventType()
-                || gameCommand.hasEventType() && gameCommand.getEventType() == PushGameEventCommand.GameEventType.PING);
+                && (gameCommand.hasPosition() && gameCommand.hasDirection() && gameCommand.hasEventType());
     }
 
     @Override
@@ -73,8 +72,6 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
             switch (gameEventType) {
                 case SHOOT, PUNCH -> handleAttackingEvents(game, gameCommand);
                 case MOVE -> game.bufferMove(gameCommand.getPlayerId(), createCoordinates(gameCommand));
-                case PING -> game.getPlayersRegistry().getPlayerState(gameCommand.getPlayerId())
-                        .ifPresent(PlayerState::ping);
                 default -> currentChannel.writeAndFlush(createErrorEvent(
                         new GameLogicError("Not supported command",
                                 GameErrorCode.COMMAND_NOT_RECOGNIZED)));

@@ -68,5 +68,20 @@ public interface ServerResponseOrBuilder extends
    */
   com.beverly.hills.money.gang.proto.ServerResponse.ServerInfoOrBuilder getServerInfoOrBuilder();
 
+  /**
+   * <code>.daikombat.dto.ServerResponse.Ping ping = 5;</code>
+   * @return Whether the ping field is set.
+   */
+  boolean hasPing();
+  /**
+   * <code>.daikombat.dto.ServerResponse.Ping ping = 5;</code>
+   * @return The ping.
+   */
+  com.beverly.hills.money.gang.proto.ServerResponse.Ping getPing();
+  /**
+   * <code>.daikombat.dto.ServerResponse.Ping ping = 5;</code>
+   */
+  com.beverly.hills.money.gang.proto.ServerResponse.PingOrBuilder getPingOrBuilder();
+
   com.beverly.hills.money.gang.proto.ServerResponse.ResponseCase getResponseCase();
 }

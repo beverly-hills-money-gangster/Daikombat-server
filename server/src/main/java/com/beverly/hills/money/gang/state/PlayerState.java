@@ -10,19 +10,12 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
-
-import static com.beverly.hills.money.gang.config.ServerConfig.MAX_IDLE_TIME_MLS;
 
 @ToString
 public class PlayerState implements PlayerStateReader {
 
     private static final Logger LOG = LoggerFactory.getLogger(PlayerState.class);
-
-    private final AtomicLong lastActivityTimeMls = new AtomicLong(System.currentTimeMillis());
-
-    private final AtomicBoolean fullyConnected = new AtomicBoolean();
 
     private final AtomicBoolean moved = new AtomicBoolean(false);
 
@@ -45,41 +38,25 @@ public class PlayerState implements PlayerStateReader {
         this.playerId = id;
     }
 
-    public boolean isFullyConnected() {
-        return fullyConnected.get();
-    }
-
-    public void fullyConnect() {
-        fullyConnected.set(true);
-        LOG.info("Player {} fully connected now", playerId);
-    }
-
 
     public int getKills() {
         return kills.get();
     }
 
     public void getShot() {
-        lastActivityTimeMls.set(System.currentTimeMillis());
         if (health.addAndGet(-ServerConfig.DEFAULT_SHOTGUN_DAMAGE) <= 0) {
             dead.set(true);
         }
     }
 
     public void getPunched() {
-        lastActivityTimeMls.set(System.currentTimeMillis());
         if (health.addAndGet(-ServerConfig.DEFAULT_PUNCH_DAMAGE) <= 0) {
             dead.set(true);
         }
     }
 
-    public void ping() {
-        lastActivityTimeMls.set(System.currentTimeMillis());
-    }
-
 
     public void move(PlayerCoordinates playerCoordinates) {
-        lastActivityTimeMls.set(System.currentTimeMillis());
         playerCoordinatesRef.set(playerCoordinates);
         moved.set(true);
     }
@@ -110,7 +87,6 @@ public class PlayerState implements PlayerStateReader {
     }
 
     public void registerKill() {
-        lastActivityTimeMls.set(System.currentTimeMillis());
         kills.incrementAndGet();
     }
 

@@ -9,4 +9,6 @@ public interface NetworkStatsReader {
     long getOutboundPayloadBytes();
 
     long getInboundPayloadBytes();
+
+    int getPingMls();
 }

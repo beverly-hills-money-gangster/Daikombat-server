@@ -12,12 +12,15 @@ message ServerResponse {
     ChatEvent chatEvents = 2;
     GameEvents gameEvents = 3;
     ServerInfo serverInfo = 4;
+    Ping ping = 5;
   }
 
   message ServerInfo {
     repeated GameInfo games = 1;
     optional string version = 2;
   }
+
+  message Ping {}
 
   message GameInfo {
     optional int32 gameId = 1;
@@ -57,10 +60,9 @@ message ServerResponse {
       KILL_SHOOTING = 3;
       SPAWN = 4;
       EXIT = 5;
-      PING = 6;
-      GET_PUNCHED = 7;
-      KILL_PUNCHING = 8;
-      PUNCH = 9;
+      GET_PUNCHED = 6;
+      KILL_PUNCHING = 7;
+      PUNCH = 8;
     }
   }
 

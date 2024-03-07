@@ -51,6 +51,7 @@ private static final long serialVersionUID = 0L;
     GAMECOMMAND(4),
     JOINGAMECOMMAND(5),
     GETSERVERINFOCOMMAND(6),
+    PINGCOMMAND(7),
     COMMAND_NOT_SET(0);
     private final int value;
     private CommandCase(int value) {
@@ -72,6 +73,7 @@ private static final long serialVersionUID = 0L;
         case 4: return GAMECOMMAND;
         case 5: return JOINGAMECOMMAND;
         case 6: return GETSERVERINFOCOMMAND;
+        case 7: return PINGCOMMAND;
         case 0: return COMMAND_NOT_SET;
         default: return null;
       }
@@ -230,6 +232,37 @@ private static final long serialVersionUID = 0L;
     return com.beverly.hills.money.gang.proto.GetServerInfoCommand.getDefaultInstance();
   }
 
+  public static final int PINGCOMMAND_FIELD_NUMBER = 7;
+  /**
+   * <code>.daikombat.dto.PingCommand pingCommand = 7;</code>
+   * @return Whether the pingCommand field is set.
+   */
+  @java.lang.Override
+  public boolean hasPingCommand() {
+    return commandCase_ == 7;
+  }
+  /**
+   * <code>.daikombat.dto.PingCommand pingCommand = 7;</code>
+   * @return The pingCommand.
+   */
+  @java.lang.Override
+  public com.beverly.hills.money.gang.proto.PingCommand getPingCommand() {
+    if (commandCase_ == 7) {
+       return (com.beverly.hills.money.gang.proto.PingCommand) command_;
+    }
+    return com.beverly.hills.money.gang.proto.PingCommand.getDefaultInstance();
+  }
+  /**
+   * <code>.daikombat.dto.PingCommand pingCommand = 7;</code>
+   */
+  @java.lang.Override
+  public com.beverly.hills.money.gang.proto.PingCommandOrBuilder getPingCommandOrBuilder() {
+    if (commandCase_ == 7) {
+       return (com.beverly.hills.money.gang.proto.PingCommand) command_;
+    }
+    return com.beverly.hills.money.gang.proto.PingCommand.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -259,6 +292,9 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 6) {
       output.writeMessage(6, (com.beverly.hills.money.gang.proto.GetServerInfoCommand) command_);
     }
+    if (commandCase_ == 7) {
+      output.writeMessage(7, (com.beverly.hills.money.gang.proto.PingCommand) command_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -287,6 +323,10 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 6) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(6, (com.beverly.hills.money.gang.proto.GetServerInfoCommand) command_);
+    }
+    if (commandCase_ == 7) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(7, (com.beverly.hills.money.gang.proto.PingCommand) command_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -326,6 +366,10 @@ private static final long serialVersionUID = 0L;
         if (!getGetServerInfoCommand()
             .equals(other.getGetServerInfoCommand())) return false;
         break;
+      case 7:
+        if (!getPingCommand()
+            .equals(other.getPingCommand())) return false;
+        break;
       case 0:
       default:
     }
@@ -360,6 +404,10 @@ private static final long serialVersionUID = 0L;
       case 6:
         hash = (37 * hash) + GETSERVERINFOCOMMAND_FIELD_NUMBER;
         hash = (53 * hash) + getGetServerInfoCommand().hashCode();
+        break;
+      case 7:
+        hash = (37 * hash) + PINGCOMMAND_FIELD_NUMBER;
+        hash = (53 * hash) + getPingCommand().hashCode();
         break;
       case 0:
       default:
@@ -508,6 +556,9 @@ private static final long serialVersionUID = 0L;
       if (getServerInfoCommandBuilder_ != null) {
         getServerInfoCommandBuilder_.clear();
       }
+      if (pingCommandBuilder_ != null) {
+        pingCommandBuilder_.clear();
+      }
       commandCase_ = 0;
       command_ = null;
       return this;
@@ -570,6 +621,10 @@ private static final long serialVersionUID = 0L;
       if (commandCase_ == 6 &&
           getServerInfoCommandBuilder_ != null) {
         result.command_ = getServerInfoCommandBuilder_.build();
+      }
+      if (commandCase_ == 7 &&
+          pingCommandBuilder_ != null) {
+        result.command_ = pingCommandBuilder_.build();
       }
     }
 
@@ -637,6 +692,10 @@ private static final long serialVersionUID = 0L;
           mergeGetServerInfoCommand(other.getGetServerInfoCommand());
           break;
         }
+        case PINGCOMMAND: {
+          mergePingCommand(other.getPingCommand());
+          break;
+        }
         case COMMAND_NOT_SET: {
           break;
         }
@@ -700,6 +759,13 @@ private static final long serialVersionUID = 0L;
               commandCase_ = 6;
               break;
             } // case 50
+            case 58: {
+              input.readMessage(
+                  getPingCommandFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              commandCase_ = 7;
+              break;
+            } // case 58
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1338,6 +1404,148 @@ private static final long serialVersionUID = 0L;
       commandCase_ = 6;
       onChanged();
       return getServerInfoCommandBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.beverly.hills.money.gang.proto.PingCommand, com.beverly.hills.money.gang.proto.PingCommand.Builder, com.beverly.hills.money.gang.proto.PingCommandOrBuilder> pingCommandBuilder_;
+    /**
+     * <code>.daikombat.dto.PingCommand pingCommand = 7;</code>
+     * @return Whether the pingCommand field is set.
+     */
+    @java.lang.Override
+    public boolean hasPingCommand() {
+      return commandCase_ == 7;
+    }
+    /**
+     * <code>.daikombat.dto.PingCommand pingCommand = 7;</code>
+     * @return The pingCommand.
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.PingCommand getPingCommand() {
+      if (pingCommandBuilder_ == null) {
+        if (commandCase_ == 7) {
+          return (com.beverly.hills.money.gang.proto.PingCommand) command_;
+        }
+        return com.beverly.hills.money.gang.proto.PingCommand.getDefaultInstance();
+      } else {
+        if (commandCase_ == 7) {
+          return pingCommandBuilder_.getMessage();
+        }
+        return com.beverly.hills.money.gang.proto.PingCommand.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.daikombat.dto.PingCommand pingCommand = 7;</code>
+     */
+    public Builder setPingCommand(com.beverly.hills.money.gang.proto.PingCommand value) {
+      if (pingCommandBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        pingCommandBuilder_.setMessage(value);
+      }
+      commandCase_ = 7;
+      return this;
+    }
+    /**
+     * <code>.daikombat.dto.PingCommand pingCommand = 7;</code>
+     */
+    public Builder setPingCommand(
+        com.beverly.hills.money.gang.proto.PingCommand.Builder builderForValue) {
+      if (pingCommandBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        pingCommandBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 7;
+      return this;
+    }
+    /**
+     * <code>.daikombat.dto.PingCommand pingCommand = 7;</code>
+     */
+    public Builder mergePingCommand(com.beverly.hills.money.gang.proto.PingCommand value) {
+      if (pingCommandBuilder_ == null) {
+        if (commandCase_ == 7 &&
+            command_ != com.beverly.hills.money.gang.proto.PingCommand.getDefaultInstance()) {
+          command_ = com.beverly.hills.money.gang.proto.PingCommand.newBuilder((com.beverly.hills.money.gang.proto.PingCommand) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 7) {
+          pingCommandBuilder_.mergeFrom(value);
+        } else {
+          pingCommandBuilder_.setMessage(value);
+        }
+      }
+      commandCase_ = 7;
+      return this;
+    }
+    /**
+     * <code>.daikombat.dto.PingCommand pingCommand = 7;</code>
+     */
+    public Builder clearPingCommand() {
+      if (pingCommandBuilder_ == null) {
+        if (commandCase_ == 7) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 7) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        pingCommandBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.daikombat.dto.PingCommand pingCommand = 7;</code>
+     */
+    public com.beverly.hills.money.gang.proto.PingCommand.Builder getPingCommandBuilder() {
+      return getPingCommandFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.daikombat.dto.PingCommand pingCommand = 7;</code>
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.PingCommandOrBuilder getPingCommandOrBuilder() {
+      if ((commandCase_ == 7) && (pingCommandBuilder_ != null)) {
+        return pingCommandBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 7) {
+          return (com.beverly.hills.money.gang.proto.PingCommand) command_;
+        }
+        return com.beverly.hills.money.gang.proto.PingCommand.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.daikombat.dto.PingCommand pingCommand = 7;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.beverly.hills.money.gang.proto.PingCommand, com.beverly.hills.money.gang.proto.PingCommand.Builder, com.beverly.hills.money.gang.proto.PingCommandOrBuilder> 
+        getPingCommandFieldBuilder() {
+      if (pingCommandBuilder_ == null) {
+        if (!(commandCase_ == 7)) {
+          command_ = com.beverly.hills.money.gang.proto.PingCommand.getDefaultInstance();
+        }
+        pingCommandBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            com.beverly.hills.money.gang.proto.PingCommand, com.beverly.hills.money.gang.proto.PingCommand.Builder, com.beverly.hills.money.gang.proto.PingCommandOrBuilder>(
+                (com.beverly.hills.money.gang.proto.PingCommand) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 7;
+      onChanged();
+      return pingCommandBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

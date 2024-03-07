@@ -57,7 +57,6 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
         currentChannel.writeAndFlush(playerSpawnEvent)
                 .addListener((ChannelFutureListener) channelFuture -> {
                     if (channelFuture.isSuccess()) {
-                        playerConnected.getPlayerState().fullyConnect();
                         if (otherPlayers.isEmpty()) {
                             LOG.info("No other players");
                             return;

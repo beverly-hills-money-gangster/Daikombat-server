@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "1000")
+@SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "99999")
 public class IdleClientTest extends AbstractGameServerTest {
 
     /**
@@ -283,59 +284,6 @@ public class IdleClientTest extends AbstractGameServerTest {
                 .orElseThrow(() -> new IllegalStateException("Can't find game by id. Response is:" + serverResponseAfterMoving));
 
         assertEquals(1, myGameAfterMoving.getPlayersOnline(),
-                "Current player should be kept online(not disconnected due to idleness)");
-
-    }
-
-    /**
-     * @given a running game server and 1 connected player
-     * @when the player pings
-     * @then nobody gets disconnected
-     */
-    @Test
-    public void testNotIdleClientPing() throws IOException, InterruptedException {
-        int gameToConnectTo = 1;
-        GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
-        gameConnection.write(
-                JoinGameCommand.newBuilder()
-                        .setVersion(ClientConfig.VERSION)
-                        .setPlayerName("my player name")
-                        .setGameId(gameToConnectTo).build());
-        waitUntilQueueNonEmpty(gameConnection.getResponse());
-        ServerResponse mySpawn = gameConnection.getResponse().poll().get();
-        int playerId = mySpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
-
-        gameConnection.write(GetServerInfoCommand.newBuilder().build());
-        waitUntilQueueNonEmpty(gameConnection.getResponse());
-        ServerResponse serverResponse = gameConnection.getResponse().poll().get();
-        var myGame = serverResponse.getServerInfo().getGamesList().stream().filter(gameInfo
-                        -> gameInfo.getGameId() == gameToConnectTo).findFirst()
-                .orElseThrow(() -> new IllegalStateException("Can't find game by id. Response is:" + serverResponse));
-
-        assertEquals(1, myGame.getPlayersOnline(), "Only the current player should be connected");
-        assertTrue(gameConnection.isConnected());
-
-        // move
-        for (int i = 0; i < 50; i++) {
-
-            gameConnection.write(PushGameEventCommand.newBuilder()
-                    .setPlayerId(playerId)
-                    .setGameId(gameToConnectTo)
-                    .setEventType(PushGameEventCommand.GameEventType.PING)
-                    .build());
-            Thread.sleep(200);
-        }
-        assertTrue(gameConnection.isConnected());
-
-        GameConnection newGameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
-        newGameConnection.write(GetServerInfoCommand.newBuilder().build());
-        waitUntilQueueNonEmpty(newGameConnection.getResponse());
-        ServerResponse serverResponseAfterPinging = newGameConnection.getResponse().poll().get();
-        var myGameAfterPinging = serverResponseAfterPinging.getServerInfo().getGamesList().stream().filter(gameInfo
-                        -> gameInfo.getGameId() == gameToConnectTo).findFirst()
-                .orElseThrow(() -> new IllegalStateException("Can't find game by id. Response is:" + serverResponseAfterPinging));
-
-        assertEquals(1, myGameAfterPinging.getPlayersOnline(),
                 "Current player should be kept online(not disconnected due to idleness)");
 
     }

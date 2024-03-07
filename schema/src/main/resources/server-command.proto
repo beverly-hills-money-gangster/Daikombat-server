@@ -13,10 +13,13 @@ message ServerCommand {
     PushGameEventCommand gameCommand = 4;
     JoinGameCommand joinGameCommand = 5;
     GetServerInfoCommand getServerInfoCommand = 6;
+    PingCommand pingCommand = 7;
   }
 }
 
 message GetServerInfoCommand {}
+
+message PingCommand {}
 
 message PushChatEventCommand {
   optional int32 gameId = 1;
@@ -46,7 +49,6 @@ message PushGameEventCommand {
   enum GameEventType {
     MOVE = 0;
     SHOOT = 1;
-    PING = 2;
-    PUNCH = 3;
+    PUNCH = 2;
   }
 }

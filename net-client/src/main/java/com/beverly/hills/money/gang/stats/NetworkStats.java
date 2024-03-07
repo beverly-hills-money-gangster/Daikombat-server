@@ -13,6 +13,11 @@ public class NetworkStats implements NetworkStatsReader {
 
     private final AtomicLong inboundPayloadBytes = new AtomicLong();
 
+    private final AtomicInteger pingMls = new AtomicInteger(-1);
+
+    public void setPingMls(int mls) {
+        pingMls.set(mls);
+    }
 
     public void incReceivedMessages() {
         receivedMessages.incrementAndGet();
@@ -51,5 +56,10 @@ public class NetworkStats implements NetworkStatsReader {
     @Override
     public long getInboundPayloadBytes() {
         return inboundPayloadBytes.get();
+    }
+
+    @Override
+    public int getPingMls() {
+        return pingMls.get();
     }
 }

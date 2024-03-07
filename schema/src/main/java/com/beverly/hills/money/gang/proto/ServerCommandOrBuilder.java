@@ -79,5 +79,20 @@ public interface ServerCommandOrBuilder extends
    */
   com.beverly.hills.money.gang.proto.GetServerInfoCommandOrBuilder getGetServerInfoCommandOrBuilder();
 
+  /**
+   * <code>.daikombat.dto.PingCommand pingCommand = 7;</code>
+   * @return Whether the pingCommand field is set.
+   */
+  boolean hasPingCommand();
+  /**
+   * <code>.daikombat.dto.PingCommand pingCommand = 7;</code>
+   * @return The pingCommand.
+   */
+  com.beverly.hills.money.gang.proto.PingCommand getPingCommand();
+  /**
+   * <code>.daikombat.dto.PingCommand pingCommand = 7;</code>
+   */
+  com.beverly.hills.money.gang.proto.PingCommandOrBuilder getPingCommandOrBuilder();
+
   com.beverly.hills.money.gang.proto.ServerCommand.CommandCase getCommandCase();
 }

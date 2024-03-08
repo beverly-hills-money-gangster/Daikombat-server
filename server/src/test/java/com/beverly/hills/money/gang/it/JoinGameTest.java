@@ -211,6 +211,7 @@ public class JoinGameTest extends AbstractGameServerTest {
         assertEquals(GameErrorCode.SERVER_FULL.ordinal(), errorEvent.getErrorCode(),
                 "Should be a server full error");
         assertEquals("Can't connect player. Server is full.", errorEvent.getMessage());
+        Thread.sleep(500);
         assertTrue(gameConnection.isDisconnected());
     }
 

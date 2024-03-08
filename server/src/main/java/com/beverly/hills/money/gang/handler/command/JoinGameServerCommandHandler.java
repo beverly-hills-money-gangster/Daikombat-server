@@ -81,7 +81,7 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
             return;
         }
         LOG.info("Send new player spawn to everyone");
-        ServerResponse playerSpawnEventForOthers = createSpawnEventSinglePlayerMinimal(playerConnected);
+        ServerResponse playerSpawnEventForOthers = createSpawnEventSinglePlayerMinimal(game.playersOnline(), playerConnected);
         otherPlayers.forEach(playerStateChannel -> playerStateChannel.getChannel().writeAndFlush(playerSpawnEventForOthers));
 
     }

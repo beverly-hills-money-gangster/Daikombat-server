@@ -225,11 +225,14 @@ public interface ServerResponseFactory {
                                 playerConnected.getLeaderBoard()))).build();
     }
 
-    static ServerResponse createSpawnEventSinglePlayerMinimal(PlayerConnectedGameState playerConnected) {
+    static ServerResponse createSpawnEventSinglePlayerMinimal(
+            int playersOnline, PlayerConnectedGameState playerConnected) {
         return ServerResponse.newBuilder()
                 .setGameEvents(ServerResponse.GameEvents.newBuilder()
+                        .setPlayersOnline(playersOnline)
                         .addEvents(createSpawnEvent(
-                                playerConnected.getPlayerState()))).build();
+                                playerConnected.getPlayerState())))
+                .build();
     }
 
     static ServerResponse createChatEvent(String message, int fromPlayerId) {

@@ -15,7 +15,6 @@ import java.io.Closeable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static com.beverly.hills.money.gang.exception.GameErrorCode.NOT_EXISTING_GAME_ROOM;
@@ -40,10 +39,9 @@ public class GameRoomRegistry implements Closeable {
         return games.values().stream();
     }
 
-    public Optional<PlayerStateReader> getLiveJoinedPlayer(int gameId, Channel channel, int playerId) {
+    public Optional<PlayerStateReader> getJoinedPlayer(int gameId, Channel channel, int playerId) {
         return Optional.ofNullable(games.get(gameId))
-                .flatMap(game -> game.getPlayersRegistry().findPlayer(channel, playerId))
-                .filter(playerStateReader -> !playerStateReader.isDead());
+                .flatMap(game -> game.getPlayersRegistry().findPlayer(channel, playerId));
     }
 
 

@@ -12,7 +12,6 @@ import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-// TODO spawn in the least populated place
 @Component
 public class Spawner {
 
@@ -54,7 +53,7 @@ public class Spawner {
 
     public PlayerState.PlayerCoordinates spawn(Game game) {
         var players = game.getPlayersRegistry()
-                .allLivePlayers()
+                .allPlayers()
                 .map((Function<PlayersRegistry.PlayerStateChannel, PlayerStateReader>)
                         PlayersRegistry.PlayerStateChannel::getPlayerState)
                 .collect(Collectors.toList());

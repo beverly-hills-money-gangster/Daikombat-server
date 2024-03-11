@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -112,7 +113,7 @@ public class Game implements Closeable, GameReader {
     }
 
     private List<GameLeaderBoardItem> getLeaderBoard() {
-        return playersRegistry.allLivePlayers()
+        return playersRegistry.allPlayers()
                 .filter(playerStateChannel -> !playerStateChannel.getPlayerState().isDead())
                 .sorted((player1, player2) -> -Integer.compare(
                         player1.getPlayerState().getKills(), player2.getPlayerState().getKills()))
@@ -130,12 +131,12 @@ public class Game implements Closeable, GameReader {
     }
 
     public List<PlayerStateReader> getBufferedMoves() {
-        return playersRegistry.allLivePlayers().map(PlayersRegistry.PlayerStateChannel::getPlayerState)
+        return playersRegistry.allPlayers().map(PlayersRegistry.PlayerStateChannel::getPlayerState)
                 .filter(PlayerState::hasMoved).collect(Collectors.toList());
     }
 
     public void flushBufferedMoves() {
-        playersRegistry.allLivePlayers().map(PlayersRegistry.PlayerStateChannel::getPlayerState)
+        playersRegistry.allPlayers().map(PlayersRegistry.PlayerStateChannel::getPlayerState)
                 .forEach(PlayerState::flushMove);
     }
 
@@ -181,7 +182,6 @@ public class Game implements Closeable, GameReader {
 
     private void move(final int movingPlayerId, final PlayerState.PlayerCoordinates playerCoordinates) {
         getPlayer(movingPlayerId)
-                .filter(playerState -> !playerState.isDead())
                 .ifPresent(playerState -> playerState.move(playerCoordinates));
     }
 }

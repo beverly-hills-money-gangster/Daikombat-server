@@ -40,6 +40,9 @@ public class GameConnection {
 
     private static final Logger LOG = LoggerFactory.getLogger(GameConnection.class);
 
+    private static final ServerCommand PING
+            = ServerCommand.newBuilder().setPingCommand(PingCommand.newBuilder().build()).build();
+
     private final ScheduledExecutorService pingScheduler = Executors.newScheduledThreadPool(1,
             new BasicThreadFactory.Builder().namingPattern("ping-%d").build());
 
@@ -150,7 +153,7 @@ public class GameConnection {
                             }
                             hasPendingPing.set(true);
                             pingRequestedTimeMls.set(System.currentTimeMillis());
-                            writeLocal(PingCommand.newBuilder().build());
+                            writeToChannel(PING);
                         } catch (Exception e) {
                             LOG.error("Can't ping server", e);
                         }
@@ -204,19 +207,20 @@ public class GameConnection {
                 serverCommand.setJoinGameCommand((JoinGameCommand) command);
             } else if (command instanceof GetServerInfoCommand) {
                 serverCommand.setGetServerInfoCommand((GetServerInfoCommand) command);
-            } else if (command instanceof PingCommand) {
-                serverCommand.setPingCommand((PingCommand) command);
             } else {
                 throw new IllegalArgumentException("Not recognized message type " + command.getClass());
             }
-            var message = serverCommand.build();
-            LOG.debug("Write {}", message);
-            channel.writeAndFlush(message);
-            networkStats.incSentMessages();
-            networkStats.addOutboundPayloadBytes(message.getSerializedSize());
+            writeToChannel(serverCommand.build());
         } else {
             warningsQueueAPI.push(new IOException("Can't write using closed connection"));
         }
+    }
+
+    private void writeToChannel(ServerCommand serverCommand) {
+        LOG.debug("Write {}", serverCommand);
+        channel.writeAndFlush(serverCommand);
+        networkStats.incSentMessages();
+        networkStats.addOutboundPayloadBytes(serverCommand.getSerializedSize());
     }
 
     public void disconnect() {

@@ -22,6 +22,7 @@ import static com.beverly.hills.money.gang.factory.response.ServerResponseFactor
 TODO:
     - Add code coverage badge
     - Use maven 3.6.3 in development
+    - Add performance testing
  */
 @Component
 @RequiredArgsConstructor

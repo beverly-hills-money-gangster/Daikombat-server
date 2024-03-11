@@ -40,11 +40,13 @@ public class ChatServerCommandHandler extends ServerCommandHandler {
             return;
         }
         game.readPlayer(chatCommand.getPlayerId())
-                .ifPresent(playerStateReader -> game.getPlayersRegistry().allLivePlayers()
-                        .map(PlayersRegistry.PlayerStateChannel::getChannel)
-                        .filter(playerChannel -> playerChannel != currentChannel)
-                        .forEach(playerChannel -> playerChannel.writeAndFlush(createChatEvent(
-                                msg.getChatCommand().getMessage(),
-                                playerStateReader.getPlayerId()))));
+                .ifPresent(playerStateReader -> {
+                    var chatMsgToSend = createChatEvent(
+                            msg.getChatCommand().getMessage(), playerStateReader.getPlayerId());
+                    game.getPlayersRegistry().allLivePlayers()
+                            .map(PlayersRegistry.PlayerStateChannel::getChannel)
+                            .filter(playerChannel -> playerChannel != currentChannel)
+                            .forEach(playerChannel -> playerChannel.writeAndFlush(chatMsgToSend));
+                });
     }
 }

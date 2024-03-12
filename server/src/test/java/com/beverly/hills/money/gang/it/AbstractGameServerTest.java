@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -88,10 +87,8 @@ public abstract class AbstractGameServerTest {
 
     @AfterEach
     public void tearDown() {
+        gameConnections.forEach(GameConnection::disconnect);
         serverRunner.stop();
-        for (GameConnection gameConnection : gameConnections) {
-            Optional.ofNullable(gameConnection).ifPresent(GameConnection::disconnect);
-        }
         gameConnections.clear();
     }
 

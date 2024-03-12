@@ -378,7 +378,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         int shotPlayerId = shotPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
         var shooterSpawnEvent = shooterPlayerSpawn.getGameEvents().getEvents(0);
 
-
+        Thread.sleep(500);
         emptyQueue(getShotConnection.getResponse());
         emptyQueue(shooterConnection.getResponse());
 

@@ -5,11 +5,13 @@ import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import com.beverly.hills.money.gang.state.PlayerState;
 import lombok.Builder;
 import lombok.Getter;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -32,7 +34,7 @@ public class ConcurrentKillTest extends AbstractGameServerTest {
      * @then none of them receive an ERROR event
      */
     @RepeatedTest(32)
-    public void testKillConcurrent() throws InterruptedException {
+    public void testKillConcurrent() throws InterruptedException, IOException {
         AtomicBoolean failed = new AtomicBoolean(false);
         List<Thread> joinThreads = new ArrayList<>();
         List<SpawnWithGameConnection> spawnsWithConnections = new CopyOnWriteArrayList<>();
@@ -107,6 +109,7 @@ public class ConcurrentKillTest extends AbstractGameServerTest {
         }
 
         shootThreads.forEach(Thread::start);
+
         wait.countDown();
         shootThreads.forEach(thread -> {
             try {
@@ -119,10 +122,19 @@ public class ConcurrentKillTest extends AbstractGameServerTest {
 
         Thread.sleep(2_500);
 
+
         gameConnections.forEach(gameConnection -> {
+            // check that we have no errors
             assertTrue(gameConnection.getResponse().list().stream()
                     .noneMatch(ServerResponse::hasErrorEvent), "There should be no error in the response but we have: "
                     + gameConnection.getResponse().list().stream().filter(ServerResponse::hasErrorEvent).collect(Collectors.toList()));
+
+            // check HP
+            assertTrue(gameConnection.getResponse().list().stream()
+                            .noneMatch(serverResponse -> serverResponse.hasGameEvents() && serverResponse.getGameEvents().getEventsList().stream()
+                                    .anyMatch(gameEvent -> gameEvent.getPlayer().hasHealth() && gameEvent.getPlayer().getHealth() > PlayerState.DEFAULT_HP)),
+                    "HP can never be higher than " + PlayerState.DEFAULT_HP);
+
         });
 
     }

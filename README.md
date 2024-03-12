@@ -83,6 +83,7 @@ All errors are automatically published to Sentry. See `SENTRY_DSN` env var.
 ### Client monitoring
 
 `GameConnection.java` has `networkStats` field that gathers basic network stats including:
+- ping
 - number of sent protobuf messages
 - number of received protobuf message
 - total outbound payload size
@@ -120,4 +121,5 @@ The project provides good quality of service by:
 - Static code analysis (Spotbugs)
 - Dependency check (Snyk)
 - Resiliency testing (ToxiProxy)
+- Load testing. See `com.beverly.hills.money.gang.bots.BotRunner` for spawning dummy bots
 - Game client manual acceptance testing is also involved in the process. Dev mode is provided for the desktop version.

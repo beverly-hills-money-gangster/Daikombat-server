@@ -20,6 +20,20 @@ public class QueueAPI<T> implements QueueReader<T>, QueueWriter<T> {
     }
 
     @Override
+    public List<T> poll(int max) {
+        List<T> polledList = new ArrayList<>();
+        for (int i = 0; i < max; i++) {
+            var polledElement = poll();
+            if (polledElement.isPresent()) {
+                polledList.add(polledElement.get());
+            } else {
+                break;
+            }
+        }
+        return polledList;
+    }
+
+    @Override
     public List<T> list() {
         return new ArrayList<>(queue);
     }

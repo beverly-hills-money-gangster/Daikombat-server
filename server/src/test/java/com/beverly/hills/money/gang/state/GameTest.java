@@ -341,6 +341,78 @@ public class GameTest {
                 " Dead player will be removed later.");
     }
 
+    /**
+     * @given 2 players
+     * @when one player with HP 80 kills the other
+     * @then the shot player dies, the killer gets a vampire boost +20 HP (100 in total)
+     */
+    @Test
+    public void testShootDeadVampireBoost() throws Throwable {
+        String shooterPlayerName = "shooter player";
+        String observerPlayerName = "observer player";
+        String shotPlayerName = "shot player";
+        Channel channel = mock(Channel.class);
+        PlayerConnectedGameState shooterPlayerConnectedGameState = game.connectPlayer(shooterPlayerName, channel);
+        PlayerConnectedGameState shotPlayerConnectedGameState = game.connectPlayer(shotPlayerName, channel);
+
+        int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_SHOTGUN_DAMAGE);
+
+        // after this loop, one player is almost dead
+        for (int i = 0; i < shotsToKill - 1; i++) {
+            game.attack(
+                    shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
+                    shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
+                    shotPlayerConnectedGameState.getPlayerState().getPlayerId(), AttackType.SHOOT);
+        }
+        // after this, shooter HP is 80%
+        game.attack(
+                shotPlayerConnectedGameState.getPlayerState().getCoordinates(),
+                shotPlayerConnectedGameState.getPlayerState().getPlayerId(),
+                shooterPlayerConnectedGameState.getPlayerState().getPlayerId(), AttackType.SHOOT);
+
+
+        PlayerAttackingGameState playerAttackingGameState = game.attack(
+                shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
+                shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
+                shotPlayerConnectedGameState.getPlayerState().getPlayerId(), AttackType.SHOOT);
+        assertNotNull(playerAttackingGameState.getPlayerAttacked());
+
+        assertTrue(playerAttackingGameState.getPlayerAttacked().isDead());
+        assertEquals(0, playerAttackingGameState.getPlayerAttacked().getHealth());
+        PlayerState shooterState = game.getPlayersRegistry().getPlayerState(shooterPlayerConnectedGameState.getPlayerState().getPlayerId())
+                .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
+        assertEquals(100, shooterState.getHealth(), "Shooter must get a vampire boost");
+        assertEquals(1, shooterState.getKills(), "One player was killed");
+        assertEquals(1, game.playersOnline(), "After death, only 1 player is alive");
+        PlayerState shotState = game.getPlayersRegistry().getPlayerState(shotPlayerConnectedGameState.getPlayerState().getPlayerId())
+                .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
+        assertEquals(0, shotState.getHealth());
+        assertTrue(shotState.isDead());
+
+        PlayerConnectedGameState observerPlayerConnectedGameState = game.connectPlayer(observerPlayerName, channel);
+
+        assertEquals(2, observerPlayerConnectedGameState.getLeaderBoard().size(),
+                "2 players are connected so it should 1 item in the leader board");
+
+        assertEquals(
+                playerAttackingGameState.getAttackingPlayer().getPlayerId(),
+                observerPlayerConnectedGameState.getLeaderBoard().get(0).getPlayerId());
+        assertEquals(
+                1,
+                observerPlayerConnectedGameState.getLeaderBoard().get(0).getKills(),
+                "There was one kill");
+
+        assertEquals(
+                observerPlayerConnectedGameState.getPlayerState().getPlayerId(),
+                observerPlayerConnectedGameState.getLeaderBoard().get(1).getPlayerId());
+        assertEquals(
+                0, observerPlayerConnectedGameState.getLeaderBoard().get(1).getKills());
+
+        assertEquals(2, game.getPlayersRegistry().allLivePlayers().count(), "We have 2 live players now: killer and observer");
+        assertEquals(3, game.getPlayersRegistry().allPlayers().count(), "We have 3 live players now: killer, observer, and dead player." +
+                " Dead player will be removed later.");
+    }
+
 
     /**
      * @given 3 players(killer, victim, and observer)

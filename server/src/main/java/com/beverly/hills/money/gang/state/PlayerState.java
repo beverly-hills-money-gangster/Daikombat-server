@@ -17,6 +17,8 @@ public class PlayerState implements PlayerStateReader {
 
     private static final Logger LOG = LoggerFactory.getLogger(PlayerState.class);
 
+    public static final int VAMPIRE_HP_BOOST = 20;
+
     private final AtomicBoolean moved = new AtomicBoolean(false);
 
     private final AtomicBoolean dead = new AtomicBoolean();
@@ -88,6 +90,15 @@ public class PlayerState implements PlayerStateReader {
 
     public void registerKill() {
         kills.incrementAndGet();
+        vampireBoost();
+    }
+
+    private void vampireBoost() {
+        int currentHealth = health.get();
+        boolean set = health.compareAndSet(currentHealth, Math.min(DEFAULT_HP, currentHealth + VAMPIRE_HP_BOOST));
+        if (!set) {
+            vampireBoost();
+        }
     }
 
     @Builder

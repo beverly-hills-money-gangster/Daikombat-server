@@ -25,7 +25,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 /*
   TODO:
-  - Use -Dio.netty.leakDetection.level=paranoid for testing and fail the build if the leak is detected
   - Stabilize tests
 */
 
@@ -96,9 +95,7 @@ public abstract class AbstractGameServerTest {
     }
 
     protected void emptyQueue(QueueReader<?> queueReader) {
-        while (queueReader.poll().isPresent()) {
-            // just read them all and that's it
-        }
+        queueReader.poll(Integer.MAX_VALUE);
     }
 
     protected void waitUntilQueueNonEmpty(QueueReader<?> queueReader) {

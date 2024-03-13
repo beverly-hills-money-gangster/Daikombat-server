@@ -336,7 +336,6 @@ public class GameTest {
         assertEquals(
                 0, observerPlayerConnectedGameState.getLeaderBoard().get(1).getKills());
 
-        assertEquals(2, game.getPlayersRegistry().allLivePlayers().count(), "We have 2 live players now: killer and observer");
         assertEquals(3, game.getPlayersRegistry().allPlayers().count(), "We have 3 live players now: killer, observer, and dead player." +
                 " Dead player will be removed later.");
     }
@@ -408,7 +407,6 @@ public class GameTest {
         assertEquals(
                 0, observerPlayerConnectedGameState.getLeaderBoard().get(1).getKills());
 
-        assertEquals(2, game.getPlayersRegistry().allLivePlayers().count(), "We have 2 live players now: killer and observer");
         assertEquals(3, game.getPlayersRegistry().allPlayers().count(), "We have 3 live players now: killer, observer, and dead player." +
                 " Dead player will be removed later.");
     }

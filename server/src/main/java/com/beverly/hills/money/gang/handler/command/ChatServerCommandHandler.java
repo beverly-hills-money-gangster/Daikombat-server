@@ -34,19 +34,18 @@ public class ChatServerCommandHandler extends ServerCommandHandler {
         Game game = gameRoomRegistry.getGame(msg.getChatCommand().getGameId());
         var chatCommand = msg.getChatCommand();
 
-        if (gameRoomRegistry.getLiveJoinedPlayer(
+        if (gameRoomRegistry.getJoinedPlayer(
                 chatCommand.getGameId(), currentChannel, chatCommand.getPlayerId()).isEmpty()) {
             LOG.warn("Player {} doesn't exist. Ignore command.", chatCommand.getPlayerId());
             return;
         }
-        game.readPlayer(chatCommand.getPlayerId())
-                .ifPresent(playerStateReader -> {
-                    var chatMsgToSend = createChatEvent(
-                            msg.getChatCommand().getMessage(), playerStateReader.getPlayerId());
-                    game.getPlayersRegistry().allLivePlayers()
-                            .map(PlayersRegistry.PlayerStateChannel::getChannel)
-                            .filter(playerChannel -> playerChannel != currentChannel)
-                            .forEach(playerChannel -> playerChannel.writeAndFlush(chatMsgToSend));
-                });
+        game.readPlayer(chatCommand.getPlayerId()).ifPresent(playerStateReader -> {
+            var chatMsgToSend = createChatEvent(
+                    msg.getChatCommand().getMessage(), playerStateReader.getPlayerId());
+            game.getPlayersRegistry().allPlayers()
+                    .map(PlayersRegistry.PlayerStateChannel::getChannel)
+                    .filter(playerChannel -> playerChannel != currentChannel)
+                    .forEach(playerChannel -> playerChannel.writeAndFlush(chatMsgToSend));
+        });
     }
 }

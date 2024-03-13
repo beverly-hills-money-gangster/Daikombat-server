@@ -48,7 +48,6 @@ public class BotRunnable implements Runnable {
 
                 int iterations = random.nextInt(MAX_NUMBER_OF_ITERATIONS);
                 for (int i = 0; i < iterations; i++) {
-                    LOG.info("Iteration {}", i);
                     if (gameConnection.isDisconnected()) {
                         LOG.error("Disconnected");
                         break;

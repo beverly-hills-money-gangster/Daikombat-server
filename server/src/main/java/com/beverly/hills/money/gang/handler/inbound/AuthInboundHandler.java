@@ -2,9 +2,9 @@ package com.beverly.hills.money.gang.handler.inbound;
 
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
-import com.beverly.hills.money.gang.transport.ServerTransport;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.security.ServerHMACService;
+import com.beverly.hills.money.gang.transport.ServerTransport;
 import com.google.protobuf.GeneratedMessageV3;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
@@ -33,6 +33,11 @@ public class AuthInboundHandler extends SimpleChannelInboundHandler<ServerComman
     protected void channelRead0(ChannelHandlerContext ctx, ServerCommand msg) {
         try {
             serverTransport.setExtraTCPOptions(ctx.channel().config());
+            if (msg.hasPingCommand()) {
+                // no HMAC required for PING
+                ctx.fireChannelRead(msg);
+                return;
+            }
             LOG.debug("Auth command {}", msg);
             if (!msg.hasHmac()) {
                 throw new GameLogicError("No HMAC provided", GameErrorCode.AUTH_ERROR);
@@ -42,7 +47,6 @@ public class AuthInboundHandler extends SimpleChannelInboundHandler<ServerComman
                     : msg.hasChatCommand() ? msg.getChatCommand()
                     : msg.hasJoinGameCommand() ? msg.getJoinGameCommand()
                     : msg.hasGetServerInfoCommand() ? msg.getGetServerInfoCommand()
-                    : msg.hasPingCommand() ? msg.getPingCommand()
                     : null;
 
             if (command == null) {

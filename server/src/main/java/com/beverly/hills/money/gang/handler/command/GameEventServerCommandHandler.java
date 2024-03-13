@@ -56,7 +56,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
             4) victim continues to move or shoot before getting KILL event
             for now, we just ignore such events.
              */
-        Optional<PlayerStateReader> playerStateOpt = gameRoomRegistry.getLiveJoinedPlayer(gameCommand.getGameId(),
+        Optional<PlayerStateReader> playerStateOpt = gameRoomRegistry.getJoinedPlayer(gameCommand.getGameId(),
                 currentChannel, gameCommand.getPlayerId());
 
         if (playerStateOpt.isEmpty()) {
@@ -106,6 +106,9 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
                         LOG.debug("Player {} is dead", attackedPlayer.getPlayerId());
                         ServerResponse deadEvent;
 
+                        var removedDeadPlayerOpt = game.getPlayersRegistry()
+                                .removePlayer(attackedPlayer.getPlayerId());
+
                         switch (attackType) {
                             case PUNCH -> deadEvent = createKillPunchingEvent(
                                     game.playersOnline(),
@@ -117,10 +120,11 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
                                     attackGameState.getPlayerAttacked());
                             default -> throw new IllegalArgumentException("Not supported attack type " + attackType);
                         }
-                        game.getPlayersRegistry().findPlayer(attackedPlayer.getPlayerId())
-                                .ifPresent(playerStateChannel -> playerStateChannel.getChannel().writeAndFlush(deadEvent));
+                        removedDeadPlayerOpt.ifPresent(playerStateChannel -> playerStateChannel.getChannel()
+                                .writeAndFlush(deadEvent));
+
                         // send KILL event to the rest of players
-                        game.getPlayersRegistry().allLivePlayers()
+                        game.getPlayersRegistry().allPlayers()
                                 .filter(playerStateChannel ->
                                         playerStateChannel.getPlayerState().getPlayerId() != attackedPlayer.getPlayerId())
                                 .forEach(playerStateChannel -> playerStateChannel.getChannel().writeAndFlush(deadEvent));
@@ -131,7 +135,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
                                 attackGameState.getAttackingPlayer(),
                                 attackGameState.getPlayerAttacked(),
                                 attackType);
-                        game.getPlayersRegistry().allLivePlayers()
+                        game.getPlayersRegistry().allPlayers()
                                 .filter(playerStateChannel
                                         // don't send me my own attack back
                                         -> playerStateChannel.getPlayerState().getPlayerId() != gameCommand.getPlayerId())
@@ -150,7 +154,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
                                 attackGameState.getAttackingPlayer());
                         default -> throw new IllegalArgumentException("Not supported attack type " + attackType);
                     }
-                    game.getPlayersRegistry().allLivePlayers()
+                    game.getPlayersRegistry().allPlayers()
                             .filter(playerStateChannel
                                     // don't send me my own attack back
                                     -> playerStateChannel.getPlayerState().getPlayerId() != gameCommand.getPlayerId())

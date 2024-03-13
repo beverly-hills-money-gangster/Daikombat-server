@@ -2,11 +2,11 @@ package com.beverly.hills.money.gang.handler.inbound;
 
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
-import com.beverly.hills.money.gang.transport.ServerTransport;
 import com.beverly.hills.money.gang.handler.command.*;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
+import com.beverly.hills.money.gang.transport.ServerTransport;
 import io.netty.channel.*;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
@@ -92,12 +92,8 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
 
     private void removeChannel(Channel channelToRemove) {
         boolean playerWasFound = gameRoomRegistry.removeChannel(channelToRemove, (game, playerState) -> {
-            if (playerState.isDead()) {
-                // if player is dead, then no exit event has to be sent
-                return;
-            }
             var disconnectEvent = createExitEvent(game.playersOnline(), playerState);
-            game.getPlayersRegistry().allLivePlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
+            game.getPlayersRegistry().allPlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
                     .forEach(channel -> channel.writeAndFlush(disconnectEvent));
         });
         if (!playerWasFound) {

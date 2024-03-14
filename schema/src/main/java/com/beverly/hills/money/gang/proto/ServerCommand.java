@@ -52,6 +52,7 @@ private static final long serialVersionUID = 0L;
     JOINGAMECOMMAND(5),
     GETSERVERINFOCOMMAND(6),
     PINGCOMMAND(7),
+    RESPAWNCOMMAND(8),
     COMMAND_NOT_SET(0);
     private final int value;
     private CommandCase(int value) {
@@ -74,6 +75,7 @@ private static final long serialVersionUID = 0L;
         case 5: return JOINGAMECOMMAND;
         case 6: return GETSERVERINFOCOMMAND;
         case 7: return PINGCOMMAND;
+        case 8: return RESPAWNCOMMAND;
         case 0: return COMMAND_NOT_SET;
         default: return null;
       }
@@ -263,6 +265,37 @@ private static final long serialVersionUID = 0L;
     return com.beverly.hills.money.gang.proto.PingCommand.getDefaultInstance();
   }
 
+  public static final int RESPAWNCOMMAND_FIELD_NUMBER = 8;
+  /**
+   * <code>.daikombat.dto.RespawnCommand respawnCommand = 8;</code>
+   * @return Whether the respawnCommand field is set.
+   */
+  @java.lang.Override
+  public boolean hasRespawnCommand() {
+    return commandCase_ == 8;
+  }
+  /**
+   * <code>.daikombat.dto.RespawnCommand respawnCommand = 8;</code>
+   * @return The respawnCommand.
+   */
+  @java.lang.Override
+  public com.beverly.hills.money.gang.proto.RespawnCommand getRespawnCommand() {
+    if (commandCase_ == 8) {
+       return (com.beverly.hills.money.gang.proto.RespawnCommand) command_;
+    }
+    return com.beverly.hills.money.gang.proto.RespawnCommand.getDefaultInstance();
+  }
+  /**
+   * <code>.daikombat.dto.RespawnCommand respawnCommand = 8;</code>
+   */
+  @java.lang.Override
+  public com.beverly.hills.money.gang.proto.RespawnCommandOrBuilder getRespawnCommandOrBuilder() {
+    if (commandCase_ == 8) {
+       return (com.beverly.hills.money.gang.proto.RespawnCommand) command_;
+    }
+    return com.beverly.hills.money.gang.proto.RespawnCommand.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -294,6 +327,9 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 7) {
       output.writeMessage(7, (com.beverly.hills.money.gang.proto.PingCommand) command_);
+    }
+    if (commandCase_ == 8) {
+      output.writeMessage(8, (com.beverly.hills.money.gang.proto.RespawnCommand) command_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -327,6 +363,10 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 7) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(7, (com.beverly.hills.money.gang.proto.PingCommand) command_);
+    }
+    if (commandCase_ == 8) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(8, (com.beverly.hills.money.gang.proto.RespawnCommand) command_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -370,6 +410,10 @@ private static final long serialVersionUID = 0L;
         if (!getPingCommand()
             .equals(other.getPingCommand())) return false;
         break;
+      case 8:
+        if (!getRespawnCommand()
+            .equals(other.getRespawnCommand())) return false;
+        break;
       case 0:
       default:
     }
@@ -408,6 +452,10 @@ private static final long serialVersionUID = 0L;
       case 7:
         hash = (37 * hash) + PINGCOMMAND_FIELD_NUMBER;
         hash = (53 * hash) + getPingCommand().hashCode();
+        break;
+      case 8:
+        hash = (37 * hash) + RESPAWNCOMMAND_FIELD_NUMBER;
+        hash = (53 * hash) + getRespawnCommand().hashCode();
         break;
       case 0:
       default:
@@ -559,6 +607,9 @@ private static final long serialVersionUID = 0L;
       if (pingCommandBuilder_ != null) {
         pingCommandBuilder_.clear();
       }
+      if (respawnCommandBuilder_ != null) {
+        respawnCommandBuilder_.clear();
+      }
       commandCase_ = 0;
       command_ = null;
       return this;
@@ -625,6 +676,10 @@ private static final long serialVersionUID = 0L;
       if (commandCase_ == 7 &&
           pingCommandBuilder_ != null) {
         result.command_ = pingCommandBuilder_.build();
+      }
+      if (commandCase_ == 8 &&
+          respawnCommandBuilder_ != null) {
+        result.command_ = respawnCommandBuilder_.build();
       }
     }
 
@@ -694,6 +749,10 @@ private static final long serialVersionUID = 0L;
         }
         case PINGCOMMAND: {
           mergePingCommand(other.getPingCommand());
+          break;
+        }
+        case RESPAWNCOMMAND: {
+          mergeRespawnCommand(other.getRespawnCommand());
           break;
         }
         case COMMAND_NOT_SET: {
@@ -766,6 +825,13 @@ private static final long serialVersionUID = 0L;
               commandCase_ = 7;
               break;
             } // case 58
+            case 66: {
+              input.readMessage(
+                  getRespawnCommandFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              commandCase_ = 8;
+              break;
+            } // case 66
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1546,6 +1612,148 @@ private static final long serialVersionUID = 0L;
       commandCase_ = 7;
       onChanged();
       return pingCommandBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.beverly.hills.money.gang.proto.RespawnCommand, com.beverly.hills.money.gang.proto.RespawnCommand.Builder, com.beverly.hills.money.gang.proto.RespawnCommandOrBuilder> respawnCommandBuilder_;
+    /**
+     * <code>.daikombat.dto.RespawnCommand respawnCommand = 8;</code>
+     * @return Whether the respawnCommand field is set.
+     */
+    @java.lang.Override
+    public boolean hasRespawnCommand() {
+      return commandCase_ == 8;
+    }
+    /**
+     * <code>.daikombat.dto.RespawnCommand respawnCommand = 8;</code>
+     * @return The respawnCommand.
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.RespawnCommand getRespawnCommand() {
+      if (respawnCommandBuilder_ == null) {
+        if (commandCase_ == 8) {
+          return (com.beverly.hills.money.gang.proto.RespawnCommand) command_;
+        }
+        return com.beverly.hills.money.gang.proto.RespawnCommand.getDefaultInstance();
+      } else {
+        if (commandCase_ == 8) {
+          return respawnCommandBuilder_.getMessage();
+        }
+        return com.beverly.hills.money.gang.proto.RespawnCommand.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.daikombat.dto.RespawnCommand respawnCommand = 8;</code>
+     */
+    public Builder setRespawnCommand(com.beverly.hills.money.gang.proto.RespawnCommand value) {
+      if (respawnCommandBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        respawnCommandBuilder_.setMessage(value);
+      }
+      commandCase_ = 8;
+      return this;
+    }
+    /**
+     * <code>.daikombat.dto.RespawnCommand respawnCommand = 8;</code>
+     */
+    public Builder setRespawnCommand(
+        com.beverly.hills.money.gang.proto.RespawnCommand.Builder builderForValue) {
+      if (respawnCommandBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        respawnCommandBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 8;
+      return this;
+    }
+    /**
+     * <code>.daikombat.dto.RespawnCommand respawnCommand = 8;</code>
+     */
+    public Builder mergeRespawnCommand(com.beverly.hills.money.gang.proto.RespawnCommand value) {
+      if (respawnCommandBuilder_ == null) {
+        if (commandCase_ == 8 &&
+            command_ != com.beverly.hills.money.gang.proto.RespawnCommand.getDefaultInstance()) {
+          command_ = com.beverly.hills.money.gang.proto.RespawnCommand.newBuilder((com.beverly.hills.money.gang.proto.RespawnCommand) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 8) {
+          respawnCommandBuilder_.mergeFrom(value);
+        } else {
+          respawnCommandBuilder_.setMessage(value);
+        }
+      }
+      commandCase_ = 8;
+      return this;
+    }
+    /**
+     * <code>.daikombat.dto.RespawnCommand respawnCommand = 8;</code>
+     */
+    public Builder clearRespawnCommand() {
+      if (respawnCommandBuilder_ == null) {
+        if (commandCase_ == 8) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 8) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        respawnCommandBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.daikombat.dto.RespawnCommand respawnCommand = 8;</code>
+     */
+    public com.beverly.hills.money.gang.proto.RespawnCommand.Builder getRespawnCommandBuilder() {
+      return getRespawnCommandFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.daikombat.dto.RespawnCommand respawnCommand = 8;</code>
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.RespawnCommandOrBuilder getRespawnCommandOrBuilder() {
+      if ((commandCase_ == 8) && (respawnCommandBuilder_ != null)) {
+        return respawnCommandBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 8) {
+          return (com.beverly.hills.money.gang.proto.RespawnCommand) command_;
+        }
+        return com.beverly.hills.money.gang.proto.RespawnCommand.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.daikombat.dto.RespawnCommand respawnCommand = 8;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.beverly.hills.money.gang.proto.RespawnCommand, com.beverly.hills.money.gang.proto.RespawnCommand.Builder, com.beverly.hills.money.gang.proto.RespawnCommandOrBuilder> 
+        getRespawnCommandFieldBuilder() {
+      if (respawnCommandBuilder_ == null) {
+        if (!(commandCase_ == 8)) {
+          command_ = com.beverly.hills.money.gang.proto.RespawnCommand.getDefaultInstance();
+        }
+        respawnCommandBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            com.beverly.hills.money.gang.proto.RespawnCommand, com.beverly.hills.money.gang.proto.RespawnCommand.Builder, com.beverly.hills.money.gang.proto.RespawnCommandOrBuilder>(
+                (com.beverly.hills.money.gang.proto.RespawnCommand) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 8;
+      onChanged();
+      return respawnCommandBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

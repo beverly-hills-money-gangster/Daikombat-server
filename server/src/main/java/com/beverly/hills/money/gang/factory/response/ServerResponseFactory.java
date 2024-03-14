@@ -21,7 +21,7 @@ public interface ServerResponseFactory {
         leaderBoard.forEach(leaderBoardItem
                 -> leaderBoardResponse.addItems(ServerResponse.LeaderBoardItem.newBuilder()
                 .setPlayerId(leaderBoardItem.getPlayerId())
-                .setPlayerName(leaderBoardItem.getName())
+                .setDeaths(leaderBoardItem.getDeaths())
                 .setKills(leaderBoardItem.getKills())
                 .build()));
         return leaderBoardResponse.build();
@@ -216,7 +216,7 @@ public interface ServerResponseFactory {
                 .build();
     }
 
-    static ServerResponse createSpawnEventSinglePlayer(int playersOnline, PlayerConnectedGameState playerConnected) {
+    static ServerResponse createJoinSinglePlayer(int playersOnline, PlayerJoinedGameState playerConnected) {
         return ServerResponse.newBuilder()
                 .setGameEvents(ServerResponse.GameEvents.newBuilder()
                         .setPlayersOnline(playersOnline)
@@ -225,13 +225,20 @@ public interface ServerResponseFactory {
                                 playerConnected.getLeaderBoard()))).build();
     }
 
-    static ServerResponse createSpawnEventSinglePlayerMinimal(
-            int playersOnline, PlayerConnectedGameState playerConnected) {
+    static ServerResponse createRespawnEventSinglePlayer(int playersOnline, PlayerRespawnedGameState playerConnected) {
         return ServerResponse.newBuilder()
                 .setGameEvents(ServerResponse.GameEvents.newBuilder()
                         .setPlayersOnline(playersOnline)
                         .addEvents(createSpawnEvent(
-                                playerConnected.getPlayerState())))
+                                playerConnected.getPlayerState()))).build();
+    }
+
+    static ServerResponse createSpawnEventSinglePlayerMinimal(
+            int playersOnline, PlayerState playerState) {
+        return ServerResponse.newBuilder()
+                .setGameEvents(ServerResponse.GameEvents.newBuilder()
+                        .setPlayersOnline(playersOnline)
+                        .addEvents(createSpawnEvent(playerState)))
                 .build();
     }
 

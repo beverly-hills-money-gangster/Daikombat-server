@@ -62,6 +62,9 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
         if (playerStateOpt.isEmpty()) {
             LOG.warn("Player {} doesn't exist. Ignore command.", gameCommand.getPlayerId());
             return;
+        } else if (playerStateOpt.get().isDead()) {
+            LOG.warn("Player {} is dead. Ignore command.", gameCommand.getPlayerId());
+            return;
         }
         try {
             MDC.put(MDC_GAME_ID, String.valueOf(gameCommand.getGameId()));
@@ -106,9 +109,6 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
                         LOG.debug("Player {} is dead", attackedPlayer.getPlayerId());
                         ServerResponse deadEvent;
 
-                        var removedDeadPlayerOpt = game.getPlayersRegistry()
-                                .removePlayer(attackedPlayer.getPlayerId());
-
                         switch (attackType) {
                             case PUNCH -> deadEvent = createKillPunchingEvent(
                                     game.playersOnline(),
@@ -120,8 +120,9 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
                                     attackGameState.getPlayerAttacked());
                             default -> throw new IllegalArgumentException("Not supported attack type " + attackType);
                         }
-                        removedDeadPlayerOpt.ifPresent(playerStateChannel -> playerStateChannel.getChannel()
-                                .writeAndFlush(deadEvent));
+                        game.getPlayersRegistry()
+                                .findPlayer(attackedPlayer.getPlayerId())
+                                .ifPresent(playerStateChannel -> playerStateChannel.getChannel().writeAndFlush(deadEvent));
 
                         // send KILL event to the rest of players
                         game.getPlayersRegistry().allPlayers()

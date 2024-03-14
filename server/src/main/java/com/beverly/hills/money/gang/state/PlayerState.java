@@ -25,6 +25,7 @@ public class PlayerState implements PlayerStateReader {
     public static final int DEFAULT_HP = 100;
 
     private final AtomicInteger kills = new AtomicInteger();
+    private final AtomicInteger deaths = new AtomicInteger();
     private final AtomicInteger health = new AtomicInteger(DEFAULT_HP);
 
     @Getter
@@ -40,19 +41,30 @@ public class PlayerState implements PlayerStateReader {
         this.playerId = id;
     }
 
+    public void respawn(final PlayerCoordinates coordinates) {
+        this.playerCoordinatesRef.set(coordinates);
+        health.set(DEFAULT_HP);
+        dead.set(false);
+    }
 
     public int getKills() {
         return kills.get();
     }
 
+    public int getDeaths() {
+        return deaths.get();
+    }
+
     public void getShot() {
         if (health.addAndGet(-ServerConfig.DEFAULT_SHOTGUN_DAMAGE) <= 0) {
+            deaths.incrementAndGet();
             dead.set(true);
         }
     }
 
     public void getPunched() {
         if (health.addAndGet(-ServerConfig.DEFAULT_PUNCH_DAMAGE) <= 0) {
+            deaths.incrementAndGet();
             dead.set(true);
         }
     }

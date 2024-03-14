@@ -180,6 +180,10 @@ public class GameConnection {
         writeLocal(pushGameEventCommand);
     }
 
+    public void write(RespawnCommand respawnCommand) {
+        writeLocal(respawnCommand);
+    }
+
     public void write(PushChatEventCommand pushChatEventCommand) {
         writeLocal(pushChatEventCommand);
     }
@@ -207,6 +211,8 @@ public class GameConnection {
                 serverCommand.setJoinGameCommand((JoinGameCommand) command);
             } else if (command instanceof GetServerInfoCommand) {
                 serverCommand.setGetServerInfoCommand((GetServerInfoCommand) command);
+            } else if (command instanceof RespawnCommand) {
+                serverCommand.setRespawnCommand((RespawnCommand) command);
             } else {
                 throw new IllegalArgumentException("Not recognized message type " + command.getClass());
             }

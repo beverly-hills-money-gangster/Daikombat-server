@@ -7222,21 +7222,15 @@ private static final long serialVersionUID = 0L;
     int getKills();
 
     /**
-     * <code>optional string playerName = 3;</code>
-     * @return Whether the playerName field is set.
+     * <code>optional int32 deaths = 4;</code>
+     * @return Whether the deaths field is set.
      */
-    boolean hasPlayerName();
+    boolean hasDeaths();
     /**
-     * <code>optional string playerName = 3;</code>
-     * @return The playerName.
+     * <code>optional int32 deaths = 4;</code>
+     * @return The deaths.
      */
-    java.lang.String getPlayerName();
-    /**
-     * <code>optional string playerName = 3;</code>
-     * @return The bytes for playerName.
-     */
-    com.google.protobuf.ByteString
-        getPlayerNameBytes();
+    int getDeaths();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.LeaderBoardItem}
@@ -7251,7 +7245,6 @@ private static final long serialVersionUID = 0L;
       super(builder);
     }
     private LeaderBoardItem() {
-      playerName_ = "";
     }
 
     @java.lang.Override
@@ -7313,51 +7306,23 @@ private static final long serialVersionUID = 0L;
       return kills_;
     }
 
-    public static final int PLAYERNAME_FIELD_NUMBER = 3;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object playerName_ = "";
+    public static final int DEATHS_FIELD_NUMBER = 4;
+    private int deaths_ = 0;
     /**
-     * <code>optional string playerName = 3;</code>
-     * @return Whether the playerName field is set.
+     * <code>optional int32 deaths = 4;</code>
+     * @return Whether the deaths field is set.
      */
     @java.lang.Override
-    public boolean hasPlayerName() {
+    public boolean hasDeaths() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>optional string playerName = 3;</code>
-     * @return The playerName.
+     * <code>optional int32 deaths = 4;</code>
+     * @return The deaths.
      */
     @java.lang.Override
-    public java.lang.String getPlayerName() {
-      java.lang.Object ref = playerName_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        playerName_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>optional string playerName = 3;</code>
-     * @return The bytes for playerName.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getPlayerNameBytes() {
-      java.lang.Object ref = playerName_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        playerName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public int getDeaths() {
+      return deaths_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -7381,7 +7346,7 @@ private static final long serialVersionUID = 0L;
         output.writeInt32(2, kills_);
       }
       if (((bitField0_ & 0x00000004) != 0)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, playerName_);
+        output.writeInt32(4, deaths_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -7401,7 +7366,8 @@ private static final long serialVersionUID = 0L;
           .computeInt32Size(2, kills_);
       }
       if (((bitField0_ & 0x00000004) != 0)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, playerName_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(4, deaths_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -7428,10 +7394,10 @@ private static final long serialVersionUID = 0L;
         if (getKills()
             != other.getKills()) return false;
       }
-      if (hasPlayerName() != other.hasPlayerName()) return false;
-      if (hasPlayerName()) {
-        if (!getPlayerName()
-            .equals(other.getPlayerName())) return false;
+      if (hasDeaths() != other.hasDeaths()) return false;
+      if (hasDeaths()) {
+        if (getDeaths()
+            != other.getDeaths()) return false;
       }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
@@ -7452,9 +7418,9 @@ private static final long serialVersionUID = 0L;
         hash = (37 * hash) + KILLS_FIELD_NUMBER;
         hash = (53 * hash) + getKills();
       }
-      if (hasPlayerName()) {
-        hash = (37 * hash) + PLAYERNAME_FIELD_NUMBER;
-        hash = (53 * hash) + getPlayerName().hashCode();
+      if (hasDeaths()) {
+        hash = (37 * hash) + DEATHS_FIELD_NUMBER;
+        hash = (53 * hash) + getDeaths();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -7589,7 +7555,7 @@ private static final long serialVersionUID = 0L;
         bitField0_ = 0;
         playerId_ = 0;
         kills_ = 0;
-        playerName_ = "";
+        deaths_ = 0;
         return this;
       }
 
@@ -7633,7 +7599,7 @@ private static final long serialVersionUID = 0L;
           to_bitField0_ |= 0x00000002;
         }
         if (((from_bitField0_ & 0x00000004) != 0)) {
-          result.playerName_ = playerName_;
+          result.deaths_ = deaths_;
           to_bitField0_ |= 0x00000004;
         }
         result.bitField0_ |= to_bitField0_;
@@ -7689,10 +7655,8 @@ private static final long serialVersionUID = 0L;
         if (other.hasKills()) {
           setKills(other.getKills());
         }
-        if (other.hasPlayerName()) {
-          playerName_ = other.playerName_;
-          bitField0_ |= 0x00000004;
-          onChanged();
+        if (other.hasDeaths()) {
+          setDeaths(other.getDeaths());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -7730,11 +7694,11 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000002;
                 break;
               } // case 16
-              case 26: {
-                playerName_ = input.readStringRequireUtf8();
+              case 32: {
+                deaths_ = input.readInt32();
                 bitField0_ |= 0x00000004;
                 break;
-              } // case 26
+              } // case 32
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -7832,81 +7796,42 @@ private static final long serialVersionUID = 0L;
         return this;
       }
 
-      private java.lang.Object playerName_ = "";
+      private int deaths_ ;
       /**
-       * <code>optional string playerName = 3;</code>
-       * @return Whether the playerName field is set.
+       * <code>optional int32 deaths = 4;</code>
+       * @return Whether the deaths field is set.
        */
-      public boolean hasPlayerName() {
+      @java.lang.Override
+      public boolean hasDeaths() {
         return ((bitField0_ & 0x00000004) != 0);
       }
       /**
-       * <code>optional string playerName = 3;</code>
-       * @return The playerName.
+       * <code>optional int32 deaths = 4;</code>
+       * @return The deaths.
        */
-      public java.lang.String getPlayerName() {
-        java.lang.Object ref = playerName_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          playerName_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
+      @java.lang.Override
+      public int getDeaths() {
+        return deaths_;
       }
       /**
-       * <code>optional string playerName = 3;</code>
-       * @return The bytes for playerName.
-       */
-      public com.google.protobuf.ByteString
-          getPlayerNameBytes() {
-        java.lang.Object ref = playerName_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          playerName_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string playerName = 3;</code>
-       * @param value The playerName to set.
+       * <code>optional int32 deaths = 4;</code>
+       * @param value The deaths to set.
        * @return This builder for chaining.
        */
-      public Builder setPlayerName(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        playerName_ = value;
+      public Builder setDeaths(int value) {
+
+        deaths_ = value;
         bitField0_ |= 0x00000004;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string playerName = 3;</code>
+       * <code>optional int32 deaths = 4;</code>
        * @return This builder for chaining.
        */
-      public Builder clearPlayerName() {
-        playerName_ = getDefaultInstance().getPlayerName();
+      public Builder clearDeaths() {
         bitField0_ = (bitField0_ & ~0x00000004);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string playerName = 3;</code>
-       * @param value The bytes for playerName to set.
-       * @return This builder for chaining.
-       */
-      public Builder setPlayerNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        playerName_ = value;
-        bitField0_ |= 0x00000004;
+        deaths_ = 0;
         onChanged();
         return this;
       }

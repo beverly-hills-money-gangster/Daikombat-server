@@ -550,7 +550,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
                 .setAffectedPlayerId(shotPlayerId)
                 .build());
         waitUntilQueueNonEmpty(deadConnection.getResponse());
-        assertTrue(deadConnection.isConnected(), "Dead players should be disconnected");
+        assertTrue(deadConnection.isConnected(), "Dead players should be connected");
         assertTrue(killerConnection.isConnected(), "Killer must be connected");
 
         ServerResponse deadPlayerServerResponse = deadConnection.getResponse().poll().get();
@@ -568,8 +568,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
 
         ServerResponse killerPlayerServerResponse = killerConnection.getResponse().poll().get();
         var killerShootingEvent = killerPlayerServerResponse.getGameEvents().getEvents(0);
-        assertEquals(1, killerPlayerServerResponse.getGameEvents().getPlayersOnline(),
-                "Only one player should be online. The other one must be dead.");
+        assertEquals(2, killerPlayerServerResponse.getGameEvents().getPlayersOnline(),
+                "All players should be online");
         assertEquals(ServerResponse.GameEvent.GameEventType.KILL_SHOOTING, killerShootingEvent.getEventType(),
                 "Shot player must be dead. Actual response is " + killerPlayerServerResponse);
         assertEquals(shooterPlayerId, killerShootingEvent.getPlayer().getPlayerId());
@@ -580,7 +580,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
         ServerResponse.GameInfo myGame = games.stream().filter(gameInfo -> gameInfo.getGameId() == gameIdToConnectTo).findFirst()
                 .orElseThrow((Supplier<Exception>) () -> new IllegalStateException("Can't find the game we connected to"));
-        assertEquals(1, myGame.getPlayersOnline(), "Must be 1 player only as 1 player got killed (it was 2)");
+        assertEquals(2, myGame.getPlayersOnline(), "Must be 2 players");
 
         String observerPlayerName = "observer";
         GameConnection observerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
@@ -594,16 +594,20 @@ public class ShootingEventTest extends AbstractGameServerTest {
         var observerPlayerSpawn = observerConnection.getResponse().poll().get().getGameEvents().getEvents(0);
         int observerPlayerId = observerPlayerSpawn.getPlayer().getPlayerId();
         assertTrue(observerPlayerSpawn.hasLeaderBoard(), "Newly connected players must have leader board");
-        assertEquals(2, observerPlayerSpawn.getLeaderBoard().getItemsCount(),
-                "There must be 2 items in the board at this moment: killer + observer");
+        assertEquals(3, observerPlayerSpawn.getLeaderBoard().getItemsCount(),
+                "There must be 3 items in the board at this moment: killer, victim, and observer");
 
         assertEquals(shooterPlayerId, observerPlayerSpawn.getLeaderBoard().getItems(0).getPlayerId());
-        assertEquals(shooterPlayerName, observerPlayerSpawn.getLeaderBoard().getItems(0).getPlayerName());
         assertEquals(1, observerPlayerSpawn.getLeaderBoard().getItems(0).getKills());
+        assertEquals(0, observerPlayerSpawn.getLeaderBoard().getItems(0).getDeaths());
 
         assertEquals(observerPlayerId, observerPlayerSpawn.getLeaderBoard().getItems(1).getPlayerId());
-        assertEquals(observerPlayerName, observerPlayerSpawn.getLeaderBoard().getItems(1).getPlayerName());
         assertEquals(0, observerPlayerSpawn.getLeaderBoard().getItems(1).getKills());
+        assertEquals(0, observerPlayerSpawn.getLeaderBoard().getItems(1).getDeaths());
+
+        assertEquals(shotPlayerId, observerPlayerSpawn.getLeaderBoard().getItems(2).getPlayerId());
+        assertEquals(0, observerPlayerSpawn.getLeaderBoard().getItems(2).getKills());
+        assertEquals(1, observerPlayerSpawn.getLeaderBoard().getItems(2).getDeaths());
     }
 
     /**
@@ -695,8 +699,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
 
         ServerResponse deadPlayerServerResponse = deadConnection.getResponse().poll().get();
         var deadPunchingEvent = deadPlayerServerResponse.getGameEvents().getEvents(0);
-        assertEquals(1, deadPlayerServerResponse.getGameEvents().getPlayersOnline(),
-                "Only one player should be online. The other one must be dead.");
+        assertEquals(2, deadPlayerServerResponse.getGameEvents().getPlayersOnline(),
+                "All players should be online");
         assertEquals(ServerResponse.GameEvent.GameEventType.KILL_PUNCHING, deadPunchingEvent.getEventType(),
                 "Punched player must be dead");
         assertFalse(deadPunchingEvent.hasLeaderBoard(), "Leader board are published only on spawns");
@@ -720,7 +724,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
         ServerResponse.GameInfo myGame = games.stream().filter(gameInfo -> gameInfo.getGameId() == gameIdToConnectTo).findFirst()
                 .orElseThrow((Supplier<Exception>) () -> new IllegalStateException("Can't find the game we connected to"));
-        assertEquals(1, myGame.getPlayersOnline(), "Must be 1 player only as 1 player got killed (it was 2)");
+        assertEquals(2, myGame.getPlayersOnline(), "All players are still online");
 
         String observerPlayerName = "observer";
         GameConnection observerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
@@ -734,16 +738,20 @@ public class ShootingEventTest extends AbstractGameServerTest {
         var observerPlayerSpawn = observerConnection.getResponse().poll().get().getGameEvents().getEvents(0);
         int observerPlayerId = observerPlayerSpawn.getPlayer().getPlayerId();
         assertTrue(observerPlayerSpawn.hasLeaderBoard(), "Newly connected players must have leader board");
-        assertEquals(2, observerPlayerSpawn.getLeaderBoard().getItemsCount(),
-                "There must be 2 items in the board at this moment: killer + observer");
+        assertEquals(3, observerPlayerSpawn.getLeaderBoard().getItemsCount(),
+                "There must be 3 items in the board at this moment: killer, victim, and observer");
 
         assertEquals(puncherPlayerId, observerPlayerSpawn.getLeaderBoard().getItems(0).getPlayerId());
-        assertEquals(puncherPlayerName, observerPlayerSpawn.getLeaderBoard().getItems(0).getPlayerName());
         assertEquals(1, observerPlayerSpawn.getLeaderBoard().getItems(0).getKills());
+        assertEquals(0, observerPlayerSpawn.getLeaderBoard().getItems(0).getDeaths());
 
         assertEquals(observerPlayerId, observerPlayerSpawn.getLeaderBoard().getItems(1).getPlayerId());
-        assertEquals(observerPlayerName, observerPlayerSpawn.getLeaderBoard().getItems(1).getPlayerName());
         assertEquals(0, observerPlayerSpawn.getLeaderBoard().getItems(1).getKills());
+        assertEquals(0, observerPlayerSpawn.getLeaderBoard().getItems(1).getDeaths());
+
+        assertEquals(punchedPlayerId, observerPlayerSpawn.getLeaderBoard().getItems(2).getPlayerId());
+        assertEquals(0, observerPlayerSpawn.getLeaderBoard().getItems(2).getKills());
+        assertEquals(1, observerPlayerSpawn.getLeaderBoard().getItems(2).getDeaths());
     }
 
 
@@ -846,7 +854,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
         ServerResponse.GameInfo myGame = games.stream().filter(gameInfo -> gameInfo.getGameId() == gameIdToConnectTo).findFirst()
                 .orElseThrow((Supplier<Exception>) () -> new IllegalStateException("Can't find the game we connected to"));
-        assertEquals(1, myGame.getPlayersOnline(), "Must be 1 player only as 1 player got killed (it was 2)");
+        assertEquals(2, myGame.getPlayersOnline(), "All players must be online");
     }
 
     /**

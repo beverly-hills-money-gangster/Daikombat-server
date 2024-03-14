@@ -17,7 +17,6 @@ import static com.beverly.hills.money.gang.factory.response.ServerResponseFactor
 @Component
 @RequiredArgsConstructor
 public class ChatServerCommandHandler extends ServerCommandHandler {
-
     private static final Logger LOG = LoggerFactory.getLogger(ChatServerCommandHandler.class);
 
     private final GameRoomRegistry gameRoomRegistry;
@@ -36,7 +35,8 @@ public class ChatServerCommandHandler extends ServerCommandHandler {
 
         if (gameRoomRegistry.getJoinedPlayer(
                 chatCommand.getGameId(), currentChannel, chatCommand.getPlayerId()).isEmpty()) {
-            LOG.warn("Player {} doesn't exist. Ignore command.", chatCommand.getPlayerId());
+            LOG.warn("Player {} hasn't joined game {}. Ignore command.",
+                    chatCommand.hasGameId(), chatCommand.getPlayerId());
             return;
         }
         game.readPlayer(chatCommand.getPlayerId()).ifPresent(playerStateReader -> {

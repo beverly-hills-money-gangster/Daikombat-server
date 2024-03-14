@@ -226,7 +226,7 @@ public class IdleClientTest extends AbstractGameServerTest {
                 .flatMap((Function<ServerResponse.GameEvents, Stream<ServerResponse.GameEvent>>) gameEvents
                         -> gameEvents.getEventsList().stream())
                 .anyMatch(gameEvent -> gameEvent.getEventType() == ServerResponse.GameEvent.GameEventType.EXIT);
-        assertFalse(exitEventFound, "No EXIT event should be found. Dead players die, they don't exit");
+        assertTrue(exitEventFound, "Dead inactive players should be EXITed");
     }
 
     /**

@@ -6,6 +6,7 @@ import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -220,7 +221,7 @@ public class JoinGameTest extends AbstractGameServerTest {
      * @when 2 players connect with the same name
      * @then 1st player is connected, 2nd player is not
      */
-    @Test
+    @RepeatedTest(8)
     public void testJoinSameName() throws IOException, InterruptedException {
 
         GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
@@ -243,9 +244,10 @@ public class JoinGameTest extends AbstractGameServerTest {
 
         ServerResponse serverResponse = sameNameConnection.getResponse().poll().get();
         ServerResponse.ErrorEvent errorEvent = serverResponse.getErrorEvent();
+        assertEquals("Can't connect player. Player name already taken.", errorEvent.getMessage());
         assertEquals(GameErrorCode.PLAYER_EXISTS.ordinal(), errorEvent.getErrorCode(),
                 "Shouldn't be able to connect as the player name is already taken");
-        assertEquals("Can't connect player. Player name already taken.", errorEvent.getMessage());
+
 
         Thread.sleep(1_000);
         assertTrue(gameConnection.isConnected());

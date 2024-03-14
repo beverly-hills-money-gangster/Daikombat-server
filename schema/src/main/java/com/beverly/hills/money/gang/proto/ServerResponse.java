@@ -7237,6 +7237,17 @@ private static final long serialVersionUID = 0L;
      */
     com.google.protobuf.ByteString
         getPlayerNameBytes();
+
+    /**
+     * <code>optional int32 deaths = 4;</code>
+     * @return Whether the deaths field is set.
+     */
+    boolean hasDeaths();
+    /**
+     * <code>optional int32 deaths = 4;</code>
+     * @return The deaths.
+     */
+    int getDeaths();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.LeaderBoardItem}
@@ -7360,6 +7371,25 @@ private static final long serialVersionUID = 0L;
       }
     }
 
+    public static final int DEATHS_FIELD_NUMBER = 4;
+    private int deaths_ = 0;
+    /**
+     * <code>optional int32 deaths = 4;</code>
+     * @return Whether the deaths field is set.
+     */
+    @java.lang.Override
+    public boolean hasDeaths() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <code>optional int32 deaths = 4;</code>
+     * @return The deaths.
+     */
+    @java.lang.Override
+    public int getDeaths() {
+      return deaths_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -7383,6 +7413,9 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000004) != 0)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 3, playerName_);
       }
+      if (((bitField0_ & 0x00000008) != 0)) {
+        output.writeInt32(4, deaths_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -7402,6 +7435,10 @@ private static final long serialVersionUID = 0L;
       }
       if (((bitField0_ & 0x00000004) != 0)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, playerName_);
+      }
+      if (((bitField0_ & 0x00000008) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(4, deaths_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -7433,6 +7470,11 @@ private static final long serialVersionUID = 0L;
         if (!getPlayerName()
             .equals(other.getPlayerName())) return false;
       }
+      if (hasDeaths() != other.hasDeaths()) return false;
+      if (hasDeaths()) {
+        if (getDeaths()
+            != other.getDeaths()) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -7455,6 +7497,10 @@ private static final long serialVersionUID = 0L;
       if (hasPlayerName()) {
         hash = (37 * hash) + PLAYERNAME_FIELD_NUMBER;
         hash = (53 * hash) + getPlayerName().hashCode();
+      }
+      if (hasDeaths()) {
+        hash = (37 * hash) + DEATHS_FIELD_NUMBER;
+        hash = (53 * hash) + getDeaths();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -7590,6 +7636,7 @@ private static final long serialVersionUID = 0L;
         playerId_ = 0;
         kills_ = 0;
         playerName_ = "";
+        deaths_ = 0;
         return this;
       }
 
@@ -7635,6 +7682,10 @@ private static final long serialVersionUID = 0L;
         if (((from_bitField0_ & 0x00000004) != 0)) {
           result.playerName_ = playerName_;
           to_bitField0_ |= 0x00000004;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.deaths_ = deaths_;
+          to_bitField0_ |= 0x00000008;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -7694,6 +7745,9 @@ private static final long serialVersionUID = 0L;
           bitField0_ |= 0x00000004;
           onChanged();
         }
+        if (other.hasDeaths()) {
+          setDeaths(other.getDeaths());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -7735,6 +7789,11 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000004;
                 break;
               } // case 26
+              case 32: {
+                deaths_ = input.readInt32();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 32
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -7907,6 +7966,46 @@ private static final long serialVersionUID = 0L;
         checkByteStringIsUtf8(value);
         playerName_ = value;
         bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+
+      private int deaths_ ;
+      /**
+       * <code>optional int32 deaths = 4;</code>
+       * @return Whether the deaths field is set.
+       */
+      @java.lang.Override
+      public boolean hasDeaths() {
+        return ((bitField0_ & 0x00000008) != 0);
+      }
+      /**
+       * <code>optional int32 deaths = 4;</code>
+       * @return The deaths.
+       */
+      @java.lang.Override
+      public int getDeaths() {
+        return deaths_;
+      }
+      /**
+       * <code>optional int32 deaths = 4;</code>
+       * @param value The deaths to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDeaths(int value) {
+
+        deaths_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 deaths = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDeaths() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        deaths_ = 0;
         onChanged();
         return this;
       }

@@ -9,6 +9,7 @@ public enum GameErrorCode {
     COMMAND_NOT_RECOGNIZED,
     CAN_NOT_ATTACK_YOURSELF,
     GAME_CLOSED,
-    CHEATING
+    CHEATING,
+    PLAYER_DOES_NOT_EXIST,
 
 }

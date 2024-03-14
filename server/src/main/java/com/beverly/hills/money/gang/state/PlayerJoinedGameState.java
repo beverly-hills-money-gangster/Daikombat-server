@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Builder
-public class PlayerConnectedGameState {
+public class PlayerJoinedGameState {
 
     private final PlayerState playerState;
 

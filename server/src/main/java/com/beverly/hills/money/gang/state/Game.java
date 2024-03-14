@@ -20,9 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -50,15 +48,29 @@ public class Game implements Closeable, GameReader {
         this.playerIdGenerator = playerIdGenerator;
     }
 
-    public PlayerConnectedGameState connectPlayer(final String playerName, final Channel playerChannel) throws GameLogicError {
+    public PlayerJoinedGameState joinPlayer(final String playerName, final Channel playerChannel) throws GameLogicError {
         validateGameNotClosed();
         int playerId = playerIdGenerator.getNext();
         PlayerState.PlayerCoordinates spawn = spawner.spawn(this);
         PlayerState connectedPlayerState = new PlayerState(playerName, spawn, playerId);
         playersRegistry.addPlayer(connectedPlayerState, playerChannel);
-        return PlayerConnectedGameState.builder()
+        return PlayerJoinedGameState.builder()
                 .leaderBoard(getLeaderBoard())
                 .playerState(connectedPlayerState).build();
+    }
+
+    public PlayerRespawnedGameState respawnPlayer(final int playerId) throws GameLogicError {
+        validateGameNotClosed();
+        var player = playersRegistry.findPlayer(playerId)
+                .orElseThrow(() -> new GameLogicError("Player doesn't exist", GameErrorCode.PLAYER_DOES_NOT_EXIST));
+        if (!player.getPlayerState().isDead()) {
+            throw new GameLogicError("Can't respawn live player", GameErrorCode.COMMON_ERROR);
+        }
+        LOG.debug("Respawn player {}", playerId);
+        player.getPlayerState().respawn(spawner.spawn(this));
+        return PlayerRespawnedGameState.builder()
+                .playerState(player.getPlayerState())
+                .leaderBoard(getLeaderBoard()).build();
     }
 
     public PlayerAttackingGameState attack(final PlayerState.PlayerCoordinates attackingPlayerCoordinates,
@@ -114,13 +126,20 @@ public class Game implements Closeable, GameReader {
 
     private List<GameLeaderBoardItem> getLeaderBoard() {
         return playersRegistry.allPlayers()
-                .filter(playerStateChannel -> !playerStateChannel.getPlayerState().isDead())
-                .sorted((player1, player2) -> -Integer.compare(
-                        player1.getPlayerState().getKills(), player2.getPlayerState().getKills()))
-                .map(playerStateChannel -> GameLeaderBoardItem.builder()
+                .sorted((player1, player2) -> {
+                    int killsCompare = -Integer.compare(
+                            player1.getPlayerState().getKills(), player2.getPlayerState().getKills());
+                    if (killsCompare == 0) {
+                        return Integer.compare(
+                                player1.getPlayerState().getDeaths(), player2.getPlayerState().getDeaths());
+                    } else {
+                        return killsCompare;
+                    }
+                }).map(playerStateChannel -> GameLeaderBoardItem.builder()
                         .playerId(playerStateChannel.getPlayerState().getPlayerId())
-                        .name(playerStateChannel.getPlayerState().getPlayerName())
                         .kills(playerStateChannel.getPlayerState().getKills())
+                        .playerName(playerStateChannel.getPlayerState().getPlayerName())
+                        .deaths(playerStateChannel.getPlayerState().getDeaths())
                         .build())
                 .collect(Collectors.toList());
     }

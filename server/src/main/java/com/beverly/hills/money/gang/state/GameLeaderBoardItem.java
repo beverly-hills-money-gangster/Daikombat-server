@@ -2,6 +2,7 @@ package com.beverly.hills.money.gang.state;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.ToString;
 
 @Builder
@@ -11,7 +12,10 @@ public class GameLeaderBoardItem {
 
     private final int playerId;
 
-    private final String name;
+    @NonNull
+    private final String playerName;
 
     private final int kills;
+
+    private final int deaths;
 }

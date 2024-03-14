@@ -18,7 +18,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
-import static com.beverly.hills.money.gang.exception.GameErrorCode.CAN_NOT_ATTACK_YOURSELF;
+import static com.beverly.hills.money.gang.exception.GameErrorCode.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -58,7 +58,7 @@ public class GameTest {
                 "No online players as nobody connected yet");
         String playerName = "some player";
         Channel channel = mock(Channel.class);
-        PlayerConnectedGameState playerConnectedGameState = game.connectPlayer(playerName, channel);
+        PlayerJoinedGameState playerConnectedGameState = game.joinPlayer(playerName, channel);
         assertEquals(1, game.getPlayersRegistry().playersOnline(), "We connected 1 player only");
         assertEquals(0, game.getBufferedMoves().size(), "Nobody moved");
         assertEquals(1, game.getPlayersRegistry().allPlayers().count(), "We connected 1 player only");
@@ -92,11 +92,11 @@ public class GameTest {
         for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME - 1; i++) {
             // spawn everywhere except for the last spawn position
             doReturn(Spawner.SPAWNS.get(i % (Spawner.SPAWNS.size() - 1))).when(spawner).spawn(any());
-            game.connectPlayer(playerName + " " + i, channel);
+            game.joinPlayer(playerName + " " + i, channel);
         }
 
         doCallRealMethod().when(spawner).spawn(any());
-        var connectedPlayer = game.connectPlayer(playerName, channel);
+        var connectedPlayer = game.joinPlayer(playerName, channel);
         assertEquals(Spawner.SPAWNS.get(Spawner.SPAWNS.size() - 1),
                 connectedPlayer.getPlayerState().getCoordinates(),
                 "Should be spawned to the last spawn position because it's least populated");
@@ -114,7 +114,7 @@ public class GameTest {
         Set<Vector> spawns = new HashSet<>();
         int playersToJoin = Math.min(ServerConfig.MAX_PLAYERS_PER_GAME, Spawner.SPAWNS.size());
         for (int i = 0; i < playersToJoin; i++) {
-            spawns.add(game.connectPlayer(playerName + " " + i, channel).getPlayerState().getCoordinates().getPosition());
+            spawns.add(game.joinPlayer(playerName + " " + i, channel).getPlayerState().getCoordinates().getPosition());
         }
         assertEquals(playersToJoin, spawns.size(),
                 "All spawn should be unique as every player must get the the least populated position");
@@ -129,9 +129,9 @@ public class GameTest {
     public void testConnectPlayerTwice() throws Throwable {
         String playerName = "some player";
         Channel channel = mock(Channel.class);
-        PlayerConnectedGameState playerConnectedGameState = game.connectPlayer(playerName, channel);
+        PlayerJoinedGameState playerConnectedGameState = game.joinPlayer(playerName, channel);
         // connect the same twice
-        GameLogicError gameLogicError = assertThrows(GameLogicError.class, () -> game.connectPlayer(playerName, channel),
+        GameLogicError gameLogicError = assertThrows(GameLogicError.class, () -> game.joinPlayer(playerName, channel),
                 "Second try should fail because it's the same player");
         assertEquals(GameErrorCode.PLAYER_EXISTS, gameLogicError.getErrorCode());
 
@@ -156,7 +156,7 @@ public class GameTest {
         String playerName = "some player";
         Channel channel = mock(Channel.class);
         for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
-            game.connectPlayer(playerName + " " + i, channel);
+            game.joinPlayer(playerName + " " + i, channel);
         }
         assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, game.getPlayersRegistry().playersOnline());
     }
@@ -171,10 +171,10 @@ public class GameTest {
         String playerName = "some player";
         Channel channel = mock(Channel.class);
         for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
-            game.connectPlayer(playerName + " " + i, channel);
+            game.joinPlayer(playerName + " " + i, channel);
         }
         // connect MAX_PLAYERS_PER_GAME+1 player
-        GameLogicError gameLogicError = assertThrows(GameLogicError.class, () -> game.connectPlayer(
+        GameLogicError gameLogicError = assertThrows(GameLogicError.class, () -> game.joinPlayer(
                         "over the top", channel),
                 "We can't connect so many players");
         assertEquals(GameErrorCode.SERVER_FULL, gameLogicError.getErrorCode());
@@ -200,7 +200,7 @@ public class GameTest {
             threads.add(new Thread(() -> {
                 try {
                     latch.await();
-                    game.connectPlayer(playerName + " " + finalI, channel);
+                    game.joinPlayer(playerName + " " + finalI, channel);
                 } catch (Exception e) {
                     failures.incrementAndGet();
                     throw new RuntimeException(e);
@@ -229,7 +229,7 @@ public class GameTest {
     public void testShootMiss() throws Throwable {
         String playerName = "some player";
         Channel channel = mock(Channel.class);
-        PlayerConnectedGameState playerConnectedGameState = game.connectPlayer(playerName, channel);
+        PlayerJoinedGameState playerConnectedGameState = game.joinPlayer(playerName, channel);
         PlayerAttackingGameState playerAttackingGameState = game.attack(
                 playerConnectedGameState.getPlayerState().getCoordinates(),
                 playerConnectedGameState.getPlayerState().getPlayerId(), null, AttackType.SHOOT);
@@ -252,8 +252,8 @@ public class GameTest {
         String shotPlayerName = "shot player";
         Channel channel = mock(Channel.class);
         Set<Integer> connectedPlayerIds = new HashSet<>();
-        PlayerConnectedGameState shooterPlayerConnectedGameState = game.connectPlayer(shooterPlayerName, channel);
-        PlayerConnectedGameState shotPlayerConnectedGameState = game.connectPlayer(shotPlayerName, channel);
+        PlayerJoinedGameState shooterPlayerConnectedGameState = game.joinPlayer(shooterPlayerName, channel);
+        PlayerJoinedGameState shotPlayerConnectedGameState = game.joinPlayer(shotPlayerName, channel);
         connectedPlayerIds.add(shotPlayerConnectedGameState.getPlayerState().getPlayerId());
         connectedPlayerIds.add(shooterPlayerConnectedGameState.getPlayerState().getPlayerId());
 
@@ -287,8 +287,8 @@ public class GameTest {
         String observerPlayerName = "observer player";
         String shotPlayerName = "shot player";
         Channel channel = mock(Channel.class);
-        PlayerConnectedGameState shooterPlayerConnectedGameState = game.connectPlayer(shooterPlayerName, channel);
-        PlayerConnectedGameState shotPlayerConnectedGameState = game.connectPlayer(shotPlayerName, channel);
+        PlayerJoinedGameState shooterPlayerConnectedGameState = game.joinPlayer(shooterPlayerName, channel);
+        PlayerJoinedGameState shotPlayerConnectedGameState = game.joinPlayer(shotPlayerName, channel);
 
         int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_SHOTGUN_DAMAGE);
 
@@ -311,33 +311,41 @@ public class GameTest {
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
         assertEquals(1, shooterState.getKills(), "One player was killed");
-        assertEquals(1, game.playersOnline(), "After death, only 1 player is alive");
+        assertEquals(2, game.playersOnline(), "After death, all players are still online");
         PlayerState shotState = game.getPlayersRegistry().getPlayerState(shotPlayerConnectedGameState.getPlayerState().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(0, shotState.getHealth());
         assertTrue(shotState.isDead());
 
-        PlayerConnectedGameState observerPlayerConnectedGameState = game.connectPlayer(observerPlayerName, channel);
+        PlayerJoinedGameState observerPlayerConnectedGameState = game.joinPlayer(observerPlayerName, channel);
 
-        assertEquals(2, observerPlayerConnectedGameState.getLeaderBoard().size(),
-                "2 players are connected so it should 1 item in the leader board");
+        assertEquals(3, observerPlayerConnectedGameState.getLeaderBoard().size(),
+                "3 players are connected so it should 3 items in the leader board");
 
         assertEquals(
                 playerAttackingGameState.getAttackingPlayer().getPlayerId(),
                 observerPlayerConnectedGameState.getLeaderBoard().get(0).getPlayerId());
+        assertEquals(0, observerPlayerConnectedGameState.getLeaderBoard().get(0).getDeaths());
         assertEquals(
                 1,
                 observerPlayerConnectedGameState.getLeaderBoard().get(0).getKills(),
-                "There was one kill");
+                "There should be one kill");
 
         assertEquals(
                 observerPlayerConnectedGameState.getPlayerState().getPlayerId(),
                 observerPlayerConnectedGameState.getLeaderBoard().get(1).getPlayerId());
+        assertEquals(0, observerPlayerConnectedGameState.getLeaderBoard().get(1).getDeaths());
         assertEquals(
                 0, observerPlayerConnectedGameState.getLeaderBoard().get(1).getKills());
 
-        assertEquals(3, game.getPlayersRegistry().allPlayers().count(), "We have 3 live players now: killer, observer, and dead player." +
-                " Dead player will be removed later.");
+        assertEquals(
+                shotPlayerConnectedGameState.getPlayerState().getPlayerId(),
+                observerPlayerConnectedGameState.getLeaderBoard().get(2).getPlayerId());
+        assertEquals(1, observerPlayerConnectedGameState.getLeaderBoard().get(2).getDeaths());
+        assertEquals(
+                0, observerPlayerConnectedGameState.getLeaderBoard().get(2).getKills());
+
+        assertEquals(3, game.getPlayersRegistry().allPlayers().count(), "We have 3 live players now: killer, observer, and dead player.");
     }
 
     /**
@@ -351,8 +359,8 @@ public class GameTest {
         String observerPlayerName = "observer player";
         String shotPlayerName = "shot player";
         Channel channel = mock(Channel.class);
-        PlayerConnectedGameState shooterPlayerConnectedGameState = game.connectPlayer(shooterPlayerName, channel);
-        PlayerConnectedGameState shotPlayerConnectedGameState = game.connectPlayer(shotPlayerName, channel);
+        PlayerJoinedGameState shooterPlayerConnectedGameState = game.joinPlayer(shooterPlayerName, channel);
+        PlayerJoinedGameState shotPlayerConnectedGameState = game.joinPlayer(shotPlayerName, channel);
 
         int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_SHOTGUN_DAMAGE);
 
@@ -382,33 +390,11 @@ public class GameTest {
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(100, shooterState.getHealth(), "Shooter must get a vampire boost");
         assertEquals(1, shooterState.getKills(), "One player was killed");
-        assertEquals(1, game.playersOnline(), "After death, only 1 player is alive");
+        assertEquals(2, game.playersOnline(), "After death, 2 players are still online");
         PlayerState shotState = game.getPlayersRegistry().getPlayerState(shotPlayerConnectedGameState.getPlayerState().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(0, shotState.getHealth());
         assertTrue(shotState.isDead());
-
-        PlayerConnectedGameState observerPlayerConnectedGameState = game.connectPlayer(observerPlayerName, channel);
-
-        assertEquals(2, observerPlayerConnectedGameState.getLeaderBoard().size(),
-                "2 players are connected so it should 1 item in the leader board");
-
-        assertEquals(
-                playerAttackingGameState.getAttackingPlayer().getPlayerId(),
-                observerPlayerConnectedGameState.getLeaderBoard().get(0).getPlayerId());
-        assertEquals(
-                1,
-                observerPlayerConnectedGameState.getLeaderBoard().get(0).getKills(),
-                "There was one kill");
-
-        assertEquals(
-                observerPlayerConnectedGameState.getPlayerState().getPlayerId(),
-                observerPlayerConnectedGameState.getLeaderBoard().get(1).getPlayerId());
-        assertEquals(
-                0, observerPlayerConnectedGameState.getLeaderBoard().get(1).getKills());
-
-        assertEquals(3, game.getPlayersRegistry().allPlayers().count(), "We have 3 live players now: killer, observer, and dead player." +
-                " Dead player will be removed later.");
     }
 
 
@@ -423,8 +409,8 @@ public class GameTest {
         String shotPlayerName = "shot player";
         String observerPlayerName = "observer player";
         Channel channel = mock(Channel.class);
-        PlayerConnectedGameState shooterPlayerConnectedGameState = game.connectPlayer(shooterPlayerName, channel);
-        PlayerConnectedGameState shotPlayerConnectedGameState = game.connectPlayer(shotPlayerName, channel);
+        PlayerJoinedGameState shooterPlayerConnectedGameState = game.joinPlayer(shooterPlayerName, channel);
+        PlayerJoinedGameState shotPlayerConnectedGameState = game.joinPlayer(shotPlayerName, channel);
 
         int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_SHOTGUN_DAMAGE);
 
@@ -447,35 +433,49 @@ public class GameTest {
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
         assertEquals(1, shooterState.getKills(), "One player was killed");
-        assertEquals(1, game.playersOnline(), "After death, only 1 player is online");
+        assertEquals(2, game.playersOnline(), "After death, all players are online");
         PlayerState shotState = game.getPlayersRegistry().getPlayerState(shotPlayerConnectedGameState.getPlayerState().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(0, shotState.getHealth());
         assertTrue(shotState.isDead());
 
 
-        PlayerConnectedGameState observerPlayerConnectedGameState = game.connectPlayer(observerPlayerName, channel);
+        PlayerJoinedGameState observerPlayerConnectedGameState = game.joinPlayer(observerPlayerName, channel);
 
-        assertEquals(2, observerPlayerConnectedGameState.getLeaderBoard().size(),
-                "2 player are connected so it should 2 item in the leader board");
+        assertEquals(3, observerPlayerConnectedGameState.getLeaderBoard().size(),
+                "3 players are connected so it should 3 item in the leader board");
 
         assertEquals(
                 playerAttackingGameState.getAttackingPlayer().getPlayerId(),
                 observerPlayerConnectedGameState.getLeaderBoard().get(0).getPlayerId(),
                 "Killer player should be first");
         assertEquals(
+                0, observerPlayerConnectedGameState.getLeaderBoard().get(0).getDeaths());
+        assertEquals(
                 1,
                 observerPlayerConnectedGameState.getLeaderBoard().get(0).getKills(),
                 "There was one kill");
+
 
         assertEquals(
                 observerPlayerConnectedGameState.getPlayerState().getPlayerId(),
                 observerPlayerConnectedGameState.getLeaderBoard().get(1).getPlayerId(),
                 "Observer player should be second");
         assertEquals(
+                0, observerPlayerConnectedGameState.getLeaderBoard().get(1).getDeaths());
+        assertEquals(
                 0,
                 observerPlayerConnectedGameState.getLeaderBoard().get(1).getKills(),
                 "Observer hasn't killed anybody");
+
+        assertEquals(
+                shotPlayerConnectedGameState.getPlayerState().getPlayerId(),
+                observerPlayerConnectedGameState.getLeaderBoard().get(2).getPlayerId());
+        assertEquals(
+                1, observerPlayerConnectedGameState.getLeaderBoard().get(2).getDeaths());
+        assertEquals(
+                0,
+                observerPlayerConnectedGameState.getLeaderBoard().get(2).getKills());
     }
 
     /**
@@ -487,7 +487,7 @@ public class GameTest {
     public void testShootYourself() throws Throwable {
         String shooterPlayerName = "shooter player";
         Channel channel = mock(Channel.class);
-        PlayerConnectedGameState shooterPlayerConnectedGameState = game.connectPlayer(shooterPlayerName, channel);
+        PlayerJoinedGameState shooterPlayerConnectedGameState = game.joinPlayer(shooterPlayerName, channel);
 
         GameLogicError gameLogicError = assertThrows(GameLogicError.class, () -> game.attack(
                 shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
@@ -514,8 +514,8 @@ public class GameTest {
         String shooterPlayerName = "shooter player";
         String shotPlayerName = "shot player";
         Channel channel = mock(Channel.class);
-        PlayerConnectedGameState shooterPlayerConnectedGameState = game.connectPlayer(shooterPlayerName, channel);
-        PlayerConnectedGameState shotPlayerConnectedGameState = game.connectPlayer(shotPlayerName, channel);
+        PlayerJoinedGameState shooterPlayerConnectedGameState = game.joinPlayer(shooterPlayerName, channel);
+        PlayerJoinedGameState shotPlayerConnectedGameState = game.joinPlayer(shotPlayerName, channel);
 
         int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_SHOTGUN_DAMAGE);
 
@@ -536,7 +536,7 @@ public class GameTest {
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
         assertEquals(1, shooterState.getKills(), "One player got killed");
-        assertEquals(1, game.playersOnline(), "After death, only 1 player is online");
+        assertEquals(2, game.playersOnline(), "After death, all players are online");
         PlayerState shotState = game.getPlayersRegistry().getPlayerState(shotPlayerConnectedGameState.getPlayerState().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(0, shotState.getHealth());
@@ -552,7 +552,7 @@ public class GameTest {
     public void testShootHitNotExistingPlayer() throws Throwable {
         String shooterPlayerName = "shooter player";
         Channel channel = mock(Channel.class);
-        PlayerConnectedGameState shooterPlayerConnectedGameState = game.connectPlayer(shooterPlayerName, channel);
+        PlayerJoinedGameState shooterPlayerConnectedGameState = game.joinPlayer(shooterPlayerName, channel);
 
         PlayerAttackingGameState playerAttackingGameState = game.attack(
                 shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
@@ -577,8 +577,8 @@ public class GameTest {
         String shooterPlayerName = "shooter player";
         String shotPlayerName = "shot player";
         Channel channel = mock(Channel.class);
-        PlayerConnectedGameState shooterPlayerConnectedGameState = game.connectPlayer(shooterPlayerName, channel);
-        PlayerConnectedGameState shotPlayerConnectedGameState = game.connectPlayer(shotPlayerName, channel);
+        PlayerJoinedGameState shooterPlayerConnectedGameState = game.joinPlayer(shooterPlayerName, channel);
+        PlayerJoinedGameState shotPlayerConnectedGameState = game.joinPlayer(shotPlayerName, channel);
 
         int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_SHOTGUN_DAMAGE);
 
@@ -600,7 +600,7 @@ public class GameTest {
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
         assertEquals(1, shooterState.getKills(), "One player got killed");
-        assertEquals(1, game.playersOnline(), "After death, only 1 player is online");
+        assertEquals(2, game.playersOnline(), "After death, all players are online");
         PlayerState shotState = game.getPlayersRegistry().getPlayerState(shotPlayerConnectedGameState.getPlayerState().getPlayerId())
                 .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException("A connected player must have a state!"));
         assertEquals(0, shotState.getHealth());
@@ -616,13 +616,13 @@ public class GameTest {
     public void testShootConcurrency() throws Throwable {
 
         CountDownLatch latch = new CountDownLatch(1);
-        List<PlayerConnectedGameState> connectedPlayers = new ArrayList<>();
+        List<PlayerJoinedGameState> connectedPlayers = new ArrayList<>();
         AtomicInteger failures = new AtomicInteger();
 
         for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
             String shotPlayerName = "player " + i;
             Channel channel = mock(Channel.class);
-            PlayerConnectedGameState connectedPlayer = game.connectPlayer(shotPlayerName, channel);
+            PlayerJoinedGameState connectedPlayer = game.joinPlayer(shotPlayerName, channel);
             connectedPlayers.add(connectedPlayer);
         }
 
@@ -632,8 +632,8 @@ public class GameTest {
             threads.add(new Thread(() -> {
                 try {
                     latch.await();
-                    PlayerConnectedGameState myTarget = connectedPlayers.get((finalI + 1) % connectedPlayers.size());
-                    PlayerConnectedGameState me = connectedPlayers.get(finalI);
+                    PlayerJoinedGameState myTarget = connectedPlayers.get((finalI + 1) % connectedPlayers.size());
+                    PlayerJoinedGameState me = connectedPlayers.get(finalI);
                     game.attack(
                             me.getPlayerState().getCoordinates(),
                             me.getPlayerState().getPlayerId(),
@@ -671,7 +671,7 @@ public class GameTest {
     public void testMove() throws Throwable {
         String playerName = "some player";
         Channel channel = mock(Channel.class);
-        PlayerConnectedGameState playerConnectedGameState = game.connectPlayer(playerName, channel);
+        PlayerJoinedGameState playerConnectedGameState = game.joinPlayer(playerName, channel);
         assertEquals(0, game.getBufferedMoves().size(), "No moves buffered before you actually move");
         PlayerState.PlayerCoordinates playerCoordinates = PlayerState.PlayerCoordinates
                 .builder()
@@ -697,7 +697,7 @@ public class GameTest {
     public void testMoveTwice() throws Throwable {
         String playerName = "some player";
         Channel channel = mock(Channel.class);
-        PlayerConnectedGameState playerConnectedGameState = game.connectPlayer(playerName, channel);
+        PlayerJoinedGameState playerConnectedGameState = game.joinPlayer(playerName, channel);
         assertEquals(0, game.getBufferedMoves().size(), "No moves buffered before you actually move");
         PlayerState.PlayerCoordinates playerCoordinates = PlayerState.PlayerCoordinates
                 .builder()
@@ -749,8 +749,8 @@ public class GameTest {
         String shooterPlayerName = "shooter player";
         String shotPlayerName = "shot player";
         Channel channel = mock(Channel.class);
-        PlayerConnectedGameState shooterPlayerConnectedGameState = game.connectPlayer(shooterPlayerName, channel);
-        PlayerConnectedGameState shotPlayerConnectedGameState = game.connectPlayer(shotPlayerName, channel);
+        PlayerJoinedGameState shooterPlayerConnectedGameState = game.joinPlayer(shooterPlayerName, channel);
+        PlayerJoinedGameState shotPlayerConnectedGameState = game.joinPlayer(shotPlayerName, channel);
 
         int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_SHOTGUN_DAMAGE);
 
@@ -786,13 +786,13 @@ public class GameTest {
     @Test
     public void testMoveConcurrency() throws Throwable {
         CountDownLatch latch = new CountDownLatch(1);
-        List<PlayerConnectedGameState> connectedPlayers = new ArrayList<>();
+        List<PlayerJoinedGameState> connectedPlayers = new ArrayList<>();
         AtomicInteger failures = new AtomicInteger();
 
         for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
             String shotPlayerName = "player " + i;
             Channel channel = mock(Channel.class);
-            PlayerConnectedGameState connectedPlayer = game.connectPlayer(shotPlayerName, channel);
+            PlayerJoinedGameState connectedPlayer = game.joinPlayer(shotPlayerName, channel);
             connectedPlayers.add(connectedPlayer);
         }
 
@@ -802,7 +802,7 @@ public class GameTest {
             threads.add(new Thread(() -> {
                 try {
                     latch.await();
-                    PlayerConnectedGameState me = connectedPlayers.get(finalI);
+                    PlayerJoinedGameState me = connectedPlayers.get(finalI);
                     for (int j = 0; j < 10; j++) {
                         PlayerState.PlayerCoordinates playerCoordinates = PlayerState.PlayerCoordinates
                                 .builder()
@@ -866,7 +866,7 @@ public class GameTest {
         String playerName = "some player";
         Channel channel = mock(Channel.class);
         for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
-            game.connectPlayer(playerName + " " + i, channel);
+            game.joinPlayer(playerName + " " + i, channel);
         }
         game.close();
         // all channels should be closed
@@ -885,7 +885,7 @@ public class GameTest {
         String playerName = "some player";
         Channel channel = mock(Channel.class);
         for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
-            game.connectPlayer(playerName + " " + i, channel);
+            game.joinPlayer(playerName + " " + i, channel);
         }
         game.close(); // close once
         game.close(); // close second time
@@ -893,6 +893,87 @@ public class GameTest {
         verify(channel, times(ServerConfig.MAX_PLAYERS_PER_GAME)).close();
         assertEquals(0, game.playersOnline(), "No players online when game is closed");
         assertEquals(0, game.getPlayersRegistry().allPlayers().count(), "No players in the registry when game is closed");
+    }
+
+    /**
+     * @given a game with 3 players: respawned, victim, killer. respawned kills victim, killer kills respawned.
+     * @when respawned respawns after getting killed
+     * @then other players observe a respawn. respawned player stats(kills and deaths) are persisted
+     */
+    @Test
+    public void testRespawnDead() throws GameLogicError {
+        String respawnPlayerName = "some player";
+        PlayerJoinedGameState playerRespawnedGameState = game.joinPlayer(respawnPlayerName, mock(Channel.class));
+        PlayerJoinedGameState playerVictimGameState = game.joinPlayer("victim", mock(Channel.class));
+        PlayerJoinedGameState killerPlayerConnectedGameState = game.joinPlayer("killer", mock(Channel.class));
+
+        int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_SHOTGUN_DAMAGE);
+
+        // after this loop, victim player is dead
+        for (int i = 0; i < shotsToKill; i++) {
+            game.attack(
+                    playerRespawnedGameState.getPlayerState().getCoordinates(),
+                    playerRespawnedGameState.getPlayerState().getPlayerId(),
+                    playerVictimGameState.getPlayerState().getPlayerId(), AttackType.SHOOT);
+        }
+
+        // after this loop, respawn player is dead
+        for (int i = 0; i < shotsToKill; i++) {
+            game.attack(
+                    killerPlayerConnectedGameState.getPlayerState().getCoordinates(),
+                    killerPlayerConnectedGameState.getPlayerState().getPlayerId(),
+                    playerRespawnedGameState.getPlayerState().getPlayerId(), AttackType.SHOOT);
+        }
+
+        var respawned = game.respawnPlayer(playerRespawnedGameState.getPlayerState().getPlayerId());
+        assertEquals(playerRespawnedGameState.getPlayerState().getPlayerId(), respawned.getPlayerState().getPlayerId());
+        assertFalse(respawned.getPlayerState().isDead());
+        assertEquals(1, respawned.getPlayerState().getDeaths(),
+                "Death count should increment after respawn");
+        assertEquals(PlayerState.DEFAULT_HP, respawned.getPlayerState().getHealth(),
+                "Health must be restored after respawn");
+        assertEquals(1, respawned.getPlayerState().getKills(),
+                "Number of kills should be the same after respawn");
+
+        PlayerJoinedGameState observerPlayerConnectedGameState = game.joinPlayer("observer", mock(Channel.class));
+        assertEquals(4, game.getPlayersRegistry().playersOnline(), "4 players must be online: respawned, victim, killer, and observer");
+        assertEquals(4, observerPlayerConnectedGameState.getLeaderBoard().size(),
+                "4 players must be in the board: respawned, victim, killer, and observer");
+
+        var respawnedLeaderBoardItem = observerPlayerConnectedGameState.getLeaderBoard().stream()
+                .filter(gameLeaderBoardItem -> gameLeaderBoardItem.getPlayerId() == respawned.getPlayerState().getPlayerId())
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Can't find respawned player in the leaderboard"));
+        assertEquals(1, respawnedLeaderBoardItem.getDeaths());
+        assertEquals(1, respawnedLeaderBoardItem.getKills());
+    }
+
+    /**
+     * @given a game with 1 connected player
+     * @when the player respawns alive
+     * @then an error is thrown
+     */
+    @Test
+    public void testRespawnAlive() throws GameLogicError {
+        String respawnPlayerName = "some player";
+        PlayerJoinedGameState playerRespawnedGameState = game.joinPlayer(respawnPlayerName, mock(Channel.class));
+        GameLogicError gameLogicError
+                = assertThrows(GameLogicError.class, () -> game.respawnPlayer(playerRespawnedGameState.getPlayerState().getPlayerId()),
+                "Live players shouldn't be able to respawn");
+        assertEquals(COMMON_ERROR, gameLogicError.getErrorCode());
+    }
+
+    /**
+     * @given a game with no players
+     * @when a non-existing player respawns
+     * @then an error is thrown
+     */
+    @Test
+    public void testRespawnNonExisting() {
+        GameLogicError gameLogicError
+                = assertThrows(GameLogicError.class, () -> game.respawnPlayer(666),
+                "Non-existing players shouldn't be able to respawn");
+        assertEquals(PLAYER_DOES_NOT_EXIST, gameLogicError.getErrorCode());
     }
 
 }

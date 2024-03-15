@@ -94,5 +94,20 @@ public interface ServerCommandOrBuilder extends
    */
   com.beverly.hills.money.gang.proto.PingCommandOrBuilder getPingCommandOrBuilder();
 
+  /**
+   * <code>.daikombat.dto.RespawnCommand respawnCommand = 8;</code>
+   * @return Whether the respawnCommand field is set.
+   */
+  boolean hasRespawnCommand();
+  /**
+   * <code>.daikombat.dto.RespawnCommand respawnCommand = 8;</code>
+   * @return The respawnCommand.
+   */
+  com.beverly.hills.money.gang.proto.RespawnCommand getRespawnCommand();
+  /**
+   * <code>.daikombat.dto.RespawnCommand respawnCommand = 8;</code>
+   */
+  com.beverly.hills.money.gang.proto.RespawnCommandOrBuilder getRespawnCommandOrBuilder();
+
   com.beverly.hills.money.gang.proto.ServerCommand.CommandCase getCommandCase();
 }

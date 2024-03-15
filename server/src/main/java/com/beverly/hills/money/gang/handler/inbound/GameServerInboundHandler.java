@@ -38,6 +38,7 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     private final GameEventServerCommandHandler gameServerCommandHandler;
     private final GetServerInfoCommandHandler getServerInfoCommandHandler;
     private final PingCommandHandler pingCommandHandler;
+    private final RespawnCommandHandler respawnCommandHandler;
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -62,6 +63,8 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
                 serverCommandHandler = getServerInfoCommandHandler;
             } else if (msg.hasPingCommand()) {
                 serverCommandHandler = pingCommandHandler;
+            } else if (msg.hasRespawnCommand()) {
+                serverCommandHandler = respawnCommandHandler;
             } else {
                 throw new GameLogicError("Command is not recognized", GameErrorCode.COMMAND_NOT_RECOGNIZED);
             }
@@ -111,8 +114,5 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     public void channelInactive(ChannelHandlerContext ctx) {
         LOG.info("Channel is inactive: {}", ctx.channel());
         removeChannel(ctx.channel());
-        if (ctx.channel().isOpen()) {
-            ctx.channel().close();
-        }
     }
 }

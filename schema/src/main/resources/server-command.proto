@@ -14,6 +14,7 @@ message ServerCommand {
     JoinGameCommand joinGameCommand = 5;
     GetServerInfoCommand getServerInfoCommand = 6;
     PingCommand pingCommand = 7;
+    RespawnCommand respawnCommand = 8;
   }
 }
 
@@ -31,6 +32,11 @@ message JoinGameCommand {
   optional int32 gameId = 1;
   optional string version = 2;
   optional string playerName = 3;
+}
+
+message RespawnCommand {
+  optional int32 gameId = 1;
+  optional int32 playerId = 2;
 }
 
 message PushGameEventCommand {

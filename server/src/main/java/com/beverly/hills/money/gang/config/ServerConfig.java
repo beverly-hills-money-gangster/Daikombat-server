@@ -12,7 +12,7 @@ public interface ServerConfig {
     int PORT = NumberUtils.toInt(System.getenv("GAME_SERVER_PORT"), 7777);
     int GAMES_TO_CREATE = NumberUtils.toInt(System.getenv("GAME_SERVER_GAMES_TO_CREATE"), 10);
     int MAX_PLAYERS_PER_GAME = NumberUtils.toInt(System.getenv("GAME_SERVER_MAX_PLAYERS_PER_GAME"), 25);
-    int MOVES_UPDATE_FREQUENCY_MLS = NumberUtils.toInt(System.getenv("GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS"), 100);
+    int MOVES_UPDATE_FREQUENCY_MLS = NumberUtils.toInt(System.getenv("GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS"), 50);
     int MAX_IDLE_TIME_MLS = NumberUtils.toInt(System.getenv("GAME_SERVER_MAX_IDLE_TIME_MLS"), 10_000);
 
     int DEFAULT_SHOTGUN_DAMAGE = NumberUtils.toInt(System.getenv("GAME_SERVER_DEFAULT_SHOTGUN_DAMAGE"), 20);

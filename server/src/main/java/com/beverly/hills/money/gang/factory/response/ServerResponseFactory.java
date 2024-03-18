@@ -245,10 +245,10 @@ public interface ServerResponseFactory {
                 .build();
     }
 
-    static ServerResponse createChatEvent(String message, int fromPlayerId) {
+    static ServerResponse createChatEvent(String message, int fromPlayerId, String playerName) {
         return ServerResponse.newBuilder()
                 .setChatEvents(ServerResponse.ChatEvent.newBuilder()
-                        .setPlayerId(fromPlayerId).setMessage(message)
+                        .setPlayerId(fromPlayerId).setMessage(message).setName(playerName)
                         .build())
                 .build();
     }

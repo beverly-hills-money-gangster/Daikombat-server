@@ -41,7 +41,9 @@ public class ChatServerCommandHandler extends ServerCommandHandler {
         }
         game.readPlayer(chatCommand.getPlayerId()).ifPresent(playerStateReader -> {
             var chatMsgToSend = createChatEvent(
-                    msg.getChatCommand().getMessage(), playerStateReader.getPlayerId());
+                    msg.getChatCommand().getMessage(),
+                    playerStateReader.getPlayerId(),
+                    playerStateReader.getPlayerName());
             game.getPlayersRegistry().allPlayers()
                     .map(PlayersRegistry.PlayerStateChannel::getChannel)
                     .filter(playerChannel -> playerChannel != currentChannel)

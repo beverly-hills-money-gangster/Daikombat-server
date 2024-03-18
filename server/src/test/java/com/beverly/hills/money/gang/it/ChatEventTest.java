@@ -5,6 +5,7 @@ import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PushChatEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -69,6 +70,7 @@ public class ChatEventTest extends AbstractGameServerTest {
             chatMessagesResponse.forEach(serverResponse -> {
                 assertTrue(serverResponse.hasChatEvents(), "Must be chat events only");
                 var chatEvent = serverResponse.getChatEvents();
+                assertTrue(StringUtils.isNotEmpty(chatEvent.getName()), "Player names must always be set");
                 assertNotEquals(playerId, chatEvent.getPlayerId(),
                         "You can't see chat messages from yourself");
                 assertEquals("Message from player id " + chatEvent.getPlayerId(), chatEvent.getMessage());

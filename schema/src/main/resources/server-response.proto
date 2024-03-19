@@ -13,16 +13,17 @@ message ServerResponse {
     GameEvents gameEvents = 3;
     ServerInfo serverInfo = 4;
     Ping ping = 5;
-    GameOverEvent gameOverEvent = 6;
+    GameOver gameOver = 6;
   }
 
-  message GameOverEvent {
+  message GameOver {
     optional LeaderBoard leaderBoard = 1;
   }
 
   message ServerInfo {
     repeated GameInfo games = 1;
     optional string version = 2;
+    optional int32 fragsToWin = 3;
   }
 
   message Ping {}

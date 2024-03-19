@@ -28,7 +28,8 @@ public class GetServerInfoCommandHandler extends ServerCommandHandler {
   protected void handleInternal(ServerCommand msg, Channel currentChannel) {
     currentChannel.writeAndFlush(createServerInfo(
         ServerConfig.VERSION,
-        gameRoomRegistry.getGames().map(game -> game)));
+        gameRoomRegistry.getGames().map(game -> game),
+        ServerConfig.FRAGS_PER_GAME));
   }
 
 }

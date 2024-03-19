@@ -6,11 +6,12 @@ import io.netty.channel.socket.ServerSocketChannel;
 
 
 public interface ServerTransport {
-    EventLoopGroup createEventLoopGroup(int threads);
 
-    EventLoopGroup createEventLoopGroup();
+  EventLoopGroup createEventLoopGroup(int threads);
 
-    Class<? extends ServerSocketChannel> getServerSocketChannelClass();
+  EventLoopGroup createEventLoopGroup();
 
-    void setExtraTCPOptions(ChannelConfig config);
+  Class<? extends ServerSocketChannel> getServerSocketChannelClass();
+
+  void setExtraTCPOptions(ChannelConfig config);
 }

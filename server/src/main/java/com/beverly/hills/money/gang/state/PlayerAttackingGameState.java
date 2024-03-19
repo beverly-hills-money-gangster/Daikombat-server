@@ -7,7 +7,11 @@ import lombok.Getter;
 @Builder
 public class PlayerAttackingGameState {
 
-    private final PlayerStateReader attackingPlayer;
+  private final PlayerStateReader attackingPlayer;
 
-    private final PlayerStateReader playerAttacked;
+  private final PlayerStateReader playerAttacked;
+
+  @Builder.Default
+  private final boolean gameOver = false;
+
 }

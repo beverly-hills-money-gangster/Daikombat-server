@@ -14,17 +14,17 @@ import org.springframework.context.annotation.Primary;
 @Import(AppConfig.class)
 public class TestConfig {
 
-    @Bean
-    @Primary
-    public Spawner testSpawner() {
-        return new Spawner() {
-            @Override
-            public PlayerState.PlayerCoordinates spawn(Game game) {
-                return PlayerState.PlayerCoordinates.builder().position(
-                                Vector.builder().x(-24.657965F).y(23.160273F).build())
-                        .direction(
-                                Vector.builder().x(-0.00313453F).y(-0.9999952F).build()).build();
-            }
-        };
-    }
+  @Bean
+  @Primary
+  public Spawner testSpawner() {
+    return new Spawner() {
+      @Override
+      public PlayerState.PlayerCoordinates spawn(Game game) {
+        return PlayerState.PlayerCoordinates.builder().position(
+                Vector.builder().x(-24.657965F).y(23.160273F).build())
+            .direction(
+                Vector.builder().x(-0.00313453F).y(-0.9999952F).build()).build();
+      }
+    };
+  }
 }

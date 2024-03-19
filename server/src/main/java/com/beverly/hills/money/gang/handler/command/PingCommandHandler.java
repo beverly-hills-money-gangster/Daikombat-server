@@ -10,17 +10,17 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class PingCommandHandler extends ServerCommandHandler {
 
-    private static final ServerResponse PING = ServerResponse.newBuilder()
-            .setPing(ServerResponse.Ping.newBuilder().build()).build();
+  private static final ServerResponse PING = ServerResponse.newBuilder()
+      .setPing(ServerResponse.Ping.newBuilder().build()).build();
 
-    @Override
-    protected boolean isValidCommand(ServerCommand msg, Channel currentChannel) {
-        return true;
-    }
+  @Override
+  protected boolean isValidCommand(ServerCommand msg, Channel currentChannel) {
+    return true;
+  }
 
-    @Override
-    protected void handleInternal(ServerCommand msg, Channel currentChannel) {
-        currentChannel.writeAndFlush(PING);
-    }
+  @Override
+  protected void handleInternal(ServerCommand msg, Channel currentChannel) {
+    currentChannel.writeAndFlush(PING);
+  }
 
 }

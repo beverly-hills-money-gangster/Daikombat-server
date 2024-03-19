@@ -1,5 +1,7 @@
 package com.beverly.hills.money.gang.handler.inbound;
 
+import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createErrorEvent;
+
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.proto.ServerCommand;
@@ -15,63 +17,56 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createErrorEvent;
-
 
 @Component
 @RequiredArgsConstructor
 @ChannelHandler.Sharable
 public class AuthInboundHandler extends SimpleChannelInboundHandler<ServerCommand> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GameServerInboundHandler.class);
+  private static final Logger LOG = LoggerFactory.getLogger(GameServerInboundHandler.class);
 
-    private final ServerHMACService hmacService;
+  private final ServerHMACService hmacService;
 
-    private final ServerTransport serverTransport;
+  private final ServerTransport serverTransport;
 
-    @Override
-    protected void channelRead0(ChannelHandlerContext ctx, ServerCommand msg) {
-        try {
-            serverTransport.setExtraTCPOptions(ctx.channel().config());
-            if (msg.hasPingCommand()) {
-                // no HMAC required for PING
-                ctx.fireChannelRead(msg);
-                return;
-            }
-            LOG.debug("Auth command {}", msg);
-            if (!msg.hasHmac()) {
-                throw new GameLogicError("No HMAC provided", GameErrorCode.AUTH_ERROR);
-            }
-            // TODO generify that
-            GeneratedMessageV3 command = msg.hasGameCommand() ? msg.getGameCommand()
-                    : msg.hasChatCommand() ? msg.getChatCommand()
-                    : msg.hasJoinGameCommand() ? msg.getJoinGameCommand()
-                    : msg.hasGetServerInfoCommand() ? msg.getGetServerInfoCommand()
-                    : msg.hasRespawnCommand() ? msg.getRespawnCommand()
-                    : null;
+  @Override
+  protected void channelRead0(ChannelHandlerContext ctx, ServerCommand msg) {
+    try {
+      serverTransport.setExtraTCPOptions(ctx.channel().config());
+      if (msg.hasPingCommand()) {
+        // no HMAC required for PING
+        ctx.fireChannelRead(msg);
+        return;
+      }
+      LOG.debug("Auth command {}", msg);
+      if (!msg.hasHmac()) {
+        throw new GameLogicError("No HMAC provided", GameErrorCode.AUTH_ERROR);
+      }
+      // TODO generify that
+      GeneratedMessageV3 command = msg.hasGameCommand() ? msg.getGameCommand()
+          : msg.hasChatCommand() ? msg.getChatCommand()
+              : msg.hasJoinGameCommand() ? msg.getJoinGameCommand()
+                  : msg.hasGetServerInfoCommand() ? msg.getGetServerInfoCommand()
+                      : msg.hasRespawnCommand() ? msg.getRespawnCommand()
+                          : null;
 
-            if (command == null) {
-                throw new GameLogicError("No command specified", GameErrorCode.AUTH_ERROR);
-            } else if (!hmacService.isValidMac(command.toByteArray(), msg.getHmac().toByteArray())) {
-                throw new GameLogicError("Incorrect server pin code", GameErrorCode.AUTH_ERROR);
-            }
-            ctx.fireChannelRead(msg);
-        } catch (GameLogicError ex) {
-            LOG.error("Game logic error", ex);
-            ctx.writeAndFlush(createErrorEvent(ex))
-                    .addListener((ChannelFutureListener) channelFuture -> {
-                        if (channelFuture.isSuccess()) {
-                            ctx.close();
-                        }
-                    });
-        }
+      if (command == null) {
+        throw new GameLogicError("No command specified", GameErrorCode.AUTH_ERROR);
+      } else if (!hmacService.isValidMac(command.toByteArray(), msg.getHmac().toByteArray())) {
+        throw new GameLogicError("Incorrect server pin code", GameErrorCode.AUTH_ERROR);
+      }
+      ctx.fireChannelRead(msg);
+    } catch (GameLogicError ex) {
+      LOG.error("Game logic error", ex);
+      ctx.writeAndFlush(createErrorEvent(ex)).addListener(ChannelFutureListener.CLOSE);
     }
+  }
 
 
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        LOG.error("Error caught", cause);
-        ctx.close();
-    }
+  @Override
+  public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+    LOG.error("Error caught", cause);
+    ctx.close();
+  }
 
 }

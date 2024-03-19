@@ -1,11 +1,11 @@
 package com.beverly.hills.money.gang;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
+import com.beverly.hills.money.gang.generator.IdGenerator;
+import com.beverly.hills.money.gang.security.ServerHMACService;
 import com.beverly.hills.money.gang.transport.EpollServerTransport;
 import com.beverly.hills.money.gang.transport.NIOServerTransport;
 import com.beverly.hills.money.gang.transport.ServerTransport;
-import com.beverly.hills.money.gang.generator.IdGenerator;
-import com.beverly.hills.money.gang.security.ServerHMACService;
 import io.netty.channel.epoll.Epoll;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,32 +17,32 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan("com.beverly.hills.money.gang.*")
 public class AppConfig {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AppConfig.class);
+  private static final Logger LOG = LoggerFactory.getLogger(AppConfig.class);
 
-    @Bean
-    public ServerHMACService serverHMACService() {
-        return new ServerHMACService(ServerConfig.PIN_CODE);
-    }
+  @Bean
+  public ServerHMACService serverHMACService() {
+    return new ServerHMACService(ServerConfig.PIN_CODE);
+  }
 
-    @Bean
-    public IdGenerator gameIdGenerator() {
-        return new IdGenerator();
-    }
+  @Bean
+  public IdGenerator gameIdGenerator() {
+    return new IdGenerator();
+  }
 
-    @Bean
-    public IdGenerator playerIdGenerator() {
-        return new IdGenerator();
-    }
+  @Bean
+  public IdGenerator playerIdGenerator() {
+    return new IdGenerator();
+  }
 
-    @Bean
-    public ServerTransport transportFactory() {
-        if (Epoll.isAvailable()) {
-            LOG.info("Epoll is available");
-            return new EpollServerTransport();
-        } else {
-            LOG.info("Fallback to NIO");
-            return new NIOServerTransport();
-        }
+  @Bean
+  public ServerTransport transportFactory() {
+    if (Epoll.isAvailable()) {
+      LOG.info("Epoll is available");
+      return new EpollServerTransport();
+    } else {
+      LOG.info("Fallback to NIO");
+      return new NIOServerTransport();
     }
+  }
 }
 

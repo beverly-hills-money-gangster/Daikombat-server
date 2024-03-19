@@ -2,9 +2,9 @@ package com.beverly.hills.money.gang.state;
 
 public interface GameReader {
 
-    int gameId();
+  int gameId();
 
-    int playersOnline();
+  int playersOnline();
 
-    int maxPlayersAvailable();
+  int maxPlayersAvailable();
 }

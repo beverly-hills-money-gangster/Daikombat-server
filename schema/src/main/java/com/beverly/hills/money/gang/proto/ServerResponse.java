@@ -39,6 +39,618 @@ private static final long serialVersionUID = 0L;
             com.beverly.hills.money.gang.proto.ServerResponse.class, com.beverly.hills.money.gang.proto.ServerResponse.Builder.class);
   }
 
+  public interface GameOverOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:daikombat.dto.ServerResponse.GameOver)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 1;</code>
+     * @return Whether the leaderBoard field is set.
+     */
+    boolean hasLeaderBoard();
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 1;</code>
+     * @return The leaderBoard.
+     */
+    com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard getLeaderBoard();
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 1;</code>
+     */
+    com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardOrBuilder getLeaderBoardOrBuilder();
+  }
+  /**
+   * Protobuf type {@code daikombat.dto.ServerResponse.GameOver}
+   */
+  public static final class GameOver extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:daikombat.dto.ServerResponse.GameOver)
+      GameOverOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use GameOver.newBuilder() to construct.
+    private GameOver(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private GameOver() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new GameOver();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_GameOver_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_GameOver_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.beverly.hills.money.gang.proto.ServerResponse.GameOver.class, com.beverly.hills.money.gang.proto.ServerResponse.GameOver.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int LEADERBOARD_FIELD_NUMBER = 1;
+    private com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard leaderBoard_;
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 1;</code>
+     * @return Whether the leaderBoard field is set.
+     */
+    @java.lang.Override
+    public boolean hasLeaderBoard() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 1;</code>
+     * @return The leaderBoard.
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard getLeaderBoard() {
+      return leaderBoard_ == null ? com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard.getDefaultInstance() : leaderBoard_;
+    }
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 1;</code>
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardOrBuilder getLeaderBoardOrBuilder() {
+      return leaderBoard_ == null ? com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard.getDefaultInstance() : leaderBoard_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeMessage(1, getLeaderBoard());
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getLeaderBoard());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.beverly.hills.money.gang.proto.ServerResponse.GameOver)) {
+        return super.equals(obj);
+      }
+      com.beverly.hills.money.gang.proto.ServerResponse.GameOver other = (com.beverly.hills.money.gang.proto.ServerResponse.GameOver) obj;
+
+      if (hasLeaderBoard() != other.hasLeaderBoard()) return false;
+      if (hasLeaderBoard()) {
+        if (!getLeaderBoard()
+            .equals(other.getLeaderBoard())) return false;
+      }
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasLeaderBoard()) {
+        hash = (37 * hash) + LEADERBOARD_FIELD_NUMBER;
+        hash = (53 * hash) + getLeaderBoard().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.GameOver parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.GameOver parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.GameOver parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.GameOver parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.GameOver parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.GameOver parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.GameOver parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.GameOver parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.GameOver parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.GameOver parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.GameOver parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.GameOver parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.beverly.hills.money.gang.proto.ServerResponse.GameOver prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code daikombat.dto.ServerResponse.GameOver}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:daikombat.dto.ServerResponse.GameOver)
+        com.beverly.hills.money.gang.proto.ServerResponse.GameOverOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_GameOver_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_GameOver_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.beverly.hills.money.gang.proto.ServerResponse.GameOver.class, com.beverly.hills.money.gang.proto.ServerResponse.GameOver.Builder.class);
+      }
+
+      // Construct using com.beverly.hills.money.gang.proto.ServerResponse.GameOver.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getLeaderBoardFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        leaderBoard_ = null;
+        if (leaderBoardBuilder_ != null) {
+          leaderBoardBuilder_.dispose();
+          leaderBoardBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_GameOver_descriptor;
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.GameOver getDefaultInstanceForType() {
+        return com.beverly.hills.money.gang.proto.ServerResponse.GameOver.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.GameOver build() {
+        com.beverly.hills.money.gang.proto.ServerResponse.GameOver result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.GameOver buildPartial() {
+        com.beverly.hills.money.gang.proto.ServerResponse.GameOver result = new com.beverly.hills.money.gang.proto.ServerResponse.GameOver(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(com.beverly.hills.money.gang.proto.ServerResponse.GameOver result) {
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.leaderBoard_ = leaderBoardBuilder_ == null
+              ? leaderBoard_
+              : leaderBoardBuilder_.build();
+          to_bitField0_ |= 0x00000001;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.beverly.hills.money.gang.proto.ServerResponse.GameOver) {
+          return mergeFrom((com.beverly.hills.money.gang.proto.ServerResponse.GameOver)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.beverly.hills.money.gang.proto.ServerResponse.GameOver other) {
+        if (other == com.beverly.hills.money.gang.proto.ServerResponse.GameOver.getDefaultInstance()) return this;
+        if (other.hasLeaderBoard()) {
+          mergeLeaderBoard(other.getLeaderBoard());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                input.readMessage(
+                    getLeaderBoardFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard leaderBoard_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard, com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard.Builder, com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardOrBuilder> leaderBoardBuilder_;
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 1;</code>
+       * @return Whether the leaderBoard field is set.
+       */
+      public boolean hasLeaderBoard() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 1;</code>
+       * @return The leaderBoard.
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard getLeaderBoard() {
+        if (leaderBoardBuilder_ == null) {
+          return leaderBoard_ == null ? com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard.getDefaultInstance() : leaderBoard_;
+        } else {
+          return leaderBoardBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 1;</code>
+       */
+      public Builder setLeaderBoard(com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard value) {
+        if (leaderBoardBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          leaderBoard_ = value;
+        } else {
+          leaderBoardBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 1;</code>
+       */
+      public Builder setLeaderBoard(
+          com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard.Builder builderForValue) {
+        if (leaderBoardBuilder_ == null) {
+          leaderBoard_ = builderForValue.build();
+        } else {
+          leaderBoardBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 1;</code>
+       */
+      public Builder mergeLeaderBoard(com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard value) {
+        if (leaderBoardBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0) &&
+            leaderBoard_ != null &&
+            leaderBoard_ != com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard.getDefaultInstance()) {
+            getLeaderBoardBuilder().mergeFrom(value);
+          } else {
+            leaderBoard_ = value;
+          }
+        } else {
+          leaderBoardBuilder_.mergeFrom(value);
+        }
+        if (leaderBoard_ != null) {
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 1;</code>
+       */
+      public Builder clearLeaderBoard() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        leaderBoard_ = null;
+        if (leaderBoardBuilder_ != null) {
+          leaderBoardBuilder_.dispose();
+          leaderBoardBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 1;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard.Builder getLeaderBoardBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return getLeaderBoardFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 1;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardOrBuilder getLeaderBoardOrBuilder() {
+        if (leaderBoardBuilder_ != null) {
+          return leaderBoardBuilder_.getMessageOrBuilder();
+        } else {
+          return leaderBoard_ == null ?
+              com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard.getDefaultInstance() : leaderBoard_;
+        }
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.LeaderBoard leaderBoard = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard, com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard.Builder, com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardOrBuilder> 
+          getLeaderBoardFieldBuilder() {
+        if (leaderBoardBuilder_ == null) {
+          leaderBoardBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard, com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoard.Builder, com.beverly.hills.money.gang.proto.ServerResponse.LeaderBoardOrBuilder>(
+                  getLeaderBoard(),
+                  getParentForChildren(),
+                  isClean());
+          leaderBoard_ = null;
+        }
+        return leaderBoardBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:daikombat.dto.ServerResponse.GameOver)
+    }
+
+    // @@protoc_insertion_point(class_scope:daikombat.dto.ServerResponse.GameOver)
+    private static final com.beverly.hills.money.gang.proto.ServerResponse.GameOver DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.beverly.hills.money.gang.proto.ServerResponse.GameOver();
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.GameOver getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<GameOver>
+        PARSER = new com.google.protobuf.AbstractParser<GameOver>() {
+      @java.lang.Override
+      public GameOver parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<GameOver> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<GameOver> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.GameOver getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface ServerInfoOrBuilder extends
       // @@protoc_insertion_point(interface_extends:daikombat.dto.ServerResponse.ServerInfo)
       com.google.protobuf.MessageOrBuilder {
@@ -83,6 +695,17 @@ private static final long serialVersionUID = 0L;
      */
     com.google.protobuf.ByteString
         getVersionBytes();
+
+    /**
+     * <code>optional int32 fragsToWin = 3;</code>
+     * @return Whether the fragsToWin field is set.
+     */
+    boolean hasFragsToWin();
+    /**
+     * <code>optional int32 fragsToWin = 3;</code>
+     * @return The fragsToWin.
+     */
+    int getFragsToWin();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.ServerInfo}
@@ -210,6 +833,25 @@ private static final long serialVersionUID = 0L;
       }
     }
 
+    public static final int FRAGSTOWIN_FIELD_NUMBER = 3;
+    private int fragsToWin_ = 0;
+    /**
+     * <code>optional int32 fragsToWin = 3;</code>
+     * @return Whether the fragsToWin field is set.
+     */
+    @java.lang.Override
+    public boolean hasFragsToWin() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>optional int32 fragsToWin = 3;</code>
+     * @return The fragsToWin.
+     */
+    @java.lang.Override
+    public int getFragsToWin() {
+      return fragsToWin_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -230,6 +872,9 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000001) != 0)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, version_);
       }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        output.writeInt32(3, fragsToWin_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -245,6 +890,10 @@ private static final long serialVersionUID = 0L;
       }
       if (((bitField0_ & 0x00000001) != 0)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, version_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, fragsToWin_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -268,6 +917,11 @@ private static final long serialVersionUID = 0L;
         if (!getVersion()
             .equals(other.getVersion())) return false;
       }
+      if (hasFragsToWin() != other.hasFragsToWin()) return false;
+      if (hasFragsToWin()) {
+        if (getFragsToWin()
+            != other.getFragsToWin()) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -286,6 +940,10 @@ private static final long serialVersionUID = 0L;
       if (hasVersion()) {
         hash = (37 * hash) + VERSION_FIELD_NUMBER;
         hash = (53 * hash) + getVersion().hashCode();
+      }
+      if (hasFragsToWin()) {
+        hash = (37 * hash) + FRAGSTOWIN_FIELD_NUMBER;
+        hash = (53 * hash) + getFragsToWin();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -426,6 +1084,7 @@ private static final long serialVersionUID = 0L;
         }
         bitField0_ = (bitField0_ & ~0x00000001);
         version_ = "";
+        fragsToWin_ = 0;
         return this;
       }
 
@@ -476,6 +1135,10 @@ private static final long serialVersionUID = 0L;
         if (((from_bitField0_ & 0x00000002) != 0)) {
           result.version_ = version_;
           to_bitField0_ |= 0x00000001;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.fragsToWin_ = fragsToWin_;
+          to_bitField0_ |= 0x00000002;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -555,6 +1218,9 @@ private static final long serialVersionUID = 0L;
           bitField0_ |= 0x00000002;
           onChanged();
         }
+        if (other.hasFragsToWin()) {
+          setFragsToWin(other.getFragsToWin());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -599,6 +1265,11 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000002;
                 break;
               } // case 18
+              case 24: {
+                fragsToWin_ = input.readInt32();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -931,6 +1602,46 @@ private static final long serialVersionUID = 0L;
         checkByteStringIsUtf8(value);
         version_ = value;
         bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private int fragsToWin_ ;
+      /**
+       * <code>optional int32 fragsToWin = 3;</code>
+       * @return Whether the fragsToWin field is set.
+       */
+      @java.lang.Override
+      public boolean hasFragsToWin() {
+        return ((bitField0_ & 0x00000004) != 0);
+      }
+      /**
+       * <code>optional int32 fragsToWin = 3;</code>
+       * @return The fragsToWin.
+       */
+      @java.lang.Override
+      public int getFragsToWin() {
+        return fragsToWin_;
+      }
+      /**
+       * <code>optional int32 fragsToWin = 3;</code>
+       * @param value The fragsToWin to set.
+       * @return This builder for chaining.
+       */
+      public Builder setFragsToWin(int value) {
+
+        fragsToWin_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 fragsToWin = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearFragsToWin() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        fragsToWin_ = 0;
         onChanged();
         return this;
       }
@@ -10051,6 +10762,7 @@ private static final long serialVersionUID = 0L;
     GAMEEVENTS(3),
     SERVERINFO(4),
     PING(5),
+    GAMEOVER(6),
     RESPONSE_NOT_SET(0);
     private final int value;
     private ResponseCase(int value) {
@@ -10073,6 +10785,7 @@ private static final long serialVersionUID = 0L;
         case 3: return GAMEEVENTS;
         case 4: return SERVERINFO;
         case 5: return PING;
+        case 6: return GAMEOVER;
         case 0: return RESPONSE_NOT_SET;
         default: return null;
       }
@@ -10243,6 +10956,37 @@ private static final long serialVersionUID = 0L;
     return com.beverly.hills.money.gang.proto.ServerResponse.Ping.getDefaultInstance();
   }
 
+  public static final int GAMEOVER_FIELD_NUMBER = 6;
+  /**
+   * <code>.daikombat.dto.ServerResponse.GameOver gameOver = 6;</code>
+   * @return Whether the gameOver field is set.
+   */
+  @java.lang.Override
+  public boolean hasGameOver() {
+    return responseCase_ == 6;
+  }
+  /**
+   * <code>.daikombat.dto.ServerResponse.GameOver gameOver = 6;</code>
+   * @return The gameOver.
+   */
+  @java.lang.Override
+  public com.beverly.hills.money.gang.proto.ServerResponse.GameOver getGameOver() {
+    if (responseCase_ == 6) {
+       return (com.beverly.hills.money.gang.proto.ServerResponse.GameOver) response_;
+    }
+    return com.beverly.hills.money.gang.proto.ServerResponse.GameOver.getDefaultInstance();
+  }
+  /**
+   * <code>.daikombat.dto.ServerResponse.GameOver gameOver = 6;</code>
+   */
+  @java.lang.Override
+  public com.beverly.hills.money.gang.proto.ServerResponse.GameOverOrBuilder getGameOverOrBuilder() {
+    if (responseCase_ == 6) {
+       return (com.beverly.hills.money.gang.proto.ServerResponse.GameOver) response_;
+    }
+    return com.beverly.hills.money.gang.proto.ServerResponse.GameOver.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -10272,6 +11016,9 @@ private static final long serialVersionUID = 0L;
     if (responseCase_ == 5) {
       output.writeMessage(5, (com.beverly.hills.money.gang.proto.ServerResponse.Ping) response_);
     }
+    if (responseCase_ == 6) {
+      output.writeMessage(6, (com.beverly.hills.money.gang.proto.ServerResponse.GameOver) response_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -10300,6 +11047,10 @@ private static final long serialVersionUID = 0L;
     if (responseCase_ == 5) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(5, (com.beverly.hills.money.gang.proto.ServerResponse.Ping) response_);
+    }
+    if (responseCase_ == 6) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(6, (com.beverly.hills.money.gang.proto.ServerResponse.GameOver) response_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -10338,6 +11089,10 @@ private static final long serialVersionUID = 0L;
         if (!getPing()
             .equals(other.getPing())) return false;
         break;
+      case 6:
+        if (!getGameOver()
+            .equals(other.getGameOver())) return false;
+        break;
       case 0:
       default:
     }
@@ -10372,6 +11127,10 @@ private static final long serialVersionUID = 0L;
       case 5:
         hash = (37 * hash) + PING_FIELD_NUMBER;
         hash = (53 * hash) + getPing().hashCode();
+        break;
+      case 6:
+        hash = (37 * hash) + GAMEOVER_FIELD_NUMBER;
+        hash = (53 * hash) + getGameOver().hashCode();
         break;
       case 0:
       default:
@@ -10522,6 +11281,9 @@ private static final long serialVersionUID = 0L;
       if (pingBuilder_ != null) {
         pingBuilder_.clear();
       }
+      if (gameOverBuilder_ != null) {
+        gameOverBuilder_.clear();
+      }
       responseCase_ = 0;
       response_ = null;
       return this;
@@ -10582,6 +11344,10 @@ private static final long serialVersionUID = 0L;
       if (responseCase_ == 5 &&
           pingBuilder_ != null) {
         result.response_ = pingBuilder_.build();
+      }
+      if (responseCase_ == 6 &&
+          gameOverBuilder_ != null) {
+        result.response_ = gameOverBuilder_.build();
       }
     }
 
@@ -10650,6 +11416,10 @@ private static final long serialVersionUID = 0L;
           mergePing(other.getPing());
           break;
         }
+        case GAMEOVER: {
+          mergeGameOver(other.getGameOver());
+          break;
+        }
         case RESPONSE_NOT_SET: {
           break;
         }
@@ -10715,6 +11485,13 @@ private static final long serialVersionUID = 0L;
               responseCase_ = 5;
               break;
             } // case 42
+            case 50: {
+              input.readMessage(
+                  getGameOverFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              responseCase_ = 6;
+              break;
+            } // case 50
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -11455,6 +12232,148 @@ private static final long serialVersionUID = 0L;
       responseCase_ = 5;
       onChanged();
       return pingBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.beverly.hills.money.gang.proto.ServerResponse.GameOver, com.beverly.hills.money.gang.proto.ServerResponse.GameOver.Builder, com.beverly.hills.money.gang.proto.ServerResponse.GameOverOrBuilder> gameOverBuilder_;
+    /**
+     * <code>.daikombat.dto.ServerResponse.GameOver gameOver = 6;</code>
+     * @return Whether the gameOver field is set.
+     */
+    @java.lang.Override
+    public boolean hasGameOver() {
+      return responseCase_ == 6;
+    }
+    /**
+     * <code>.daikombat.dto.ServerResponse.GameOver gameOver = 6;</code>
+     * @return The gameOver.
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.GameOver getGameOver() {
+      if (gameOverBuilder_ == null) {
+        if (responseCase_ == 6) {
+          return (com.beverly.hills.money.gang.proto.ServerResponse.GameOver) response_;
+        }
+        return com.beverly.hills.money.gang.proto.ServerResponse.GameOver.getDefaultInstance();
+      } else {
+        if (responseCase_ == 6) {
+          return gameOverBuilder_.getMessage();
+        }
+        return com.beverly.hills.money.gang.proto.ServerResponse.GameOver.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.daikombat.dto.ServerResponse.GameOver gameOver = 6;</code>
+     */
+    public Builder setGameOver(com.beverly.hills.money.gang.proto.ServerResponse.GameOver value) {
+      if (gameOverBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        response_ = value;
+        onChanged();
+      } else {
+        gameOverBuilder_.setMessage(value);
+      }
+      responseCase_ = 6;
+      return this;
+    }
+    /**
+     * <code>.daikombat.dto.ServerResponse.GameOver gameOver = 6;</code>
+     */
+    public Builder setGameOver(
+        com.beverly.hills.money.gang.proto.ServerResponse.GameOver.Builder builderForValue) {
+      if (gameOverBuilder_ == null) {
+        response_ = builderForValue.build();
+        onChanged();
+      } else {
+        gameOverBuilder_.setMessage(builderForValue.build());
+      }
+      responseCase_ = 6;
+      return this;
+    }
+    /**
+     * <code>.daikombat.dto.ServerResponse.GameOver gameOver = 6;</code>
+     */
+    public Builder mergeGameOver(com.beverly.hills.money.gang.proto.ServerResponse.GameOver value) {
+      if (gameOverBuilder_ == null) {
+        if (responseCase_ == 6 &&
+            response_ != com.beverly.hills.money.gang.proto.ServerResponse.GameOver.getDefaultInstance()) {
+          response_ = com.beverly.hills.money.gang.proto.ServerResponse.GameOver.newBuilder((com.beverly.hills.money.gang.proto.ServerResponse.GameOver) response_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          response_ = value;
+        }
+        onChanged();
+      } else {
+        if (responseCase_ == 6) {
+          gameOverBuilder_.mergeFrom(value);
+        } else {
+          gameOverBuilder_.setMessage(value);
+        }
+      }
+      responseCase_ = 6;
+      return this;
+    }
+    /**
+     * <code>.daikombat.dto.ServerResponse.GameOver gameOver = 6;</code>
+     */
+    public Builder clearGameOver() {
+      if (gameOverBuilder_ == null) {
+        if (responseCase_ == 6) {
+          responseCase_ = 0;
+          response_ = null;
+          onChanged();
+        }
+      } else {
+        if (responseCase_ == 6) {
+          responseCase_ = 0;
+          response_ = null;
+        }
+        gameOverBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.daikombat.dto.ServerResponse.GameOver gameOver = 6;</code>
+     */
+    public com.beverly.hills.money.gang.proto.ServerResponse.GameOver.Builder getGameOverBuilder() {
+      return getGameOverFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.daikombat.dto.ServerResponse.GameOver gameOver = 6;</code>
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.GameOverOrBuilder getGameOverOrBuilder() {
+      if ((responseCase_ == 6) && (gameOverBuilder_ != null)) {
+        return gameOverBuilder_.getMessageOrBuilder();
+      } else {
+        if (responseCase_ == 6) {
+          return (com.beverly.hills.money.gang.proto.ServerResponse.GameOver) response_;
+        }
+        return com.beverly.hills.money.gang.proto.ServerResponse.GameOver.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.daikombat.dto.ServerResponse.GameOver gameOver = 6;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.beverly.hills.money.gang.proto.ServerResponse.GameOver, com.beverly.hills.money.gang.proto.ServerResponse.GameOver.Builder, com.beverly.hills.money.gang.proto.ServerResponse.GameOverOrBuilder> 
+        getGameOverFieldBuilder() {
+      if (gameOverBuilder_ == null) {
+        if (!(responseCase_ == 6)) {
+          response_ = com.beverly.hills.money.gang.proto.ServerResponse.GameOver.getDefaultInstance();
+        }
+        gameOverBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            com.beverly.hills.money.gang.proto.ServerResponse.GameOver, com.beverly.hills.money.gang.proto.ServerResponse.GameOver.Builder, com.beverly.hills.money.gang.proto.ServerResponse.GameOverOrBuilder>(
+                (com.beverly.hills.money.gang.proto.ServerResponse.GameOver) response_,
+                getParentForChildren(),
+                isClean());
+        response_ = null;
+      }
+      responseCase_ = 6;
+      onChanged();
+      return gameOverBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

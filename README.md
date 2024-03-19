@@ -35,6 +35,7 @@ Game server can be configured using the following environment variables:
 - `GAME_SERVER_DEFAULT_PUNCH_DAMAGE` Punch damage. Default - `50`.
 - `GAME_SERVER_PIN_CODE` Server access pin code(digits only, no less than 4). Used in HMAC that is appended to every message. Default - `5555`.
 - `GAME_SERVER_FAST_TCP` Enables fast TCP configurations(used mostly for testing, not recommended to be set to `false` in prod). Default - `true`.
+- `GAME_SERVER_FRAGS_PER_GAME` Frags to win a game. Default - `25`.
 - `SENTRY_DSN` Sentry DSN. Not specified by default.
 
 Game client is also configurable through environments variables:

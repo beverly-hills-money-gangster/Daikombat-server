@@ -83,5 +83,20 @@ public interface ServerResponseOrBuilder extends
    */
   com.beverly.hills.money.gang.proto.ServerResponse.PingOrBuilder getPingOrBuilder();
 
+  /**
+   * <code>.daikombat.dto.ServerResponse.GameOver gameOver = 6;</code>
+   * @return Whether the gameOver field is set.
+   */
+  boolean hasGameOver();
+  /**
+   * <code>.daikombat.dto.ServerResponse.GameOver gameOver = 6;</code>
+   * @return The gameOver.
+   */
+  com.beverly.hills.money.gang.proto.ServerResponse.GameOver getGameOver();
+  /**
+   * <code>.daikombat.dto.ServerResponse.GameOver gameOver = 6;</code>
+   */
+  com.beverly.hills.money.gang.proto.ServerResponse.GameOverOrBuilder getGameOverOrBuilder();
+
   com.beverly.hills.money.gang.proto.ServerResponse.ResponseCase getResponseCase();
 }

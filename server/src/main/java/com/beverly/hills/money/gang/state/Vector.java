@@ -10,14 +10,14 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class Vector {
 
-    @Getter
-    private final float x;
-    @Getter
-    private final float y;
+  @Getter
+  private final float x;
+  @Getter
+  private final float y;
 
-    public static double getDistance(Vector v1, Vector v2) {
-        float x = v1.getX() - v2.getX();
-        float y = v1.getY() - v2.getY();
-        return Math.sqrt(x * x + y * y);
-    }
+  public static double getDistance(Vector v1, Vector v2) {
+    float x = v1.getX() - v2.getX();
+    float y = v1.getY() - v2.getY();
+    return Math.sqrt(x * x + y * y);
+  }
 }

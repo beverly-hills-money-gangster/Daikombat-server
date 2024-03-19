@@ -7,6 +7,6 @@ import lombok.Getter;
 @Getter
 public class GameServerCreds {
 
-    private final HostPort hostPort;
-    private final String password;
+  private final HostPort hostPort;
+  private final String password;
 }

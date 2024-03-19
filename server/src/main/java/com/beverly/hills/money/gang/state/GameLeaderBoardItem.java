@@ -10,12 +10,12 @@ import lombok.ToString;
 @ToString
 public class GameLeaderBoardItem {
 
-    private final int playerId;
+  private final int playerId;
 
-    @NonNull
-    private final String playerName;
+  @NonNull
+  private final String playerName;
 
-    private final int kills;
+  private final int kills;
 
-    private final int deaths;
+  private final int deaths;
 }

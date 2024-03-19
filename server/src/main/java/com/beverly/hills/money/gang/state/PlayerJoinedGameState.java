@@ -1,18 +1,17 @@
 package com.beverly.hills.money.gang.state;
 
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.util.List;
 
 
 @Getter
 @Builder
 public class PlayerJoinedGameState {
 
-    private final PlayerState playerState;
+  private final PlayerState playerState;
 
-    @Builder.Default
-    private final List<GameLeaderBoardItem> leaderBoard = List.of();
+  @Builder.Default
+  private final List<GameLeaderBoardItem> leaderBoard = List.of();
 
 }

@@ -5,6 +5,12 @@ import com.beverly.hills.money.gang.entity.HostPort;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.queue.QueueReader;
 import com.beverly.hills.money.gang.runner.ServerRunner;
+import java.io.IOException;
+import java.net.BindException;
+import java.net.ServerSocket;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,13 +21,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.io.IOException;
-import java.net.BindException;
-import java.net.ServerSocket;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ThreadLocalRandom;
-
 /*
   TODO:
   - Stabilize tests
@@ -31,92 +30,93 @@ import java.util.concurrent.ThreadLocalRandom;
 @ContextConfiguration(classes = TestConfig.class)
 public abstract class AbstractGameServerTest {
 
-    private static final int MAX_QUEUE_WAIT_TIME_MLS = 30_000;
+  private static final int MAX_QUEUE_WAIT_TIME_MLS = 30_000;
 
-    protected static final Logger LOG = LoggerFactory.getLogger(AbstractGameServerTest.class);
+  protected static final Logger LOG = LoggerFactory.getLogger(AbstractGameServerTest.class);
 
-    protected int port;
+  protected int port;
 
-    @Autowired
-    private ApplicationContext applicationContext;
+  @Autowired
+  private ApplicationContext applicationContext;
 
-    protected ServerRunner serverRunner;
+  protected ServerRunner serverRunner;
 
-    protected final List<GameConnection> gameConnections = new CopyOnWriteArrayList<>();
+  protected final List<GameConnection> gameConnections = new CopyOnWriteArrayList<>();
 
 
-    public static boolean isPortAvailable(int port) {
-        try (ServerSocket ignored = new ServerSocket(port)) {
-            return true; // Port available
-        } catch (BindException e) {
-            LOG.warn("Port {} already in use", port, e);
-            return false; // Port already in use
-        } catch (Exception e) {
-            LOG.error("Can't check port {}", port, e);
-            return false;
-        }
+  public static boolean isPortAvailable(int port) {
+    try (ServerSocket ignored = new ServerSocket(port)) {
+      return true; // Port available
+    } catch (BindException e) {
+      LOG.warn("Port {} already in use", port, e);
+      return false; // Port already in use
+    } catch (Exception e) {
+      LOG.error("Can't check port {}", port, e);
+      return false;
     }
+  }
 
 
-    public static int createRandomPort() {
-        for (int i = 0; i < 100; i++) {
-            int port = ThreadLocalRandom.current().nextInt(1_024, 49_151);
-            if (isPortAvailable(port)) {
-                return port;
-            }
-        }
-        throw new IllegalStateException("Can't create a random port");
+  public static int createRandomPort() {
+    for (int i = 0; i < 100; i++) {
+      int port = ThreadLocalRandom.current().nextInt(1_024, 49_151);
+      if (isPortAvailable(port)) {
+        return port;
+      }
     }
+    throw new IllegalStateException("Can't create a random port");
+  }
 
 
-    @BeforeEach
-    public void setUp() throws InterruptedException {
-        port = createRandomPort();
-        serverRunner = applicationContext.getBean(ServerRunner.class);
-        new Thread(() -> {
-            try {
-                serverRunner.runServer(port);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }).start();
-        serverRunner.waitFullyRunning();
-        LOG.info("Env vars are: {}", System.getenv());
+  @BeforeEach
+  public void setUp() throws InterruptedException {
+    port = createRandomPort();
+    serverRunner = applicationContext.getBean(ServerRunner.class);
+    new Thread(() -> {
+      try {
+        serverRunner.runServer(port);
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+    }).start();
+    serverRunner.waitFullyRunning();
+    LOG.info("Env vars are: {}", System.getenv());
+  }
+
+  @AfterEach
+  public void tearDown() {
+    gameConnections.forEach(GameConnection::disconnect);
+    serverRunner.stop();
+    gameConnections.clear();
+  }
+
+  protected void emptyQueue(QueueReader<?> queueReader) {
+    queueReader.poll(Integer.MAX_VALUE);
+  }
+
+  protected void waitUntilQueueNonEmpty(QueueReader<?> queueReader) {
+    long stopWaitTimeMls = System.currentTimeMillis() + MAX_QUEUE_WAIT_TIME_MLS;
+    while (System.currentTimeMillis() < stopWaitTimeMls) {
+      if (queueReader.size() != 0) {
+        return;
+      }
+      try {
+        Thread.sleep(50);
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
     }
-
-    @AfterEach
-    public void tearDown() {
-        gameConnections.forEach(GameConnection::disconnect);
-        serverRunner.stop();
-        gameConnections.clear();
-    }
-
-    protected void emptyQueue(QueueReader<?> queueReader) {
-        queueReader.poll(Integer.MAX_VALUE);
-    }
-
-    protected void waitUntilQueueNonEmpty(QueueReader<?> queueReader) {
-        long stopWaitTimeMls = System.currentTimeMillis() + MAX_QUEUE_WAIT_TIME_MLS;
-        while (System.currentTimeMillis() < stopWaitTimeMls) {
-            if (queueReader.size() != 0) {
-                return;
-            }
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        throw new IllegalStateException("Timeout waiting for response");
-    }
+    throw new IllegalStateException("Timeout waiting for response");
+  }
 
 
-    protected GameConnection createGameConnection(String password, String host, int port) throws IOException {
-        GameConnection gameConnection = new GameConnection(GameServerCreds.builder()
-                .password(password)
-                .hostPort(HostPort.builder().host(host).port(port).build())
-                .build());
-        gameConnections.add(gameConnection);
-        return gameConnection;
-    }
+  protected GameConnection createGameConnection(String password, String host, int port)
+      throws IOException {
+    GameConnection gameConnection = new GameConnection(GameServerCreds.builder()
+        .password(password)
+        .hostPort(HostPort.builder().host(host).port(port).build())
+        .build());
+    gameConnections.add(gameConnection);
+    return gameConnection;
+  }
 }

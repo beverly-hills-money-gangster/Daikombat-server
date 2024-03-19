@@ -2,13 +2,13 @@ package com.beverly.hills.money.gang.stats;
 
 public interface NetworkStatsReader {
 
-    int getReceivedMessages();
+  int getReceivedMessages();
 
-    int getSentMessages();
+  int getSentMessages();
 
-    long getOutboundPayloadBytes();
+  long getOutboundPayloadBytes();
 
-    long getInboundPayloadBytes();
+  long getInboundPayloadBytes();
 
-    int getPingMls();
+  int getPingMls();
 }

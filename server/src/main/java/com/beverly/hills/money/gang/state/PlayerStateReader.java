@@ -2,16 +2,16 @@ package com.beverly.hills.money.gang.state;
 
 public interface PlayerStateReader {
 
-    PlayerState.PlayerCoordinates getCoordinates();
+  PlayerState.PlayerCoordinates getCoordinates();
 
-    int getPlayerId();
+  int getPlayerId();
 
-    String getPlayerName();
+  String getPlayerName();
 
-    int getHealth();
+  int getHealth();
 
-    boolean isDead();
+  boolean isDead();
 
-    boolean hasMoved();
+  boolean hasMoved();
 
 }

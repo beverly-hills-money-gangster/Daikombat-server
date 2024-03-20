@@ -36,6 +36,7 @@ public class GameServerInfoTest extends AbstractGameServerTest {
     List<ServerResponse.GameInfo> games = serverResponse.getServerInfo().getGamesList();
     assertEquals(ServerConfig.GAMES_TO_CREATE, games.size());
     assertEquals(ServerConfig.VERSION, serverResponse.getServerInfo().getVersion());
+    assertEquals(ServerConfig.MOVES_UPDATE_FREQUENCY_MLS, serverResponse.getServerInfo().getMovesUpdateFreqMls());
     assertEquals(ServerConfig.FRAGS_PER_GAME, serverResponse.getServerInfo().getFragsToWin());
     for (ServerResponse.GameInfo gameInfo : games) {
       assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, gameInfo.getMaxGamePlayers());

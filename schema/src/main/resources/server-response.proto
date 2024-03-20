@@ -24,6 +24,7 @@ message ServerResponse {
     repeated GameInfo games = 1;
     optional string version = 2;
     optional int32 fragsToWin = 3;
+    optional int32 movesUpdateFreqMls = 4;
   }
 
   message Ping {}

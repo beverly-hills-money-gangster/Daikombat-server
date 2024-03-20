@@ -82,9 +82,10 @@ public interface ServerResponseFactory {
   }
 
   static ServerResponse createServerInfo(
-      String serverVersion, Stream<GameReader> games, int fragsToWin) {
+      String serverVersion, Stream<GameReader> games, int fragsToWin, int movesUpdateFreqMls) {
     var serverInfo = ServerResponse.ServerInfo.newBuilder();
     serverInfo.setFragsToWin(fragsToWin);
+    serverInfo.setMovesUpdateFreqMls(movesUpdateFreqMls);
     serverInfo.setVersion(serverVersion);
     games.forEach(game
         -> serverInfo.addGames(

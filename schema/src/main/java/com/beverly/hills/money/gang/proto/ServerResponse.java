@@ -706,6 +706,17 @@ private static final long serialVersionUID = 0L;
      * @return The fragsToWin.
      */
     int getFragsToWin();
+
+    /**
+     * <code>optional int32 movesUpdateFreqMls = 4;</code>
+     * @return Whether the movesUpdateFreqMls field is set.
+     */
+    boolean hasMovesUpdateFreqMls();
+    /**
+     * <code>optional int32 movesUpdateFreqMls = 4;</code>
+     * @return The movesUpdateFreqMls.
+     */
+    int getMovesUpdateFreqMls();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.ServerInfo}
@@ -852,6 +863,25 @@ private static final long serialVersionUID = 0L;
       return fragsToWin_;
     }
 
+    public static final int MOVESUPDATEFREQMLS_FIELD_NUMBER = 4;
+    private int movesUpdateFreqMls_ = 0;
+    /**
+     * <code>optional int32 movesUpdateFreqMls = 4;</code>
+     * @return Whether the movesUpdateFreqMls field is set.
+     */
+    @java.lang.Override
+    public boolean hasMovesUpdateFreqMls() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>optional int32 movesUpdateFreqMls = 4;</code>
+     * @return The movesUpdateFreqMls.
+     */
+    @java.lang.Override
+    public int getMovesUpdateFreqMls() {
+      return movesUpdateFreqMls_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -875,6 +905,9 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000002) != 0)) {
         output.writeInt32(3, fragsToWin_);
       }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        output.writeInt32(4, movesUpdateFreqMls_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -894,6 +927,10 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000002) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(3, fragsToWin_);
+      }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(4, movesUpdateFreqMls_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -922,6 +959,11 @@ private static final long serialVersionUID = 0L;
         if (getFragsToWin()
             != other.getFragsToWin()) return false;
       }
+      if (hasMovesUpdateFreqMls() != other.hasMovesUpdateFreqMls()) return false;
+      if (hasMovesUpdateFreqMls()) {
+        if (getMovesUpdateFreqMls()
+            != other.getMovesUpdateFreqMls()) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -944,6 +986,10 @@ private static final long serialVersionUID = 0L;
       if (hasFragsToWin()) {
         hash = (37 * hash) + FRAGSTOWIN_FIELD_NUMBER;
         hash = (53 * hash) + getFragsToWin();
+      }
+      if (hasMovesUpdateFreqMls()) {
+        hash = (37 * hash) + MOVESUPDATEFREQMLS_FIELD_NUMBER;
+        hash = (53 * hash) + getMovesUpdateFreqMls();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -1085,6 +1131,7 @@ private static final long serialVersionUID = 0L;
         bitField0_ = (bitField0_ & ~0x00000001);
         version_ = "";
         fragsToWin_ = 0;
+        movesUpdateFreqMls_ = 0;
         return this;
       }
 
@@ -1139,6 +1186,10 @@ private static final long serialVersionUID = 0L;
         if (((from_bitField0_ & 0x00000004) != 0)) {
           result.fragsToWin_ = fragsToWin_;
           to_bitField0_ |= 0x00000002;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.movesUpdateFreqMls_ = movesUpdateFreqMls_;
+          to_bitField0_ |= 0x00000004;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -1221,6 +1272,9 @@ private static final long serialVersionUID = 0L;
         if (other.hasFragsToWin()) {
           setFragsToWin(other.getFragsToWin());
         }
+        if (other.hasMovesUpdateFreqMls()) {
+          setMovesUpdateFreqMls(other.getMovesUpdateFreqMls());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -1270,6 +1324,11 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000004;
                 break;
               } // case 24
+              case 32: {
+                movesUpdateFreqMls_ = input.readInt32();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 32
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -1642,6 +1701,46 @@ private static final long serialVersionUID = 0L;
       public Builder clearFragsToWin() {
         bitField0_ = (bitField0_ & ~0x00000004);
         fragsToWin_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int movesUpdateFreqMls_ ;
+      /**
+       * <code>optional int32 movesUpdateFreqMls = 4;</code>
+       * @return Whether the movesUpdateFreqMls field is set.
+       */
+      @java.lang.Override
+      public boolean hasMovesUpdateFreqMls() {
+        return ((bitField0_ & 0x00000008) != 0);
+      }
+      /**
+       * <code>optional int32 movesUpdateFreqMls = 4;</code>
+       * @return The movesUpdateFreqMls.
+       */
+      @java.lang.Override
+      public int getMovesUpdateFreqMls() {
+        return movesUpdateFreqMls_;
+      }
+      /**
+       * <code>optional int32 movesUpdateFreqMls = 4;</code>
+       * @param value The movesUpdateFreqMls to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMovesUpdateFreqMls(int value) {
+
+        movesUpdateFreqMls_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 movesUpdateFreqMls = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMovesUpdateFreqMls() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        movesUpdateFreqMls_ = 0;
         onChanged();
         return this;
       }

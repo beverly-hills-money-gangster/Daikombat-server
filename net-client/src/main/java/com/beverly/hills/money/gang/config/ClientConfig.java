@@ -14,6 +14,9 @@ public interface ClientConfig {
   boolean FAST_TCP = Boolean.parseBoolean(StringUtils.defaultIfBlank(
       System.getenv("CLIENT_FAST_TCP"), "true"));
 
+  boolean COMPRESS = Boolean.parseBoolean(StringUtils.defaultIfBlank(
+      System.getenv("CLIENT_COMPRESS"), "true"));
+
   String VERSION = Optional.ofNullable(
       ClientConfig.class.getClassLoader().getResourceAsStream("client-version.properties")).map(
       inputStream -> {

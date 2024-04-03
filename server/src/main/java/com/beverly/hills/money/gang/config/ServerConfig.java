@@ -32,6 +32,9 @@ public interface ServerConfig {
   boolean FAST_TCP = Boolean.parseBoolean(StringUtils.defaultIfBlank(
       System.getenv("GAME_SERVER_FAST_TCP"), "true"));
 
+  boolean COMPRESS = Boolean.parseBoolean(StringUtils.defaultIfBlank(
+      System.getenv("GAME_SERVER_COMPRESS"), "true"));
+
   int FRAGS_PER_GAME = NumberUtils.toInt(System.getenv("GAME_SERVER_FRAGS_PER_GAME"), 25);
 
   String VERSION = Optional.ofNullable(

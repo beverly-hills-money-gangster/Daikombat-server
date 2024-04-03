@@ -30,6 +30,8 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.compression.JdkZlibDecoder;
+import io.netty.handler.codec.compression.JdkZlibEncoder;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
@@ -98,6 +100,11 @@ public class GameConnection {
         @Override
         protected void initChannel(SocketChannel ch) {
           ChannelPipeline p = ch.pipeline();
+          if (ClientConfig.COMPRESS) {
+            LOG.info("Client-side compression is on");
+            p.addLast(new JdkZlibDecoder());
+            p.addLast(new JdkZlibEncoder());
+          }
           p.addLast(new ProtobufVarint32FrameDecoder());
           p.addLast(new ProtobufDecoder(ServerResponse.getDefaultInstance()));
           p.addLast(new ProtobufVarint32LengthFieldPrepender());

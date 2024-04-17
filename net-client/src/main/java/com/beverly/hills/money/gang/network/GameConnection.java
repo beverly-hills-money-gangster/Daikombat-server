@@ -42,6 +42,7 @@ import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.EventExecutorGroup;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -78,14 +79,17 @@ public class GameConnection {
 
   private final ServerHMACService hmacService;
 
-  private final Channel channel;
+  private final AtomicReference<Channel> channelRef = new AtomicReference<>();
+
+  private final CountDownLatch connectedLatch = new CountDownLatch(1);
 
   private final EventLoopGroup group;
 
-
   private final AtomicReference<GameConnectionState> state = new AtomicReference<>();
 
-  public GameConnection(final GameServerCreds gameServerCreds) throws IOException {
+  public GameConnection(
+      final GameServerCreds gameServerCreds,
+      final Runnable onConnected) throws IOException {
     this.hmacService = new ServerHMACService(gameServerCreds.getPassword());
     LOG.info("Start connecting");
     state.set(GameConnectionState.CONNECTING);
@@ -162,32 +166,61 @@ public class GameConnection {
         }
       });
       long startTime = System.currentTimeMillis();
-      this.channel = bootstrap.connect(
+      bootstrap.connect(
           gameServerCreds.getHostPort().getHost(),
-          gameServerCreds.getHostPort().getPort()).sync().channel();
-      LOG.info("Connected to server in {} mls. Fast TCP enabled: {}",
-          System.currentTimeMillis() - startTime, ClientConfig.FAST_TCP);
-      pingScheduler.scheduleAtFixedRate(() -> {
-            try {
-              if (hasPendingPing.get()) {
-                LOG.warn("Old ping request is still pending");
-                return;
-              }
-              hasPendingPing.set(true);
-              pingRequestedTimeMls.set(System.currentTimeMillis());
-              writeToChannel(PING);
-            } catch (Exception e) {
-              LOG.error("Can't ping server", e);
-            }
-          }, ClientConfig.SERVER_MAX_INACTIVE_MLS / 3, ClientConfig.SERVER_MAX_INACTIVE_MLS / 3,
-          TimeUnit.MILLISECONDS);
+          gameServerCreds.getHostPort().getPort()).addListener((ChannelFutureListener) future -> {
+        channelRef.set(future.channel());
+        if (future.isSuccess()) {
+          LOG.info("Connected to server in {} mls. Fast TCP enabled: {}",
+              System.currentTimeMillis() - startTime, ClientConfig.FAST_TCP);
+          schedulePing();
+          state.set(GameConnectionState.CONNECTED);
+          connectedLatch.countDown();
+          onConnected.run();
+        } else {
+          LOG.error("Error occurred", future.cause());
+          errorsQueueAPI.push(future.cause());
+          disconnect();
+        }
+      });
 
-      state.set(GameConnectionState.CONNECTED);
     } catch (Exception e) {
       LOG.error("Error occurred", e);
       disconnect();
       throw new IOException("Can't connect to " + gameServerCreds.getHostPort(), e);
     }
+  }
+
+  public GameConnection(
+      final GameServerCreds gameServerCreds) throws IOException {
+    this(gameServerCreds, () -> {
+    });
+  }
+
+  public boolean waitUntilConnected(int timeoutMls) throws InterruptedException {
+    return connectedLatch.await(timeoutMls, TimeUnit.MILLISECONDS);
+  }
+
+  public boolean waitUntilConnected() throws InterruptedException {
+    return waitUntilConnected(60_000);
+  }
+
+  private void schedulePing() {
+    pingScheduler.scheduleAtFixedRate(() -> {
+          try {
+            if (hasPendingPing.get()) {
+              LOG.warn("Old ping request is still pending");
+              return;
+            }
+            hasPendingPing.set(true);
+            pingRequestedTimeMls.set(System.currentTimeMillis());
+            writeToChannel(PING);
+          } catch (Exception e) {
+            LOG.error("Can't ping server", e);
+          }
+        }, ClientConfig.SERVER_MAX_INACTIVE_MLS / 3,
+        ClientConfig.SERVER_MAX_INACTIVE_MLS / 3,
+        TimeUnit.MILLISECONDS);
   }
 
   public void shutdownPingScheduler() {
@@ -245,14 +278,20 @@ public class GameConnection {
   }
 
   private void writeToChannel(ServerCommand serverCommand) {
+    if (state.get() != GameConnectionState.CONNECTED) {
+      LOG.warn("Can't write to closed channel");
+      return;
+    }
     LOG.debug("Write {}", serverCommand);
-    channel.writeAndFlush(serverCommand).addListener((ChannelFutureListener) future -> {
-      if (!future.isSuccess()) {
-        errorsQueueAPI.push(new IOException("Failed to write command " + serverCommand));
-      }
+    Optional.ofNullable(channelRef.get()).ifPresent(channel -> {
+      channel.writeAndFlush(serverCommand).addListener((ChannelFutureListener) future -> {
+        if (!future.isSuccess()) {
+          errorsQueueAPI.push(new IOException("Failed to write command " + serverCommand));
+        }
+      });
+      networkStats.incSentMessages();
+      networkStats.addOutboundPayloadBytes(serverCommand.getSerializedSize());
     });
-    networkStats.incSentMessages();
-    networkStats.addOutboundPayloadBytes(serverCommand.getSerializedSize());
   }
 
   public void disconnect() {
@@ -268,7 +307,7 @@ public class GameConnection {
       LOG.error("Can't shutdown bootstrap group", e);
     }
     try {
-      Optional.ofNullable(channel).ifPresent(ChannelOutboundInvoker::close);
+      Optional.ofNullable(channelRef.get()).ifPresent(ChannelOutboundInvoker::close);
     } catch (Exception e) {
       LOG.error("Can't close channel", e);
     }
@@ -301,7 +340,6 @@ public class GameConnection {
   public NetworkStatsReader getNetworkStats() {
     return networkStats;
   }
-
 
   private enum GameConnectionState {
     CONNECTING, CONNECTED, DISCONNECTING, DISCONNECTED

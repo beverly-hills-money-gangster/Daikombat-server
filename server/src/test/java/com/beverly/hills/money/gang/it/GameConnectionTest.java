@@ -2,7 +2,7 @@ package com.beverly.hills.money.gang.it;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
@@ -11,6 +11,8 @@ import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.UnknownHostException;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -104,9 +106,9 @@ public class GameConnectionTest extends AbstractGameServerTest {
    * @then an exception is thrown
    */
   @Test
-  public void testGetServerInfoNotExistingServer() {
-    assertThrows(IOException.class,
-        () -> createGameConnection(ServerConfig.PIN_CODE, "666.666.666.666", port));
+  public void testGetServerInfoNotExistingServer() throws IOException {
+    var connection = createGameConnection(ServerConfig.PIN_CODE, "666.666.666.666", port);
+    assertInstanceOf(UnknownHostException.class, connection.getErrors().poll().get());
   }
 
   /**
@@ -115,8 +117,8 @@ public class GameConnectionTest extends AbstractGameServerTest {
    * @then an exception is thrown
    */
   @Test
-  public void testGetServerInfoWrongPort() {
-    assertThrows(IOException.class,
-        () -> createGameConnection(ServerConfig.PIN_CODE, "localhost", 666));
+  public void testGetServerInfoWrongPort() throws IOException {
+    var connection = createGameConnection(ServerConfig.PIN_CODE, "localhost", 666);
+    assertInstanceOf(ConnectException.class, connection.getErrors().poll().get());
   }
 }

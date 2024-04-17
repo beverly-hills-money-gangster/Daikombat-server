@@ -117,6 +117,11 @@ public abstract class AbstractGameServerTest {
         .hostPort(HostPort.builder().host(host).port(port).build())
         .build());
     gameConnections.add(gameConnection);
+    try {
+      gameConnection.waitUntilConnected(5_000);
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
     return gameConnection;
   }
 }

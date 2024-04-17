@@ -112,7 +112,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @when a player connects to a server using wrong game id
    * @then the player is not connected
    */
-  @Test
+  @RepeatedTest(16)
   public void testJoinGameNotExistingGame() throws IOException {
     int gameIdToConnectTo = 666;
     GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);

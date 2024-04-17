@@ -49,6 +49,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,7 +90,7 @@ public class GameConnection {
 
   public GameConnection(
       final GameServerCreds gameServerCreds,
-      final Runnable onConnected) throws IOException {
+      final Consumer<GameConnection> onConnected) throws IOException {
     this.hmacService = new ServerHMACService(gameServerCreds.getPassword());
     LOG.info("Start connecting");
     state.set(GameConnectionState.CONNECTING);
@@ -176,7 +177,7 @@ public class GameConnection {
           schedulePing();
           state.set(GameConnectionState.CONNECTED);
           connectedLatch.countDown();
-          onConnected.run();
+          onConnected.accept(this);
         } else {
           LOG.error("Error occurred", future.cause());
           errorsQueueAPI.push(future.cause());
@@ -193,7 +194,8 @@ public class GameConnection {
 
   public GameConnection(
       final GameServerCreds gameServerCreds) throws IOException {
-    this(gameServerCreds, () -> {
+    this(gameServerCreds, gameConnection -> {
+
     });
   }
 

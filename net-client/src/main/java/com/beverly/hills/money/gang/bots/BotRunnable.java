@@ -32,13 +32,14 @@ public class BotRunnable implements Runnable {
 
   @Override
   public void run() {
-    try {
-      while (!Thread.currentThread().isInterrupted()) {
-        GameConnection gameConnection = new GameConnection(gameServerCreds);
-        gameConnection.write(JoinGameCommand.newBuilder()
-            .setPlayerName(Thread.currentThread().getName())
-            .setGameId(GAME_ID_TO_CONNECT)
-            .setVersion(ClientConfig.VERSION).build());
+
+    while (!Thread.currentThread().isInterrupted()) {
+      try {
+        GameConnection gameConnection = new GameConnection(gameServerCreds,
+            conn -> conn.write(JoinGameCommand.newBuilder()
+                .setPlayerName(Thread.currentThread().getName())
+                .setGameId(GAME_ID_TO_CONNECT)
+                .setVersion(ClientConfig.VERSION).build()));
 
         waitUntilQueueNonEmpty(gameConnection.getResponse());
         ServerResponse response = gameConnection.getResponse().poll().get();
@@ -65,9 +66,9 @@ public class BotRunnable implements Runnable {
         }
         LOG.info("Bot disconnect");
         gameConnection.disconnect();
+      } catch (Throwable e) {
+        LOG.error("Exception occurred", e);
       }
-    } catch (Throwable e) {
-      LOG.error("Exception occurred", e);
     }
   }
 

@@ -313,6 +313,7 @@ public class JoinGameTest extends AbstractGameServerTest {
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
+    Thread.sleep(500);
     assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
     assertEquals(2, gameConnection.getResponse().size(),
         "Should be 2 responses: my spawn + all other players stats");

@@ -147,7 +147,7 @@ public class GameConnection {
 
             @Override
             public void channelInactive(ChannelHandlerContext ctx) {
-              LOG.error("Channel closed");
+              LOG.info("Channel closed. Network stats {}", networkStats);
               disconnect();
             }
 
@@ -315,7 +315,6 @@ public class GameConnection {
       LOG.error("Can not close channel", e);
     }
     shutdownPingScheduler();
-    LOG.info("Network stats {}", networkStats);
     state.set(GameConnectionState.DISCONNECTED);
   }
 

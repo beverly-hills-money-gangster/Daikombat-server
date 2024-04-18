@@ -91,9 +91,10 @@ public class GameConnection {
   public GameConnection(
       final GameServerCreds gameServerCreds,
       final Consumer<GameConnection> onConnected) throws IOException {
-    this.hmacService = new ServerHMACService(gameServerCreds.getPassword());
-    LOG.info("Start connecting");
+    LOG.info("Initializing game connection");
     state.set(GameConnectionState.CONNECTING);
+    long startTime = System.currentTimeMillis();
+    this.hmacService = new ServerHMACService(gameServerCreds.getPassword());
     this.group = new NioEventLoopGroup();
     try {
       Bootstrap bootstrap = new Bootstrap();
@@ -166,7 +167,7 @@ public class GameConnection {
           });
         }
       });
-      long startTime = System.currentTimeMillis();
+      LOG.info("Start connecting");
       bootstrap.connect(
           gameServerCreds.getHostPort().getHost(),
           gameServerCreds.getHostPort().getPort()).addListener((ChannelFutureListener) future -> {
@@ -311,9 +312,10 @@ public class GameConnection {
     try {
       Optional.ofNullable(channelRef.get()).ifPresent(ChannelOutboundInvoker::close);
     } catch (Exception e) {
-      LOG.error("Can't close channel", e);
+      LOG.error("Can not close channel", e);
     }
     shutdownPingScheduler();
+    LOG.info("Network stats {}", networkStats);
     state.set(GameConnectionState.DISCONNECTED);
   }
 

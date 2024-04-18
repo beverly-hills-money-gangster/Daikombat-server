@@ -1,9 +1,25 @@
 package com.beverly.hills.money.gang.stats;
 
+import io.micrometer.core.instrument.DistributionSummary;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class NetworkStats implements NetworkStatsReader {
+
+  private static final AtomicInteger COUNTER = new AtomicInteger();
+  private static final MeterRegistry METER_REGISTRY = new SimpleMeterRegistry();
+
+  private final DistributionSummary pingDistributionSummary;
+
+  public NetworkStats() {
+    this.pingDistributionSummary = DistributionSummary
+        .builder("ping.distribution.summary" + COUNTER.incrementAndGet())
+        .publishPercentiles(0.5, 0.75, 0.99)
+        .register(METER_REGISTRY);
+  }
 
   private final AtomicInteger receivedMessages = new AtomicInteger();
 
@@ -17,6 +33,7 @@ public class NetworkStats implements NetworkStatsReader {
 
   public void setPingMls(int mls) {
     pingMls.set(mls);
+    pingDistributionSummary.record(mls);
   }
 
   public void incReceivedMessages() {
@@ -62,4 +79,16 @@ public class NetworkStats implements NetworkStatsReader {
   public int getPingMls() {
     return pingMls.get();
   }
+
+  @Override
+  public String toString() {
+    var snapshot = pingDistributionSummary.takeSnapshot();
+    return "\npingDistributionSummary: probes " + snapshot.count() + ", " + Arrays.toString(
+        snapshot.percentileValues()) +
+        "\nreceivedMessages:" + receivedMessages +
+        "\nsentMessages:" + sentMessages +
+        "\noutboundPayloadBytes:" + outboundPayloadBytes +
+        "\ninboundPayloadBytes:" + inboundPayloadBytes;
+  }
+
 }

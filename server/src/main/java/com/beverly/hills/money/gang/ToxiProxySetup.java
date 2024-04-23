@@ -21,18 +21,21 @@ public class ToxiProxySetup {
     String listen = StringUtils.defaultIfBlank(System.getenv("LISTEN"), "localhost:6666");
     int jitter = NumberUtils.toInt(System.getenv("JITTER_MLS"), 15);
     int latency = NumberUtils.toInt(System.getenv("LATENCY_MLS"), 150);
-    LOG.info("Game server {}. Listen {}. Latency mls {}, jitter mls {}", upstream, listen, latency,
-        jitter);
+    float toxicity = NumberUtils.toFloat(System.getenv("TOXICITY"), 1f);
+    LOG.info("Game server {}. Listen {}. Latency mls {}, jitter mls {}, toxicity {}% ", upstream,
+        listen, latency,
+        jitter, toxicity * 100);
     ToxiproxyClient client = new ToxiproxyClient("localhost", 8474);
     Proxy serverProxy = client.createProxy("gameserver",
         listen,
         upstream);
     serverProxy.toxics()
         .latency("server-toxic", DOWNSTREAM, latency)
-        .setJitter(jitter);
+        .setJitter(jitter)
+        .setToxicity(toxicity);
     serverProxy.toxics()
-        .latency("client-toxic", UPSTREAM, latency)
-        .setJitter(jitter);
+        .latency("client-toxic", UPSTREAM, latency).setJitter(jitter)
+        .setToxicity(toxicity);
     LOG.info("Done");
   }
 }

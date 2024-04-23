@@ -58,6 +58,8 @@ public class GameConnection {
 
   private static final Logger LOG = LoggerFactory.getLogger(GameConnection.class);
 
+  private static final int BAD_PING_THRESHOLD_MLS = 1000;
+
   private static final ServerCommand PING
       = ServerCommand.newBuilder().setPingCommand(PingCommand.newBuilder().build()).build();
 
@@ -129,8 +131,11 @@ public class GameConnection {
             protected void channelRead0(ChannelHandlerContext ctx, ServerResponse msg) {
               LOG.debug("Incoming msg {}", msg);
               if (msg.hasPing()) {
-                networkStats.setPingMls(
-                    (int) (System.currentTimeMillis() - pingRequestedTimeMls.get()));
+                int ping = (int) (System.currentTimeMillis() - pingRequestedTimeMls.get());
+                networkStats.setPingMls(ping);
+                if (ping >= BAD_PING_THRESHOLD_MLS) {
+                  LOG.warn("Ping is bad: {} mls", ping);
+                }
                 hasPendingPing.set(false);
               } else {
                 serverEventsQueueAPI.push(msg);
@@ -221,8 +226,8 @@ public class GameConnection {
           } catch (Exception e) {
             LOG.error("Can't ping server", e);
           }
-        }, ClientConfig.SERVER_MAX_INACTIVE_MLS / 3,
-        ClientConfig.SERVER_MAX_INACTIVE_MLS / 3,
+        }, ClientConfig.SERVER_MAX_INACTIVE_MLS / 5,
+        ClientConfig.SERVER_MAX_INACTIVE_MLS / 5,
         TimeUnit.MILLISECONDS);
   }
 

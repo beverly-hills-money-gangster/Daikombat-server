@@ -14,7 +14,7 @@ public class BotRunner {
           "Expected 4 arguments:" +
               " [0] - num of bots to run, [1] - server host, [2] - server port, [3] - server password.\n"
               +
-              "For example: java -jar <file> 1 localhost 7777 5555");
+              "For example: java -jar <jar file> 1 localhost 7777 5555");
     }
     int botsToRun = NumberUtils.toInt(args[0]);
     String host = args[1];

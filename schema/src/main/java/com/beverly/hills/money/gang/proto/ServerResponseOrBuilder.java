@@ -98,5 +98,20 @@ public interface ServerResponseOrBuilder extends
    */
   com.beverly.hills.money.gang.proto.ServerResponse.GameOverOrBuilder getGameOverOrBuilder();
 
+  /**
+   * <code>.daikombat.dto.ServerResponse.PowerUpSpawnEvent powerUpSpawn = 7;</code>
+   * @return Whether the powerUpSpawn field is set.
+   */
+  boolean hasPowerUpSpawn();
+  /**
+   * <code>.daikombat.dto.ServerResponse.PowerUpSpawnEvent powerUpSpawn = 7;</code>
+   * @return The powerUpSpawn.
+   */
+  com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent getPowerUpSpawn();
+  /**
+   * <code>.daikombat.dto.ServerResponse.PowerUpSpawnEvent powerUpSpawn = 7;</code>
+   */
+  com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventOrBuilder getPowerUpSpawnOrBuilder();
+
   com.beverly.hills.money.gang.proto.ServerResponse.ResponseCase getResponseCase();
 }

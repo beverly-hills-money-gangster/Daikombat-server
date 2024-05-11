@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class GameScheduler implements Closeable {
+public class GameScheduler implements Closeable, Scheduler {
 
   private static final Logger LOG = LoggerFactory.getLogger(GameScheduler.class);
 
@@ -81,4 +81,8 @@ public class GameScheduler implements Closeable {
     }
   }
 
+  @Override
+  public void schedule(int afterMls, Runnable runnable) {
+    scheduler.schedule(runnable, afterMls, TimeUnit.MILLISECONDS);
+  }
 }

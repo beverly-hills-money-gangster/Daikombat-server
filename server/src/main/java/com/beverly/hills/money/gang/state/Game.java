@@ -1,10 +1,13 @@
 package com.beverly.hills.money.gang.state;
 
+import com.beverly.hills.money.gang.cheat.AntiCheat;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.generator.IdGenerator;
+import com.beverly.hills.money.gang.powerup.PowerUpType;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
+import com.beverly.hills.money.gang.registry.PowerUpRegistry;
 import com.beverly.hills.money.gang.spawner.Spawner;
 import io.netty.channel.Channel;
 import java.io.Closeable;
@@ -33,28 +36,40 @@ public class Game implements Closeable, GameReader {
   private final int id;
   private final IdGenerator playerIdGenerator;
 
+
   @Getter
   private final PlayersRegistry playersRegistry = new PlayersRegistry();
+
+  @Getter
+  private final PowerUpRegistry powerUpRegistry;
+
+  private final AntiCheat antiCheat;
 
   private final AtomicBoolean gameClosed = new AtomicBoolean();
 
   public Game(
       final Spawner spawner,
       @Qualifier("gameIdGenerator") final IdGenerator gameIdGenerator,
-      @Qualifier("playerIdGenerator") final IdGenerator playerIdGenerator) {
+      @Qualifier("playerIdGenerator") final IdGenerator playerIdGenerator,
+      final PowerUpRegistry powerUpRegistry,
+      final AntiCheat antiCheat) {
     this.spawner = spawner;
+    this.powerUpRegistry = powerUpRegistry;
     this.id = gameIdGenerator.getNext();
     this.playerIdGenerator = playerIdGenerator;
+    this.antiCheat = antiCheat;
   }
 
-  public PlayerJoinedGameState joinPlayer(final String playerName, final Channel playerChannel)
+  public PlayerJoinedGameState joinPlayer(
+      final String playerName, final Channel playerChannel)
       throws GameLogicError {
     validateGameNotClosed();
     int playerId = playerIdGenerator.getNext();
-    PlayerState.PlayerCoordinates spawn = spawner.spawn(this);
+    PlayerState.PlayerCoordinates spawn = spawner.spawnPlayer(this);
     PlayerState connectedPlayerState = new PlayerState(playerName, spawn, playerId);
     playersRegistry.addPlayer(connectedPlayerState, playerChannel);
     return PlayerJoinedGameState.builder()
+        .spawnedPowerUps(powerUpRegistry.getAvailable())
         .leaderBoard(getLeaderBoard())
         .playerState(connectedPlayerState).build();
   }
@@ -68,10 +83,42 @@ public class Game implements Closeable, GameReader {
       throw new GameLogicError("Can't respawn live player", GameErrorCode.COMMON_ERROR);
     }
     LOG.debug("Respawn player {}", playerId);
-    player.getPlayerState().respawn(spawner.spawn(this));
+    player.getPlayerState().respawn(spawner.spawnPlayer(this));
     return PlayerRespawnedGameState.builder()
+        .spawnedPowerUps(powerUpRegistry.getAvailable())
         .playerState(player.getPlayerState())
         .leaderBoard(getLeaderBoard()).build();
+  }
+
+  public PlayerPowerUpGameState pickupQuadDamage(
+      final PlayerState.PlayerCoordinates playerCoordinates,
+      final int playerId) {
+    PlayerState playerState = getPlayer(playerId).orElse(null);
+    if (playerState == null) {
+      LOG.warn("Non-existing player can't take power-ups");
+      return null;
+    } else if (playerState.isDead()) {
+      LOG.warn("Dead player can't take power-ups");
+      return null;
+    }
+    var powerUpType = PowerUpType.QUAD_DAMAGE;
+    var powerUp = powerUpRegistry.get(powerUpType);
+    if (powerUp == null) {
+      LOG.warn("Power-up missing");
+      return null;
+    } else if (antiCheat.isPowerUpTooFar(playerCoordinates.getPosition(),
+        powerUp.getSpawnPosition())) {
+      LOG.warn("Power-up can't be taken due to cheating");
+      return null;
+    }
+    move(playerId, playerCoordinates);
+    return Optional.ofNullable(powerUpRegistry.take(powerUpType))
+        .map(power -> {
+          LOG.debug("Power-up taken");
+          playerState.powerUp(power);
+          return PlayerPowerUpGameState.builder().playerState(playerState).powerUp(power).build();
+        })
+        .orElse(null);
   }
 
   public PlayerAttackingGameState attack(
@@ -107,8 +154,8 @@ public class Game implements Closeable, GameReader {
       }
 
       switch (attackType) {
-        case PUNCH -> attackedPlayer.getPunched();
-        case SHOOT -> attackedPlayer.getShot();
+        case PUNCH -> attackedPlayer.getPunched(attackingPlayerState.getDamageAmplifier());
+        case SHOOT -> attackedPlayer.getShot(attackingPlayerState.getDamageAmplifier());
         default -> throw new IllegalArgumentException("Not supported attack type " + attackType);
       }
       if (attackedPlayer.isDead()) {

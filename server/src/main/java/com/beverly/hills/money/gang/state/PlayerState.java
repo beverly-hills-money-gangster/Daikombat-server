@@ -1,9 +1,14 @@
 package com.beverly.hills.money.gang.state;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
+import com.beverly.hills.money.gang.powerup.PowerUp;
+import com.beverly.hills.money.gang.powerup.PowerUpType;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -17,15 +22,15 @@ public class PlayerState implements PlayerStateReader {
   private static final Logger LOG = LoggerFactory.getLogger(PlayerState.class);
 
   public static final int VAMPIRE_HP_BOOST = 20;
-
   private final AtomicBoolean moved = new AtomicBoolean(false);
-
   private final AtomicBoolean dead = new AtomicBoolean();
   public static final int DEFAULT_HP = 100;
-
+  private final AtomicInteger damageAmplifier = new AtomicInteger(1);
   private final AtomicInteger kills = new AtomicInteger();
   private final AtomicInteger deaths = new AtomicInteger();
   private final AtomicInteger health = new AtomicInteger(DEFAULT_HP);
+  private final Map<PowerUpType, PowerUpInEffect> powerUps = new ConcurrentHashMap<>();
+
 
   @Getter
   private final int playerId;
@@ -38,6 +43,41 @@ public class PlayerState implements PlayerStateReader {
     this.playerName = name;
     this.playerCoordinatesRef = new AtomicReference<>(coordinates);
     this.playerId = id;
+    defaultDamage();
+  }
+
+  public void powerUp(PowerUp power) {
+    if (isDead()) {
+      return;
+    }
+    powerUps.put(power.getType(), PowerUpInEffect.builder()
+        .powerUp(power)
+        .effectiveUntilMls(System.currentTimeMillis() + power.getLastsForMls())
+        .build());
+    power.apply(this);
+  }
+
+  public void revertPowerUp(PowerUp power) {
+    power.revert(this);
+    powerUps.remove(power.getType());
+  }
+
+  public void revertAllPowerUps() {
+    powerUps.forEach((powerUpType, power)
+        -> power.getPowerUp().revert(PlayerState.this));
+    powerUps.clear();
+  }
+
+  public void quadDamage() {
+    damageAmplifier.set(4);
+  }
+
+  public void defaultDamage() {
+    damageAmplifier.set(1);
+  }
+
+  public int getDamageAmplifier() {
+    return damageAmplifier.get();
   }
 
   public void respawn(final PlayerCoordinates coordinates) {
@@ -54,18 +94,24 @@ public class PlayerState implements PlayerStateReader {
     return deaths.get();
   }
 
-  public void getShot() {
-    if (health.addAndGet(-ServerConfig.DEFAULT_SHOTGUN_DAMAGE) <= 0) {
-      deaths.incrementAndGet();
-      dead.set(true);
+  public void getShot(int damageAmplifier) {
+    if (health.addAndGet(-ServerConfig.DEFAULT_SHOTGUN_DAMAGE * damageAmplifier) <= 0) {
+      onDeath();
     }
   }
 
-  public void getPunched() {
-    if (health.addAndGet(-ServerConfig.DEFAULT_PUNCH_DAMAGE) <= 0) {
-      deaths.incrementAndGet();
-      dead.set(true);
+  public void getPunched(int damageAmplifier) {
+    if (health.addAndGet(-ServerConfig.DEFAULT_PUNCH_DAMAGE * damageAmplifier) <= 0) {
+      onDeath();
     }
+  }
+
+
+  private void onDeath() {
+    deaths.incrementAndGet();
+    dead.set(true);
+    health.set(0);
+    revertAllPowerUps();
   }
 
 
@@ -76,6 +122,11 @@ public class PlayerState implements PlayerStateReader {
 
   public void flushMove() {
     moved.set(false);
+  }
+
+  @Override
+  public Stream<PowerUpInEffect> getActivePowerUps() {
+    return powerUps.values().stream();
   }
 
   @Override
@@ -104,6 +155,7 @@ public class PlayerState implements PlayerStateReader {
     vampireBoost();
   }
 
+
   private void vampireBoost() {
     int currentHealth = health.get();
     boolean set = health.compareAndSet(currentHealth,
@@ -123,5 +175,15 @@ public class PlayerState implements PlayerStateReader {
     @Getter
     private final Vector position;
 
+  }
+
+  @Builder
+  @Getter
+  @ToString
+  @EqualsAndHashCode
+  public static class PowerUpInEffect {
+
+    private final long effectiveUntilMls;
+    private final PowerUp powerUp;
   }
 }

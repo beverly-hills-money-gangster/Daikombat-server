@@ -19,7 +19,12 @@ public class TestConfig {
   public Spawner testSpawner() {
     return new Spawner() {
       @Override
-      public PlayerState.PlayerCoordinates spawn(Game game) {
+      public Vector spawnQuadDamage() {
+        return Vector.builder().x(-24.657965F).y(23.160273F).build();
+      }
+
+      @Override
+      public PlayerState.PlayerCoordinates spawnPlayer(Game game) {
         return PlayerState.PlayerCoordinates.builder().position(
                 Vector.builder().x(-24.657965F).y(23.160273F).build())
             .direction(

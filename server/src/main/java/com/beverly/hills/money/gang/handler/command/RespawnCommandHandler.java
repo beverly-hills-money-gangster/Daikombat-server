@@ -46,7 +46,8 @@ public class RespawnCommandHandler extends JoinGameServerCommandHandler {
             currentChannel.close();
             return;
           }
-          sendOtherPlayersSpawns(game, currentChannel, playerRespawnedGameState.getPlayerState());
+          sendOtherSpawns(game, currentChannel, playerRespawnedGameState.getPlayerState(),
+              playerRespawnedGameState.getSpawnedPowerUps());
         });
   }
 }

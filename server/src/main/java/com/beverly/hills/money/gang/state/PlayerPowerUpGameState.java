@@ -7,12 +7,10 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class PlayerRespawnedGameState {
+public class PlayerPowerUpGameState {
 
   private final PlayerState playerState;
 
-  private final Iterable<PowerUp> spawnedPowerUps;
+  private final PowerUp powerUp;
 
-  @Builder.Default
-  private final List<GameLeaderBoardItem> leaderBoard = List.of();
 }

@@ -7,11 +7,11 @@
     <parent>
         <groupId>com.beverly.hills.money.gang</groupId>
         <artifactId>daikombat-server</artifactId>
-        <version>5.0.5</version>
+        <version>6.0.0</version>
     </parent>
 
     <artifactId>server</artifactId>
-    <version>5.0.5</version>
+    <version>6.0.0</version>
 
     <properties>
         <maven.compiler.source>14</maven.compiler.source>
@@ -37,6 +37,14 @@
             <groupId>org.junit-pioneer</groupId>
             <artifactId>junit-pioneer</artifactId>
             <version>2.2.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>2.6.7</version>
             <scope>test</scope>
         </dependency>
 
@@ -78,12 +86,12 @@
         <dependency>
             <groupId>com.beverly.hills.money.gang</groupId>
             <artifactId>schema</artifactId>
-            <version>5.0.5</version>
+            <version>6.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.beverly.hills.money.gang</groupId>
             <artifactId>security</artifactId>
-            <version>5.0.5</version>
+            <version>6.0.0</version>
         </dependency>
         <dependency>
             <groupId>eu.rekawek.toxiproxy</groupId>
@@ -122,7 +130,7 @@
         <dependency>
             <groupId>com.beverly.hills.money.gang</groupId>
             <artifactId>net-client</artifactId>
-            <version>5.0.5</version>
+            <version>6.0.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

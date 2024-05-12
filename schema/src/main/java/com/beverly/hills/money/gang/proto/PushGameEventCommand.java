@@ -57,6 +57,10 @@ private static final long serialVersionUID = 0L;
      * <code>PUNCH = 2;</code>
      */
     PUNCH(2),
+    /**
+     * <code>QUAD_DAMAGE_POWER_UP = 3;</code>
+     */
+    QUAD_DAMAGE_POWER_UP(3),
     UNRECOGNIZED(-1),
     ;
 
@@ -72,6 +76,10 @@ private static final long serialVersionUID = 0L;
      * <code>PUNCH = 2;</code>
      */
     public static final int PUNCH_VALUE = 2;
+    /**
+     * <code>QUAD_DAMAGE_POWER_UP = 3;</code>
+     */
+    public static final int QUAD_DAMAGE_POWER_UP_VALUE = 3;
 
 
     public final int getNumber() {
@@ -101,6 +109,7 @@ private static final long serialVersionUID = 0L;
         case 0: return MOVE;
         case 1: return SHOOT;
         case 2: return PUNCH;
+        case 3: return QUAD_DAMAGE_POWER_UP;
         default: return null;
       }
     }

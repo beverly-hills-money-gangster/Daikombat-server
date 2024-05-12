@@ -22,6 +22,12 @@ public interface ServerConfig {
   int DEFAULT_PUNCH_DAMAGE = NumberUtils.toInt(System.getenv("GAME_SERVER_DEFAULT_PUNCH_DAMAGE"),
       50);
 
+  int QUAD_DAMAGE_SPAWN_MLS = NumberUtils.toInt(
+      System.getenv("GAME_SERVER_QUAD_DAMAGE_SPAWN_MLS"), 30_000);
+
+  int QUAD_DAMAGE_LASTS_FOR_MLS = NumberUtils.toInt(
+      System.getenv("GAME_SERVER_QUAD_DAMAGE_LASTS_FOR_MLS"), 10_000);
+
   String PIN_CODE = Optional.of(
           StringUtils.defaultIfBlank(System.getenv("GAME_SERVER_PIN_CODE"), "5555"))
       .filter(
@@ -34,6 +40,9 @@ public interface ServerConfig {
 
   boolean COMPRESS = Boolean.parseBoolean(StringUtils.defaultIfBlank(
       System.getenv("GAME_SERVER_COMPRESS"), "true"));
+
+  boolean POWER_UPS_ENABLED = Boolean.parseBoolean(StringUtils.defaultIfBlank(
+      System.getenv("GAME_SERVER_POWER_UPS_ENABLED"), "true"));
 
   int FRAGS_PER_GAME = NumberUtils.toInt(System.getenv("GAME_SERVER_FRAGS_PER_GAME"), 25);
 

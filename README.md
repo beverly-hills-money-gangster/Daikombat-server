@@ -38,6 +38,9 @@ Game server can be configured using the following environment variables:
 - `GAME_SERVER_FAST_TCP` Enables fast TCP configurations(used mostly for testing, not recommended to be set to `false` in prod). Default - `true`.
 - `GAME_SERVER_FRAGS_PER_GAME` Frags to win a game. Default - `25`.
 - `GAME_SERVER_COMPRESS` Turns on protobuf data compression using zlib(used mostly for testing, not recommended to be set to `false` in prod). Default - `true`. **Warning**. This value has to match `CLIENT_COMPRESS`. If client compresses data but server does not then communication will fail.
+- `GAME_SERVER_QUAD_DAMAGE_SPAWN_MLS` Time (in millisecond) it takes to spawn a quad damage power-up orb. Default - `30_000`.
+- `GAME_SERVER_QUAD_DAMAGE_LASTS_FOR_MLS` Time (in millisecond) quad damage lasts for. Default - `10_000`.
+- `GAME_SERVER_POWER_UPS_ENABLED` Turns power-ups on and off. Default - `true`.
 - `SENTRY_DSN` Sentry DSN. Not specified by default.
 
 Game client is also configurable through environments variables:

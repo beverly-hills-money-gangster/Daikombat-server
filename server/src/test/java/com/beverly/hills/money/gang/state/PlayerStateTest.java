@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
@@ -21,8 +22,7 @@ public class PlayerStateTest {
   public void tesRegisterKillVampireBoostFullHealth() {
     PlayerState playerState = new PlayerState(
         "test player",
-        PlayerState.PlayerCoordinates.builder().build(),
-        123);
+        PlayerState.PlayerCoordinates.builder().build(), 123);
 
     playerState.registerKill();
 
@@ -40,10 +40,9 @@ public class PlayerStateTest {
   public void tesRegisterKillVampireBoostRestoreHealth() {
     PlayerState playerState = new PlayerState(
         "test player",
-        PlayerState.PlayerCoordinates.builder().build(),
-        123);
-    playerState.getShot();
-    playerState.getShot();
+        PlayerState.PlayerCoordinates.builder().build(), 123);
+    playerState.getShot(1);
+    playerState.getShot(1);
 
     playerState.registerKill();
 
@@ -59,13 +58,12 @@ public class PlayerStateTest {
     int threadsNum = 16;
     PlayerState playerState = new PlayerState(
         "test player",
-        PlayerState.PlayerCoordinates.builder().build(),
-        123);
+        PlayerState.PlayerCoordinates.builder().build(), 123);
 
-    playerState.getShot();
-    playerState.getShot();
-    playerState.getShot();
-    playerState.getShot();
+    playerState.getShot(1);
+    playerState.getShot(1);
+    playerState.getShot(1);
+    playerState.getShot(1);
 
     CountDownLatch latch = new CountDownLatch(1);
     List<Thread> threads = new ArrayList<>();

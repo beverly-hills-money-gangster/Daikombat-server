@@ -1,7 +1,13 @@
 package com.beverly.hills.money.gang.factory.response;
 
 import com.beverly.hills.money.gang.exception.GameLogicError;
+import com.beverly.hills.money.gang.powerup.PowerUp;
+import com.beverly.hills.money.gang.powerup.PowerUpType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStats;
+import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUp;
+import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType;
+import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent;
 import com.beverly.hills.money.gang.state.AttackType;
 import com.beverly.hills.money.gang.state.GameLeaderBoardItem;
 import com.beverly.hills.money.gang.state.GameReader;
@@ -11,6 +17,7 @@ import com.beverly.hills.money.gang.state.PlayerState;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
 import com.beverly.hills.money.gang.state.Vector;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public interface ServerResponseFactory {
@@ -53,6 +60,20 @@ public interface ServerResponseFactory {
     return ServerResponse.GameEvent.newBuilder()
         .setPlayer(createMinimalPlayerStats(playerStateReader))
         .setEventType(ServerResponse.GameEvent.GameEventType.MOVE).build();
+  }
+
+  static ServerResponse.GameEvent createPowerUpPlayerMoveGameEvent(
+      PlayerStateReader playerStateReader) {
+    return ServerResponse.GameEvent.newBuilder()
+        .setPlayer(createPlayerStats(playerStateReader))
+        .setEventType(ServerResponse.GameEvent.GameEventType.MOVE).build();
+  }
+
+  static ServerResponse createPowerUpPlayerServerResponse(PlayerStateReader playerStateReader) {
+    return ServerResponse.newBuilder()
+        .setGameEvents(ServerResponse.GameEvents.newBuilder()
+            .addEvents(createPowerUpPlayerMoveGameEvent(playerStateReader)))
+        .build();
   }
 
   static ServerResponse.GameEvent createExitGameEvent(PlayerStateReader playerStateReader) {
@@ -111,6 +132,14 @@ public interface ServerResponseFactory {
         .build();
   }
 
+  static ServerResponse createQuadDamagePowerUpSpawn(PowerUp powerUp) {
+    return ServerResponse.newBuilder()
+        .setPowerUpSpawn(PowerUpSpawnEvent.newBuilder()
+            .setType(GamePowerUpType.QUAD_DAMAGE)
+            .setPosition(createVector(powerUp.getSpawnPosition())))
+        .build();
+  }
+
   static ServerResponse createExitEvent(int playersOnline,
       PlayerStateReader exitPlayer) {
     return createExitEvent(playersOnline, Stream.of(exitPlayer));
@@ -128,13 +157,28 @@ public interface ServerResponseFactory {
   }
 
   static ServerResponse.GameEventPlayerStats createPlayerStats(PlayerStateReader playerReader) {
-    return ServerResponse.GameEventPlayerStats.newBuilder()
+    return GameEventPlayerStats.newBuilder()
         .setPlayerName(playerReader.getPlayerName())
         .setPosition(createVector(playerReader.getCoordinates().getPosition()))
         .setDirection(createVector(playerReader.getCoordinates().getDirection()))
+        .addAllActivePowerUps(playerReader.getActivePowerUps().map(
+            powerUpInEffect -> GamePowerUp.newBuilder()
+                .setLastsForMls(
+                    (int) (powerUpInEffect.getEffectiveUntilMls() - System.currentTimeMillis()))
+                .setType(createGamePowerUpType(powerUpInEffect.getPowerUp().getType()))
+                .build()).collect(Collectors.toList()))
         .setHealth(playerReader.getHealth())
         .setPlayerId(playerReader.getPlayerId())
         .build();
+  }
+
+  private static GamePowerUpType createGamePowerUpType(PowerUpType powerUpType) {
+    switch (powerUpType) {
+      case QUAD_DAMAGE -> {
+        return GamePowerUpType.QUAD_DAMAGE;
+      }
+      default -> throw new IllegalArgumentException("Not supported power-up " + powerUpType.name());
+    }
   }
 
   static ServerResponse.GameEventPlayerStats createMinimalPlayerStats(

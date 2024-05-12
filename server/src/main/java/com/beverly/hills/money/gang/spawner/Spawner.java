@@ -16,6 +16,9 @@ public class Spawner {
 
   private static final double CLOSE_PROXIMITY = 3;
 
+  private static final Vector QUAD_DAMAGE_SPAWN_POSITION
+      = Vector.builder().x(-13.984175f).y(17.946176f).build();
+
   public static final List<PlayerState.PlayerCoordinates> SPAWNS = List.of(
 
       PlayerState.PlayerCoordinates.builder().position(
@@ -50,7 +53,11 @@ public class Spawner {
   );
 
 
-  public PlayerState.PlayerCoordinates spawn(Game game) {
+  public Vector spawnQuadDamage() {
+    return QUAD_DAMAGE_SPAWN_POSITION;
+  }
+
+  public PlayerState.PlayerCoordinates spawnPlayer(Game game) {
     var players = game.getPlayersRegistry()
         .allPlayers()
         .map((Function<PlayersRegistry.PlayerStateChannel, PlayerStateReader>)

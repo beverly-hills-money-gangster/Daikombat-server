@@ -56,5 +56,6 @@ message PushGameEventCommand {
     MOVE = 0;
     SHOOT = 1;
     PUNCH = 2;
+    QUAD_DAMAGE_POWER_UP = 3;
   }
 }

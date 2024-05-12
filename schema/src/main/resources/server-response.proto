@@ -14,6 +14,12 @@ message ServerResponse {
     ServerInfo serverInfo = 4;
     Ping ping = 5;
     GameOver gameOver = 6;
+    PowerUpSpawnEvent powerUpSpawn = 7;
+  }
+
+  message PowerUpSpawnEvent {
+    optional GamePowerUpType type = 1;
+    optional Vector position = 2;
   }
 
   message GameOver {
@@ -91,6 +97,16 @@ message ServerResponse {
     Vector position = 3;
     Vector direction = 4;
     optional int32 health = 5;
+    repeated GamePowerUp activePowerUps = 6;
+  }
+
+  message GamePowerUp {
+    optional GamePowerUpType type = 1;
+    optional int32 lastsForMls = 2;
+  }
+
+  enum GamePowerUpType {
+    QUAD_DAMAGE = 0;
   }
 
   message Vector {

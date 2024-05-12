@@ -1,11 +1,13 @@
 package com.beverly.hills.money.gang.handler.command;
 
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createJoinSinglePlayer;
+import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createQuadDamagePowerUpSpawn;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createSpawnEventAllPlayers;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createSpawnEventSinglePlayerMinimal;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameLogicError;
+import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
@@ -59,21 +61,18 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
             currentChannel.close();
             return;
           }
-          sendOtherPlayersSpawns(game, currentChannel, playerConnected.getPlayerState());
+          sendOtherSpawns(game, currentChannel, playerConnected.getPlayerState(),
+              playerConnected.getSpawnedPowerUps());
         });
   }
 
-  protected void sendOtherPlayersSpawns(Game game, Channel currentChannel,
-      PlayerState newPlayerState) {
+  protected void sendOtherSpawns(Game game, Channel currentChannel,
+      PlayerState newPlayerState, Iterable<PowerUp> spawnedPowerUps) {
     var otherPlayers = game.getPlayersRegistry()
         .allPlayers()
         .filter(playerStateChannel -> playerStateChannel.getChannel() != currentChannel)
         .collect(Collectors.toList());
 
-    if (otherPlayers.isEmpty()) {
-      LOG.info("No other players");
-      return;
-    }
     LOG.info("Send all players positions to the connected player");
     var otherLivePlayers = otherPlayers.stream()
         .filter(playerStateChannel -> !playerStateChannel.getPlayerState().isDead())
@@ -87,6 +86,7 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
       currentChannel.writeAndFlush(allPlayersSpawnEvent)
           .addListener((ChannelFutureListener) future -> {
             if (future.isSuccess()) {
+              sendPowerUpSpawn(spawnedPowerUps, currentChannel);
               LOG.info("Send new player spawn to everyone");
               ServerResponse playerSpawnEventForOthers = createSpawnEventSinglePlayerMinimal(
                   game.playersOnline(), newPlayerState);
@@ -96,7 +96,19 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
               currentChannel.close();
             }
           });
+    } else {
+      sendPowerUpSpawn(spawnedPowerUps, currentChannel);
     }
+  }
 
+  private void sendPowerUpSpawn(Iterable<PowerUp> powerUps, Channel channel) {
+    LOG.info("Send power up spawns");
+    powerUps.forEach(power -> {
+      switch (power.getType()) {
+        case QUAD_DAMAGE -> channel.writeAndFlush(createQuadDamagePowerUpSpawn(power));
+        default ->
+            throw new IllegalArgumentException("Not supported power-up type " + power.getType());
+      }
+    });
   }
 }

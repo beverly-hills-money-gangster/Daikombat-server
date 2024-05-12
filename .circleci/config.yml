@@ -40,8 +40,8 @@ jobs:
           name: Build and push Docker image
           command: |
             echo "${GITHUB_TOKEN}" | docker login ghcr.io -u beverly-hills-money-gangster --password-stdin
-            docker build -t ghcr.io/beverly-hills-money-gangster/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_TAG} .
-            docker push ghcr.io/beverly-hills-money-gangster/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_TAG}
+            docker build -t ghcr.io/beverly-hills-money-gangster/daikombat_server:${CIRCLE_TAG} .
+            docker push ghcr.io/beverly-hills-money-gangster/daikombat_server:${CIRCLE_TAG}
 
 workflows:
   test:

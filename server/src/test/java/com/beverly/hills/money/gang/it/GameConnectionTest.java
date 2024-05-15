@@ -10,6 +10,7 @@ import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import com.beverly.hills.money.gang.proto.SkinColorSelection;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
@@ -31,7 +32,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
     GameConnection gameConnection1 = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
     gameConnection1.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my player name")
             .setGameId(gameToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection1.getResponse());
@@ -42,7 +43,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
     GameConnection gameConnection2 = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
     gameConnection2.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my other player name")
             .setGameId(gameToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection2.getResponse());

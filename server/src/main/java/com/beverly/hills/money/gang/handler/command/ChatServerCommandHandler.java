@@ -37,7 +37,7 @@ public class ChatServerCommandHandler extends ServerCommandHandler {
     if (gameRoomRegistry.getJoinedPlayer(
         chatCommand.getGameId(), currentChannel, chatCommand.getPlayerId()).isEmpty()) {
       LOG.warn("Player {} hasn't joined game {}. Ignore command.",
-          chatCommand.hasGameId(), chatCommand.getPlayerId());
+          chatCommand.getPlayerId(), chatCommand.getGameId());
       return;
     }
     game.readPlayer(chatCommand.getPlayerId()).ifPresent(playerStateReader -> {

@@ -61,12 +61,12 @@ public class Game implements Closeable, GameReader {
   }
 
   public PlayerJoinedGameState joinPlayer(
-      final String playerName, final Channel playerChannel)
+      final String playerName, final Channel playerChannel, PlayerStateColor color)
       throws GameLogicError {
     validateGameNotClosed();
     int playerId = playerIdGenerator.getNext();
     PlayerState.PlayerCoordinates spawn = spawner.spawnPlayer(this);
-    PlayerState connectedPlayerState = new PlayerState(playerName, spawn, playerId);
+    PlayerState connectedPlayerState = new PlayerState(playerName, spawn, playerId, color);
     playersRegistry.addPlayer(connectedPlayerState, playerChannel);
     return PlayerJoinedGameState.builder()
         .spawnedPowerUps(powerUpRegistry.getAvailable())

@@ -9,6 +9,7 @@ import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PushChatEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import com.beverly.hills.money.gang.proto.SkinColorSelection;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +39,7 @@ public class ChatEventTest extends AbstractGameServerTest {
           port);
       gameConnection.write(
           JoinGameCommand.newBuilder()
-              .setVersion(ServerConfig.VERSION)
+              .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
               .setPlayerName("my player name " + i)
               .setGameId(gameIdToConnectTo).build());
     }
@@ -96,7 +97,7 @@ public class ChatEventTest extends AbstractGameServerTest {
           port);
       gameConnection.write(
           JoinGameCommand.newBuilder()
-              .setVersion(ServerConfig.VERSION)
+              .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
               .setPlayerName("my player name " + i)
               .setGameId(gameIdToConnectTo).build());
     }

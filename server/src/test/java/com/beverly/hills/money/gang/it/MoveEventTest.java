@@ -9,6 +9,7 @@ import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import com.beverly.hills.money.gang.proto.SkinColorSelection;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
@@ -31,7 +32,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         port);
     movingPlayerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(movingPlayerConnection.getResponse());
@@ -43,7 +44,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         "localhost", port);
     observerPlayerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("new player")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerPlayerConnection.getResponse());
@@ -116,7 +117,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         "localhost", port);
     cheatingPlayerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(cheatingPlayerConnection.getResponse());
@@ -128,7 +129,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         "localhost", port);
     observerPlayerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("new player")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerPlayerConnection.getResponse());
@@ -184,7 +185,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         port);
     observerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerConnection.getResponse());
@@ -196,7 +197,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         port);
     wrongGameConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("new player")
             .setGameId(gameIdToConnectTo).build());
 

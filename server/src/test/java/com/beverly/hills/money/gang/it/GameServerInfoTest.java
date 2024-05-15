@@ -68,6 +68,7 @@ public class GameServerInfoTest extends AbstractGameServerTest {
     assertEquals(GameErrorCode.AUTH_ERROR.ordinal(), errorEvent.getErrorCode(),
         "Should be auth error");
     assertEquals("Incorrect server pin code", errorEvent.getMessage());
+    Thread.sleep(250);
     assertTrue(gameConnection.isDisconnected());
     assertEquals(1, gameConnection.getNetworkStats().getReceivedMessages());
     assertEquals(serverResponse.getSerializedSize(),

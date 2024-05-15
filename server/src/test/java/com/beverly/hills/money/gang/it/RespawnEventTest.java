@@ -9,6 +9,8 @@ import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.RespawnCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import com.beverly.hills.money.gang.proto.ServerResponse.PlayerSkinColor;
+import com.beverly.hills.money.gang.proto.SkinColorSelection;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -31,14 +33,14 @@ public class RespawnEventTest extends AbstractGameServerTest {
         port);
     killerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.PINK)
             .setPlayerName(shooterPlayerName)
             .setGameId(gameIdToConnectTo).build());
 
     GameConnection deadConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
     deadConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.PURPLE)
             .setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
 
@@ -94,6 +96,15 @@ public class RespawnEventTest extends AbstractGameServerTest {
         .orElseThrow(() -> new IllegalStateException("There should be a spawn event"));
     assertEquals(1, respawnResponse.getGameEvents().getEventsCount());
 
+    var otherPlayersSpawnResponse = deadConnection.getResponse().poll()
+        .orElseThrow(() -> new IllegalStateException("There should be other players' spawn event"));
+    assertEquals(ServerResponse.GameEvent.GameEventType.SPAWN,
+        otherPlayersSpawnResponse.getGameEvents().getEvents(0).getEventType());
+    assertEquals(shooterPlayerId,
+        otherPlayersSpawnResponse.getGameEvents().getEvents(0).getPlayer().getPlayerId());
+    assertEquals(PlayerSkinColor.PINK,
+        otherPlayersSpawnResponse.getGameEvents().getEvents(0).getPlayer().getSkinColor());
+
     var respawnEvent = respawnResponse.getGameEvents().getEvents(0);
     assertEquals(ServerResponse.GameEvent.GameEventType.SPAWN, respawnEvent.getEventType());
     assertEquals(shotPlayerId, respawnEvent.getPlayer().getPlayerId());
@@ -103,6 +114,8 @@ public class RespawnEventTest extends AbstractGameServerTest {
             .anyMatch(serverResponse -> serverResponse.hasGameEvents()
                 && serverResponse.getGameEvents().getEvents(0).getEventType()
                 == ServerResponse.GameEvent.GameEventType.SPAWN
+                && serverResponse.getGameEvents().getEvents(0).getPlayer().getSkinColor()
+                == PlayerSkinColor.PURPLE
                 && serverResponse.getGameEvents().getEvents(0).getPlayer().getPlayerId()
                 == shotPlayerId),
         "Killer must see the respawn. Actual response: " + killerConnection.getResponse());

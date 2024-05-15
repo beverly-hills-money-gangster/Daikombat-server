@@ -8,6 +8,7 @@ import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import com.beverly.hills.money.gang.proto.SkinColorSelection;
 import com.beverly.hills.money.gang.state.PlayerState;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class ConcurrentKillTest extends AbstractGameServerTest {
               port);
           gameConnection.write(
               JoinGameCommand.newBuilder()
-                  .setVersion(ServerConfig.VERSION)
+                  .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
                   .setPlayerName("my player name " + finalJ)
                   .setGameId(0).build());
           waitUntilQueueNonEmpty(gameConnection.getResponse());

@@ -32,6 +32,16 @@ message JoinGameCommand {
   optional int32 gameId = 1;
   optional string version = 2;
   optional string playerName = 3;
+  optional SkinColorSelection skin = 4;
+}
+
+enum SkinColorSelection{
+  GREEN = 0;
+  PINK = 1;
+  PURPLE = 2;
+  BLUE = 3;
+  YELLOW = 4;
+  ORANGE = 5;
 }
 
 message RespawnCommand {

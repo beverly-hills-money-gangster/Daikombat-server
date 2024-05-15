@@ -29,8 +29,9 @@ public class PlayerState implements PlayerStateReader {
   private final AtomicInteger kills = new AtomicInteger();
   private final AtomicInteger deaths = new AtomicInteger();
   private final AtomicInteger health = new AtomicInteger(DEFAULT_HP);
+  @Getter
+  private final PlayerStateColor color;
   private final Map<PowerUpType, PowerUpInEffect> powerUps = new ConcurrentHashMap<>();
-
 
   @Getter
   private final int playerId;
@@ -39,8 +40,9 @@ public class PlayerState implements PlayerStateReader {
   private final String playerName;
   private final AtomicReference<PlayerCoordinates> playerCoordinatesRef;
 
-  public PlayerState(String name, PlayerCoordinates coordinates, int id) {
+  public PlayerState(String name, PlayerCoordinates coordinates, int id, PlayerStateColor color) {
     this.playerName = name;
+    this.color = color;
     this.playerCoordinatesRef = new AtomicReference<>(coordinates);
     this.playerId = id;
     defaultDamage();

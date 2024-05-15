@@ -7,6 +7,7 @@ import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStats;
 import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUp;
 import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType;
+import com.beverly.hills.money.gang.proto.ServerResponse.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent;
 import com.beverly.hills.money.gang.state.AttackType;
 import com.beverly.hills.money.gang.state.GameLeaderBoardItem;
@@ -14,6 +15,7 @@ import com.beverly.hills.money.gang.state.GameReader;
 import com.beverly.hills.money.gang.state.PlayerJoinedGameState;
 import com.beverly.hills.money.gang.state.PlayerRespawnedGameState;
 import com.beverly.hills.money.gang.state.PlayerState;
+import com.beverly.hills.money.gang.state.PlayerStateColor;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
 import com.beverly.hills.money.gang.state.Vector;
 import java.util.List;
@@ -47,7 +49,7 @@ public interface ServerResponseFactory {
     return ServerResponse.GameEvent.newBuilder()
         .setEventType(ServerResponse.GameEvent.GameEventType.SPAWN)
         .setLeaderBoard(createLeaderBoard(leaderBoard))
-        .setPlayer(createPlayerStats(playerStateReader))
+        .setPlayer(createFullPlayerStats(playerStateReader))
         .build();
   }
 
@@ -65,7 +67,7 @@ public interface ServerResponseFactory {
   static ServerResponse.GameEvent createPowerUpPlayerMoveGameEvent(
       PlayerStateReader playerStateReader) {
     return ServerResponse.GameEvent.newBuilder()
-        .setPlayer(createPlayerStats(playerStateReader))
+        .setPlayer(createFullPlayerStats(playerStateReader))
         .setEventType(ServerResponse.GameEvent.GameEventType.MOVE).build();
   }
 
@@ -156,11 +158,12 @@ public interface ServerResponseFactory {
         .build();
   }
 
-  static ServerResponse.GameEventPlayerStats createPlayerStats(PlayerStateReader playerReader) {
+  static ServerResponse.GameEventPlayerStats createFullPlayerStats(PlayerStateReader playerReader) {
     return GameEventPlayerStats.newBuilder()
         .setPlayerName(playerReader.getPlayerName())
         .setPosition(createVector(playerReader.getCoordinates().getPosition()))
         .setDirection(createVector(playerReader.getCoordinates().getDirection()))
+        .setSkinColor(createPlayerSkinColor(playerReader.getColor()))
         .addAllActivePowerUps(playerReader.getActivePowerUps().map(
             powerUpInEffect -> GamePowerUp.newBuilder()
                 .setLastsForMls(
@@ -170,6 +173,31 @@ public interface ServerResponseFactory {
         .setHealth(playerReader.getHealth())
         .setPlayerId(playerReader.getPlayerId())
         .build();
+  }
+
+  static PlayerSkinColor createPlayerSkinColor(PlayerStateColor color) {
+    switch (color) {
+      case BLUE -> {
+        return PlayerSkinColor.BLUE;
+      }
+      case GREEN -> {
+        return PlayerSkinColor.GREEN;
+      }
+      case PINK -> {
+        return PlayerSkinColor.PINK;
+      }
+      case PURPLE -> {
+        return PlayerSkinColor.PURPLE;
+      }
+      case YELLOW -> {
+        return PlayerSkinColor.YELLOW;
+      }
+      case ORANGE -> {
+        return PlayerSkinColor.ORANGE;
+      }
+      default -> throw new IllegalArgumentException(
+          "Not supported skin color " + color.name());
+    }
   }
 
   private static GamePowerUpType createGamePowerUpType(PowerUpType powerUpType) {
@@ -229,8 +257,8 @@ public interface ServerResponseFactory {
     var deadPlayerEvent = ServerResponse.GameEvents.newBuilder()
         .addEvents(ServerResponse.GameEvent.newBuilder()
             .setEventType(killType)
-            .setPlayer(createPlayerStats(shooterPlayerReader))
-            .setAffectedPlayer(createPlayerStats(deadPlayerReader)))
+            .setPlayer(createFullPlayerStats(shooterPlayerReader))
+            .setAffectedPlayer(createFullPlayerStats(deadPlayerReader)))
         .setPlayersOnline(playersOnline);
     return ServerResponse.newBuilder()
         .setGameEvents(deadPlayerEvent)
@@ -250,8 +278,8 @@ public interface ServerResponseFactory {
     var deadPlayerEvent = ServerResponse.GameEvents.newBuilder()
         .addEvents(ServerResponse.GameEvent.newBuilder()
             .setEventType(attackEventType)
-            .setPlayer(createPlayerStats(shooterPlayerReader))
-            .setAffectedPlayer(createPlayerStats(shotPlayerReader)));
+            .setPlayer(createFullPlayerStats(shooterPlayerReader))
+            .setAffectedPlayer(createFullPlayerStats(shotPlayerReader)));
     deadPlayerEvent.setPlayersOnline(playersOnline);
     return ServerResponse.newBuilder()
         .setGameEvents(deadPlayerEvent)
@@ -276,7 +304,7 @@ public interface ServerResponseFactory {
     var deadPlayerEvent = ServerResponse.GameEvents.newBuilder()
         .addEvents(ServerResponse.GameEvent.newBuilder()
             .setEventType(attackType)
-            .setPlayer(createPlayerStats(shooterPlayerReader)));
+            .setPlayer(createFullPlayerStats(shooterPlayerReader)));
     deadPlayerEvent.setPlayersOnline(playersOnline);
     return ServerResponse.newBuilder()
         .setGameEvents(deadPlayerEvent)

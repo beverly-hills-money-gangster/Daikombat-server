@@ -95,9 +95,13 @@ public abstract class AbstractGameServerTest {
   }
 
   protected void waitUntilQueueNonEmpty(QueueReader<?> queueReader) {
+    waitUntilGetResponses(queueReader, 1);
+  }
+
+  protected void waitUntilGetResponses(QueueReader<?> queueReader, int responseCount) {
     long stopWaitTimeMls = System.currentTimeMillis() + MAX_QUEUE_WAIT_TIME_MLS;
     while (System.currentTimeMillis() < stopWaitTimeMls) {
-      if (queueReader.size() != 0) {
+      if (queueReader.size() >= responseCount) {
         return;
       }
       try {

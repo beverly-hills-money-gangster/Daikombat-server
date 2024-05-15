@@ -9,6 +9,8 @@ public interface PlayerStateReader {
 
   PlayerState.PlayerCoordinates getCoordinates();
 
+  PlayerStateColor getColor();
+
   int getPlayerId();
 
   String getPlayerName();

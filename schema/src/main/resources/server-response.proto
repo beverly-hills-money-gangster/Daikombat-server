@@ -98,6 +98,16 @@ message ServerResponse {
     Vector direction = 4;
     optional int32 health = 5;
     repeated GamePowerUp activePowerUps = 6;
+    optional PlayerSkinColor skinColor = 7;
+  }
+
+  enum PlayerSkinColor {
+    GREEN = 0;
+    PINK = 1;
+    PURPLE = 2;
+    BLUE = 3;
+    YELLOW = 4;
+    ORANGE = 5;
   }
 
   message GamePowerUp {

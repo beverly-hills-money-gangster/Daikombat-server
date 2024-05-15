@@ -10,11 +10,13 @@ import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import com.beverly.hills.money.gang.proto.SkinColorSelection;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerJoinedGameState;
 import com.beverly.hills.money.gang.state.PlayerState;
+import com.beverly.hills.money.gang.state.PlayerStateColor;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
 import com.beverly.hills.money.gang.util.VersionUtil;
 import io.netty.channel.Channel;
@@ -41,6 +43,7 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
     return joinGameCommand.hasGameId()
         && joinGameCommand.hasPlayerName()
         && StringUtils.isNotBlank(joinGameCommand.getPlayerName())
+        && joinGameCommand.hasSkin()
         && joinGameCommand.hasVersion()
         && VersionUtil.getMajorVersion(ServerConfig.VERSION)
         == VersionUtil.getMajorVersion(joinGameCommand.getVersion());
@@ -50,7 +53,8 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
   protected void handleInternal(ServerCommand msg, Channel currentChannel) throws GameLogicError {
     Game game = gameRoomRegistry.getGame(msg.getJoinGameCommand().getGameId());
     PlayerJoinedGameState playerConnected = game.joinPlayer(
-        msg.getJoinGameCommand().getPlayerName(), currentChannel);
+        msg.getJoinGameCommand().getPlayerName(), currentChannel,
+        getSkinColor(msg.getJoinGameCommand().getSkin()));
     ServerResponse playerSpawnEvent = createJoinSinglePlayer(
         game.playersOnline(), playerConnected);
     LOG.info("Send my spawn to myself");
@@ -64,6 +68,31 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
           sendOtherSpawns(game, currentChannel, playerConnected.getPlayerState(),
               playerConnected.getSpawnedPowerUps());
         });
+  }
+
+  private PlayerStateColor getSkinColor(SkinColorSelection skinColorSelection) {
+    switch (skinColorSelection) {
+      case BLUE -> {
+        return PlayerStateColor.BLUE;
+      }
+      case GREEN -> {
+        return PlayerStateColor.GREEN;
+      }
+      case PINK -> {
+        return PlayerStateColor.PINK;
+      }
+      case PURPLE -> {
+        return PlayerStateColor.PURPLE;
+      }
+      case YELLOW -> {
+        return PlayerStateColor.YELLOW;
+      }
+      case ORANGE -> {
+        return PlayerStateColor.ORANGE;
+      }
+      default -> throw new IllegalArgumentException(
+          "Not supported skin color " + skinColorSelection.name());
+    }
   }
 
   protected void sendOtherSpawns(Game game, Channel currentChannel,

@@ -22,7 +22,7 @@ public class PlayerStateTest {
   public void tesRegisterKillVampireBoostFullHealth() {
     PlayerState playerState = new PlayerState(
         "test player",
-        PlayerState.PlayerCoordinates.builder().build(), 123);
+        PlayerState.PlayerCoordinates.builder().build(), 123, PlayerStateColor.GREEN);
 
     playerState.registerKill();
 
@@ -40,7 +40,7 @@ public class PlayerStateTest {
   public void tesRegisterKillVampireBoostRestoreHealth() {
     PlayerState playerState = new PlayerState(
         "test player",
-        PlayerState.PlayerCoordinates.builder().build(), 123);
+        PlayerState.PlayerCoordinates.builder().build(), 123, PlayerStateColor.GREEN);
     playerState.getShot(1);
     playerState.getShot(1);
 
@@ -58,7 +58,7 @@ public class PlayerStateTest {
     int threadsNum = 16;
     PlayerState playerState = new PlayerState(
         "test player",
-        PlayerState.PlayerCoordinates.builder().build(), 123);
+        PlayerState.PlayerCoordinates.builder().build(), 123, PlayerStateColor.GREEN);
 
     playerState.getShot(1);
     playerState.getShot(1);

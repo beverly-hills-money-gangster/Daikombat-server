@@ -19,6 +19,7 @@ private static final long serialVersionUID = 0L;
   private JoinGameCommand() {
     version_ = "";
     playerName_ = "";
+    skin_ = 0;
   }
 
   @java.lang.Override
@@ -155,6 +156,31 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int SKIN_FIELD_NUMBER = 4;
+  private int skin_ = 0;
+  /**
+   * <code>optional .daikombat.dto.SkinColorSelection skin = 4;</code>
+   * @return Whether the skin field is set.
+   */
+  @java.lang.Override public boolean hasSkin() {
+    return ((bitField0_ & 0x00000008) != 0);
+  }
+  /**
+   * <code>optional .daikombat.dto.SkinColorSelection skin = 4;</code>
+   * @return The enum numeric value on the wire for skin.
+   */
+  @java.lang.Override public int getSkinValue() {
+    return skin_;
+  }
+  /**
+   * <code>optional .daikombat.dto.SkinColorSelection skin = 4;</code>
+   * @return The skin.
+   */
+  @java.lang.Override public com.beverly.hills.money.gang.proto.SkinColorSelection getSkin() {
+    com.beverly.hills.money.gang.proto.SkinColorSelection result = com.beverly.hills.money.gang.proto.SkinColorSelection.forNumber(skin_);
+    return result == null ? com.beverly.hills.money.gang.proto.SkinColorSelection.UNRECOGNIZED : result;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -178,6 +204,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000004) != 0)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 3, playerName_);
     }
+    if (((bitField0_ & 0x00000008) != 0)) {
+      output.writeEnum(4, skin_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -196,6 +225,10 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000004) != 0)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, playerName_);
+    }
+    if (((bitField0_ & 0x00000008) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(4, skin_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -227,6 +260,10 @@ private static final long serialVersionUID = 0L;
       if (!getPlayerName()
           .equals(other.getPlayerName())) return false;
     }
+    if (hasSkin() != other.hasSkin()) return false;
+    if (hasSkin()) {
+      if (skin_ != other.skin_) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -249,6 +286,10 @@ private static final long serialVersionUID = 0L;
     if (hasPlayerName()) {
       hash = (37 * hash) + PLAYERNAME_FIELD_NUMBER;
       hash = (53 * hash) + getPlayerName().hashCode();
+    }
+    if (hasSkin()) {
+      hash = (37 * hash) + SKIN_FIELD_NUMBER;
+      hash = (53 * hash) + skin_;
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -384,6 +425,7 @@ private static final long serialVersionUID = 0L;
       gameId_ = 0;
       version_ = "";
       playerName_ = "";
+      skin_ = 0;
       return this;
     }
 
@@ -429,6 +471,10 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000004) != 0)) {
         result.playerName_ = playerName_;
         to_bitField0_ |= 0x00000004;
+      }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.skin_ = skin_;
+        to_bitField0_ |= 0x00000008;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -490,6 +536,9 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000004;
         onChanged();
       }
+      if (other.hasSkin()) {
+        setSkin(other.getSkin());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -531,6 +580,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000004;
               break;
             } // case 26
+            case 32: {
+              skin_ = input.readEnum();
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 32
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -742,6 +796,66 @@ private static final long serialVersionUID = 0L;
       checkByteStringIsUtf8(value);
       playerName_ = value;
       bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+
+    private int skin_ = 0;
+    /**
+     * <code>optional .daikombat.dto.SkinColorSelection skin = 4;</code>
+     * @return Whether the skin field is set.
+     */
+    @java.lang.Override public boolean hasSkin() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <code>optional .daikombat.dto.SkinColorSelection skin = 4;</code>
+     * @return The enum numeric value on the wire for skin.
+     */
+    @java.lang.Override public int getSkinValue() {
+      return skin_;
+    }
+    /**
+     * <code>optional .daikombat.dto.SkinColorSelection skin = 4;</code>
+     * @param value The enum numeric value on the wire for skin to set.
+     * @return This builder for chaining.
+     */
+    public Builder setSkinValue(int value) {
+      skin_ = value;
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .daikombat.dto.SkinColorSelection skin = 4;</code>
+     * @return The skin.
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.SkinColorSelection getSkin() {
+      com.beverly.hills.money.gang.proto.SkinColorSelection result = com.beverly.hills.money.gang.proto.SkinColorSelection.forNumber(skin_);
+      return result == null ? com.beverly.hills.money.gang.proto.SkinColorSelection.UNRECOGNIZED : result;
+    }
+    /**
+     * <code>optional .daikombat.dto.SkinColorSelection skin = 4;</code>
+     * @param value The skin to set.
+     * @return This builder for chaining.
+     */
+    public Builder setSkin(com.beverly.hills.money.gang.proto.SkinColorSelection value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      bitField0_ |= 0x00000008;
+      skin_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .daikombat.dto.SkinColorSelection skin = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearSkin() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      skin_ = 0;
       onChanged();
       return this;
     }

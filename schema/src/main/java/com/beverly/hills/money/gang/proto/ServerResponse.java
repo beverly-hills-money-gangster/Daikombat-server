@@ -40,6 +40,150 @@ private static final long serialVersionUID = 0L;
   }
 
   /**
+   * Protobuf enum {@code daikombat.dto.ServerResponse.PlayerSkinColor}
+   */
+  public enum PlayerSkinColor
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>GREEN = 0;</code>
+     */
+    GREEN(0),
+    /**
+     * <code>PINK = 1;</code>
+     */
+    PINK(1),
+    /**
+     * <code>PURPLE = 2;</code>
+     */
+    PURPLE(2),
+    /**
+     * <code>BLUE = 3;</code>
+     */
+    BLUE(3),
+    /**
+     * <code>YELLOW = 4;</code>
+     */
+    YELLOW(4),
+    /**
+     * <code>ORANGE = 5;</code>
+     */
+    ORANGE(5),
+    UNRECOGNIZED(-1),
+    ;
+
+    /**
+     * <code>GREEN = 0;</code>
+     */
+    public static final int GREEN_VALUE = 0;
+    /**
+     * <code>PINK = 1;</code>
+     */
+    public static final int PINK_VALUE = 1;
+    /**
+     * <code>PURPLE = 2;</code>
+     */
+    public static final int PURPLE_VALUE = 2;
+    /**
+     * <code>BLUE = 3;</code>
+     */
+    public static final int BLUE_VALUE = 3;
+    /**
+     * <code>YELLOW = 4;</code>
+     */
+    public static final int YELLOW_VALUE = 4;
+    /**
+     * <code>ORANGE = 5;</code>
+     */
+    public static final int ORANGE_VALUE = 5;
+
+
+    public final int getNumber() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalArgumentException(
+            "Can't get the number of an unknown enum value.");
+      }
+      return value;
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static PlayerSkinColor valueOf(int value) {
+      return forNumber(value);
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     */
+    public static PlayerSkinColor forNumber(int value) {
+      switch (value) {
+        case 0: return GREEN;
+        case 1: return PINK;
+        case 2: return PURPLE;
+        case 3: return BLUE;
+        case 4: return YELLOW;
+        case 5: return ORANGE;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<PlayerSkinColor>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        PlayerSkinColor> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<PlayerSkinColor>() {
+            public PlayerSkinColor findValueByNumber(int number) {
+              return PlayerSkinColor.forNumber(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalStateException(
+            "Can't get the descriptor of an unrecognized enum value.");
+      }
+      return getDescriptor().getValues().get(ordinal());
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return com.beverly.hills.money.gang.proto.ServerResponse.getDescriptor().getEnumTypes().get(0);
+    }
+
+    private static final PlayerSkinColor[] VALUES = values();
+
+    public static PlayerSkinColor valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      if (desc.getIndex() == -1) {
+        return UNRECOGNIZED;
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int value;
+
+    private PlayerSkinColor(int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:daikombat.dto.ServerResponse.PlayerSkinColor)
+  }
+
+  /**
    * Protobuf enum {@code daikombat.dto.ServerResponse.GamePowerUpType}
    */
   public enum GamePowerUpType
@@ -112,7 +256,7 @@ private static final long serialVersionUID = 0L;
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return com.beverly.hills.money.gang.proto.ServerResponse.getDescriptor().getEnumTypes().get(0);
+      return com.beverly.hills.money.gang.proto.ServerResponse.getDescriptor().getEnumTypes().get(1);
     }
 
     private static final GamePowerUpType[] VALUES = values();
@@ -9994,6 +10138,22 @@ private static final long serialVersionUID = 0L;
      */
     com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpOrBuilder getActivePowerUpsOrBuilder(
         int index);
+
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.PlayerSkinColor skinColor = 7;</code>
+     * @return Whether the skinColor field is set.
+     */
+    boolean hasSkinColor();
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.PlayerSkinColor skinColor = 7;</code>
+     * @return The enum numeric value on the wire for skinColor.
+     */
+    int getSkinColorValue();
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.PlayerSkinColor skinColor = 7;</code>
+     * @return The skinColor.
+     */
+    com.beverly.hills.money.gang.proto.ServerResponse.PlayerSkinColor getSkinColor();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.GameEventPlayerStats}
@@ -10010,6 +10170,7 @@ private static final long serialVersionUID = 0L;
     private GameEventPlayerStats() {
       playerName_ = "";
       activePowerUps_ = java.util.Collections.emptyList();
+      skinColor_ = 0;
     }
 
     @java.lang.Override
@@ -10211,6 +10372,31 @@ private static final long serialVersionUID = 0L;
       return activePowerUps_.get(index);
     }
 
+    public static final int SKINCOLOR_FIELD_NUMBER = 7;
+    private int skinColor_ = 0;
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.PlayerSkinColor skinColor = 7;</code>
+     * @return Whether the skinColor field is set.
+     */
+    @java.lang.Override public boolean hasSkinColor() {
+      return ((bitField0_ & 0x00000020) != 0);
+    }
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.PlayerSkinColor skinColor = 7;</code>
+     * @return The enum numeric value on the wire for skinColor.
+     */
+    @java.lang.Override public int getSkinColorValue() {
+      return skinColor_;
+    }
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.PlayerSkinColor skinColor = 7;</code>
+     * @return The skinColor.
+     */
+    @java.lang.Override public com.beverly.hills.money.gang.proto.ServerResponse.PlayerSkinColor getSkinColor() {
+      com.beverly.hills.money.gang.proto.ServerResponse.PlayerSkinColor result = com.beverly.hills.money.gang.proto.ServerResponse.PlayerSkinColor.forNumber(skinColor_);
+      return result == null ? com.beverly.hills.money.gang.proto.ServerResponse.PlayerSkinColor.UNRECOGNIZED : result;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -10243,6 +10429,9 @@ private static final long serialVersionUID = 0L;
       for (int i = 0; i < activePowerUps_.size(); i++) {
         output.writeMessage(6, activePowerUps_.get(i));
       }
+      if (((bitField0_ & 0x00000020) != 0)) {
+        output.writeEnum(7, skinColor_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -10274,6 +10463,10 @@ private static final long serialVersionUID = 0L;
       for (int i = 0; i < activePowerUps_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(6, activePowerUps_.get(i));
+      }
+      if (((bitField0_ & 0x00000020) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(7, skinColor_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -10317,6 +10510,10 @@ private static final long serialVersionUID = 0L;
       }
       if (!getActivePowerUpsList()
           .equals(other.getActivePowerUpsList())) return false;
+      if (hasSkinColor() != other.hasSkinColor()) return false;
+      if (hasSkinColor()) {
+        if (skinColor_ != other.skinColor_) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -10351,6 +10548,10 @@ private static final long serialVersionUID = 0L;
       if (getActivePowerUpsCount() > 0) {
         hash = (37 * hash) + ACTIVEPOWERUPS_FIELD_NUMBER;
         hash = (53 * hash) + getActivePowerUpsList().hashCode();
+      }
+      if (hasSkinColor()) {
+        hash = (37 * hash) + SKINCOLOR_FIELD_NUMBER;
+        hash = (53 * hash) + skinColor_;
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -10511,6 +10712,7 @@ private static final long serialVersionUID = 0L;
           activePowerUpsBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000020);
+        skinColor_ = 0;
         return this;
       }
 
@@ -10581,6 +10783,10 @@ private static final long serialVersionUID = 0L;
         if (((from_bitField0_ & 0x00000010) != 0)) {
           result.health_ = health_;
           to_bitField0_ |= 0x00000010;
+        }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          result.skinColor_ = skinColor_;
+          to_bitField0_ |= 0x00000020;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -10672,6 +10878,9 @@ private static final long serialVersionUID = 0L;
             }
           }
         }
+        if (other.hasSkinColor()) {
+          setSkinColor(other.getSkinColor());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -10740,6 +10949,11 @@ private static final long serialVersionUID = 0L;
                 }
                 break;
               } // case 50
+              case 56: {
+                skinColor_ = input.readEnum();
+                bitField0_ |= 0x00000040;
+                break;
+              } // case 56
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -11396,6 +11610,66 @@ private static final long serialVersionUID = 0L;
           activePowerUps_ = null;
         }
         return activePowerUpsBuilder_;
+      }
+
+      private int skinColor_ = 0;
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.PlayerSkinColor skinColor = 7;</code>
+       * @return Whether the skinColor field is set.
+       */
+      @java.lang.Override public boolean hasSkinColor() {
+        return ((bitField0_ & 0x00000040) != 0);
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.PlayerSkinColor skinColor = 7;</code>
+       * @return The enum numeric value on the wire for skinColor.
+       */
+      @java.lang.Override public int getSkinColorValue() {
+        return skinColor_;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.PlayerSkinColor skinColor = 7;</code>
+       * @param value The enum numeric value on the wire for skinColor to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSkinColorValue(int value) {
+        skinColor_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.PlayerSkinColor skinColor = 7;</code>
+       * @return The skinColor.
+       */
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.PlayerSkinColor getSkinColor() {
+        com.beverly.hills.money.gang.proto.ServerResponse.PlayerSkinColor result = com.beverly.hills.money.gang.proto.ServerResponse.PlayerSkinColor.forNumber(skinColor_);
+        return result == null ? com.beverly.hills.money.gang.proto.ServerResponse.PlayerSkinColor.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.PlayerSkinColor skinColor = 7;</code>
+       * @param value The skinColor to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSkinColor(com.beverly.hills.money.gang.proto.ServerResponse.PlayerSkinColor value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000040;
+        skinColor_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.PlayerSkinColor skinColor = 7;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSkinColor() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        skinColor_ = 0;
+        onChanged();
+        return this;
       }
       @java.lang.Override
       public final Builder setUnknownFields(

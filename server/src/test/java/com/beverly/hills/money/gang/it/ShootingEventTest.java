@@ -11,6 +11,7 @@ import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import com.beverly.hills.money.gang.proto.SkinColorSelection;
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Supplier;
@@ -35,14 +36,14 @@ public class ShootingEventTest extends AbstractGameServerTest {
         port);
     shooterConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     GameConnection observerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
         port);
     observerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(shooterConnection.getResponse());
@@ -112,14 +113,14 @@ public class ShootingEventTest extends AbstractGameServerTest {
         port);
     puncherConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     GameConnection observerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
         port);
     observerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(puncherConnection.getResponse());
@@ -191,14 +192,14 @@ public class ShootingEventTest extends AbstractGameServerTest {
         port);
     shooterConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     GameConnection getShotConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
         port);
     getShotConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(shooterConnection.getResponse());
@@ -295,14 +296,14 @@ public class ShootingEventTest extends AbstractGameServerTest {
         port);
     punchingConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     GameConnection getPunchedConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
         port);
     getPunchedConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(punchingConnection.getResponse());
@@ -398,14 +399,14 @@ public class ShootingEventTest extends AbstractGameServerTest {
         port);
     shooterConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     GameConnection getShotConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
         port);
     getShotConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
 
@@ -459,14 +460,14 @@ public class ShootingEventTest extends AbstractGameServerTest {
         port);
     puncherConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     GameConnection getPunchedConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
         port);
     getPunchedConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
 
@@ -520,14 +521,14 @@ public class ShootingEventTest extends AbstractGameServerTest {
         port);
     killerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName(shooterPlayerName)
             .setGameId(gameIdToConnectTo).build());
 
     GameConnection deadConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
     deadConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(killerConnection.getResponse());
@@ -633,7 +634,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         port);
     observerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName(observerPlayerName)
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerConnection.getResponse());
@@ -681,14 +682,14 @@ public class ShootingEventTest extends AbstractGameServerTest {
         port);
     puncherConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName(puncherPlayerName)
             .setGameId(gameIdToConnectTo).build());
 
     GameConnection deadConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
     deadConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(puncherConnection.getResponse());
@@ -796,7 +797,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         port);
     observerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName(observerPlayerName)
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerConnection.getResponse());
@@ -844,14 +845,14 @@ public class ShootingEventTest extends AbstractGameServerTest {
         port);
     shooterConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     GameConnection deadPlayerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
         port);
     deadPlayerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(shooterConnection.getResponse());
@@ -952,7 +953,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         port);
     selfShootingConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(selfShootingConnection.getResponse());

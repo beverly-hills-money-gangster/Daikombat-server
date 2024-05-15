@@ -6,17 +6,33 @@ import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import lombok.Getter;
 
 public class NetworkStats implements NetworkStatsReader {
 
   private static final AtomicInteger COUNTER = new AtomicInteger();
   private static final MeterRegistry METER_REGISTRY = new SimpleMeterRegistry();
 
+  @Getter
   private final DistributionSummary pingDistributionSummary;
+
+  @Getter
+  private final DistributionSummary outboundDistributionSummary;
+
+  @Getter
+  private final DistributionSummary inboundDistributionSummary;
 
   public NetworkStats() {
     this.pingDistributionSummary = DistributionSummary
         .builder("ping.distribution.summary" + COUNTER.incrementAndGet())
+        .publishPercentiles(0.5, 0.75, 0.99)
+        .register(METER_REGISTRY);
+    this.outboundDistributionSummary = DistributionSummary
+        .builder("outbound.distribution.summary" + COUNTER.incrementAndGet())
+        .publishPercentiles(0.5, 0.75, 0.99)
+        .register(METER_REGISTRY);
+    this.inboundDistributionSummary = DistributionSummary
+        .builder("inbound.distribution.summary" + COUNTER.incrementAndGet())
         .publishPercentiles(0.5, 0.75, 0.99)
         .register(METER_REGISTRY);
   }
@@ -47,11 +63,13 @@ public class NetworkStats implements NetworkStatsReader {
 
   public void addOutboundPayloadBytes(long bytes) {
     outboundPayloadBytes.addAndGet(bytes);
+    outboundDistributionSummary.record(bytes);
   }
 
 
   public void addInboundPayloadBytes(long bytes) {
     inboundPayloadBytes.addAndGet(bytes);
+    inboundDistributionSummary.record(bytes);
   }
 
 
@@ -82,13 +100,21 @@ public class NetworkStats implements NetworkStatsReader {
 
   @Override
   public String toString() {
-    var snapshot = pingDistributionSummary.takeSnapshot();
-    return "\npingDistributionSummary: probes " + snapshot.count() + ", " + Arrays.toString(
-        snapshot.percentileValues()) +
+    var pingSnapshot = pingDistributionSummary.takeSnapshot();
+    var inboundSnapshot = inboundDistributionSummary.takeSnapshot();
+    var outboundSnapshot = outboundDistributionSummary.takeSnapshot();
+    return "\npingDistributionSummary: probes " + pingSnapshot.count() + ", " + Arrays.toString(
+        pingSnapshot.percentileValues()) +
         "\nreceivedMessages:" + receivedMessages +
         "\nsentMessages:" + sentMessages +
         "\noutboundPayloadBytes:" + outboundPayloadBytes +
-        "\ninboundPayloadBytes:" + inboundPayloadBytes;
+        "\noutboundPayloadBytesDistributionSummary: probes " + outboundSnapshot.count() + ", "
+        + Arrays.toString(
+        outboundSnapshot.percentileValues()) +
+        "\ninboundPayloadBytes:" + inboundPayloadBytes +
+        "\ninboundPayloadBytesDistributionSummary: probes " + inboundSnapshot.count() + ", "
+        + Arrays.toString(
+        inboundSnapshot.percentileValues());
   }
 
 }

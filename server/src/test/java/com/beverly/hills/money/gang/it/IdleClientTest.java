@@ -11,6 +11,7 @@ import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import com.beverly.hills.money.gang.proto.SkinColorSelection;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Function;
@@ -39,11 +40,13 @@ public class IdleClientTest extends AbstractGameServerTest {
     gameConnectionIdle.write(
         JoinGameCommand.newBuilder()
             .setVersion(ClientConfig.VERSION)
+            .setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my player name")
             .setGameId(gameToConnectTo).build());
     gameConnectionObserver.write(
         JoinGameCommand.newBuilder()
             .setVersion(ClientConfig.VERSION)
+            .setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my player name observer")
             .setGameId(gameToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnectionIdle.getResponse());
@@ -149,14 +152,14 @@ public class IdleClientTest extends AbstractGameServerTest {
         port);
     puncherConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName(puncherPlayerName)
             .setGameId(gameIdToConnectTo).build());
 
     GameConnection deadConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
     deadConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(puncherConnection.getResponse());
@@ -253,7 +256,7 @@ public class IdleClientTest extends AbstractGameServerTest {
     GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
     gameConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ClientConfig.VERSION)
+            .setVersion(ClientConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my player name")
             .setGameId(gameToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
@@ -317,7 +320,7 @@ public class IdleClientTest extends AbstractGameServerTest {
     GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
     gameConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ClientConfig.VERSION)
+            .setVersion(ClientConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my player name")
             .setGameId(gameToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());

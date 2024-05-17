@@ -7,6 +7,7 @@ import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PushChatEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import com.beverly.hills.money.gang.proto.SkinColorSelection;
 import com.beverly.hills.money.gang.queue.QueueReader;
 import java.util.Random;
 import lombok.Builder;
@@ -39,6 +40,7 @@ public class BotRunnable implements Runnable {
             conn -> conn.write(JoinGameCommand.newBuilder()
                 .setPlayerName(Thread.currentThread().getName())
                 .setGameId(GAME_ID_TO_CONNECT)
+                .setSkin(SkinColorSelection.GREEN)
                 .setVersion(ClientConfig.VERSION).build()));
 
         waitUntilQueueNonEmpty(gameConnection.getResponse());

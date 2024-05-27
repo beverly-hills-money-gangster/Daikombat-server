@@ -1,5 +1,6 @@
 package com.beverly.hills.money.gang.powerup;
 
 public enum PowerUpType {
-  QUAD_DAMAGE, SPEED, INVISIBILITY, HEALTH;
+  // TODO don't forget to add "visible" flag to player state in protobuf
+  QUAD_DAMAGE, INVISIBILITY, HEALTH;
 }

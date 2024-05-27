@@ -3,12 +3,13 @@ package com.beverly.hills.money.gang.state;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -88,6 +89,13 @@ public class PlayerState implements PlayerStateReader {
     dead.set(false);
   }
 
+  public void restoreHealth() {
+    if (dead.get()) {
+      return;
+    }
+    health.set(DEFAULT_HP);
+  }
+
   public int getKills() {
     return kills.get();
   }
@@ -127,8 +135,8 @@ public class PlayerState implements PlayerStateReader {
   }
 
   @Override
-  public Stream<PowerUpInEffect> getActivePowerUps() {
-    return powerUps.values().stream();
+  public List<PowerUpInEffect> getActivePowerUps() {
+    return new ArrayList<>(powerUps.values());
   }
 
   @Override

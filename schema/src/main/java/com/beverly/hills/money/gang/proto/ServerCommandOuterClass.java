@@ -86,7 +86,7 @@ public final class ServerCommandOuterClass {
       "SkinColorSelectionH\003\210\001\001B\t\n\007_gameIdB\n\n\010_v" +
       "ersionB\r\n\013_playerNameB\007\n\005_skin\"T\n\016Respaw" +
       "nCommand\022\023\n\006gameId\030\001 \001(\005H\000\210\001\001\022\025\n\010playerI" +
-      "d\030\002 \001(\005H\001\210\001\001B\t\n\007_gameIdB\013\n\t_playerId\"\212\004\n" +
+      "d\030\002 \001(\005H\001\210\001\001B\t\n\007_gameIdB\013\n\t_playerId\"\272\004\n" +
       "\024PushGameEventCommand\022\023\n\006gameId\030\001 \001(\005H\000\210" +
       "\001\001\022I\n\teventType\030\002 \001(\01621.daikombat.dto.Pu" +
       "shGameEventCommand.GameEventTypeH\001\210\001\001\022A\n" +
@@ -96,14 +96,15 @@ public final class ServerCommandOuterClass {
       ".VectorH\003\210\001\001\022\025\n\010playerId\030\005 \001(\005H\004\210\001\001\022\035\n\020a" +
       "ffectedPlayerId\030\006 \001(\005H\005\210\001\001\0324\n\006Vector\022\016\n\001" +
       "x\030\001 \001(\002H\000\210\001\001\022\016\n\001y\030\002 \001(\002H\001\210\001\001B\004\n\002_xB\004\n\002_y" +
-      "\"I\n\rGameEventType\022\010\n\004MOVE\020\000\022\t\n\005SHOOT\020\001\022\t" +
-      "\n\005PUNCH\020\002\022\030\n\024QUAD_DAMAGE_POWER_UP\020\003B\t\n\007_" +
-      "gameIdB\014\n\n_eventTypeB\013\n\t_positionB\014\n\n_di" +
-      "rectionB\013\n\t_playerIdB\023\n\021_affectedPlayerI" +
-      "d*W\n\022SkinColorSelection\022\t\n\005GREEN\020\000\022\010\n\004PI" +
-      "NK\020\001\022\n\n\006PURPLE\020\002\022\010\n\004BLUE\020\003\022\n\n\006YELLOW\020\004\022\n" +
-      "\n\006ORANGE\020\005B&\n\"com.beverly.hills.money.ga" +
-      "ng.protoP\001b\006proto3"
+      "\"y\n\rGameEventType\022\010\n\004MOVE\020\000\022\t\n\005SHOOT\020\001\022\t" +
+      "\n\005PUNCH\020\002\022\030\n\024QUAD_DAMAGE_POWER_UP\020\003\022\031\n\025I" +
+      "NVISIBILITY_POWER_UP\020\004\022\023\n\017HEALTH_POWER_U" +
+      "P\020\005B\t\n\007_gameIdB\014\n\n_eventTypeB\013\n\t_positio" +
+      "nB\014\n\n_directionB\013\n\t_playerIdB\023\n\021_affecte" +
+      "dPlayerId*W\n\022SkinColorSelection\022\t\n\005GREEN" +
+      "\020\000\022\010\n\004PINK\020\001\022\n\n\006PURPLE\020\002\022\010\n\004BLUE\020\003\022\n\n\006YE" +
+      "LLOW\020\004\022\n\n\006ORANGE\020\005B&\n\"com.beverly.hills." +
+      "money.gang.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

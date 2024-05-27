@@ -19,6 +19,14 @@ public class Spawner {
   private static final Vector QUAD_DAMAGE_SPAWN_POSITION
       = Vector.builder().x(-13.984175f).y(17.946176f).build();
 
+  // TODO put a different spawn
+  private static final Vector HEALTH_SPAWN_POSITION
+      = Vector.builder().x(-13.984175f).y(17.946176f).build();
+
+  // TODO put a different spawn
+  private static final Vector INVISIBILITY_SPAWN_POSITION
+      = Vector.builder().x(-13.984175f).y(17.946176f).build();
+
   public static final List<PlayerState.PlayerCoordinates> SPAWNS = List.of(
 
       PlayerState.PlayerCoordinates.builder().position(
@@ -55,6 +63,14 @@ public class Spawner {
 
   public Vector spawnQuadDamage() {
     return QUAD_DAMAGE_SPAWN_POSITION;
+  }
+
+  public Vector spawnHealth() {
+    return HEALTH_SPAWN_POSITION;
+  }
+
+  public Vector spawnInvisibility() {
+    return INVISIBILITY_SPAWN_POSITION;
   }
 
   public PlayerState.PlayerCoordinates spawnPlayer(Game game) {

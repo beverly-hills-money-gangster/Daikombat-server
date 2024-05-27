@@ -14,8 +14,12 @@ import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType;
+import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem;
 import com.beverly.hills.money.gang.proto.SkinColorSelection;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -60,8 +64,14 @@ public class PickPowerUpTest extends AbstractGameServerTest {
     int playerId = playerSpawnEvent.getPlayer().getPlayerId();
 
     ServerResponse quadDamagePowerUpSpawnResponse = playerConnection.getResponse().poll().get();
-    var quadDamagePowerUpSpawn = quadDamagePowerUpSpawnResponse.getPowerUpSpawn();
-    assertEquals(GamePowerUpType.QUAD_DAMAGE, quadDamagePowerUpSpawn.getType());
+    var spawns = quadDamagePowerUpSpawnResponse.getPowerUpSpawn().getItemsList().stream().map(
+        PowerUpSpawnEventItem::getType).collect(Collectors.toSet());
+
+    assertEquals(
+        Arrays.stream(GamePowerUpType.values()).filter(
+                gamePowerUpType -> gamePowerUpType!= GamePowerUpType.UNRECOGNIZED)
+            .collect(Collectors.toSet()),
+        spawns, "All power-ups should be spawned");
 
     playerConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(playerId)
@@ -103,7 +113,7 @@ public class PickPowerUpTest extends AbstractGameServerTest {
 
     ServerResponse quadDamagePowerUpReSpawnResponse = playerConnection.getResponse().poll().get();
     var quadDamagePowerUpReSpawn = quadDamagePowerUpReSpawnResponse.getPowerUpSpawn();
-    assertEquals(GamePowerUpType.QUAD_DAMAGE, quadDamagePowerUpReSpawn.getType());
+    assertEquals(GamePowerUpType.QUAD_DAMAGE, quadDamagePowerUpReSpawn.getItems(0).getType());
 
     GameConnection observerAfterRevert = createGameConnection(ServerConfig.PIN_CODE, "localhost",
         port);

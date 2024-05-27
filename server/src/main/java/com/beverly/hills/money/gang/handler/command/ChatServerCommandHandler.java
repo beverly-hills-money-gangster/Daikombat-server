@@ -33,22 +33,17 @@ public class ChatServerCommandHandler extends ServerCommandHandler {
   protected void handleInternal(ServerCommand msg, Channel currentChannel) throws GameLogicError {
     Game game = gameRoomRegistry.getGame(msg.getChatCommand().getGameId());
     var chatCommand = msg.getChatCommand();
-
-    if (gameRoomRegistry.getJoinedPlayer(
-        chatCommand.getGameId(), currentChannel, chatCommand.getPlayerId()).isEmpty()) {
-      LOG.warn("Player {} hasn't joined game {}. Ignore command.",
-          chatCommand.getPlayerId(), chatCommand.getGameId());
-      return;
-    }
-    game.readPlayer(chatCommand.getPlayerId()).ifPresent(playerStateReader -> {
-      var chatMsgToSend = createChatEvent(
-          msg.getChatCommand().getMessage(),
-          playerStateReader.getPlayerId(),
-          playerStateReader.getPlayerName());
-      game.getPlayersRegistry().allPlayers()
-          .map(PlayersRegistry.PlayerStateChannel::getChannel)
-          .filter(playerChannel -> playerChannel != currentChannel)
-          .forEach(playerChannel -> playerChannel.writeAndFlush(chatMsgToSend));
-    });
+    gameRoomRegistry.getJoinedPlayer(
+            chatCommand.getGameId(), currentChannel, chatCommand.getPlayerId())
+        .ifPresent(playerStateReader -> {
+          var chatMsgToSend = createChatEvent(
+              msg.getChatCommand().getMessage(),
+              playerStateReader.getPlayerId(),
+              playerStateReader.getPlayerName());
+          game.getPlayersRegistry().allPlayers()
+              .map(PlayersRegistry.PlayerStateChannel::getChannel)
+              .filter(playerChannel -> playerChannel != currentChannel)
+              .forEach(playerChannel -> playerChannel.writeAndFlush(chatMsgToSend));
+        });
   }
 }

@@ -9,6 +9,7 @@ import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUp;
 import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType;
 import com.beverly.hills.money.gang.proto.ServerResponse.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent;
+import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem;
 import com.beverly.hills.money.gang.state.AttackType;
 import com.beverly.hills.money.gang.state.GameLeaderBoardItem;
 import com.beverly.hills.money.gang.state.GameReader;
@@ -134,11 +135,13 @@ public interface ServerResponseFactory {
         .build();
   }
 
-  static ServerResponse createQuadDamagePowerUpSpawn(PowerUp powerUp) {
+  static ServerResponse createPowerUpSpawn(Stream<PowerUp> powerUps) {
     return ServerResponse.newBuilder()
         .setPowerUpSpawn(PowerUpSpawnEvent.newBuilder()
-            .setType(GamePowerUpType.QUAD_DAMAGE)
-            .setPosition(createVector(powerUp.getSpawnPosition())))
+            .addAllItems(powerUps.map(power -> PowerUpSpawnEventItem.newBuilder()
+                    .setType(createGamePowerUpType(power.getType()))
+                    .setPosition(createVector(power.getSpawnPosition())).build())
+                .collect(Collectors.toList())))
         .build();
   }
 
@@ -164,7 +167,7 @@ public interface ServerResponseFactory {
         .setPosition(createVector(playerReader.getCoordinates().getPosition()))
         .setDirection(createVector(playerReader.getCoordinates().getDirection()))
         .setSkinColor(createPlayerSkinColor(playerReader.getColor()))
-        .addAllActivePowerUps(playerReader.getActivePowerUps().map(
+        .addAllActivePowerUps(playerReader.getActivePowerUps().stream().map(
             powerUpInEffect -> GamePowerUp.newBuilder()
                 .setLastsForMls(
                     (int) (powerUpInEffect.getEffectiveUntilMls() - System.currentTimeMillis()))
@@ -201,12 +204,11 @@ public interface ServerResponseFactory {
   }
 
   private static GamePowerUpType createGamePowerUpType(PowerUpType powerUpType) {
-    switch (powerUpType) {
-      case QUAD_DAMAGE -> {
-        return GamePowerUpType.QUAD_DAMAGE;
-      }
-      default -> throw new IllegalArgumentException("Not supported power-up " + powerUpType.name());
-    }
+    return switch (powerUpType) {
+      case QUAD_DAMAGE -> GamePowerUpType.QUAD_DAMAGE;
+      case HEALTH -> GamePowerUpType.HEALTH;
+      case INVISIBILITY -> GamePowerUpType.INVISIBILITY;
+    };
   }
 
   static ServerResponse.GameEventPlayerStats createMinimalPlayerStats(

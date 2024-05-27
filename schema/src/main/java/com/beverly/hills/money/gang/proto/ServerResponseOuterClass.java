@@ -26,6 +26,11 @@ public final class ServerResponseOuterClass {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_daikombat_dto_ServerResponse_PowerUpSpawnEvent_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_daikombat_dto_ServerResponse_PowerUpSpawnEventItem_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_daikombat_dto_ServerResponse_PowerUpSpawnEventItem_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_daikombat_dto_ServerResponse_GameOver_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -105,7 +110,7 @@ public final class ServerResponseOuterClass {
   static {
     java.lang.String[] descriptorData = {
       "\n/schema/src/main/resources/server-respo" +
-      "nse.proto\022\rdaikombat.dto\"\333\026\n\016ServerRespo" +
+      "nse.proto\022\rdaikombat.dto\"\370\027\n\016ServerRespo" +
       "nse\022>\n\nerrorEvent\030\001 \001(\0132(.daikombat.dto." +
       "ServerResponse.ErrorEventH\000\022=\n\nchatEvent" +
       "s\030\002 \001(\0132\'.daikombat.dto.ServerResponse.C" +
@@ -117,69 +122,73 @@ public final class ServerResponseOuterClass {
       "er\030\006 \001(\0132&.daikombat.dto.ServerResponse." +
       "GameOverH\000\022G\n\014powerUpSpawn\030\007 \001(\0132/.daiko" +
       "mbat.dto.ServerResponse.PowerUpSpawnEven" +
-      "tH\000\032\250\001\n\021PowerUpSpawnEvent\022@\n\004type\030\001 \001(\0162" +
-      "-.daikombat.dto.ServerResponse.GamePower" +
-      "UpTypeH\000\210\001\001\022;\n\010position\030\002 \001(\0132$.daikomba" +
-      "t.dto.ServerResponse.VectorH\001\210\001\001B\007\n\005_typ" +
-      "eB\013\n\t_position\032_\n\010GameOver\022C\n\013leaderBoar" +
-      "d\030\001 \001(\0132).daikombat.dto.ServerResponse.L" +
-      "eaderBoardH\000\210\001\001B\016\n\014_leaderBoard\032\305\001\n\nServ" +
-      "erInfo\0225\n\005games\030\001 \003(\0132&.daikombat.dto.Se" +
-      "rverResponse.GameInfo\022\024\n\007version\030\002 \001(\tH\000" +
-      "\210\001\001\022\027\n\nfragsToWin\030\003 \001(\005H\001\210\001\001\022\037\n\022movesUpd" +
-      "ateFreqMls\030\004 \001(\005H\002\210\001\001B\n\n\010_versionB\r\n\013_fr" +
-      "agsToWinB\025\n\023_movesUpdateFreqMls\032\006\n\004Ping\032" +
-      "\210\001\n\010GameInfo\022\023\n\006gameId\030\001 \001(\005H\000\210\001\001\022\032\n\rpla" +
-      "yersOnline\030\002 \001(\005H\001\210\001\001\022\033\n\016maxGamePlayers\030" +
-      "\003 \001(\005H\002\210\001\001B\t\n\007_gameIdB\020\n\016_playersOnlineB" +
-      "\021\n\017_maxGamePlayers\032T\n\nErrorEvent\022\026\n\terro" +
-      "rCode\030\001 \001(\005H\000\210\001\001\022\024\n\007message\030\002 \001(\tH\001\210\001\001B\014" +
-      "\n\n_errorCodeB\n\n\010_message\032E\n\nChatEvents\0227" +
-      "\n\006events\030\001 \003(\0132\'.daikombat.dto.ServerRes" +
-      "ponse.ChatEvent\032s\n\nGameEvents\022\032\n\rplayers" +
-      "Online\030\001 \001(\005H\000\210\001\001\0227\n\006events\030\002 \003(\0132\'.daik" +
-      "ombat.dto.ServerResponse.GameEventB\020\n\016_p" +
-      "layersOnline\032m\n\tChatEvent\022\025\n\010playerId\030\001 " +
-      "\001(\005H\000\210\001\001\022\024\n\007message\030\002 \001(\tH\001\210\001\001\022\021\n\004name\030\003" +
-      " \001(\tH\002\210\001\001B\013\n\t_playerIdB\n\n\010_messageB\007\n\005_n" +
-      "ame\032\356\003\n\tGameEvent\022G\n\006player\030\001 \001(\01322.daik" +
-      "ombat.dto.ServerResponse.GameEventPlayer" +
-      "StatsH\000\210\001\001\022O\n\016affectedPlayer\030\002 \001(\01322.dai" +
-      "kombat.dto.ServerResponse.GameEventPlaye" +
-      "rStatsH\001\210\001\001\022H\n\teventType\030\003 \001(\01625.daikomb" +
-      "at.dto.ServerResponse.GameEvent.GameEven" +
-      "tType\022C\n\013leaderBoard\030\004 \001(\0132).daikombat.d" +
-      "to.ServerResponse.LeaderBoardH\002\210\001\001\"\211\001\n\rG" +
-      "ameEventType\022\010\n\004MOVE\020\000\022\t\n\005SHOOT\020\001\022\014\n\010GET" +
-      "_SHOT\020\002\022\021\n\rKILL_SHOOTING\020\003\022\t\n\005SPAWN\020\004\022\010\n" +
-      "\004EXIT\020\005\022\017\n\013GET_PUNCHED\020\006\022\021\n\rKILL_PUNCHIN" +
-      "G\020\007\022\t\n\005PUNCH\020\010B\t\n\007_playerB\021\n\017_affectedPl" +
-      "ayerB\016\n\014_leaderBoard\032K\n\013LeaderBoard\022<\n\005i" +
-      "tems\030\001 \003(\0132-.daikombat.dto.ServerRespons" +
-      "e.LeaderBoardItem\032\233\001\n\017LeaderBoardItem\022\025\n" +
-      "\010playerId\030\001 \001(\005H\000\210\001\001\022\022\n\005kills\030\002 \001(\005H\001\210\001\001" +
-      "\022\027\n\nplayerName\030\003 \001(\tH\002\210\001\001\022\023\n\006deaths\030\004 \001(" +
-      "\005H\003\210\001\001B\013\n\t_playerIdB\010\n\006_killsB\r\n\013_player" +
-      "NameB\t\n\007_deaths\032\213\003\n\024GameEventPlayerStats" +
-      "\022\025\n\010playerId\030\001 \001(\005H\000\210\001\001\022\027\n\nplayerName\030\002 " +
-      "\001(\tH\001\210\001\001\0226\n\010position\030\003 \001(\0132$.daikombat.d" +
-      "to.ServerResponse.Vector\0227\n\tdirection\030\004 " +
-      "\001(\0132$.daikombat.dto.ServerResponse.Vecto" +
-      "r\022\023\n\006health\030\005 \001(\005H\002\210\001\001\022A\n\016activePowerUps" +
-      "\030\006 \003(\0132).daikombat.dto.ServerResponse.Ga" +
-      "mePowerUp\022E\n\tskinColor\030\007 \001(\0162-.daikombat" +
-      ".dto.ServerResponse.PlayerSkinColorH\003\210\001\001" +
-      "B\013\n\t_playerIdB\r\n\013_playerNameB\t\n\007_healthB" +
-      "\014\n\n_skinColor\032\202\001\n\013GamePowerUp\022@\n\004type\030\001 " +
-      "\001(\0162-.daikombat.dto.ServerResponse.GameP" +
-      "owerUpTypeH\000\210\001\001\022\030\n\013lastsForMls\030\002 \001(\005H\001\210\001" +
-      "\001B\007\n\005_typeB\016\n\014_lastsForMls\0324\n\006Vector\022\016\n\001" +
-      "x\030\001 \001(\002H\000\210\001\001\022\016\n\001y\030\002 \001(\002H\001\210\001\001B\004\n\002_xB\004\n\002_y" +
-      "\"T\n\017PlayerSkinColor\022\t\n\005GREEN\020\000\022\010\n\004PINK\020\001" +
-      "\022\n\n\006PURPLE\020\002\022\010\n\004BLUE\020\003\022\n\n\006YELLOW\020\004\022\n\n\006OR" +
-      "ANGE\020\005\"\"\n\017GamePowerUpType\022\017\n\013QUAD_DAMAGE" +
-      "\020\000B\n\n\010responseB&\n\"com.beverly.hills.mone" +
-      "y.gang.protoP\001b\006proto3"
+      "tH\000\032W\n\021PowerUpSpawnEvent\022B\n\005items\030\001 \003(\0132" +
+      "3.daikombat.dto.ServerResponse.PowerUpSp" +
+      "awnEventItem\032\254\001\n\025PowerUpSpawnEventItem\022@" +
+      "\n\004type\030\001 \001(\0162-.daikombat.dto.ServerRespo" +
+      "nse.GamePowerUpTypeH\000\210\001\001\022;\n\010position\030\002 \001" +
+      "(\0132$.daikombat.dto.ServerResponse.Vector" +
+      "H\001\210\001\001B\007\n\005_typeB\013\n\t_position\032_\n\010GameOver\022" +
+      "C\n\013leaderBoard\030\001 \001(\0132).daikombat.dto.Ser" +
+      "verResponse.LeaderBoardH\000\210\001\001B\016\n\014_leaderB" +
+      "oard\032\305\001\n\nServerInfo\0225\n\005games\030\001 \003(\0132&.dai" +
+      "kombat.dto.ServerResponse.GameInfo\022\024\n\007ve" +
+      "rsion\030\002 \001(\tH\000\210\001\001\022\027\n\nfragsToWin\030\003 \001(\005H\001\210\001" +
+      "\001\022\037\n\022movesUpdateFreqMls\030\004 \001(\005H\002\210\001\001B\n\n\010_v" +
+      "ersionB\r\n\013_fragsToWinB\025\n\023_movesUpdateFre" +
+      "qMls\032\006\n\004Ping\032\210\001\n\010GameInfo\022\023\n\006gameId\030\001 \001(" +
+      "\005H\000\210\001\001\022\032\n\rplayersOnline\030\002 \001(\005H\001\210\001\001\022\033\n\016ma" +
+      "xGamePlayers\030\003 \001(\005H\002\210\001\001B\t\n\007_gameIdB\020\n\016_p" +
+      "layersOnlineB\021\n\017_maxGamePlayers\032T\n\nError" +
+      "Event\022\026\n\terrorCode\030\001 \001(\005H\000\210\001\001\022\024\n\007message" +
+      "\030\002 \001(\tH\001\210\001\001B\014\n\n_errorCodeB\n\n\010_message\032E\n" +
+      "\nChatEvents\0227\n\006events\030\001 \003(\0132\'.daikombat." +
+      "dto.ServerResponse.ChatEvent\032s\n\nGameEven" +
+      "ts\022\032\n\rplayersOnline\030\001 \001(\005H\000\210\001\001\0227\n\006events" +
+      "\030\002 \003(\0132\'.daikombat.dto.ServerResponse.Ga" +
+      "meEventB\020\n\016_playersOnline\032m\n\tChatEvent\022\025" +
+      "\n\010playerId\030\001 \001(\005H\000\210\001\001\022\024\n\007message\030\002 \001(\tH\001" +
+      "\210\001\001\022\021\n\004name\030\003 \001(\tH\002\210\001\001B\013\n\t_playerIdB\n\n\010_" +
+      "messageB\007\n\005_name\032\356\003\n\tGameEvent\022G\n\006player" +
+      "\030\001 \001(\01322.daikombat.dto.ServerResponse.Ga" +
+      "meEventPlayerStatsH\000\210\001\001\022O\n\016affectedPlaye" +
+      "r\030\002 \001(\01322.daikombat.dto.ServerResponse.G" +
+      "ameEventPlayerStatsH\001\210\001\001\022H\n\teventType\030\003 " +
+      "\001(\01625.daikombat.dto.ServerResponse.GameE" +
+      "vent.GameEventType\022C\n\013leaderBoard\030\004 \001(\0132" +
+      ").daikombat.dto.ServerResponse.LeaderBoa" +
+      "rdH\002\210\001\001\"\211\001\n\rGameEventType\022\010\n\004MOVE\020\000\022\t\n\005S" +
+      "HOOT\020\001\022\014\n\010GET_SHOT\020\002\022\021\n\rKILL_SHOOTING\020\003\022" +
+      "\t\n\005SPAWN\020\004\022\010\n\004EXIT\020\005\022\017\n\013GET_PUNCHED\020\006\022\021\n" +
+      "\rKILL_PUNCHING\020\007\022\t\n\005PUNCH\020\010B\t\n\007_playerB\021" +
+      "\n\017_affectedPlayerB\016\n\014_leaderBoard\032K\n\013Lea" +
+      "derBoard\022<\n\005items\030\001 \003(\0132-.daikombat.dto." +
+      "ServerResponse.LeaderBoardItem\032\233\001\n\017Leade" +
+      "rBoardItem\022\025\n\010playerId\030\001 \001(\005H\000\210\001\001\022\022\n\005kil" +
+      "ls\030\002 \001(\005H\001\210\001\001\022\027\n\nplayerName\030\003 \001(\tH\002\210\001\001\022\023" +
+      "\n\006deaths\030\004 \001(\005H\003\210\001\001B\013\n\t_playerIdB\010\n\006_kil" +
+      "lsB\r\n\013_playerNameB\t\n\007_deaths\032\255\003\n\024GameEve" +
+      "ntPlayerStats\022\025\n\010playerId\030\001 \001(\005H\000\210\001\001\022\027\n\n" +
+      "playerName\030\002 \001(\tH\001\210\001\001\0226\n\010position\030\003 \001(\0132" +
+      "$.daikombat.dto.ServerResponse.Vector\0227\n" +
+      "\tdirection\030\004 \001(\0132$.daikombat.dto.ServerR" +
+      "esponse.Vector\022\023\n\006health\030\005 \001(\005H\002\210\001\001\022A\n\016a" +
+      "ctivePowerUps\030\006 \003(\0132).daikombat.dto.Serv" +
+      "erResponse.GamePowerUp\022E\n\tskinColor\030\007 \001(" +
+      "\0162-.daikombat.dto.ServerResponse.PlayerS" +
+      "kinColorH\003\210\001\001\022\024\n\007visible\030\010 \001(\010H\004\210\001\001B\013\n\t_" +
+      "playerIdB\r\n\013_playerNameB\t\n\007_healthB\014\n\n_s" +
+      "kinColorB\n\n\010_visible\032\202\001\n\013GamePowerUp\022@\n\004" +
+      "type\030\001 \001(\0162-.daikombat.dto.ServerRespons" +
+      "e.GamePowerUpTypeH\000\210\001\001\022\030\n\013lastsForMls\030\002 " +
+      "\001(\005H\001\210\001\001B\007\n\005_typeB\016\n\014_lastsForMls\0324\n\006Vec" +
+      "tor\022\016\n\001x\030\001 \001(\002H\000\210\001\001\022\016\n\001y\030\002 \001(\002H\001\210\001\001B\004\n\002_" +
+      "xB\004\n\002_y\"T\n\017PlayerSkinColor\022\t\n\005GREEN\020\000\022\010\n" +
+      "\004PINK\020\001\022\n\n\006PURPLE\020\002\022\010\n\004BLUE\020\003\022\n\n\006YELLOW\020" +
+      "\004\022\n\n\006ORANGE\020\005\"@\n\017GamePowerUpType\022\017\n\013QUAD" +
+      "_DAMAGE\020\000\022\020\n\014INVISIBILITY\020\001\022\n\n\006HEALTH\020\002B" +
+      "\n\n\010responseB&\n\"com.beverly.hills.money.g" +
+      "ang.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -196,87 +205,93 @@ public final class ServerResponseOuterClass {
     internal_static_daikombat_dto_ServerResponse_PowerUpSpawnEvent_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_ServerResponse_PowerUpSpawnEvent_descriptor,
+        new java.lang.String[] { "Items", });
+    internal_static_daikombat_dto_ServerResponse_PowerUpSpawnEventItem_descriptor =
+      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(1);
+    internal_static_daikombat_dto_ServerResponse_PowerUpSpawnEventItem_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_daikombat_dto_ServerResponse_PowerUpSpawnEventItem_descriptor,
         new java.lang.String[] { "Type", "Position", });
     internal_static_daikombat_dto_ServerResponse_GameOver_descriptor =
-      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(1);
+      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(2);
     internal_static_daikombat_dto_ServerResponse_GameOver_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_ServerResponse_GameOver_descriptor,
         new java.lang.String[] { "LeaderBoard", });
     internal_static_daikombat_dto_ServerResponse_ServerInfo_descriptor =
-      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(2);
+      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(3);
     internal_static_daikombat_dto_ServerResponse_ServerInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_ServerResponse_ServerInfo_descriptor,
         new java.lang.String[] { "Games", "Version", "FragsToWin", "MovesUpdateFreqMls", });
     internal_static_daikombat_dto_ServerResponse_Ping_descriptor =
-      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(3);
+      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(4);
     internal_static_daikombat_dto_ServerResponse_Ping_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_ServerResponse_Ping_descriptor,
         new java.lang.String[] { });
     internal_static_daikombat_dto_ServerResponse_GameInfo_descriptor =
-      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(4);
+      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(5);
     internal_static_daikombat_dto_ServerResponse_GameInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_ServerResponse_GameInfo_descriptor,
         new java.lang.String[] { "GameId", "PlayersOnline", "MaxGamePlayers", });
     internal_static_daikombat_dto_ServerResponse_ErrorEvent_descriptor =
-      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(5);
+      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(6);
     internal_static_daikombat_dto_ServerResponse_ErrorEvent_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_ServerResponse_ErrorEvent_descriptor,
         new java.lang.String[] { "ErrorCode", "Message", });
     internal_static_daikombat_dto_ServerResponse_ChatEvents_descriptor =
-      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(6);
+      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(7);
     internal_static_daikombat_dto_ServerResponse_ChatEvents_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_ServerResponse_ChatEvents_descriptor,
         new java.lang.String[] { "Events", });
     internal_static_daikombat_dto_ServerResponse_GameEvents_descriptor =
-      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(7);
+      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(8);
     internal_static_daikombat_dto_ServerResponse_GameEvents_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_ServerResponse_GameEvents_descriptor,
         new java.lang.String[] { "PlayersOnline", "Events", });
     internal_static_daikombat_dto_ServerResponse_ChatEvent_descriptor =
-      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(8);
+      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(9);
     internal_static_daikombat_dto_ServerResponse_ChatEvent_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_ServerResponse_ChatEvent_descriptor,
         new java.lang.String[] { "PlayerId", "Message", "Name", });
     internal_static_daikombat_dto_ServerResponse_GameEvent_descriptor =
-      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(9);
+      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(10);
     internal_static_daikombat_dto_ServerResponse_GameEvent_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_ServerResponse_GameEvent_descriptor,
         new java.lang.String[] { "Player", "AffectedPlayer", "EventType", "LeaderBoard", });
     internal_static_daikombat_dto_ServerResponse_LeaderBoard_descriptor =
-      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(10);
+      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(11);
     internal_static_daikombat_dto_ServerResponse_LeaderBoard_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_ServerResponse_LeaderBoard_descriptor,
         new java.lang.String[] { "Items", });
     internal_static_daikombat_dto_ServerResponse_LeaderBoardItem_descriptor =
-      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(11);
+      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(12);
     internal_static_daikombat_dto_ServerResponse_LeaderBoardItem_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_ServerResponse_LeaderBoardItem_descriptor,
         new java.lang.String[] { "PlayerId", "Kills", "PlayerName", "Deaths", });
     internal_static_daikombat_dto_ServerResponse_GameEventPlayerStats_descriptor =
-      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(12);
+      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(13);
     internal_static_daikombat_dto_ServerResponse_GameEventPlayerStats_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_ServerResponse_GameEventPlayerStats_descriptor,
-        new java.lang.String[] { "PlayerId", "PlayerName", "Position", "Direction", "Health", "ActivePowerUps", "SkinColor", });
+        new java.lang.String[] { "PlayerId", "PlayerName", "Position", "Direction", "Health", "ActivePowerUps", "SkinColor", "Visible", });
     internal_static_daikombat_dto_ServerResponse_GamePowerUp_descriptor =
-      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(13);
+      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(14);
     internal_static_daikombat_dto_ServerResponse_GamePowerUp_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_ServerResponse_GamePowerUp_descriptor,
         new java.lang.String[] { "Type", "LastsForMls", });
     internal_static_daikombat_dto_ServerResponse_Vector_descriptor =
-      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(14);
+      internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(15);
     internal_static_daikombat_dto_ServerResponse_Vector_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_ServerResponse_Vector_descriptor,

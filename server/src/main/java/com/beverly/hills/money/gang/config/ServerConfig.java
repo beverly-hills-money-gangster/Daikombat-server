@@ -28,6 +28,15 @@ public interface ServerConfig {
   int QUAD_DAMAGE_LASTS_FOR_MLS = NumberUtils.toInt(
       System.getenv("GAME_SERVER_QUAD_DAMAGE_LASTS_FOR_MLS"), 10_000);
 
+  int HEALTH_SPAWN_MLS = NumberUtils.toInt(
+      System.getenv("GAME_SERVER_HEALTH_SPAWN_MLS"), 30_000);
+
+  int INVISIBILITY_SPAWN_MLS = NumberUtils.toInt(
+      System.getenv("GAME_SERVER_INVISIBILITY_SPAWN_MLS"), 30_000);
+
+  int INVISIBILITY_LASTS_FOR_MLS = NumberUtils.toInt(
+      System.getenv("GAME_SERVER_INVISIBILITY_LASTS_FOR_MLS"), 10_000);
+
   String PIN_CODE = Optional.of(
           StringUtils.defaultIfBlank(System.getenv("GAME_SERVER_PIN_CODE"), "5555"))
       .filter(

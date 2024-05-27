@@ -192,6 +192,14 @@ private static final long serialVersionUID = 0L;
      * <code>QUAD_DAMAGE = 0;</code>
      */
     QUAD_DAMAGE(0),
+    /**
+     * <code>INVISIBILITY = 1;</code>
+     */
+    INVISIBILITY(1),
+    /**
+     * <code>HEALTH = 2;</code>
+     */
+    HEALTH(2),
     UNRECOGNIZED(-1),
     ;
 
@@ -199,6 +207,14 @@ private static final long serialVersionUID = 0L;
      * <code>QUAD_DAMAGE = 0;</code>
      */
     public static final int QUAD_DAMAGE_VALUE = 0;
+    /**
+     * <code>INVISIBILITY = 1;</code>
+     */
+    public static final int INVISIBILITY_VALUE = 1;
+    /**
+     * <code>HEALTH = 2;</code>
+     */
+    public static final int HEALTH_VALUE = 2;
 
 
     public final int getNumber() {
@@ -226,6 +242,8 @@ private static final long serialVersionUID = 0L;
     public static GamePowerUpType forNumber(int value) {
       switch (value) {
         case 0: return QUAD_DAMAGE;
+        case 1: return INVISIBILITY;
+        case 2: return HEALTH;
         default: return null;
       }
     }
@@ -287,35 +305,28 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
-     * @return Whether the type field is set.
+     * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
      */
-    boolean hasType();
+    java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem> 
+        getItemsList();
     /**
-     * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
-     * @return The enum numeric value on the wire for type.
+     * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
      */
-    int getTypeValue();
+    com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem getItems(int index);
     /**
-     * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
-     * @return The type.
+     * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
      */
-    com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType getType();
-
+    int getItemsCount();
     /**
-     * <code>optional .daikombat.dto.ServerResponse.Vector position = 2;</code>
-     * @return Whether the position field is set.
+     * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
      */
-    boolean hasPosition();
+    java.util.List<? extends com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItemOrBuilder> 
+        getItemsOrBuilderList();
     /**
-     * <code>optional .daikombat.dto.ServerResponse.Vector position = 2;</code>
-     * @return The position.
+     * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
      */
-    com.beverly.hills.money.gang.proto.ServerResponse.Vector getPosition();
-    /**
-     * <code>optional .daikombat.dto.ServerResponse.Vector position = 2;</code>
-     */
-    com.beverly.hills.money.gang.proto.ServerResponse.VectorOrBuilder getPositionOrBuilder();
+    com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItemOrBuilder getItemsOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.PowerUpSpawnEvent}
@@ -330,7 +341,7 @@ private static final long serialVersionUID = 0L;
       super(builder);
     }
     private PowerUpSpawnEvent() {
-      type_ = 0;
+      items_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -353,56 +364,45 @@ private static final long serialVersionUID = 0L;
               com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent.class, com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent.Builder.class);
     }
 
-    private int bitField0_;
-    public static final int TYPE_FIELD_NUMBER = 1;
-    private int type_ = 0;
+    public static final int ITEMS_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem> items_;
     /**
-     * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
-     * @return Whether the type field is set.
-     */
-    @java.lang.Override public boolean hasType() {
-      return ((bitField0_ & 0x00000001) != 0);
-    }
-    /**
-     * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
-     * @return The enum numeric value on the wire for type.
-     */
-    @java.lang.Override public int getTypeValue() {
-      return type_;
-    }
-    /**
-     * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
-     * @return The type.
-     */
-    @java.lang.Override public com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType getType() {
-      com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType result = com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType.forNumber(type_);
-      return result == null ? com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType.UNRECOGNIZED : result;
-    }
-
-    public static final int POSITION_FIELD_NUMBER = 2;
-    private com.beverly.hills.money.gang.proto.ServerResponse.Vector position_;
-    /**
-     * <code>optional .daikombat.dto.ServerResponse.Vector position = 2;</code>
-     * @return Whether the position field is set.
+     * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
      */
     @java.lang.Override
-    public boolean hasPosition() {
-      return ((bitField0_ & 0x00000002) != 0);
+    public java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem> getItemsList() {
+      return items_;
     }
     /**
-     * <code>optional .daikombat.dto.ServerResponse.Vector position = 2;</code>
-     * @return The position.
+     * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
      */
     @java.lang.Override
-    public com.beverly.hills.money.gang.proto.ServerResponse.Vector getPosition() {
-      return position_ == null ? com.beverly.hills.money.gang.proto.ServerResponse.Vector.getDefaultInstance() : position_;
+    public java.util.List<? extends com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItemOrBuilder> 
+        getItemsOrBuilderList() {
+      return items_;
     }
     /**
-     * <code>optional .daikombat.dto.ServerResponse.Vector position = 2;</code>
+     * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
      */
     @java.lang.Override
-    public com.beverly.hills.money.gang.proto.ServerResponse.VectorOrBuilder getPositionOrBuilder() {
-      return position_ == null ? com.beverly.hills.money.gang.proto.ServerResponse.Vector.getDefaultInstance() : position_;
+    public int getItemsCount() {
+      return items_.size();
+    }
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem getItems(int index) {
+      return items_.get(index);
+    }
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItemOrBuilder getItemsOrBuilder(
+        int index) {
+      return items_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -419,11 +419,8 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) != 0)) {
-        output.writeEnum(1, type_);
-      }
-      if (((bitField0_ & 0x00000002) != 0)) {
-        output.writeMessage(2, getPosition());
+      for (int i = 0; i < items_.size(); i++) {
+        output.writeMessage(1, items_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -434,13 +431,9 @@ private static final long serialVersionUID = 0L;
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) != 0)) {
+      for (int i = 0; i < items_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(1, type_);
-      }
-      if (((bitField0_ & 0x00000002) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getPosition());
+          .computeMessageSize(1, items_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -457,15 +450,8 @@ private static final long serialVersionUID = 0L;
       }
       com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent other = (com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent) obj;
 
-      if (hasType() != other.hasType()) return false;
-      if (hasType()) {
-        if (type_ != other.type_) return false;
-      }
-      if (hasPosition() != other.hasPosition()) return false;
-      if (hasPosition()) {
-        if (!getPosition()
-            .equals(other.getPosition())) return false;
-      }
+      if (!getItemsList()
+          .equals(other.getItemsList())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -477,13 +463,9 @@ private static final long serialVersionUID = 0L;
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (hasType()) {
-        hash = (37 * hash) + TYPE_FIELD_NUMBER;
-        hash = (53 * hash) + type_;
-      }
-      if (hasPosition()) {
-        hash = (37 * hash) + POSITION_FIELD_NUMBER;
-        hash = (53 * hash) + getPosition().hashCode();
+      if (getItemsCount() > 0) {
+        hash = (37 * hash) + ITEMS_FIELD_NUMBER;
+        hash = (53 * hash) + getItemsList().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -604,6 +586,824 @@ private static final long serialVersionUID = 0L;
 
       // Construct using com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent.newBuilder()
       private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        if (itemsBuilder_ == null) {
+          items_ = java.util.Collections.emptyList();
+        } else {
+          items_ = null;
+          itemsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_PowerUpSpawnEvent_descriptor;
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent getDefaultInstanceForType() {
+        return com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent build() {
+        com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent buildPartial() {
+        com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent result = new com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent(this);
+        buildPartialRepeatedFields(result);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartialRepeatedFields(com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent result) {
+        if (itemsBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            items_ = java.util.Collections.unmodifiableList(items_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.items_ = items_;
+        } else {
+          result.items_ = itemsBuilder_.build();
+        }
+      }
+
+      private void buildPartial0(com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent result) {
+        int from_bitField0_ = bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent) {
+          return mergeFrom((com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent other) {
+        if (other == com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent.getDefaultInstance()) return this;
+        if (itemsBuilder_ == null) {
+          if (!other.items_.isEmpty()) {
+            if (items_.isEmpty()) {
+              items_ = other.items_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureItemsIsMutable();
+              items_.addAll(other.items_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.items_.isEmpty()) {
+            if (itemsBuilder_.isEmpty()) {
+              itemsBuilder_.dispose();
+              itemsBuilder_ = null;
+              items_ = other.items_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              itemsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getItemsFieldBuilder() : null;
+            } else {
+              itemsBuilder_.addAllMessages(other.items_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem m =
+                    input.readMessage(
+                        com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem.parser(),
+                        extensionRegistry);
+                if (itemsBuilder_ == null) {
+                  ensureItemsIsMutable();
+                  items_.add(m);
+                } else {
+                  itemsBuilder_.addMessage(m);
+                }
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem> items_ =
+        java.util.Collections.emptyList();
+      private void ensureItemsIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          items_ = new java.util.ArrayList<com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem>(items_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem, com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem.Builder, com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItemOrBuilder> itemsBuilder_;
+
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
+       */
+      public java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem> getItemsList() {
+        if (itemsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(items_);
+        } else {
+          return itemsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
+       */
+      public int getItemsCount() {
+        if (itemsBuilder_ == null) {
+          return items_.size();
+        } else {
+          return itemsBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem getItems(int index) {
+        if (itemsBuilder_ == null) {
+          return items_.get(index);
+        } else {
+          return itemsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
+       */
+      public Builder setItems(
+          int index, com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem value) {
+        if (itemsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureItemsIsMutable();
+          items_.set(index, value);
+          onChanged();
+        } else {
+          itemsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
+       */
+      public Builder setItems(
+          int index, com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem.Builder builderForValue) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          itemsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
+       */
+      public Builder addItems(com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem value) {
+        if (itemsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureItemsIsMutable();
+          items_.add(value);
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
+       */
+      public Builder addItems(
+          int index, com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem value) {
+        if (itemsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureItemsIsMutable();
+          items_.add(index, value);
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
+       */
+      public Builder addItems(
+          com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem.Builder builderForValue) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.add(builderForValue.build());
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
+       */
+      public Builder addItems(
+          int index, com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem.Builder builderForValue) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
+       */
+      public Builder addAllItems(
+          java.lang.Iterable<? extends com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem> values) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, items_);
+          onChanged();
+        } else {
+          itemsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
+       */
+      public Builder clearItems() {
+        if (itemsBuilder_ == null) {
+          items_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          itemsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
+       */
+      public Builder removeItems(int index) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.remove(index);
+          onChanged();
+        } else {
+          itemsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem.Builder getItemsBuilder(
+          int index) {
+        return getItemsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItemOrBuilder getItemsOrBuilder(
+          int index) {
+        if (itemsBuilder_ == null) {
+          return items_.get(index);  } else {
+          return itemsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
+       */
+      public java.util.List<? extends com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItemOrBuilder> 
+           getItemsOrBuilderList() {
+        if (itemsBuilder_ != null) {
+          return itemsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(items_);
+        }
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem.Builder addItemsBuilder() {
+        return getItemsFieldBuilder().addBuilder(
+            com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem.Builder addItemsBuilder(
+          int index) {
+        return getItemsFieldBuilder().addBuilder(
+            index, com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.PowerUpSpawnEventItem items = 1;</code>
+       */
+      public java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem.Builder> 
+           getItemsBuilderList() {
+        return getItemsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem, com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem.Builder, com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItemOrBuilder> 
+          getItemsFieldBuilder() {
+        if (itemsBuilder_ == null) {
+          itemsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem, com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem.Builder, com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItemOrBuilder>(
+                  items_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          items_ = null;
+        }
+        return itemsBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:daikombat.dto.ServerResponse.PowerUpSpawnEvent)
+    }
+
+    // @@protoc_insertion_point(class_scope:daikombat.dto.ServerResponse.PowerUpSpawnEvent)
+    private static final com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent();
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PowerUpSpawnEvent>
+        PARSER = new com.google.protobuf.AbstractParser<PowerUpSpawnEvent>() {
+      @java.lang.Override
+      public PowerUpSpawnEvent parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<PowerUpSpawnEvent> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PowerUpSpawnEvent> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface PowerUpSpawnEventItemOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:daikombat.dto.ServerResponse.PowerUpSpawnEventItem)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+     * @return Whether the type field is set.
+     */
+    boolean hasType();
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+     * @return The enum numeric value on the wire for type.
+     */
+    int getTypeValue();
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+     * @return The type.
+     */
+    com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType getType();
+
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.Vector position = 2;</code>
+     * @return Whether the position field is set.
+     */
+    boolean hasPosition();
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.Vector position = 2;</code>
+     * @return The position.
+     */
+    com.beverly.hills.money.gang.proto.ServerResponse.Vector getPosition();
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.Vector position = 2;</code>
+     */
+    com.beverly.hills.money.gang.proto.ServerResponse.VectorOrBuilder getPositionOrBuilder();
+  }
+  /**
+   * Protobuf type {@code daikombat.dto.ServerResponse.PowerUpSpawnEventItem}
+   */
+  public static final class PowerUpSpawnEventItem extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:daikombat.dto.ServerResponse.PowerUpSpawnEventItem)
+      PowerUpSpawnEventItemOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use PowerUpSpawnEventItem.newBuilder() to construct.
+    private PowerUpSpawnEventItem(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PowerUpSpawnEventItem() {
+      type_ = 0;
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new PowerUpSpawnEventItem();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_PowerUpSpawnEventItem_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_PowerUpSpawnEventItem_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem.class, com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int TYPE_FIELD_NUMBER = 1;
+    private int type_ = 0;
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+     * @return Whether the type field is set.
+     */
+    @java.lang.Override public boolean hasType() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+     * @return The enum numeric value on the wire for type.
+     */
+    @java.lang.Override public int getTypeValue() {
+      return type_;
+    }
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+     * @return The type.
+     */
+    @java.lang.Override public com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType getType() {
+      com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType result = com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType.forNumber(type_);
+      return result == null ? com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType.UNRECOGNIZED : result;
+    }
+
+    public static final int POSITION_FIELD_NUMBER = 2;
+    private com.beverly.hills.money.gang.proto.ServerResponse.Vector position_;
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.Vector position = 2;</code>
+     * @return Whether the position field is set.
+     */
+    @java.lang.Override
+    public boolean hasPosition() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.Vector position = 2;</code>
+     * @return The position.
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.Vector getPosition() {
+      return position_ == null ? com.beverly.hills.money.gang.proto.ServerResponse.Vector.getDefaultInstance() : position_;
+    }
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.Vector position = 2;</code>
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.VectorOrBuilder getPositionOrBuilder() {
+      return position_ == null ? com.beverly.hills.money.gang.proto.ServerResponse.Vector.getDefaultInstance() : position_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeEnum(1, type_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        output.writeMessage(2, getPosition());
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(1, type_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getPosition());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem)) {
+        return super.equals(obj);
+      }
+      com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem other = (com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem) obj;
+
+      if (hasType() != other.hasType()) return false;
+      if (hasType()) {
+        if (type_ != other.type_) return false;
+      }
+      if (hasPosition() != other.hasPosition()) return false;
+      if (hasPosition()) {
+        if (!getPosition()
+            .equals(other.getPosition())) return false;
+      }
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasType()) {
+        hash = (37 * hash) + TYPE_FIELD_NUMBER;
+        hash = (53 * hash) + type_;
+      }
+      if (hasPosition()) {
+        hash = (37 * hash) + POSITION_FIELD_NUMBER;
+        hash = (53 * hash) + getPosition().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code daikombat.dto.ServerResponse.PowerUpSpawnEventItem}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:daikombat.dto.ServerResponse.PowerUpSpawnEventItem)
+        com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItemOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_PowerUpSpawnEventItem_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_PowerUpSpawnEventItem_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem.class, com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem.Builder.class);
+      }
+
+      // Construct using com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem.newBuilder()
+      private Builder() {
         maybeForceBuilderInitialization();
       }
 
@@ -634,17 +1434,17 @@ private static final long serialVersionUID = 0L;
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_PowerUpSpawnEvent_descriptor;
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_PowerUpSpawnEventItem_descriptor;
       }
 
       @java.lang.Override
-      public com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent getDefaultInstanceForType() {
-        return com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent.getDefaultInstance();
+      public com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem getDefaultInstanceForType() {
+        return com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem.getDefaultInstance();
       }
 
       @java.lang.Override
-      public com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent build() {
-        com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent result = buildPartial();
+      public com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem build() {
+        com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -652,14 +1452,14 @@ private static final long serialVersionUID = 0L;
       }
 
       @java.lang.Override
-      public com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent buildPartial() {
-        com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent result = new com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent(this);
+      public com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem buildPartial() {
+        com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem result = new com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem(this);
         if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
       }
 
-      private void buildPartial0(com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent result) {
+      private void buildPartial0(com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem result) {
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -709,16 +1509,16 @@ private static final long serialVersionUID = 0L;
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent) {
-          return mergeFrom((com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent)other);
+        if (other instanceof com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem) {
+          return mergeFrom((com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent other) {
-        if (other == com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem other) {
+        if (other == com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem.getDefaultInstance()) return this;
         if (other.hasType()) {
           setType(other.getType());
         }
@@ -973,23 +1773,23 @@ private static final long serialVersionUID = 0L;
       }
 
 
-      // @@protoc_insertion_point(builder_scope:daikombat.dto.ServerResponse.PowerUpSpawnEvent)
+      // @@protoc_insertion_point(builder_scope:daikombat.dto.ServerResponse.PowerUpSpawnEventItem)
     }
 
-    // @@protoc_insertion_point(class_scope:daikombat.dto.ServerResponse.PowerUpSpawnEvent)
-    private static final com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:daikombat.dto.ServerResponse.PowerUpSpawnEventItem)
+    private static final com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent();
+      DEFAULT_INSTANCE = new com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem();
     }
 
-    public static com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent getDefaultInstance() {
+    public static com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<PowerUpSpawnEvent>
-        PARSER = new com.google.protobuf.AbstractParser<PowerUpSpawnEvent>() {
+    private static final com.google.protobuf.Parser<PowerUpSpawnEventItem>
+        PARSER = new com.google.protobuf.AbstractParser<PowerUpSpawnEventItem>() {
       @java.lang.Override
-      public PowerUpSpawnEvent parsePartialFrom(
+      public PowerUpSpawnEventItem parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1008,17 +1808,17 @@ private static final long serialVersionUID = 0L;
       }
     };
 
-    public static com.google.protobuf.Parser<PowerUpSpawnEvent> parser() {
+    public static com.google.protobuf.Parser<PowerUpSpawnEventItem> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<PowerUpSpawnEvent> getParserForType() {
+    public com.google.protobuf.Parser<PowerUpSpawnEventItem> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent getDefaultInstanceForType() {
+    public com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -10154,6 +10954,17 @@ private static final long serialVersionUID = 0L;
      * @return The skinColor.
      */
     com.beverly.hills.money.gang.proto.ServerResponse.PlayerSkinColor getSkinColor();
+
+    /**
+     * <code>optional bool visible = 8;</code>
+     * @return Whether the visible field is set.
+     */
+    boolean hasVisible();
+    /**
+     * <code>optional bool visible = 8;</code>
+     * @return The visible.
+     */
+    boolean getVisible();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.GameEventPlayerStats}
@@ -10397,6 +11208,25 @@ private static final long serialVersionUID = 0L;
       return result == null ? com.beverly.hills.money.gang.proto.ServerResponse.PlayerSkinColor.UNRECOGNIZED : result;
     }
 
+    public static final int VISIBLE_FIELD_NUMBER = 8;
+    private boolean visible_ = false;
+    /**
+     * <code>optional bool visible = 8;</code>
+     * @return Whether the visible field is set.
+     */
+    @java.lang.Override
+    public boolean hasVisible() {
+      return ((bitField0_ & 0x00000040) != 0);
+    }
+    /**
+     * <code>optional bool visible = 8;</code>
+     * @return The visible.
+     */
+    @java.lang.Override
+    public boolean getVisible() {
+      return visible_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -10431,6 +11261,9 @@ private static final long serialVersionUID = 0L;
       }
       if (((bitField0_ & 0x00000020) != 0)) {
         output.writeEnum(7, skinColor_);
+      }
+      if (((bitField0_ & 0x00000040) != 0)) {
+        output.writeBool(8, visible_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -10467,6 +11300,10 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000020) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(7, skinColor_);
+      }
+      if (((bitField0_ & 0x00000040) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(8, visible_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -10514,6 +11351,11 @@ private static final long serialVersionUID = 0L;
       if (hasSkinColor()) {
         if (skinColor_ != other.skinColor_) return false;
       }
+      if (hasVisible() != other.hasVisible()) return false;
+      if (hasVisible()) {
+        if (getVisible()
+            != other.getVisible()) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -10552,6 +11394,11 @@ private static final long serialVersionUID = 0L;
       if (hasSkinColor()) {
         hash = (37 * hash) + SKINCOLOR_FIELD_NUMBER;
         hash = (53 * hash) + skinColor_;
+      }
+      if (hasVisible()) {
+        hash = (37 * hash) + VISIBLE_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+            getVisible());
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -10713,6 +11560,7 @@ private static final long serialVersionUID = 0L;
         }
         bitField0_ = (bitField0_ & ~0x00000020);
         skinColor_ = 0;
+        visible_ = false;
         return this;
       }
 
@@ -10787,6 +11635,10 @@ private static final long serialVersionUID = 0L;
         if (((from_bitField0_ & 0x00000040) != 0)) {
           result.skinColor_ = skinColor_;
           to_bitField0_ |= 0x00000020;
+        }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.visible_ = visible_;
+          to_bitField0_ |= 0x00000040;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -10881,6 +11733,9 @@ private static final long serialVersionUID = 0L;
         if (other.hasSkinColor()) {
           setSkinColor(other.getSkinColor());
         }
+        if (other.hasVisible()) {
+          setVisible(other.getVisible());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -10954,6 +11809,11 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000040;
                 break;
               } // case 56
+              case 64: {
+                visible_ = input.readBool();
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 64
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -11668,6 +12528,46 @@ private static final long serialVersionUID = 0L;
       public Builder clearSkinColor() {
         bitField0_ = (bitField0_ & ~0x00000040);
         skinColor_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private boolean visible_ ;
+      /**
+       * <code>optional bool visible = 8;</code>
+       * @return Whether the visible field is set.
+       */
+      @java.lang.Override
+      public boolean hasVisible() {
+        return ((bitField0_ & 0x00000080) != 0);
+      }
+      /**
+       * <code>optional bool visible = 8;</code>
+       * @return The visible.
+       */
+      @java.lang.Override
+      public boolean getVisible() {
+        return visible_;
+      }
+      /**
+       * <code>optional bool visible = 8;</code>
+       * @param value The visible to set.
+       * @return This builder for chaining.
+       */
+      public Builder setVisible(boolean value) {
+
+        visible_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool visible = 8;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearVisible() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        visible_ = false;
         onChanged();
         return this;
       }

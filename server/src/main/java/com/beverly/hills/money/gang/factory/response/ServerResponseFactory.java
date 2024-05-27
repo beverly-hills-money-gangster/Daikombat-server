@@ -176,28 +176,14 @@ public interface ServerResponseFactory {
   }
 
   static PlayerSkinColor createPlayerSkinColor(PlayerStateColor color) {
-    switch (color) {
-      case BLUE -> {
-        return PlayerSkinColor.BLUE;
-      }
-      case GREEN -> {
-        return PlayerSkinColor.GREEN;
-      }
-      case PINK -> {
-        return PlayerSkinColor.PINK;
-      }
-      case PURPLE -> {
-        return PlayerSkinColor.PURPLE;
-      }
-      case YELLOW -> {
-        return PlayerSkinColor.YELLOW;
-      }
-      case ORANGE -> {
-        return PlayerSkinColor.ORANGE;
-      }
-      default -> throw new IllegalArgumentException(
-          "Not supported skin color " + color.name());
-    }
+    return switch (color) {
+      case BLUE -> PlayerSkinColor.BLUE;
+      case GREEN -> PlayerSkinColor.GREEN;
+      case PINK -> PlayerSkinColor.PINK;
+      case PURPLE -> PlayerSkinColor.PURPLE;
+      case YELLOW -> PlayerSkinColor.YELLOW;
+      case ORANGE -> PlayerSkinColor.ORANGE;
+    };
   }
 
   private static GamePowerUpType createGamePowerUpType(PowerUpType powerUpType) {
@@ -269,12 +255,10 @@ public interface ServerResponseFactory {
       PlayerStateReader shooterPlayerReader,
       PlayerStateReader shotPlayerReader,
       AttackType attackType) {
-    ServerResponse.GameEvent.GameEventType attackEventType;
-    switch (attackType) {
-      case PUNCH -> attackEventType = ServerResponse.GameEvent.GameEventType.GET_PUNCHED;
-      case SHOOT -> attackEventType = ServerResponse.GameEvent.GameEventType.GET_SHOT;
-      default -> throw new IllegalArgumentException("Not supported attack type " + attackType);
-    }
+    ServerResponse.GameEvent.GameEventType attackEventType = switch (attackType) {
+      case PUNCH -> ServerResponse.GameEvent.GameEventType.GET_PUNCHED;
+      case SHOOT -> ServerResponse.GameEvent.GameEventType.GET_SHOT;
+    };
     var deadPlayerEvent = ServerResponse.GameEvents.newBuilder()
         .addEvents(ServerResponse.GameEvent.newBuilder()
             .setEventType(attackEventType)

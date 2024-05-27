@@ -123,8 +123,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
             .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
-    waitUntilQueueNonEmpty(puncherConnection.getResponse());
-    waitUntilQueueNonEmpty(observerConnection.getResponse());
+    waitUntilGetResponses(puncherConnection.getResponse(), 2);
+    waitUntilGetResponses(observerConnection.getResponse(), 2);
     emptyQueue(observerConnection.getResponse());
     ServerResponse mySpawn = puncherConnection.getResponse().poll().get();
     int playerId = mySpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
@@ -692,7 +692,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
             .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
-    waitUntilQueueNonEmpty(puncherConnection.getResponse());
+    waitUntilGetResponses(puncherConnection.getResponse(), 2);
     ServerResponse puncherPlayerSpawn = puncherConnection.getResponse().poll().get();
     int puncherPlayerId = puncherPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
 

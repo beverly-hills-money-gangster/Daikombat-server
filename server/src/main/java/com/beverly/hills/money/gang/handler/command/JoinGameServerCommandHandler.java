@@ -71,28 +71,15 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
   }
 
   private PlayerStateColor getSkinColor(SkinColorSelection skinColorSelection) {
-    switch (skinColorSelection) {
-      case BLUE -> {
-        return PlayerStateColor.BLUE;
-      }
-      case GREEN -> {
-        return PlayerStateColor.GREEN;
-      }
-      case PINK -> {
-        return PlayerStateColor.PINK;
-      }
-      case PURPLE -> {
-        return PlayerStateColor.PURPLE;
-      }
-      case YELLOW -> {
-        return PlayerStateColor.YELLOW;
-      }
-      case ORANGE -> {
-        return PlayerStateColor.ORANGE;
-      }
-      default -> throw new IllegalArgumentException(
-          "Not supported skin color " + skinColorSelection.name());
-    }
+    return switch (skinColorSelection) {
+      case BLUE -> PlayerStateColor.BLUE;
+      case GREEN -> PlayerStateColor.GREEN;
+      case PINK -> PlayerStateColor.PINK;
+      case PURPLE -> PlayerStateColor.PURPLE;
+      case YELLOW -> PlayerStateColor.YELLOW;
+      case ORANGE -> PlayerStateColor.ORANGE;
+      default -> throw new IllegalArgumentException("Not supported skin color");
+    };
   }
 
   protected void sendOtherSpawns(Game game, Channel currentChannel,

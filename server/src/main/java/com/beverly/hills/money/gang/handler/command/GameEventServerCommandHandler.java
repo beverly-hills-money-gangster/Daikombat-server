@@ -161,19 +161,16 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
         .ifPresentOrElse(attackedPlayer -> {
           if (attackedPlayer.isDead()) {
             LOG.debug("Player {} is dead", attackedPlayer.getPlayerId());
-            ServerResponse deadEvent;
-            switch (attackType) {
-              case PUNCH -> deadEvent = createKillPunchingEvent(
+            ServerResponse deadEvent = switch (attackType) {
+              case PUNCH -> createKillPunchingEvent(
                   game.playersOnline(),
                   attackGameState.getAttackingPlayer(),
                   attackGameState.getPlayerAttacked());
-              case SHOOT -> deadEvent = createKillShootingEvent(
+              case SHOOT -> createKillShootingEvent(
                   game.playersOnline(),
                   attackGameState.getAttackingPlayer(),
                   attackGameState.getPlayerAttacked());
-              default ->
-                  throw new IllegalArgumentException("Not supported attack type " + attackType);
-            }
+            };
             ServerResponse gameOver;
             if (attackGameState.isGameOver()) {
               LOG.info("Game {} is over", game.gameId());
@@ -214,17 +211,14 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
           }
         }, () -> {
           LOG.debug("Nobody got attacked");
-          ServerResponse attackEvent;
-          switch (attackType) {
-            case PUNCH -> attackEvent = createPunchingEvent(
+          ServerResponse attackEvent = switch (attackType) {
+            case PUNCH -> createPunchingEvent(
                 game.playersOnline(),
                 attackGameState.getAttackingPlayer());
-            case SHOOT -> attackEvent = createShootingEvent(
+            case SHOOT -> createShootingEvent(
                 game.playersOnline(),
                 attackGameState.getAttackingPlayer());
-            default ->
-                throw new IllegalArgumentException("Not supported attack type " + attackType);
-          }
+          };
           game.getPlayersRegistry().allPlayers()
               .filter(playerStateChannel
                   // don't send me my own attack back
@@ -244,34 +238,22 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
     }
     return game.getPlayersRegistry()
         .getPlayerState(gameCommand.getAffectedPlayerId())
-        .map(affectedPlayerState -> {
-          switch (gameCommand.getEventType()) {
-            case PUNCH -> {
-              return antiCheat.isPunchingTooFar(
-                  newPlayerPosition, affectedPlayerState.getCoordinates().getPosition());
-            }
-            case SHOOT -> {
-              return antiCheat.isShootingTooFar(
-                  newPlayerPosition, affectedPlayerState.getCoordinates().getPosition());
-            }
-            default -> {
-              return false;
-            }
-          }
+        .map(affectedPlayerState -> switch (gameCommand.getEventType()) {
+          case PUNCH -> antiCheat.isPunchingTooFar(
+              newPlayerPosition, affectedPlayerState.getCoordinates().getPosition());
+          case SHOOT -> antiCheat.isShootingTooFar(
+              newPlayerPosition, affectedPlayerState.getCoordinates().getPosition());
+          default -> false;
         }).orElse(false);
   }
 
   private AttackType getAttackType(PushGameEventCommand gameCommand) {
-    switch (gameCommand.getEventType()) {
-      case SHOOT -> {
-        return AttackType.SHOOT;
-      }
-      case PUNCH -> {
-        return AttackType.PUNCH;
-      }
+    return switch (gameCommand.getEventType()) {
+      case SHOOT -> AttackType.SHOOT;
+      case PUNCH -> AttackType.PUNCH;
       default -> throw new IllegalArgumentException(
           "Not supported attack type " + gameCommand.getEventType());
-    }
+    };
   }
 
   private PlayerState.PlayerCoordinates createCoordinates(PushGameEventCommand gameCommand) {

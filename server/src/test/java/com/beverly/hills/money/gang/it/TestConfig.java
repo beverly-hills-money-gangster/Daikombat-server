@@ -24,6 +24,18 @@ public class TestConfig {
       }
 
       @Override
+      public Vector spawnInvisibility() {
+        return Vector.builder().x(-24.657965F).y(23.160273F).build();
+      }
+
+
+      @Override
+      public Vector spawnDefence() {
+        return Vector.builder().x(-24.657965F).y(23.160273F).build();
+      }
+
+
+      @Override
       public PlayerState.PlayerCoordinates spawnPlayer(Game game) {
         return PlayerState.PlayerCoordinates.builder().position(
                 Vector.builder().x(-24.657965F).y(23.160273F).build())

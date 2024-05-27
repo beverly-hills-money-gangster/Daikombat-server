@@ -18,9 +18,14 @@ message ServerResponse {
   }
 
   message PowerUpSpawnEvent {
+    repeated PowerUpSpawnEventItem items = 1;
+  }
+
+  message PowerUpSpawnEventItem {
     optional GamePowerUpType type = 1;
     optional Vector position = 2;
   }
+
 
   message GameOver {
     optional LeaderBoard leaderBoard = 1;
@@ -31,6 +36,7 @@ message ServerResponse {
     optional string version = 2;
     optional int32 fragsToWin = 3;
     optional int32 movesUpdateFreqMls = 4;
+    optional int32 playerSpeed = 5;
   }
 
   message Ping {}
@@ -117,9 +123,8 @@ message ServerResponse {
 
   enum GamePowerUpType {
     QUAD_DAMAGE = 0;
-    SPEED = 1;
-    INVISIBILITY = 2;
-    HEALTH = 3;
+    INVISIBILITY = 1;
+    DEFENCE = 2;
   }
 
   message Vector {

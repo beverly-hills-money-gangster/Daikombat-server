@@ -39,6 +39,7 @@ public class GameServerInfoTest extends AbstractGameServerTest {
     assertEquals(ServerConfig.VERSION, serverResponse.getServerInfo().getVersion());
     assertEquals(ServerConfig.MOVES_UPDATE_FREQUENCY_MLS, serverResponse.getServerInfo().getMovesUpdateFreqMls());
     assertEquals(ServerConfig.FRAGS_PER_GAME, serverResponse.getServerInfo().getFragsToWin());
+    assertEquals(ServerConfig.PLAYER_SPEED, serverResponse.getServerInfo().getPlayerSpeed());
     for (ServerResponse.GameInfo gameInfo : games) {
       assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, gameInfo.getMaxGamePlayers());
       assertEquals(0, gameInfo.getPlayersOnline(), "Should be no connected players yet");

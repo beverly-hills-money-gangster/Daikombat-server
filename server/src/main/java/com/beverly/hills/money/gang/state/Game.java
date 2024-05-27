@@ -90,8 +90,9 @@ public class Game implements Closeable, GameReader {
         .leaderBoard(getLeaderBoard()).build();
   }
 
-  public PlayerPowerUpGameState pickupQuadDamage(
+  public PlayerPowerUpGameState pickupPowerUp(
       final PlayerState.PlayerCoordinates playerCoordinates,
+      final PowerUpType powerUpType,
       final int playerId) {
     PlayerState playerState = getPlayer(playerId).orElse(null);
     if (playerState == null) {
@@ -101,7 +102,6 @@ public class Game implements Closeable, GameReader {
       LOG.warn("Dead player can't take power-ups");
       return null;
     }
-    var powerUpType = PowerUpType.QUAD_DAMAGE;
     var powerUp = powerUpRegistry.get(powerUpType);
     if (powerUp == null) {
       LOG.warn("Power-up missing");

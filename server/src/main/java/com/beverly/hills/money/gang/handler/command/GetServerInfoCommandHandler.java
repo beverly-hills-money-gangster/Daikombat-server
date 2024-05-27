@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class GetServerInfoCommandHandler extends ServerCommandHandler {
 
-  private static final Logger LOG = LoggerFactory.getLogger(JoinGameServerCommandHandler.class);
+  private static final Logger LOG = LoggerFactory.getLogger(GetServerInfoCommandHandler.class);
 
   private final GameRoomRegistry gameRoomRegistry;
 
@@ -30,7 +30,8 @@ public class GetServerInfoCommandHandler extends ServerCommandHandler {
         ServerConfig.VERSION,
         gameRoomRegistry.getGames().map(game -> game),
         ServerConfig.FRAGS_PER_GAME,
-        ServerConfig.MOVES_UPDATE_FREQUENCY_MLS));
+        ServerConfig.MOVES_UPDATE_FREQUENCY_MLS,
+        ServerConfig.PLAYER_SPEED));
   }
 
 }

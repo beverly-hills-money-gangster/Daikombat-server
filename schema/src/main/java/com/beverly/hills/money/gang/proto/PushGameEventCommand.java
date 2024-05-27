@@ -61,6 +61,14 @@ private static final long serialVersionUID = 0L;
      * <code>QUAD_DAMAGE_POWER_UP = 3;</code>
      */
     QUAD_DAMAGE_POWER_UP(3),
+    /**
+     * <code>INVISIBILITY_POWER_UP = 4;</code>
+     */
+    INVISIBILITY_POWER_UP(4),
+    /**
+     * <code>DEFENCE_POWER_UP = 5;</code>
+     */
+    DEFENCE_POWER_UP(5),
     UNRECOGNIZED(-1),
     ;
 
@@ -80,6 +88,14 @@ private static final long serialVersionUID = 0L;
      * <code>QUAD_DAMAGE_POWER_UP = 3;</code>
      */
     public static final int QUAD_DAMAGE_POWER_UP_VALUE = 3;
+    /**
+     * <code>INVISIBILITY_POWER_UP = 4;</code>
+     */
+    public static final int INVISIBILITY_POWER_UP_VALUE = 4;
+    /**
+     * <code>DEFENCE_POWER_UP = 5;</code>
+     */
+    public static final int DEFENCE_POWER_UP_VALUE = 5;
 
 
     public final int getNumber() {
@@ -110,6 +126,8 @@ private static final long serialVersionUID = 0L;
         case 1: return SHOOT;
         case 2: return PUNCH;
         case 3: return QUAD_DAMAGE_POWER_UP;
+        case 4: return INVISIBILITY_POWER_UP;
+        case 5: return DEFENCE_POWER_UP;
         default: return null;
       }
     }

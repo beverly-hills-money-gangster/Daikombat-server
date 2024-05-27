@@ -5,14 +5,15 @@ import static com.beverly.hills.money.gang.factory.response.ServerResponseFactor
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createKillPunchingEvent;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createKillShootingEvent;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createPowerUpPlayerServerResponse;
+import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createPowerUpSpawn;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createPunchingEvent;
-import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createQuadDamagePowerUpSpawn;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createShootingEvent;
 
 import com.beverly.hills.money.gang.cheat.AntiCheat;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.powerup.PowerUp;
+import com.beverly.hills.money.gang.powerup.PowerUpType;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
@@ -28,6 +29,7 @@ import com.beverly.hills.money.gang.state.Vector;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import java.util.Optional;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,7 +92,8 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
       PushGameEventCommand.GameEventType gameEventType = gameCommand.getEventType();
       switch (gameEventType) {
         case SHOOT, PUNCH -> handleAttackingEvents(game, gameCommand);
-        case QUAD_DAMAGE_POWER_UP -> handleQuadDamagePowerUp(game, gameCommand);
+        case QUAD_DAMAGE_POWER_UP, INVISIBILITY_POWER_UP, DEFENCE_POWER_UP ->
+            handlePowerUpPickUp(game, gameCommand, getPowerUpType(gameEventType));
         case MOVE -> game.bufferMove(gameCommand.getPlayerId(), createCoordinates(gameCommand));
         default -> throw new GameLogicError("Unsupported event type",
             GameErrorCode.COMMAND_NOT_RECOGNIZED);
@@ -102,12 +105,26 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
     }
   }
 
-  private void handleQuadDamagePowerUp(Game game, PushGameEventCommand gameCommand) {
-    var result = game.pickupQuadDamage(createCoordinates(gameCommand), gameCommand.getPlayerId());
+  private PowerUpType getPowerUpType(PushGameEventCommand.GameEventType gameEventType) {
+    return switch (gameEventType) {
+      case QUAD_DAMAGE_POWER_UP -> PowerUpType.QUAD_DAMAGE;
+      case DEFENCE_POWER_UP -> PowerUpType.DEFENCE;
+      case INVISIBILITY_POWER_UP -> PowerUpType.INVISIBILITY;
+      default -> throw new IllegalArgumentException("Not-supported power-up " + gameEventType);
+    };
+  }
+
+  private void handlePowerUpPickUp(Game game, PushGameEventCommand gameCommand, PowerUpType powerUpType) {
+    var result = game.pickupPowerUp(
+        createCoordinates(gameCommand), powerUpType, gameCommand.getPlayerId());
     if (result == null) {
-      LOG.warn("Can't process quad damage power-up");
+      LOG.warn("Can't process power-up");
       return;
     }
+
+    var serverResponse = createPowerUpPlayerServerResponse(result.getPlayerState());
+    game.getPlayersRegistry().allPlayers()
+        .forEach(stateChannel -> stateChannel.getChannel().writeAndFlush(serverResponse));
 
     scheduler.schedule(result.getPowerUp().getLastsForMls(), () -> {
       if (!result.getPlayerState().isDead()) {
@@ -117,10 +134,6 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
       schedulePowerUpSpawn(game, result.getPowerUp());
     });
 
-    var serverResponse = createPowerUpPlayerServerResponse(result.getPlayerState());
-    game.getPlayersRegistry().allPlayers().forEach(
-        playerStateChannel -> playerStateChannel.getChannel().writeAndFlush(serverResponse));
-
   }
 
   private void schedulePowerUpSpawn(Game game, PowerUp powerUp) {
@@ -129,12 +142,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
         LOG.warn("Can't release power-up {}", powerUp.getType());
         return;
       }
-      ServerResponse serverResponse;
-      switch (powerUp.getType()) {
-        case QUAD_DAMAGE -> serverResponse = createQuadDamagePowerUpSpawn(powerUp);
-        default ->
-            throw new IllegalArgumentException("Not supported power up " + powerUp.getType());
-      }
+      ServerResponse serverResponse = createPowerUpSpawn(Stream.of(powerUp));
       game.getPlayersRegistry().allPlayers().forEach(
           playerStateChannel -> playerStateChannel.getChannel().writeAndFlush(serverResponse));
     });

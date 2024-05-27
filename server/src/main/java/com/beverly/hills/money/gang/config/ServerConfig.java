@@ -14,6 +14,11 @@ public interface ServerConfig {
       25);
   int MOVES_UPDATE_FREQUENCY_MLS = NumberUtils.toInt(
       System.getenv("GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS"), 50);
+
+  int PLAYER_SPEED_CHECK_FREQUENCY_MLS = NumberUtils.toInt(
+      System.getenv("GAME_SERVER_PLAYER_SPEED_CHECK_FREQUENCY_MLS"), 10_000);
+
+  int PLAYER_SPEED = NumberUtils.toInt(System.getenv("GAME_SERVER_PLAYER_SPEED"), 5);
   int MAX_IDLE_TIME_MLS = NumberUtils.toInt(System.getenv("GAME_SERVER_MAX_IDLE_TIME_MLS"), 10_000);
 
   int DEFAULT_SHOTGUN_DAMAGE = NumberUtils.toInt(
@@ -23,10 +28,22 @@ public interface ServerConfig {
       50);
 
   int QUAD_DAMAGE_SPAWN_MLS = NumberUtils.toInt(
-      System.getenv("GAME_SERVER_QUAD_DAMAGE_SPAWN_MLS"), 30_000);
+      System.getenv("GAME_SERVER_QUAD_DAMAGE_SPAWN_MLS"), 45_000);
 
   int QUAD_DAMAGE_LASTS_FOR_MLS = NumberUtils.toInt(
       System.getenv("GAME_SERVER_QUAD_DAMAGE_LASTS_FOR_MLS"), 10_000);
+
+  int DEFENCE_SPAWN_MLS = NumberUtils.toInt(
+      System.getenv("GAME_SERVER_DEFENCE_SPAWN_MLS"), 35_000);
+
+  int DEFENCE_LASTS_FOR_MLS = NumberUtils.toInt(
+      System.getenv("GAME_SERVER_DEFENCE_LASTS_FOR_MLS"), 10_000);
+
+  int INVISIBILITY_SPAWN_MLS = NumberUtils.toInt(
+      System.getenv("GAME_SERVER_INVISIBILITY_SPAWN_MLS"), 30_000);
+
+  int INVISIBILITY_LASTS_FOR_MLS = NumberUtils.toInt(
+      System.getenv("GAME_SERVER_INVISIBILITY_LASTS_FOR_MLS"), 15_000);
 
   String PIN_CODE = Optional.of(
           StringUtils.defaultIfBlank(System.getenv("GAME_SERVER_PIN_CODE"), "5555"))

@@ -7,11 +7,11 @@
     <parent>
         <groupId>com.beverly.hills.money.gang</groupId>
         <artifactId>daikombat-server</artifactId>
-        <version>7.0.0</version>
+        <version>8.0.0</version>
     </parent>
 
     <artifactId>net-client</artifactId>
-    <version>7.0.0</version>
+    <version>8.0.0</version>
 
     <properties>
         <maven.compiler.source>14</maven.compiler.source>
@@ -71,12 +71,12 @@
         <dependency>
             <groupId>com.beverly.hills.money.gang</groupId>
             <artifactId>schema</artifactId>
-            <version>7.0.0</version>
+            <version>8.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.beverly.hills.money.gang</groupId>
             <artifactId>security</artifactId>
-            <version>7.0.0</version>
+            <version>8.0.0</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.maven/maven-model -->

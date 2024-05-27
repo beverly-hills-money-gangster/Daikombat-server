@@ -91,7 +91,7 @@ public class RespawnEventTest extends AbstractGameServerTest {
 
     deadConnection.write(RespawnCommand.newBuilder()
         .setPlayerId(shotPlayerId).setGameId(gameIdToConnectTo).build());
-    waitUntilQueueNonEmpty(deadConnection.getResponse());
+    waitUntilGetResponses(deadConnection.getResponse(), 2);
     ServerResponse respawnResponse = deadConnection.getResponse().poll()
         .orElseThrow(() -> new IllegalStateException("There should be a spawn event"));
     assertEquals(1, respawnResponse.getGameEvents().getEventsCount());

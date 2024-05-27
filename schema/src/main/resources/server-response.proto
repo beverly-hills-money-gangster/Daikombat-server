@@ -117,6 +117,9 @@ message ServerResponse {
 
   enum GamePowerUpType {
     QUAD_DAMAGE = 0;
+    SPEED = 1;
+    INVISIBILITY = 2;
+    HEALTH = 3;
   }
 
   message Vector {

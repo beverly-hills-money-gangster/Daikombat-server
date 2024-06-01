@@ -3,6 +3,7 @@ package com.beverly.hills.money.gang.state;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
+import com.google.common.util.concurrent.AtomicDouble;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -32,6 +33,8 @@ public class PlayerState implements PlayerStateReader {
   @Getter
   private final PlayerStateColor color;
   private final Map<PowerUpType, PowerUpInEffect> powerUps = new ConcurrentHashMap<>();
+
+  private final AtomicDouble lastPeriodDistanceTravelled = new AtomicDouble();
 
   @Getter
   private final int playerId;
@@ -119,7 +122,15 @@ public class PlayerState implements PlayerStateReader {
 
   public void move(PlayerCoordinates playerCoordinates) {
     playerCoordinatesRef.set(playerCoordinates);
+    lastPeriodDistanceTravelled.addAndGet(
+        Vector.getDistance(playerCoordinates.getPosition(), playerCoordinatesRef.get().position));
+    LOG.info("Total distance travelled {} ", lastPeriodDistanceTravelled.get());
     moved.set(true);
+  }
+
+
+  public void clearLastPeriodDistanceTravelled() {
+    lastPeriodDistanceTravelled.set(0);
   }
 
   public void flushMove() {

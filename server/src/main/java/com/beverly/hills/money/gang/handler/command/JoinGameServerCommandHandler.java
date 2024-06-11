@@ -1,7 +1,7 @@
 package com.beverly.hills.money.gang.handler.command;
 
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createJoinSinglePlayer;
-import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createQuadDamagePowerUpSpawn;
+import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createPowerUpSpawn;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createSpawnEventAllPlayers;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createSpawnEventSinglePlayerMinimal;
 
@@ -21,8 +21,10 @@ import com.beverly.hills.money.gang.state.PlayerStateReader;
 import com.beverly.hills.money.gang.util.VersionUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -83,7 +85,7 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
   }
 
   protected void sendOtherSpawns(Game game, Channel currentChannel,
-      PlayerState newPlayerState, Iterable<PowerUp> spawnedPowerUps) {
+      PlayerState newPlayerState, List<PowerUp> spawnedPowerUps) {
     var otherPlayers = game.getPlayersRegistry()
         .allPlayers()
         .filter(playerStateChannel -> playerStateChannel.getChannel() != currentChannel)
@@ -117,14 +119,11 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
     }
   }
 
-  private void sendPowerUpSpawn(Iterable<PowerUp> powerUps, Channel channel) {
+  private void sendPowerUpSpawn(List<PowerUp> powerUps, Channel channel) {
+    if (powerUps.isEmpty()) {
+      return;
+    }
     LOG.info("Send power up spawns");
-    powerUps.forEach(power -> {
-      switch (power.getType()) {
-        case QUAD_DAMAGE -> channel.writeAndFlush(createQuadDamagePowerUpSpawn(power));
-        default ->
-            throw new IllegalArgumentException("Not supported power-up type " + power.getType());
-      }
-    });
+    channel.writeAndFlush(createPowerUpSpawn(powerUps.stream()));
   }
 }

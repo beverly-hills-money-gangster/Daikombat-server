@@ -1,10 +1,16 @@
 package com.beverly.hills.money.gang.scheduler;
 
 import static com.beverly.hills.money.gang.config.ServerConfig.MOVES_UPDATE_FREQUENCY_MLS;
+import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createErrorEvent;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createMovesEventAllPlayers;
 
+import com.beverly.hills.money.gang.cheat.AntiCheat;
+import com.beverly.hills.money.gang.config.ServerConfig;
+import com.beverly.hills.money.gang.exception.GameErrorCode;
+import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
+import io.netty.channel.ChannelFutureListener;
 import java.io.Closeable;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +30,10 @@ public class GameScheduler implements Closeable, Scheduler {
 
   private static final Logger LOG = LoggerFactory.getLogger(GameScheduler.class);
 
+
   private final GameRoomRegistry gameRoomRegistry;
+
+  private final AntiCheat antiCheat;
 
   private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1,
       new BasicThreadFactory.Builder().namingPattern("scheduler-%d").build());
@@ -32,6 +41,36 @@ public class GameScheduler implements Closeable, Scheduler {
   public void init() {
     LOG.info("Init scheduler");
     scheduleSendBufferedMoves();
+    schedulePlayerSpeedCheck();
+  }
+
+  /**
+   * Periodically checks the distance travelled by all players. If too much distance was travelled
+   * then a player is most likely cheating.
+   */
+  private void schedulePlayerSpeedCheck() {
+    int checkFrequencyMls = ServerConfig.PLAYER_SPEED_CHECK_FREQUENCY_MLS;
+    int checkFrequencySec = checkFrequencyMls / 1000;
+    var cheatingDetected = createErrorEvent(
+        new GameLogicError("Cheating detected", GameErrorCode.CHEATING));
+    LOG.info("Speed checking frequency {} mls", checkFrequencyMls);
+    scheduler.scheduleAtFixedRate(
+        () -> {
+          LOG.info("Check speed cheating");
+          gameRoomRegistry.getGames().forEach(game -> game.getPlayersRegistry()
+              .allPlayers().forEach(stateChannel -> {
+                var state = stateChannel.getPlayerState();
+                if (!antiCheat.isTooMuchDistanceTravelled(state.getLastDistanceTravelled(),
+                    checkFrequencySec)) {
+                  state.clearLastDistanceTravelled();
+                  return;
+                }
+                LOG.warn("Cheating detected for player id {} named {}", state.getPlayerId(),
+                    state.getPlayerName());
+                stateChannel.getChannel().writeAndFlush(cheatingDetected)
+                    .addListener(ChannelFutureListener.CLOSE);
+              }));
+        }, checkFrequencyMls, checkFrequencyMls, TimeUnit.MILLISECONDS);
   }
 
   private void scheduleSendBufferedMoves() {

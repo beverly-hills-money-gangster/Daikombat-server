@@ -3,12 +3,14 @@ package com.beverly.hills.money.gang.state;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
+import com.google.common.util.concurrent.AtomicDouble;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -26,12 +28,15 @@ public class PlayerState implements PlayerStateReader {
   private final AtomicBoolean dead = new AtomicBoolean();
   public static final int DEFAULT_HP = 100;
   private final AtomicInteger damageAmplifier = new AtomicInteger(1);
+  private final AtomicInteger defenceAmplifier = new AtomicInteger(1);
   private final AtomicInteger kills = new AtomicInteger();
   private final AtomicInteger deaths = new AtomicInteger();
   private final AtomicInteger health = new AtomicInteger(DEFAULT_HP);
   @Getter
   private final PlayerStateColor color;
   private final Map<PowerUpType, PowerUpInEffect> powerUps = new ConcurrentHashMap<>();
+
+  private final AtomicDouble lastDistanceTravelled = new AtomicDouble();
 
   @Getter
   private final int playerId;
@@ -46,6 +51,7 @@ public class PlayerState implements PlayerStateReader {
     this.playerCoordinatesRef = new AtomicReference<>(coordinates);
     this.playerId = id;
     defaultDamage();
+    defaultDefence();
   }
 
   public void powerUp(PowerUp power) {
@@ -64,6 +70,10 @@ public class PlayerState implements PlayerStateReader {
     powerUps.remove(power.getType());
   }
 
+  public double getLastDistanceTravelled() {
+    return lastDistanceTravelled.get();
+  }
+
   public void revertAllPowerUps() {
     powerUps.forEach((powerUpType, power)
         -> power.getPowerUp().revert(PlayerState.this));
@@ -78,11 +88,23 @@ public class PlayerState implements PlayerStateReader {
     damageAmplifier.set(1);
   }
 
+  public void defaultDefence() {
+    defenceAmplifier.set(1);
+  }
+
+  public void setDefenceAmplifier(int ampl) {
+    if (ampl < 1) {
+      throw new IllegalArgumentException("Amplifier can't be negative");
+    }
+    defenceAmplifier.set(ampl);
+  }
+
   public int getDamageAmplifier() {
     return damageAmplifier.get();
   }
 
   public void respawn(final PlayerCoordinates coordinates) {
+    clearLastDistanceTravelled();
     this.playerCoordinatesRef.set(coordinates);
     health.set(DEFAULT_HP);
     dead.set(false);
@@ -97,13 +119,15 @@ public class PlayerState implements PlayerStateReader {
   }
 
   public void getShot(int damageAmplifier) {
-    if (health.addAndGet(-ServerConfig.DEFAULT_SHOTGUN_DAMAGE * damageAmplifier) <= 0) {
+    if (health.addAndGet(
+        -(ServerConfig.DEFAULT_SHOTGUN_DAMAGE * damageAmplifier) / defenceAmplifier.get()) <= 0) {
       onDeath();
     }
   }
 
   public void getPunched(int damageAmplifier) {
-    if (health.addAndGet(-ServerConfig.DEFAULT_PUNCH_DAMAGE * damageAmplifier) <= 0) {
+    if (health.addAndGet(
+        -(ServerConfig.DEFAULT_PUNCH_DAMAGE * damageAmplifier) / defenceAmplifier.get()) <= 0) {
       onDeath();
     }
   }
@@ -117,9 +141,16 @@ public class PlayerState implements PlayerStateReader {
   }
 
 
-  public void move(PlayerCoordinates playerCoordinates) {
-    playerCoordinatesRef.set(playerCoordinates);
+  public void move(PlayerCoordinates newPlayerCoordinates) {
+    lastDistanceTravelled.addAndGet(
+        Vector.getDistance(newPlayerCoordinates.getPosition(), playerCoordinatesRef.get().position));
+    playerCoordinatesRef.set(newPlayerCoordinates);
     moved.set(true);
+  }
+
+
+  public void clearLastDistanceTravelled() {
+    lastDistanceTravelled.set(0);
   }
 
   public void flushMove() {
@@ -127,8 +158,8 @@ public class PlayerState implements PlayerStateReader {
   }
 
   @Override
-  public Stream<PowerUpInEffect> getActivePowerUps() {
-    return powerUps.values().stream();
+  public List<PowerUpInEffect> getActivePowerUps() {
+    return new ArrayList<>(powerUps.values());
   }
 
   @Override

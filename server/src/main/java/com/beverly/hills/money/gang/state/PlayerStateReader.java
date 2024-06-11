@@ -1,11 +1,12 @@
 package com.beverly.hills.money.gang.state;
 
 import com.beverly.hills.money.gang.state.PlayerState.PowerUpInEffect;
+import java.util.List;
 import java.util.stream.Stream;
 
 public interface PlayerStateReader {
 
-  Stream<PowerUpInEffect> getActivePowerUps();
+  List<PowerUpInEffect> getActivePowerUps();
 
   PlayerState.PlayerCoordinates getCoordinates();
 
@@ -20,5 +21,6 @@ public interface PlayerStateReader {
   boolean isDead();
 
   boolean hasMoved();
+
 
 }

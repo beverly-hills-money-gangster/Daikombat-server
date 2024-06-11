@@ -25,17 +25,24 @@ import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.generator.IdGenerator;
+import com.beverly.hills.money.gang.powerup.DefencePowerUp;
+import com.beverly.hills.money.gang.powerup.InvisibilityPowerUp;
+import com.beverly.hills.money.gang.powerup.PowerUp;
+import com.beverly.hills.money.gang.powerup.PowerUpType;
 import com.beverly.hills.money.gang.powerup.QuadDamagePowerUp;
 import com.beverly.hills.money.gang.registry.PowerUpRegistry;
 import com.beverly.hills.money.gang.spawner.Spawner;
 import io.netty.channel.Channel;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.assertj.core.util.Streams;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,6 +59,10 @@ public class GameTest {
 
   private QuadDamagePowerUp quadDamagePowerUp;
 
+  private InvisibilityPowerUp invisibilityPowerUp;
+
+  private DefencePowerUp defencePowerUp;
+
   private AntiCheat antiCheat;
 
   @BeforeEach
@@ -59,7 +70,10 @@ public class GameTest {
     antiCheat = spy(new AntiCheat());
     spawner = spy(new Spawner());
     quadDamagePowerUp = spy(new QuadDamagePowerUp(spawner));
-    powerUpRegistry = spy(new PowerUpRegistry(List.of(quadDamagePowerUp)));
+    defencePowerUp = spy(new DefencePowerUp(spawner));
+    invisibilityPowerUp = spy(new InvisibilityPowerUp(spawner));
+    powerUpRegistry = spy(
+        new PowerUpRegistry(List.of(quadDamagePowerUp, defencePowerUp, invisibilityPowerUp)));
     game = new Game(spawner,
         new IdGenerator(),
         new IdGenerator(),
@@ -117,9 +131,11 @@ public class GameTest {
         0,
         playerConnectedGameState.getLeaderBoard().get(0).getKills());
 
-    assertEquals(1, Streams.stream(playerConnectedGameState.getSpawnedPowerUps()).count());
-    assertEquals(quadDamagePowerUp,
-        Streams.stream(playerConnectedGameState.getSpawnedPowerUps()).findFirst().get());
+    assertEquals(3, playerConnectedGameState.getSpawnedPowerUps().size());
+    assertEquals(Stream.of(quadDamagePowerUp, defencePowerUp, invisibilityPowerUp).sorted(
+            Comparator.comparing(PowerUp::getType)).collect(Collectors.toList()),
+        playerConnectedGameState.getSpawnedPowerUps().stream().sorted(
+            Comparator.comparing(PowerUp::getType)).collect(Collectors.toList()));
   }
 
   /**
@@ -1074,9 +1090,11 @@ public class GameTest {
     assertEquals(1, respawnedLeaderBoardItem.getDeaths());
     assertEquals(1, respawnedLeaderBoardItem.getKills());
 
-    assertEquals(1, Streams.stream(respawned.getSpawnedPowerUps()).count());
-    assertEquals(quadDamagePowerUp,
-        Streams.stream(respawned.getSpawnedPowerUps()).findFirst().get());
+    assertEquals(3, respawned.getSpawnedPowerUps().size());
+    assertEquals(Stream.of(quadDamagePowerUp, defencePowerUp, invisibilityPowerUp).sorted(
+            Comparator.comparing(PowerUp::getType)).collect(Collectors.toList()),
+        respawned.getSpawnedPowerUps().stream().sorted(
+            Comparator.comparing(PowerUp::getType)).collect(Collectors.toList()));
   }
 
   /**
@@ -1121,7 +1139,7 @@ public class GameTest {
         .builder()
         .direction(Vector.builder().x(10f).y(0).build())
         .position(Vector.builder().x(0f).y(10f).build()).build();
-    var result = game.pickupQuadDamage(coordinates, 123);
+    var result = game.pickupPowerUp(coordinates, PowerUpType.QUAD_DAMAGE, 123);
     assertNull(result, "Should be no result as a non-existing player can't pickup power-ups");
     verify(powerUpRegistry, never()).take(any());
     verify(powerUpRegistry, never()).release(any());
@@ -1137,7 +1155,8 @@ public class GameTest {
     doReturn(true).when(antiCheat).isPowerUpTooFar(any(), any());
     PlayerJoinedGameState playerGameState = game.joinPlayer("some player",
         mock(Channel.class), PlayerStateColor.GREEN);
-    var result = game.pickupQuadDamage(playerGameState.getPlayerState().getCoordinates(),
+    var result = game.pickupPowerUp(playerGameState.getPlayerState().getCoordinates(),
+        PowerUpType.QUAD_DAMAGE,
         playerGameState.getPlayerState().getPlayerId());
     assertNull(result,
         "Should be no result as the player is too far away from the power-up to pick it up");
@@ -1160,11 +1179,13 @@ public class GameTest {
         mock(Channel.class), PlayerStateColor.GREEN);
 
     // pick up
-    game.pickupQuadDamage(playerGameState.getPlayerState().getCoordinates(),
+    game.pickupPowerUp(playerGameState.getPlayerState().getCoordinates(),
+        PowerUpType.QUAD_DAMAGE,
         playerGameState.getPlayerState().getPlayerId());
     reset(powerUpRegistry, quadDamagePowerUp); // reset spy objects
     // pick up again without releasing
-    var result = game.pickupQuadDamage(otherPlayerGameState.getPlayerState().getCoordinates(),
+    var result = game.pickupPowerUp(otherPlayerGameState.getPlayerState().getCoordinates(),
+        PowerUpType.QUAD_DAMAGE,
         otherPlayerGameState.getPlayerState().getPlayerId());
 
     assertNull(result, "No result as the power-up has been picked up already");
@@ -1186,15 +1207,16 @@ public class GameTest {
     PlayerJoinedGameState victimGameState = game.joinPlayer("victim",
         mock(Channel.class), PlayerStateColor.GREEN);
 
-    var result = game.pickupQuadDamage(playerGameState.getPlayerState().getCoordinates(),
+    var result = game.pickupPowerUp(playerGameState.getPlayerState().getCoordinates(),
+        PowerUpType.QUAD_DAMAGE,
         playerGameState.getPlayerState().getPlayerId());
 
     assertEquals(quadDamagePowerUp, result.getPowerUp());
 
-    assertEquals(1, result.getPlayerState().getActivePowerUps().count(),
+    assertEquals(1, result.getPlayerState().getActivePowerUps().size(),
         "One(quad damage) power-up should be active");
     assertEquals(quadDamagePowerUp,
-        result.getPlayerState().getActivePowerUps().findFirst().get().getPowerUp());
+        result.getPlayerState().getActivePowerUps().get(0).getPowerUp());
     assertEquals(playerGameState.getPlayerState().getPlayerId(),
         result.getPlayerState().getPlayerId());
     assertEquals(playerGameState.getPlayerState().getCoordinates(),
@@ -1218,6 +1240,105 @@ public class GameTest {
   }
 
   /**
+   * @given 2 players: attacker and victim
+   * @when victim picks up defence and gets punched twice by attacker
+   * @then the victim survives
+   */
+  @Test
+  public void testPickupDefence() throws GameLogicError {
+    doReturn(false).when(antiCheat).isPowerUpTooFar(any(), any());
+    PlayerJoinedGameState playerGameState = game.joinPlayer("some player",
+        mock(Channel.class), PlayerStateColor.GREEN);
+
+    PlayerJoinedGameState victimGameState = game.joinPlayer("victim",
+        mock(Channel.class), PlayerStateColor.GREEN);
+
+    var result = game.pickupPowerUp(victimGameState.getPlayerState().getCoordinates(),
+        PowerUpType.DEFENCE,
+        victimGameState.getPlayerState().getPlayerId());
+
+    assertEquals(defencePowerUp, result.getPowerUp());
+
+    assertEquals(1, result.getPlayerState().getActivePowerUps().size(),
+        "One(defence) power-up should be active");
+    assertEquals(defencePowerUp,
+        result.getPlayerState().getActivePowerUps().get(0).getPowerUp());
+    assertEquals(victimGameState.getPlayerState().getPlayerId(),
+        result.getPlayerState().getPlayerId());
+    assertEquals(victimGameState.getPlayerState().getCoordinates(),
+        result.getPlayerState().getCoordinates(), "Coordinates shouldn't change");
+
+    verify(defencePowerUp).apply(argThat(
+        playerState -> victimGameState.getPlayerState().getPlayerId()
+            == victimGameState.getPlayerState()
+            .getPlayerId()));
+
+    for (int i = 0; i < 2; i++) {
+      PlayerAttackingGameState playerAttackingGameState = game.attack(
+          playerGameState.getPlayerState().getCoordinates(),
+          playerGameState.getPlayerState().getPlayerId(),
+          victimGameState.getPlayerState().getPlayerId(),
+          AttackType.PUNCH);
+      assertFalse(playerAttackingGameState.getPlayerAttacked().isDead(),
+          "Attacked player should not be dead. Defence power-up is active");
+    }
+    assertEquals(50, victimGameState.getPlayerState().getHealth());
+  }
+
+  /**
+   * @given 2 players: attacker and victim
+   * @when victim picks up defence and gets punched 4 times by attacker
+   * @then the victim dies
+   */
+  @Test
+  public void testPickupDefencePunchTillDead() throws GameLogicError {
+    doReturn(false).when(antiCheat).isPowerUpTooFar(any(), any());
+    PlayerJoinedGameState playerGameState = game.joinPlayer("some player",
+        mock(Channel.class), PlayerStateColor.GREEN);
+
+    PlayerJoinedGameState victimGameState = game.joinPlayer("victim",
+        mock(Channel.class), PlayerStateColor.GREEN);
+
+    var result = game.pickupPowerUp(victimGameState.getPlayerState().getCoordinates(),
+        PowerUpType.DEFENCE,
+        victimGameState.getPlayerState().getPlayerId());
+
+    assertEquals(defencePowerUp, result.getPowerUp());
+
+    assertEquals(1, result.getPlayerState().getActivePowerUps().size(),
+        "One(defence) power-up should be active");
+    assertEquals(defencePowerUp,
+        result.getPlayerState().getActivePowerUps().get(0).getPowerUp());
+    assertEquals(victimGameState.getPlayerState().getPlayerId(),
+        result.getPlayerState().getPlayerId());
+    assertEquals(victimGameState.getPlayerState().getCoordinates(),
+        result.getPlayerState().getCoordinates(), "Coordinates shouldn't change");
+
+    verify(defencePowerUp).apply(argThat(
+        playerState -> victimGameState.getPlayerState().getPlayerId()
+            == victimGameState.getPlayerState()
+            .getPlayerId()));
+
+    for (int i = 0; i < 3; i++) {
+      PlayerAttackingGameState playerAttackingGameState = game.attack(
+          playerGameState.getPlayerState().getCoordinates(),
+          playerGameState.getPlayerState().getPlayerId(),
+          victimGameState.getPlayerState().getPlayerId(),
+          AttackType.PUNCH);
+      assertFalse(playerAttackingGameState.getPlayerAttacked().isDead(),
+          "Attacked player should not be dead. Defence power-up is active");
+    }
+    // this is the punch that kills
+    PlayerAttackingGameState playerAttackingGameState = game.attack(
+        playerGameState.getPlayerState().getCoordinates(),
+        playerGameState.getPlayerState().getPlayerId(),
+        victimGameState.getPlayerState().getPlayerId(),
+        AttackType.PUNCH);
+    assertTrue(playerAttackingGameState.getPlayerAttacked().isDead(),
+        "Attacked player should be dead");
+  }
+
+  /**
    * @given player 1 that picked up quad damage
    * @when player 2 that joins the game
    * @then player 2 doesn't see quad damage being available
@@ -1228,13 +1349,15 @@ public class GameTest {
     PlayerJoinedGameState playerGameState = game.joinPlayer("some player",
         mock(Channel.class), PlayerStateColor.GREEN);
 
-    var result = game.pickupQuadDamage(playerGameState.getPlayerState().getCoordinates(),
+    game.pickupPowerUp(playerGameState.getPlayerState().getCoordinates(),
+        PowerUpType.QUAD_DAMAGE,
         playerGameState.getPlayerState().getPlayerId());
 
     PlayerJoinedGameState otherPlayerGameState = game.joinPlayer("some other player",
         mock(Channel.class), PlayerStateColor.GREEN);
-    assertEquals(0, Streams.stream(otherPlayerGameState.getSpawnedPowerUps().iterator()).count(),
-        "No power-up are visible because the previous player has already picked it up");
+    assertEquals(2,
+        Streams.stream(otherPlayerGameState.getSpawnedPowerUps().iterator()).count(),
+        "2 power-ups are visible onky because the previous player has picked-up quad damage");
   }
 
   /**
@@ -1251,7 +1374,8 @@ public class GameTest {
     PlayerJoinedGameState victimGameState = game.joinPlayer("victim",
         mock(Channel.class), PlayerStateColor.GREEN);
 
-    game.pickupQuadDamage(victimGameState.getPlayerState().getCoordinates(),
+    game.pickupPowerUp(victimGameState.getPlayerState().getCoordinates(),
+        PowerUpType.QUAD_DAMAGE,
         victimGameState.getPlayerState().getPlayerId());
 
     int punchesToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_PUNCH_DAMAGE);
@@ -1265,7 +1389,7 @@ public class GameTest {
 
     assertTrue(victimGameState.getPlayerState().isDead(),
         "Attacked player should be dead");
-    assertEquals(0, victimGameState.getPlayerState().getActivePowerUps().count(),
+    assertEquals(0, victimGameState.getPlayerState().getActivePowerUps().size(),
         "Power-ups should be cleared out after death");
     verify(quadDamagePowerUp).revert(victimGameState.getPlayerState());
     assertEquals(1, victimGameState.getPlayerState().getDamageAmplifier(),
@@ -1292,7 +1416,8 @@ public class GameTest {
       threads.add(new Thread(() -> {
         try {
           latch.await();
-          var result = game.pickupQuadDamage(playerGameState.getPlayerState().getCoordinates(),
+          var result = game.pickupPowerUp(playerGameState.getPlayerState().getCoordinates(),
+              PowerUpType.QUAD_DAMAGE,
               playerGameState.getPlayerState().getPlayerId());
           if (result != null) {
             pickUps.incrementAndGet();
@@ -1346,8 +1471,9 @@ public class GameTest {
           shotPlayerConnectedGameState.getPlayerState().getPlayerId(), AttackType.SHOOT);
     }
 
-    var result = game.pickupQuadDamage(
+    var result = game.pickupPowerUp(
         shotPlayerConnectedGameState.getPlayerState().getCoordinates(),
+        PowerUpType.QUAD_DAMAGE,
         shotPlayerConnectedGameState.getPlayerState().getPlayerId());
     assertNull(result, "Should be no result as dead players can't pick up power-ups");
 
@@ -1370,8 +1496,9 @@ public class GameTest {
         channel, PlayerStateColor.GREEN);
     PlayerJoinedGameState shotPlayerConnectedGameState = game.joinPlayer(shotPlayerName, channel,
         PlayerStateColor.GREEN);
-    game.pickupQuadDamage(
+    game.pickupPowerUp(
         shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
+        PowerUpType.QUAD_DAMAGE,
         shooterPlayerConnectedGameState.getPlayerState().getPlayerId());
     game.attack(
         shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
@@ -1380,9 +1507,9 @@ public class GameTest {
 
     var result = game.respawnPlayer(shotPlayerConnectedGameState.getPlayerState().getPlayerId());
 
-    assertEquals(0,
+    assertEquals(2,
         Streams.stream(result.getSpawnedPowerUps().iterator()).count(),
-        "No power-up are visible because the previous player has already picked it up");
+        "2 power-ups are visible onky because the previous player has picked-up quad damage");
   }
 
 }

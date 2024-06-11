@@ -38,9 +38,15 @@ Game server can be configured using the following environment variables:
 - `GAME_SERVER_FAST_TCP` Enables fast TCP configurations(used mostly for testing, not recommended to be set to `false` in prod). Default - `true`.
 - `GAME_SERVER_FRAGS_PER_GAME` Frags to win a game. Default - `25`.
 - `GAME_SERVER_COMPRESS` Turns on protobuf data compression using zlib(used mostly for testing, not recommended to be set to `false` in prod). Default - `true`. **Warning**. This value has to match `CLIENT_COMPRESS`. If client compresses data but server does not then communication will fail.
-- `GAME_SERVER_QUAD_DAMAGE_SPAWN_MLS` Time (in millisecond) it takes to spawn a quad damage power-up orb. Default - `30_000`.
+- `GAME_SERVER_QUAD_DAMAGE_SPAWN_MLS` Time (in millisecond) it takes to spawn a quad damage power-up orb. Default - `45_000`.
 - `GAME_SERVER_QUAD_DAMAGE_LASTS_FOR_MLS` Time (in millisecond) quad damage lasts for. Default - `10_000`.
+- `GAME_SERVER_DEFENCE_SPAWN_MLS` Time (in millisecond) it takes to spawn a defence power-up orb. Default - `35_000`.
+- `GAME_SERVER_DEFENCE_LASTS_FOR_MLS` Time (in millisecond) defence lasts for. Default - `10_000`.
+- `GAME_SERVER_INVISIBILITY_SPAWN_MLS` Time (in millisecond) it takes to spawn an invisibility power-up orb. Default - `30_000`.
+- `GAME_SERVER_INVISIBILITY_LASTS_FOR_MLS` Time (in millisecond) invisibility lasts for. Default - `15_000`.
 - `GAME_SERVER_POWER_UPS_ENABLED` Turns power-ups on and off. Default - `true`.
+- `GAME_SERVER_PLAYER_SPEED` Player speed. Default - `5`.
+- `GAME_SERVER_PLAYER_SPEED_CHECK_FREQUENCY_MLS` Frequency(in milliseconds) at which server checks all players' speed. Anybody moving faster than `GAME_SERVER_PLAYER_SPEED` will be kicked-out. Default - `10_000`
 - `SENTRY_DSN` Sentry DSN. Not specified by default.
 
 Game client is also configurable through environments variables:
@@ -90,9 +96,9 @@ All errors are automatically published to Sentry. See `SENTRY_DSN` env var.
 ### Client monitoring
 
 `GameConnection.java` has `networkStats` field that gathers basic network stats including:
-- ping(current value + 50th, 75th, and 99th percentiles)
+- ping (and also 50th, 75th, and 99th percentiles)
 - number of sent protobuf messages
-- number of received protobuf message
+- number of received protobuf messages
 - total protobuf outbound payload size(uncompressed)
 - total protobuf inbound payload size(uncompressed)
 

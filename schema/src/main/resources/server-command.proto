@@ -67,5 +67,7 @@ message PushGameEventCommand {
     SHOOT = 1;
     PUNCH = 2;
     QUAD_DAMAGE_POWER_UP = 3;
+    INVISIBILITY_POWER_UP = 4;
+    DEFENCE_POWER_UP = 5;
   }
 }

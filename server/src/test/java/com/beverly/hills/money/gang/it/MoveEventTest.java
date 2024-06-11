@@ -10,7 +10,6 @@ import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.SkinColorSelection;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -18,6 +17,7 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "99999")
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "250")
+@SetEnvironmentVariable(key = "GAME_SERVER_PLAYER_SPEED_CHECK_FREQUENCY_MLS", value = "1000")
 public class MoveEventTest extends AbstractGameServerTest {
 
   /**
@@ -71,7 +71,7 @@ public class MoveEventTest extends AbstractGameServerTest {
             .build())
         .build());
 
-    Thread.sleep(1_000);
+    Thread.sleep(ServerConfig.PLAYER_SPEED_CHECK_FREQUENCY_MLS * 3L);
     assertEquals(0, movingPlayerConnection.getResponse().size(),
         "Moving player is not expected to get any events. Moving player doesn't receive his own moves.");
     assertEquals(1, observerPlayerConnection.getResponse().size(),
@@ -110,7 +110,6 @@ public class MoveEventTest extends AbstractGameServerTest {
    * @then player 1 is disconnected, player 2 sees player exit
    */
   @Test
-  @Disabled("Enable when anti-cheat is ready")
   public void testMoveTooFast() throws Exception {
     int gameIdToConnectTo = 2;
     GameConnection cheatingPlayerConnection = createGameConnection(ServerConfig.PIN_CODE,
@@ -140,8 +139,8 @@ public class MoveEventTest extends AbstractGameServerTest {
             + observerPlayerConnection.getResponse().list());
 
     // moving too fast
-    float newPositionY = mySpawnGameEvent.getPlayer().getPosition().getY() + 10f;
-    float newPositionX = mySpawnGameEvent.getPlayer().getPosition().getX() + 10f;
+    float newPositionY = mySpawnGameEvent.getPlayer().getPosition().getY() + 100f;
+    float newPositionX = mySpawnGameEvent.getPlayer().getPosition().getX() + 100f;
     emptyQueue(cheatingPlayerConnection.getResponse());
     cheatingPlayerConnection.write(PushGameEventCommand.newBuilder()
         .setGameId(gameIdToConnectTo)
@@ -157,10 +156,16 @@ public class MoveEventTest extends AbstractGameServerTest {
             .build())
         .build());
 
-    Thread.sleep(1_000);
+    waitUntilQueueNonEmpty(observerPlayerConnection.getResponse());
+    emptyQueue(cheatingPlayerConnection.getResponse());
+    emptyQueue(observerPlayerConnection.getResponse());
+    Thread.sleep(ServerConfig.PLAYER_SPEED_CHECK_FREQUENCY_MLS * 3L);
     assertTrue(cheatingPlayerConnection.isDisconnected(), "Cheating player should be disconnected");
     assertTrue(observerPlayerConnection.isConnected());
 
+    assertEquals(1, observerPlayerConnection.getResponse().size(),
+        "Only one exit event is expected. Actual response is "
+            + observerPlayerConnection.getResponse().list());
     ServerResponse exitServerResponse = observerPlayerConnection.getResponse().poll().get();
     assertEquals(1, exitServerResponse.getGameEvents().getPlayersOnline(),
         "Only 1 player is expected to be online now. Cheating player should exit.");

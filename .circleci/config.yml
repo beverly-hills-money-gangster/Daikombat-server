@@ -44,7 +44,7 @@ jobs:
             docker push ghcr.io/beverly-hills-money-gangster/daikombat_server:${CIRCLE_TAG}
   update-prod:
     machine:
-      image: ubuntu-2204
+      image: ubuntu-2204:2024.05.1
     steps:
       - add_ssh_keys:
           fingerprints:

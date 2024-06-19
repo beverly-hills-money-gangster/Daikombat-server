@@ -30,7 +30,7 @@ jobs:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
           paths:
             - ~/.m2/repository
-  build-and-publish:
+  build-and-publish-docker:
     docker:
       - image: docker:20.10.12
     steps:
@@ -42,14 +42,40 @@ jobs:
             echo "${GITHUB_TOKEN}" | docker login ghcr.io -u beverly-hills-money-gangster --password-stdin
             docker build -t ghcr.io/beverly-hills-money-gangster/daikombat_server:${CIRCLE_TAG} .
             docker push ghcr.io/beverly-hills-money-gangster/daikombat_server:${CIRCLE_TAG}
-
+  update-prod:
+    machine:
+      image: ubuntu-2204
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:AsQgaOxwm53TcYjkfwwivuqAIS3cwOtl9iHmZxmyoME"
+            - "SHA256:jdKeLKf1dmF/oXYZfucpH+NDoCbIm5NsOMRY+tsS09Q"
+      - run:
+          name: Update prod
+          command: |
+            export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no"
+            git clone --depth 1 git@github.com:beverly-hills-money-gangster/Daikombat-server-configs.git
+            cd Daikombat-server-configs
+            echo "TAG=${CIRCLE_TAG}" > prod/.env
+            git add '*'
+            git commit -m "Release ${CIRCLE_TAG}"
+            git push origin main
+            ssh -v user_cicd@64.226.66.192 'sh update_prod.sh'
 workflows:
   test:
     jobs:
       - test-java
-  publish-to-docker:
+  release-jobs:
     jobs:
-      - build-and-publish:
+      - build-and-publish-docker:
+          filters:
+            tags:
+              only: /^(\d+)\.(\d+)\.(\d+)$/
+            branches:
+              ignore: /.*/
+      - update-prod:
+          requires:
+            - build-and-publish-docker
           filters:
             tags:
               only: /^(\d+)\.(\d+)\.(\d+)$/

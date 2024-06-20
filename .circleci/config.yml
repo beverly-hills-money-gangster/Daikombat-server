@@ -67,7 +67,6 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "SHA256:AsQgaOxwm53TcYjkfwwivuqAIS3cwOtl9iHmZxmyoME"
-            - "SHA256:jdKeLKf1dmF/oXYZfucpH+NDoCbIm5NsOMRY+tsS09Q"
       - run:
           name: Update prod docker compose
           command: |

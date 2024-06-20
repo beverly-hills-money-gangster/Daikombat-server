@@ -696,7 +696,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     ServerResponse puncherPlayerSpawn = puncherConnection.getResponse().poll().get();
     int puncherPlayerId = puncherPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
 
-    waitUntilQueueNonEmpty(deadConnection.getResponse());
+    waitUntilGetResponses(deadConnection.getResponse(), 2);
     ServerResponse punchedPlayerSpawn = puncherConnection.getResponse().poll().get();
     int punchedPlayerId = punchedPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
 

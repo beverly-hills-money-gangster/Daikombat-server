@@ -44,11 +44,12 @@ public class RespawnEventTest extends AbstractGameServerTest {
             .setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
 
-    waitUntilQueueNonEmpty(killerConnection.getResponse());
+    waitUntilGetResponses(killerConnection.getResponse(), 2);
+    waitUntilGetResponses(deadConnection.getResponse(), 2);
+
     ServerResponse shooterPlayerSpawn = killerConnection.getResponse().poll().get();
     int shooterPlayerId = shooterPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
 
-    waitUntilQueueNonEmpty(deadConnection.getResponse());
     ServerResponse shotPlayerSpawn = killerConnection.getResponse().poll().get();
     LOG.info("Shot player spawn {}", shotPlayerSpawn);
     int shotPlayerId = shotPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();

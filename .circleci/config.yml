@@ -87,8 +87,18 @@ workflows:
             branches:
               ignore: /.*/
       - update-prod-configs:
+          filters:
+            tags:
+              only: /^(\d+)\.(\d+)\.(\d+)$/
+            branches:
+              ignore: /.*/
           requires:
             - build-and-publish-docker
       - update-prod-docker-compose:
+          filters:
+            tags:
+              only: /^(\d+)\.(\d+)\.(\d+)$/
+            branches:
+              ignore: /.*/
           requires:
             - update-prod-configs

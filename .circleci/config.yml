@@ -48,6 +48,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
+            - "SHA256:jdKeLKf1dmF/oXYZfucpH+NDoCbIm5NsOMRY+tsS09Q"
             - "SHA256:AsQgaOxwm53TcYjkfwwivuqAIS3cwOtl9iHmZxmyoME"
       - run:
           name: Update prod configs
@@ -57,7 +58,7 @@ jobs:
             cd Daikombat-server-configs
             echo "TAG=8.0.1" > prod/.env
             git add '*'
-            git commit -m "Release 8.0.1"
+            git commit -m "Release 8.0.1  "
             git push origin main
   update-prod-docker-compose:
     machine:
@@ -65,7 +66,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "SHA256:jdKeLKf1dmF/oXYZfucpH+NDoCbIm5NsOMRY+tsS09Q"
+            - "SHA256:AsQgaOxwm53TcYjkfwwivuqAIS3cwOtl9iHmZxmyoME"
       - run:
           name: Update prod docker compose
           command: |

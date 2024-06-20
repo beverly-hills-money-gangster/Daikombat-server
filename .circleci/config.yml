@@ -44,7 +44,7 @@ jobs:
             docker push ghcr.io/beverly-hills-money-gangster/daikombat_server:${CIRCLE_TAG}
   update-prod-configs:
     docker:
-      - image: maven:3.6.3-openjdk-14
+      - image: cimg/openjdk:14.0
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -59,21 +59,21 @@ jobs:
             git add '*'
             git commit -m "Release 8.0.1"
             git push origin main
-    update-prod-docker-compose:
-      machine:
-        image: ubuntu-2204:2024.05.1
-      steps:
-        - add_ssh_keys:
-            fingerprints:
-              - "SHA256:jdKeLKf1dmF/oXYZfucpH+NDoCbIm5NsOMRY+tsS09Q"
-        - run:
-            name: Update prod docker compose
-            command: |
-              ssh -v user_cicd@64.226.66.192 '
-              docker compose -f Daikombat-server-configs/prod/docker-compose.yml down
-              rm -rf Daikombat-server-configs/
-              git clone --depth 1 git@github.com:beverly-hills-money-gangster/Daikombat-server-configs.git
-              docker compose -f Daikombat-server-configs/prod/docker-compose.yml up -d'
+  update-prod-docker-compose:
+    machine:
+      image: ubuntu-2204:2024.05.1
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:jdKeLKf1dmF/oXYZfucpH+NDoCbIm5NsOMRY+tsS09Q"
+      - run:
+          name: Update prod docker compose
+          command: |
+            ssh -v user_cicd@64.226.66.192 '
+            docker compose -f Daikombat-server-configs/prod/docker-compose.yml down
+            rm -rf Daikombat-server-configs/
+            git clone --depth 1 git@github.com:beverly-hills-money-gangster/Daikombat-server-configs.git
+            docker compose -f Daikombat-server-configs/prod/docker-compose.yml up -d'
 workflows:
   test:
     jobs:

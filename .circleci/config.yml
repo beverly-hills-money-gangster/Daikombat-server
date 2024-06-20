@@ -42,7 +42,7 @@ jobs:
             echo "${GITHUB_TOKEN}" | docker login ghcr.io -u beverly-hills-money-gangster --password-stdin
             docker build -t ghcr.io/beverly-hills-money-gangster/daikombat_server:${CIRCLE_TAG} .
             docker push ghcr.io/beverly-hills-money-gangster/daikombat_server:${CIRCLE_TAG}
-  update-prod:
+  update-prod-configs:
     machine:
       image: ubuntu-2204:2024.05.1
     steps:
@@ -51,7 +51,7 @@ jobs:
             - "SHA256:AsQgaOxwm53TcYjkfwwivuqAIS3cwOtl9iHmZxmyoME"
             - "SHA256:jdKeLKf1dmF/oXYZfucpH+NDoCbIm5NsOMRY+tsS09Q"
       - run:
-          name: Update prod
+          name: Update prod configs
           command: |
             export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no"
             git clone --depth 1 git@github.com:beverly-hills-money-gangster/Daikombat-server-configs.git
@@ -60,7 +60,22 @@ jobs:
             git add '*'
             git commit -m "Release ${CIRCLE_TAG}"
             git push origin main
-            ssh -v user_cicd@64.226.66.192 'sh update_prod.sh'
+  update-prod-docker-compose:
+    machine:
+      image: ubuntu-2204:2024.05.1
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:AsQgaOxwm53TcYjkfwwivuqAIS3cwOtl9iHmZxmyoME"
+            - "SHA256:jdKeLKf1dmF/oXYZfucpH+NDoCbIm5NsOMRY+tsS09Q"
+      - run:
+          name: Update prod docker compose
+          command: |
+            ssh -v user_cicd@64.226.66.192 '
+            docker stop $(docker ps -a -q)
+            rm -rf Daikombat-server-configs/
+            git clone --depth 1 git@github.com:beverly-hills-money-gangster/Daikombat-server-configs.git
+            docker compose -f Daikombat-server-configs/prod/docker-compose.yml up -d'
 workflows:
   test:
     jobs:
@@ -73,11 +88,9 @@ workflows:
               only: /^(\d+)\.(\d+)\.(\d+)$/
             branches:
               ignore: /.*/
-      - update-prod:
+      - update-prod-configs:
           requires:
             - build-and-publish-docker
-          filters:
-            tags:
-              only: /^(\d+)\.(\d+)\.(\d+)$/
-            branches:
-              ignore: /.*/
+      - update-prod-docker-compose:
+          requires:
+            - update-prod-configs

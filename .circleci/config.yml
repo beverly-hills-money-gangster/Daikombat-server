@@ -42,29 +42,46 @@ jobs:
             echo "${GITHUB_TOKEN}" | docker login ghcr.io -u beverly-hills-money-gangster --password-stdin
             docker build -t ghcr.io/beverly-hills-money-gangster/daikombat_server:${CIRCLE_TAG} .
             docker push ghcr.io/beverly-hills-money-gangster/daikombat_server:${CIRCLE_TAG}
-  update-prod:
-    machine:
-      image: ubuntu-2204:2024.05.1
+  update-prod-configs:
+    docker:
+      - image: maven:3.6.3-openjdk-14
     steps:
       - add_ssh_keys:
           fingerprints:
             - "SHA256:AsQgaOxwm53TcYjkfwwivuqAIS3cwOtl9iHmZxmyoME"
-            - "SHA256:jdKeLKf1dmF/oXYZfucpH+NDoCbIm5NsOMRY+tsS09Q"
       - run:
-          name: Update prod
+          name: Update prod configs
           command: |
             export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no"
             git clone --depth 1 git@github.com:beverly-hills-money-gangster/Daikombat-server-configs.git
             cd Daikombat-server-configs
-            echo "TAG=${CIRCLE_TAG}" > prod/.env
+            echo "TAG=8.0.1" > prod/.env
             git add '*'
-            git commit -m "Release ${CIRCLE_TAG}"
+            git commit -m "Release 8.0.1"
             git push origin main
-            ssh -v user_cicd@64.226.66.192 'sh update_prod.sh'
+    update-prod-docker-compose:
+      machine:
+        image: ubuntu-2204:2024.05.1
+      steps:
+        - add_ssh_keys:
+            fingerprints:
+              - "SHA256:jdKeLKf1dmF/oXYZfucpH+NDoCbIm5NsOMRY+tsS09Q"
+        - run:
+            name: Update prod docker compose
+            command: |
+              ssh -v user_cicd@64.226.66.192 '
+              docker compose -f Daikombat-server-configs/prod/docker-compose.yml down
+              rm -rf Daikombat-server-configs/
+              git clone --depth 1 git@github.com:beverly-hills-money-gangster/Daikombat-server-configs.git
+              docker compose -f Daikombat-server-configs/prod/docker-compose.yml up -d'
 workflows:
   test:
     jobs:
       - test-java
+      - update-prod-configs
+      - update-prod-docker-compose:
+          requires:
+            - update-prod-configs
   release-jobs:
     jobs:
       - build-and-publish-docker:
@@ -73,11 +90,9 @@ workflows:
               only: /^(\d+)\.(\d+)\.(\d+)$/
             branches:
               ignore: /.*/
-      - update-prod:
-          requires:
-            - build-and-publish-docker
-          filters:
-            tags:
-              only: /^(\d+)\.(\d+)\.(\d+)$/
-            branches:
-              ignore: /.*/
+      # - update-prod-configs:
+      #     requires:
+      #       - build-and-publish-docker
+      # - update-prod-docker-compose:
+      #     requires:
+      #       - update-prod-configs

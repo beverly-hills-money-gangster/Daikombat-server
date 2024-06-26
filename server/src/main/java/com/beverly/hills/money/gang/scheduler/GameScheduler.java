@@ -89,7 +89,7 @@ public class GameScheduler implements Closeable, Scheduler {
                   bufferedMoves, playerStateChannel.getPlayerState().getPlayerId()))
               .filter(playerSpecificBufferedMoves -> !playerSpecificBufferedMoves.isEmpty())
               .ifPresent(playerSpecificBufferedMoves ->
-                  playerStateChannel.getChannel()
+                  playerStateChannel.getNextSecondaryChannel()
                       .writeAndFlush(createMovesEventAllPlayers
                           (game.getPlayersRegistry().playersOnline(),
                               playerSpecificBufferedMoves)));

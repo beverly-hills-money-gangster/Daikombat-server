@@ -15,6 +15,7 @@ message ServerCommand {
     GetServerInfoCommand getServerInfoCommand = 6;
     PingCommand pingCommand = 7;
     RespawnCommand respawnCommand = 8;
+    MergeConnectionCommand mergeConnectionCommand = 9;
   }
 }
 
@@ -33,6 +34,11 @@ message JoinGameCommand {
   optional string version = 2;
   optional string playerName = 3;
   optional SkinColorSelection skin = 4;
+}
+
+message MergeConnectionCommand {
+  optional int32 gameId = 1;
+  optional int32 playerId = 2;
 }
 
 enum SkinColorSelection{

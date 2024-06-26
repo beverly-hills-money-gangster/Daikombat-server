@@ -2,7 +2,7 @@ package com.beverly.hills.money.gang.generator;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class IdGenerator {
+public class SequenceGenerator {
 
   private final AtomicInteger generator = new AtomicInteger();
 

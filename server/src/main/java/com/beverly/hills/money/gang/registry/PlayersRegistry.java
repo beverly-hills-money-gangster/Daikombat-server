@@ -8,6 +8,8 @@ import com.beverly.hills.money.gang.state.PlayerState;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
 import io.netty.channel.Channel;
 import java.io.Closeable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -86,11 +88,29 @@ public class PlayersRegistry implements Closeable {
   }
 
   @Builder
-  @Getter
   @ToString
   public static class PlayerStateChannel {
+    // TODO make sure channels are closed properly
 
+    @Getter
     private final Channel channel;
+    private int lastPickedSecondaryChannelIdx;
+    private final List<Channel> secondaryChannels = new ArrayList<>();
+
+    @Getter
     private final PlayerState playerState;
+
+    public void addSecondaryChannel(Channel channel) {
+      secondaryChannels.add(channel);
+    }
+
+    public Channel getNextSecondaryChannel() {
+      if (secondaryChannels.isEmpty()) {
+        // if we have no secondary channel, then we use the main one
+        return channel;
+      }
+      lastPickedSecondaryChannelIdx++;
+      return secondaryChannels.get(lastPickedSecondaryChannelIdx % secondaryChannels.size());
+    }
   }
 }

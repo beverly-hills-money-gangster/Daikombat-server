@@ -4,7 +4,7 @@ import com.beverly.hills.money.gang.cheat.AntiCheat;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
-import com.beverly.hills.money.gang.generator.IdGenerator;
+import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import com.beverly.hills.money.gang.registry.PowerUpRegistry;
@@ -34,7 +34,7 @@ public class Game implements Closeable, GameReader {
 
   @Getter
   private final int id;
-  private final IdGenerator playerIdGenerator;
+  private final SequenceGenerator playerSequenceGenerator;
 
 
   @Getter
@@ -49,14 +49,14 @@ public class Game implements Closeable, GameReader {
 
   public Game(
       final Spawner spawner,
-      @Qualifier("gameIdGenerator") final IdGenerator gameIdGenerator,
-      @Qualifier("playerIdGenerator") final IdGenerator playerIdGenerator,
+      @Qualifier("gameIdGenerator") final SequenceGenerator gameSequenceGenerator,
+      @Qualifier("playerIdGenerator") final SequenceGenerator playerSequenceGenerator,
       final PowerUpRegistry powerUpRegistry,
       final AntiCheat antiCheat) {
     this.spawner = spawner;
     this.powerUpRegistry = powerUpRegistry;
-    this.id = gameIdGenerator.getNext();
-    this.playerIdGenerator = playerIdGenerator;
+    this.id = gameSequenceGenerator.getNext();
+    this.playerSequenceGenerator = playerSequenceGenerator;
     this.antiCheat = antiCheat;
   }
 
@@ -64,7 +64,7 @@ public class Game implements Closeable, GameReader {
       final String playerName, final Channel playerChannel, PlayerStateColor color)
       throws GameLogicError {
     validateGameNotClosed();
-    int playerId = playerIdGenerator.getNext();
+    int playerId = playerSequenceGenerator.getNext();
     PlayerState.PlayerCoordinates spawn = spawner.spawnPlayer(this);
     PlayerState connectedPlayerState = new PlayerState(playerName, spawn, playerId, color);
     playersRegistry.addPlayer(connectedPlayerState, playerChannel);

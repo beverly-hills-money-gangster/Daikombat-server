@@ -1,6 +1,7 @@
 package com.beverly.hills.money.gang.state;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
+import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
 import com.google.common.util.concurrent.AtomicDouble;
@@ -25,6 +26,7 @@ public class PlayerState implements PlayerStateReader {
 
   public static final int VAMPIRE_HP_BOOST = 20;
   private final AtomicBoolean moved = new AtomicBoolean(false);
+  private final SequenceGenerator eventSequenceGenerator = new SequenceGenerator();
   private final AtomicBoolean dead = new AtomicBoolean();
   public static final int DEFAULT_HP = 100;
   private final AtomicInteger damageAmplifier = new AtomicInteger(1);
@@ -143,7 +145,8 @@ public class PlayerState implements PlayerStateReader {
 
   public void move(PlayerCoordinates newPlayerCoordinates) {
     lastDistanceTravelled.addAndGet(
-        Vector.getDistance(newPlayerCoordinates.getPosition(), playerCoordinatesRef.get().position));
+        Vector.getDistance(newPlayerCoordinates.getPosition(),
+            playerCoordinatesRef.get().position));
     playerCoordinatesRef.set(newPlayerCoordinates);
     moved.set(true);
   }

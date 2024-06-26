@@ -24,7 +24,7 @@ import com.beverly.hills.money.gang.cheat.AntiCheat;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
-import com.beverly.hills.money.gang.generator.IdGenerator;
+import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.powerup.DefencePowerUp;
 import com.beverly.hills.money.gang.powerup.InvisibilityPowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUp;
@@ -75,8 +75,8 @@ public class GameTest {
     powerUpRegistry = spy(
         new PowerUpRegistry(List.of(quadDamagePowerUp, defencePowerUp, invisibilityPowerUp)));
     game = new Game(spawner,
-        new IdGenerator(),
-        new IdGenerator(),
+        new SequenceGenerator(),
+        new SequenceGenerator(),
         powerUpRegistry,
         antiCheat);
   }

@@ -59,6 +59,7 @@ message ServerResponse {
   message GameEvents {
     optional int32 playersOnline = 1;
     repeated GameEvent events = 2;
+    optional int32 sequence = 3;
   }
 
   message ChatEvent {

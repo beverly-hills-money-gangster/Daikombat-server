@@ -36,12 +36,13 @@ public class BotRunnable implements Runnable {
 
     while (!Thread.currentThread().isInterrupted()) {
       try {
-        GameConnection gameConnection = new GameConnection(gameServerCreds,
-            conn -> conn.write(JoinGameCommand.newBuilder()
-                .setPlayerName(Thread.currentThread().getName())
-                .setGameId(GAME_ID_TO_CONNECT)
-                .setSkin(SkinColorSelection.GREEN)
-                .setVersion(ClientConfig.VERSION).build()));
+        GameConnection gameConnection = new GameConnection(gameServerCreds);
+
+        gameConnection.write(JoinGameCommand.newBuilder()
+            .setPlayerName(Thread.currentThread().getName())
+            .setGameId(GAME_ID_TO_CONNECT)
+            .setSkin(SkinColorSelection.GREEN)
+            .setVersion(ClientConfig.VERSION).build());
 
         waitUntilQueueNonEmpty(gameConnection.getResponse());
         ServerResponse response = gameConnection.getResponse().poll().get();

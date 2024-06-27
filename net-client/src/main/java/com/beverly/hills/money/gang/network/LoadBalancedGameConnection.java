@@ -13,7 +13,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.NonNull;
 
-
+// TODO returns array list of network stats
 public class LoadBalancedGameConnection {
 
   private final GameConnection gameConnection;

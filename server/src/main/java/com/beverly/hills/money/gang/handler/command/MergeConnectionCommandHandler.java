@@ -10,7 +10,6 @@ import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -38,16 +37,13 @@ public class MergeConnectionCommandHandler extends ServerCommandHandler {
     LOG.info("Try to merge connection for {}", currentAddress);
     Optional.ofNullable(gameRoomRegistry.getGame(mergeConnection.getGameId()))
         .flatMap(game -> game.getPlayersRegistry().findPlayer(mergeConnection.getPlayerId()))
-        .filter(stateChannel -> StringUtils.equals(
-            getChannelAddress(stateChannel.getChannel()), currentAddress))
-        .ifPresentOrElse(stateChannelToMerge -> {
-          LOG.info("Merge connection {} to {}", currentChannel, stateChannelToMerge.getChannel());
-          stateChannelToMerge.getChannel().eventLoop().schedule(() -> {
-            stateChannelToMerge.addSecondaryChannel(currentChannel);
-          }, 0, TimeUnit.MILLISECONDS);
-        }, () -> currentChannel.writeAndFlush(ServerResponseFactory.createErrorEvent(
-                new GameLogicError("Can't merge connections", GameErrorCode.COMMON_ERROR)))
-            .addListener(ChannelFutureListener.CLOSE));
+        .filter(stateChannel -> StringUtils.equals(stateChannel.getPrimaryChannelAddress(),
+            currentAddress))
+        .ifPresentOrElse(stateChannelToMerge -> stateChannelToMerge.schedulePrimaryChannel(
+                () -> stateChannelToMerge.addSecondaryChannel(currentChannel), 0),
+            () -> currentChannel.writeAndFlush(ServerResponseFactory.createErrorEvent(
+                    new GameLogicError("Can't merge connections", GameErrorCode.COMMON_ERROR)))
+                .addListener(ChannelFutureListener.CLOSE));
   }
 
 }

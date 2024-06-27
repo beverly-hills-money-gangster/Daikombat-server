@@ -1,6 +1,6 @@
 package com.beverly.hills.money.gang.spawner;
 
-import com.beverly.hills.money.gang.registry.PlayersRegistry;
+import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerState;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
@@ -74,8 +74,8 @@ public class Spawner {
   public PlayerState.PlayerCoordinates spawnPlayer(Game game) {
     var players = game.getPlayersRegistry()
         .allPlayers()
-        .map((Function<PlayersRegistry.PlayerStateChannel, PlayerStateReader>)
-            PlayersRegistry.PlayerStateChannel::getPlayerState)
+        .map((Function<PlayerStateChannel, PlayerStateReader>)
+            PlayerStateChannel::getPlayerState)
         .collect(Collectors.toList());
     // get the least populated spawn
     var playersAroundSpawn = new TreeMap<Integer, PlayerState.PlayerCoordinates>();

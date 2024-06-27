@@ -9,12 +9,12 @@ import com.beverly.hills.money.gang.handler.command.ChatServerCommandHandler;
 import com.beverly.hills.money.gang.handler.command.GameEventServerCommandHandler;
 import com.beverly.hills.money.gang.handler.command.GetServerInfoCommandHandler;
 import com.beverly.hills.money.gang.handler.command.JoinGameServerCommandHandler;
+import com.beverly.hills.money.gang.handler.command.MergeConnectionCommandHandler;
 import com.beverly.hills.money.gang.handler.command.PingCommandHandler;
 import com.beverly.hills.money.gang.handler.command.RespawnCommandHandler;
 import com.beverly.hills.money.gang.handler.command.ServerCommandHandler;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
-import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import com.beverly.hills.money.gang.transport.ServerTransport;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -49,6 +49,7 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
   private final GetServerInfoCommandHandler getServerInfoCommandHandler;
   private final PingCommandHandler pingCommandHandler;
   private final RespawnCommandHandler respawnCommandHandler;
+  private final MergeConnectionCommandHandler mergeConnectionCommandHandler;
 
   @Override
   public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -75,6 +76,8 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
         serverCommandHandler = pingCommandHandler;
       } else if (msg.hasRespawnCommand()) {
         serverCommandHandler = respawnCommandHandler;
+      } else if (msg.hasMergeConnectionCommand()) {
+        serverCommandHandler = mergeConnectionCommandHandler;
       } else {
         throw new GameLogicError("Command is not recognized", GameErrorCode.COMMAND_NOT_RECOGNIZED);
       }
@@ -102,8 +105,14 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     boolean playerWasFound = gameRoomRegistry.removeChannel(channelToRemove,
         (game, playerState) -> {
           var disconnectEvent = createExitEvent(game.playersOnline(), playerState);
-          game.getPlayersRegistry().allPlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
-              .forEach(channel -> channel.writeAndFlush(disconnectEvent).addListener(ChannelFutureListener.CLOSE_ON_FAILURE));
+          game.getPlayersRegistry().allPlayers()
+              .forEach(
+                  playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(disconnectEvent)
+                      .addListener((ChannelFutureListener) future -> {
+                        if (!future.isSuccess()) {
+                          playerStateChannel.close();
+                        }
+                      }));
         });
     if (!playerWasFound) {
       channelToRemove.close();

@@ -2,7 +2,6 @@ package com.beverly.hills.money.gang.state;
 
 import com.beverly.hills.money.gang.state.PlayerState.PowerUpInEffect;
 import java.util.List;
-import java.util.stream.Stream;
 
 public interface PlayerStateReader {
 
@@ -11,6 +10,8 @@ public interface PlayerStateReader {
   PlayerState.PlayerCoordinates getCoordinates();
 
   PlayerStateColor getColor();
+
+  int getNextEventId();
 
   int getPlayerId();
 

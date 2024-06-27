@@ -99,8 +99,8 @@ All errors are automatically published to Sentry. See `SENTRY_DSN` env var.
 - ping (and also 50th, 75th, and 99th percentiles)
 - number of sent protobuf messages
 - number of received protobuf messages
-- total protobuf outbound payload size(uncompressed)
-- total protobuf inbound payload size(uncompressed)
+- total protobuf outbound payload size
+- total protobuf inbound payload size
 
 ## Development
 

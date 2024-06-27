@@ -33,6 +33,7 @@ public class GameServerInitializer extends ChannelInitializer<SocketChannel> {
   protected void initChannel(SocketChannel ch) {
     ChannelPipeline p = ch.pipeline();
     if (ServerConfig.COMPRESS) {
+      // TODO why compressed data bytes > protobuf payload bytes?
       LOG.info("Server-side compression is on");
       p.addLast(new JdkZlibDecoder());
       p.addLast(new JdkZlibEncoder());

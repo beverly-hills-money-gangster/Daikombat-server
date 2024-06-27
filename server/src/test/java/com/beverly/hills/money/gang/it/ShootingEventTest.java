@@ -57,6 +57,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     emptyQueue(shooterConnection.getResponse());
     shooterConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(playerId)
+        .setSequence(sequenceGenerator.getNext())
         .setGameId(gameIdToConnectTo)
         .setEventType(PushGameEventCommand.GameEventType.SHOOT)
         .setDirection(
@@ -134,6 +135,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     emptyQueue(puncherConnection.getResponse());
     puncherConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(playerId)
+        .setSequence(sequenceGenerator.getNext())
         .setGameId(gameIdToConnectTo)
         .setEventType(PushGameEventCommand.GameEventType.PUNCH)
         .setDirection(
@@ -218,6 +220,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     emptyQueue(shooterConnection.getResponse());
     shooterConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(shooterPlayerId)
+        .setSequence(sequenceGenerator.getNext())
         .setGameId(gameIdToConnectTo)
         .setEventType(PushGameEventCommand.GameEventType.SHOOT)
         .setDirection(
@@ -322,6 +325,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     emptyQueue(punchingConnection.getResponse());
     punchingConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(shooterPlayerId)
+        .setSequence(sequenceGenerator.getNext())
         .setGameId(gameIdToConnectTo)
         .setEventType(PushGameEventCommand.GameEventType.PUNCH)
         .setDirection(
@@ -425,6 +429,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
 
     shooterConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(shooterPlayerId)
+        .setSequence(sequenceGenerator.getNext())
         .setGameId(gameIdToConnectTo)
         .setEventType(PushGameEventCommand.GameEventType.SHOOT)
         .setDirection(
@@ -485,6 +490,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
 
     puncherConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(puncherPlayerId)
+        .setSequence(sequenceGenerator.getNext())
         .setGameId(gameIdToConnectTo)
         .setEventType(PushGameEventCommand.GameEventType.PUNCH)
         .setDirection(
@@ -549,6 +555,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     for (int i = 0; i < shotsToKill - 1; i++) {
       killerConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(shooterPlayerId)
+          .setSequence(sequenceGenerator.getNext())
           .setGameId(gameIdToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.SHOOT)
           .setDirection(
@@ -579,6 +586,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     // this one kills player 2
     killerConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(shooterPlayerId)
+        .setSequence(sequenceGenerator.getNext())
         .setGameId(gameIdToConnectTo)
         .setEventType(PushGameEventCommand.GameEventType.SHOOT)
         .setDirection(
@@ -710,6 +718,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     for (int i = 0; i < punchesToKill - 1; i++) {
       puncherConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(puncherPlayerId)
+          .setSequence(sequenceGenerator.getNext())
           .setGameId(gameIdToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.PUNCH)
           .setDirection(
@@ -741,6 +750,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     // this one kills player 2
     puncherConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(puncherPlayerId)
+        .setSequence(sequenceGenerator.getNext())
         .setGameId(gameIdToConnectTo)
         .setEventType(PushGameEventCommand.GameEventType.PUNCH)
         .setDirection(
@@ -872,6 +882,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     for (int i = 0; i < shotsToKill; i++) {
       shooterConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(shooterPlayerId)
+          .setSequence(sequenceGenerator.getNext())
           .setGameId(gameIdToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.SHOOT)
           .setDirection(
@@ -907,6 +918,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     // shoot dead player
     shooterConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(shooterPlayerId)
+        .setSequence(sequenceGenerator.getNext())
         .setGameId(gameIdToConnectTo)
         .setEventType(PushGameEventCommand.GameEventType.SHOOT)
         .setDirection(
@@ -968,6 +980,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
 
     selfShootingConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(shooterPlayerId)
+        .setSequence(sequenceGenerator.getNext())
         .setGameId(gameIdToConnectTo)
         .setEventType(PushGameEventCommand.GameEventType.SHOOT)
         .setDirection(

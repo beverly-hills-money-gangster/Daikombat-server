@@ -1,6 +1,7 @@
 package com.beverly.hills.money.gang.state;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
+import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
 import com.google.common.util.concurrent.AtomicDouble;
@@ -25,6 +26,7 @@ public class PlayerState implements PlayerStateReader {
 
   public static final int VAMPIRE_HP_BOOST = 20;
   private final AtomicBoolean moved = new AtomicBoolean(false);
+  private final SequenceGenerator eventSequenceGenerator = new SequenceGenerator();
   private final AtomicBoolean dead = new AtomicBoolean();
   public static final int DEFAULT_HP = 100;
   private final AtomicInteger damageAmplifier = new AtomicInteger(1);
@@ -32,6 +34,8 @@ public class PlayerState implements PlayerStateReader {
   private final AtomicInteger kills = new AtomicInteger();
   private final AtomicInteger deaths = new AtomicInteger();
   private final AtomicInteger health = new AtomicInteger(DEFAULT_HP);
+  private final AtomicInteger lastEventSequence = new AtomicInteger(-1);
+
   @Getter
   private final PlayerStateColor color;
   private final Map<PowerUpType, PowerUpInEffect> powerUps = new ConcurrentHashMap<>();
@@ -52,6 +56,11 @@ public class PlayerState implements PlayerStateReader {
     this.playerId = id;
     defaultDamage();
     defaultDefence();
+  }
+
+  @Override
+  public int getNextEventId() {
+    return eventSequenceGenerator.getNext();
   }
 
   public void powerUp(PowerUp power) {
@@ -141,9 +150,19 @@ public class PlayerState implements PlayerStateReader {
   }
 
 
-  public void move(PlayerCoordinates newPlayerCoordinates) {
+  public void move(PlayerCoordinates newPlayerCoordinates, final int eventSequence) {
+    int localLastEventSequence = lastEventSequence.get();
+    if (localLastEventSequence > eventSequence) {
+      LOG.warn("Out-of-order move for player {}. Current sequence {}, given {}. Skip move.",
+          playerId, localLastEventSequence, eventSequence);
+      return;
+    } else if (!lastEventSequence.compareAndSet(localLastEventSequence, eventSequence)) {
+      LOG.warn("Concurrent move for player {}. Skip move.", playerId);
+      return;
+    }
     lastDistanceTravelled.addAndGet(
-        Vector.getDistance(newPlayerCoordinates.getPosition(), playerCoordinatesRef.get().position));
+        Vector.getDistance(newPlayerCoordinates.getPosition(),
+            playerCoordinatesRef.get().position));
     playerCoordinatesRef.set(newPlayerCoordinates);
     moved.set(true);
   }

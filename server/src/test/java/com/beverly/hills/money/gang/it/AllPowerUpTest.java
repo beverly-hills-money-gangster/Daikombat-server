@@ -91,6 +91,7 @@ public class AllPowerUpTest extends AbstractGameServerTest {
 
     allPowerUps.forEach(gameEventType -> playerConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(playerId)
+        .setSequence(sequenceGenerator.getNext())
         .setGameId(gameIdToConnectTo)
         .setPosition(PushGameEventCommand.Vector.newBuilder()
             .setX(playerSpawnEvent.getPlayer().getPosition().getX())

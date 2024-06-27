@@ -88,6 +88,7 @@ public class ConcurrentKillTest extends AbstractGameServerTest {
           float newPositionY = mySpawn.getPlayer().getPosition().getY() - 0.1f;
           wait.await();
           gameConnection.write(PushGameEventCommand.newBuilder()
+              .setSequence(sequenceGenerator.getNext())
               .setPlayerId(mySpawn.getPlayer().getPlayerId())
               .setGameId(0)
               .setEventType(PushGameEventCommand.GameEventType.SHOOT)

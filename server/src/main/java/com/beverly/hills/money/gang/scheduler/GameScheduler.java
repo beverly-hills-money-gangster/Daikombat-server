@@ -67,8 +67,8 @@ public class GameScheduler implements Closeable, Scheduler {
                 }
                 LOG.warn("Cheating detected for player id {} named {}", state.getPlayerId(),
                     state.getPlayerName());
-                stateChannel.getChannel().writeAndFlush(cheatingDetected)
-                    .addListener(ChannelFutureListener.CLOSE);
+                stateChannel.writeFlushPrimaryChannel(cheatingDetected)
+                    .addListener((ChannelFutureListener) future -> stateChannel.close());
               }));
         }, checkFrequencyMls, checkFrequencyMls, TimeUnit.MILLISECONDS);
   }
@@ -89,10 +89,9 @@ public class GameScheduler implements Closeable, Scheduler {
                   bufferedMoves, playerStateChannel.getPlayerState().getPlayerId()))
               .filter(playerSpecificBufferedMoves -> !playerSpecificBufferedMoves.isEmpty())
               .ifPresent(playerSpecificBufferedMoves ->
-                  playerStateChannel.getChannel()
-                      .writeAndFlush(createMovesEventAllPlayers
-                          (game.getPlayersRegistry().playersOnline(),
-                              playerSpecificBufferedMoves)));
+                  playerStateChannel.writeFlushSecondaryChannel(createMovesEventAllPlayers
+                      (game.getPlayersRegistry().playersOnline(),
+                          playerSpecificBufferedMoves)));
         });
 
 

@@ -64,6 +64,7 @@ public class RespawnEventTest extends AbstractGameServerTest {
     for (int i = 0; i < shotsToKill; i++) {
       killerConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(shooterPlayerId)
+          .setSequence(sequenceGenerator.getNext())
           .setGameId(gameIdToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.SHOOT)
           .setDirection(

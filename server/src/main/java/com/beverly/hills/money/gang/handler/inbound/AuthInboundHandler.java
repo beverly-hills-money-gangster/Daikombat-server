@@ -48,7 +48,8 @@ public class AuthInboundHandler extends SimpleChannelInboundHandler<ServerComman
               : msg.hasJoinGameCommand() ? msg.getJoinGameCommand()
                   : msg.hasGetServerInfoCommand() ? msg.getGetServerInfoCommand()
                       : msg.hasRespawnCommand() ? msg.getRespawnCommand()
-                          : null;
+                          : msg.hasMergeConnectionCommand() ? msg.getMergeConnectionCommand()
+                              : null;
 
       if (command == null) {
         throw new GameLogicError("No command specified", GameErrorCode.AUTH_ERROR);

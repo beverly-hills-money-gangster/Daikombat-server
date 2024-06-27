@@ -1,7 +1,7 @@
 package com.beverly.hills.money.gang;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
-import com.beverly.hills.money.gang.generator.IdGenerator;
+import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.security.ServerHMACService;
 import com.beverly.hills.money.gang.transport.EpollServerTransport;
 import com.beverly.hills.money.gang.transport.NIOServerTransport;
@@ -25,13 +25,13 @@ public class AppConfig {
   }
 
   @Bean
-  public IdGenerator gameIdGenerator() {
-    return new IdGenerator();
+  public SequenceGenerator gameIdGenerator() {
+    return new SequenceGenerator();
   }
 
   @Bean
-  public IdGenerator playerIdGenerator() {
-    return new IdGenerator();
+  public SequenceGenerator playerIdGenerator() {
+    return new SequenceGenerator();
   }
 
   @Bean

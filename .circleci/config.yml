@@ -39,9 +39,10 @@ jobs:
       - run:
           name: Build and push Docker image
           command: |
-            echo "${GITHUB_TOKEN}" | docker login ghcr.io -u beverly-hills-money-gangster --password-stdin
-            docker build -t ghcr.io/beverly-hills-money-gangster/daikombat_server:${CIRCLE_TAG} .
-            docker push ghcr.io/beverly-hills-money-gangster/daikombat_server:${CIRCLE_TAG}
+            echo "${GITHUB_TOKEN}"
+            docker login ghcr.io -u beverly-hills-money-gangster -p ${GITHUB_TOKEN}
+            docker build -t ghcr.io/beverly-hills-money-gangster/daikombat_server:test_tcp_8 .
+            docker push ghcr.io/beverly-hills-money-gangster/daikombat_server:test_tcp_8
   update-prod-configs:
     machine:
       image: ubuntu-2204:2024.05.1
@@ -77,28 +78,4 @@ jobs:
 workflows:
   test:
     jobs:
-      - test-java
-  release-jobs:
-    jobs:
-      - build-and-publish-docker:
-          filters:
-            tags:
-              only: /^(\d+)\.(\d+)\.(\d+)$/
-            branches:
-              ignore: /.*/
-      - update-prod-configs:
-          filters:
-            tags:
-              only: /^(\d+)\.(\d+)\.(\d+)$/
-            branches:
-              ignore: /.*/
-          requires:
-            - build-and-publish-docker
-      - update-prod-docker-compose:
-          filters:
-            tags:
-              only: /^(\d+)\.(\d+)\.(\d+)$/
-            branches:
-              ignore: /.*/
-          requires:
-            - update-prod-configs
+      - build-and-publish-docker

@@ -1,7 +1,6 @@
 package com.beverly.hills.money.gang.state;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
-import com.beverly.hills.money.gang.factory.response.ServerResponseFactory;
 import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
@@ -35,8 +34,7 @@ public class PlayerState implements PlayerStateReader {
   private final AtomicInteger kills = new AtomicInteger();
   private final AtomicInteger deaths = new AtomicInteger();
   private final AtomicInteger health = new AtomicInteger(DEFAULT_HP);
-  @Getter
-  private final ServerResponseFactory serverResponseFactory;
+  private final AtomicInteger lastEventSequence = new AtomicInteger(-1);
 
   @Getter
   private final PlayerStateColor color;
@@ -58,7 +56,6 @@ public class PlayerState implements PlayerStateReader {
     this.playerId = id;
     defaultDamage();
     defaultDefence();
-    this.serverResponseFactory = new ServerResponseFactory(this);
   }
 
   @Override
@@ -153,7 +150,16 @@ public class PlayerState implements PlayerStateReader {
   }
 
 
-  public void move(PlayerCoordinates newPlayerCoordinates) {
+  public void move(PlayerCoordinates newPlayerCoordinates, final int eventSequence) {
+    int localLastEventSequence = lastEventSequence.get();
+    if (localLastEventSequence > eventSequence) {
+      LOG.warn("Out-of-order move for player {}. Current sequence {}, given {}. Skip move.",
+          playerId, localLastEventSequence, eventSequence);
+      return;
+    } else if (!lastEventSequence.compareAndSet(localLastEventSequence, eventSequence)) {
+      LOG.warn("Concurrent move for player {}. Skip move.", playerId);
+      return;
+    }
     lastDistanceTravelled.addAndGet(
         Vector.getDistance(newPlayerCoordinates.getPosition(),
             playerCoordinatesRef.get().position));

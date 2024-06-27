@@ -15,7 +15,6 @@ import com.beverly.hills.money.gang.handler.command.RespawnCommandHandler;
 import com.beverly.hills.money.gang.handler.command.ServerCommandHandler;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
-import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import com.beverly.hills.money.gang.transport.ServerTransport;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -106,9 +105,14 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     boolean playerWasFound = gameRoomRegistry.removeChannel(channelToRemove,
         (game, playerState) -> {
           var disconnectEvent = createExitEvent(game.playersOnline(), playerState);
-          game.getPlayersRegistry().allPlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
-              .forEach(channel -> channel.writeAndFlush(disconnectEvent)
-                  .addListener(ChannelFutureListener.CLOSE_ON_FAILURE));
+          game.getPlayersRegistry().allPlayers()
+              .forEach(
+                  playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(disconnectEvent)
+                      .addListener((ChannelFutureListener) future -> {
+                        if (!future.isSuccess()) {
+                          playerStateChannel.close();
+                        }
+                      }));
         });
     if (!playerWasFound) {
       channelToRemove.close();

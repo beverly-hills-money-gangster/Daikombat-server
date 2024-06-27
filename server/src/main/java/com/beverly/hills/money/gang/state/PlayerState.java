@@ -35,8 +35,6 @@ public class PlayerState implements PlayerStateReader {
   private final AtomicInteger kills = new AtomicInteger();
   private final AtomicInteger deaths = new AtomicInteger();
   private final AtomicInteger health = new AtomicInteger(DEFAULT_HP);
-  @Getter
-  private final ServerResponseFactory serverResponseFactory;
 
   @Getter
   private final PlayerStateColor color;
@@ -58,7 +56,6 @@ public class PlayerState implements PlayerStateReader {
     this.playerId = id;
     defaultDamage();
     defaultDefence();
-    this.serverResponseFactory = new ServerResponseFactory(this);
   }
 
   @Override

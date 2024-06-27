@@ -202,12 +202,12 @@ public class Game implements Closeable, GameReader {
   }
 
   public List<PlayerStateReader> getBufferedMoves() {
-    return playersRegistry.allPlayers().map(PlayersRegistry.PlayerStateChannel::getPlayerState)
+    return playersRegistry.allPlayers().map(PlayerStateChannel::getPlayerState)
         .filter(PlayerState::hasMoved).collect(Collectors.toList());
   }
 
   public void flushBufferedMoves() {
-    playersRegistry.allPlayers().map(PlayersRegistry.PlayerStateChannel::getPlayerState)
+    playersRegistry.allPlayers().map(PlayerStateChannel::getPlayerState)
         .forEach(PlayerState::flushMove);
   }
 

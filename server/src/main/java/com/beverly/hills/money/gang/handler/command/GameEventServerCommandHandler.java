@@ -18,13 +18,12 @@ import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
-import com.beverly.hills.money.gang.registry.PlayersRegistry;
+import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import com.beverly.hills.money.gang.scheduler.Scheduler;
 import com.beverly.hills.money.gang.state.AttackType;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerAttackingGameState;
 import com.beverly.hills.money.gang.state.PlayerState;
-import com.beverly.hills.money.gang.state.PlayerStateReader;
 import com.beverly.hills.money.gang.state.Vector;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -73,21 +72,21 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
             4) victim continues to move or shoot before getting KILL event
             for now, we just ignore such events.
              */
-    Optional<PlayerStateReader> playerStateOpt = gameRoomRegistry.getJoinedPlayer(
+    Optional<PlayerStateChannel> playerStateOpt = gameRoomRegistry.getJoinedPlayer(
         gameCommand.getGameId(),
         currentChannel, gameCommand.getPlayerId());
 
     if (playerStateOpt.isEmpty()) {
       LOG.warn("Player {} doesn't exist. Ignore command.", gameCommand.getPlayerId());
       return;
-    } else if (playerStateOpt.get().isDead()) {
+    } else if (playerStateOpt.get().getPlayerState().isDead()) {
       LOG.warn("Player {} is dead. Ignore command.", gameCommand.getPlayerId());
       return;
     }
     try {
       MDC.put(MDC_GAME_ID, String.valueOf(gameCommand.getGameId()));
-      MDC.put(MDC_PLAYER_ID, String.valueOf(playerStateOpt.get().getPlayerId()));
-      MDC.put(MDC_PLAYER_NAME, playerStateOpt.get().getPlayerName());
+      MDC.put(MDC_PLAYER_ID, String.valueOf(playerStateOpt.get().getPlayerState().getPlayerId()));
+      MDC.put(MDC_PLAYER_NAME, playerStateOpt.get().getPlayerState().getPlayerName());
 
       PushGameEventCommand.GameEventType gameEventType = gameCommand.getEventType();
       switch (gameEventType) {
@@ -114,7 +113,8 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
     };
   }
 
-  private void handlePowerUpPickUp(Game game, PushGameEventCommand gameCommand, PowerUpType powerUpType) {
+  private void handlePowerUpPickUp(Game game, PushGameEventCommand gameCommand,
+      PowerUpType powerUpType) {
     var result = game.pickupPowerUp(
         createCoordinates(gameCommand), powerUpType, gameCommand.getPlayerId());
     if (result == null) {
@@ -124,7 +124,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
 
     var serverResponse = createPowerUpPlayerServerResponse(result.getPlayerState());
     game.getPlayersRegistry().allPlayers()
-        .forEach(stateChannel -> stateChannel.getChannel().writeAndFlush(serverResponse));
+        .forEach(stateChannel -> stateChannel.writeFlushPrimaryChannel(serverResponse));
 
     scheduler.schedule(result.getPowerUp().getLastsForMls(), () -> {
       if (!result.getPlayerState().isDead()) {
@@ -144,7 +144,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
       }
       ServerResponse serverResponse = createPowerUpSpawn(Stream.of(powerUp));
       game.getPlayersRegistry().allPlayers().forEach(
-          playerStateChannel -> playerStateChannel.getChannel().writeAndFlush(serverResponse));
+          playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(serverResponse));
     });
   }
 
@@ -189,14 +189,14 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
 
             // send KILL event to all players
             game.getPlayersRegistry().allPlayers().forEach(
-                playerStateChannel -> playerStateChannel.getChannel().writeAndFlush(deadEvent)
+                playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(deadEvent)
                     .addListener((ChannelFutureListener) future -> {
                       if (!future.isSuccess()) {
-                        playerStateChannel.getChannel().close();
+                        playerStateChannel.close();
                         return;
                       }
                       Optional.ofNullable(gameOver).ifPresent(serverResponse -> {
-                        playerStateChannel.getChannel().writeAndFlush(serverResponse);
+                        playerStateChannel.writeFlushPrimaryChannel(serverResponse);
                         game.getPlayersRegistry()
                             .removePlayer(playerStateChannel.getPlayerState().getPlayerId());
                       });
@@ -214,8 +214,8 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
                     // don't send me my own attack back
                     -> playerStateChannel.getPlayerState().getPlayerId()
                     != gameCommand.getPlayerId())
-                .map(PlayersRegistry.PlayerStateChannel::getChannel)
-                .forEach(channel -> channel.writeAndFlush(attackEvent));
+                .forEach(
+                    playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(attackEvent));
           }
         }, () -> {
           LOG.debug("Nobody got attacked");
@@ -231,8 +231,8 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
               .filter(playerStateChannel
                   // don't send me my own attack back
                   -> playerStateChannel.getPlayerState().getPlayerId() != gameCommand.getPlayerId())
-              .map(PlayersRegistry.PlayerStateChannel::getChannel)
-              .forEach(channel -> channel.writeAndFlush(attackEvent));
+              .forEach(playerStateChannel
+                  -> playerStateChannel.writeFlushPrimaryChannel(attackEvent));
         });
   }
 

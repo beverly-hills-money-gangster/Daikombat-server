@@ -4,6 +4,7 @@ import static com.beverly.hills.money.gang.exception.GameErrorCode.NOT_EXISTING_
 
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameLogicError;
+import com.beverly.hills.money.gang.registry.PlayersRegistry.PlayerStateChannel;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerState;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
@@ -38,7 +39,7 @@ public class GameRoomRegistry implements Closeable {
     return games.values().stream();
   }
 
-  public Optional<PlayerStateReader> getJoinedPlayer(int gameId, Channel channel, int playerId) {
+  public Optional<PlayerStateChannel> getJoinedPlayer(int gameId, Channel channel, int playerId) {
     return Optional.ofNullable(games.get(gameId))
         .flatMap(game -> game.getPlayersRegistry().findPlayer(channel, playerId));
   }

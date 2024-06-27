@@ -928,6 +928,25 @@ private static final long serialVersionUID = 0L;
     return affectedPlayerId_;
   }
 
+  public static final int SEQUENCE_FIELD_NUMBER = 7;
+  private int sequence_ = 0;
+  /**
+   * <code>optional int32 sequence = 7;</code>
+   * @return Whether the sequence field is set.
+   */
+  @java.lang.Override
+  public boolean hasSequence() {
+    return ((bitField0_ & 0x00000040) != 0);
+  }
+  /**
+   * <code>optional int32 sequence = 7;</code>
+   * @return The sequence.
+   */
+  @java.lang.Override
+  public int getSequence() {
+    return sequence_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -959,6 +978,9 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000020) != 0)) {
       output.writeInt32(6, affectedPlayerId_);
+    }
+    if (((bitField0_ & 0x00000040) != 0)) {
+      output.writeInt32(7, sequence_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -992,6 +1014,10 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000020) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(6, affectedPlayerId_);
+    }
+    if (((bitField0_ & 0x00000040) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(7, sequence_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1037,6 +1063,11 @@ private static final long serialVersionUID = 0L;
       if (getAffectedPlayerId()
           != other.getAffectedPlayerId()) return false;
     }
+    if (hasSequence() != other.hasSequence()) return false;
+    if (hasSequence()) {
+      if (getSequence()
+          != other.getSequence()) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -1071,6 +1102,10 @@ private static final long serialVersionUID = 0L;
     if (hasAffectedPlayerId()) {
       hash = (37 * hash) + AFFECTEDPLAYERID_FIELD_NUMBER;
       hash = (53 * hash) + getAffectedPlayerId();
+    }
+    if (hasSequence()) {
+      hash = (37 * hash) + SEQUENCE_FIELD_NUMBER;
+      hash = (53 * hash) + getSequence();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -1224,6 +1259,7 @@ private static final long serialVersionUID = 0L;
       }
       playerId_ = 0;
       affectedPlayerId_ = 0;
+      sequence_ = 0;
       return this;
     }
 
@@ -1285,6 +1321,10 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000020) != 0)) {
         result.affectedPlayerId_ = affectedPlayerId_;
         to_bitField0_ |= 0x00000020;
+      }
+      if (((from_bitField0_ & 0x00000040) != 0)) {
+        result.sequence_ = sequence_;
+        to_bitField0_ |= 0x00000040;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -1351,6 +1391,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasAffectedPlayerId()) {
         setAffectedPlayerId(other.getAffectedPlayerId());
       }
+      if (other.hasSequence()) {
+        setSequence(other.getSequence());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -1411,6 +1454,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000020;
               break;
             } // case 48
+            case 56: {
+              sequence_ = input.readInt32();
+              bitField0_ |= 0x00000040;
+              break;
+            } // case 56
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1846,6 +1894,46 @@ private static final long serialVersionUID = 0L;
     public Builder clearAffectedPlayerId() {
       bitField0_ = (bitField0_ & ~0x00000020);
       affectedPlayerId_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private int sequence_ ;
+    /**
+     * <code>optional int32 sequence = 7;</code>
+     * @return Whether the sequence field is set.
+     */
+    @java.lang.Override
+    public boolean hasSequence() {
+      return ((bitField0_ & 0x00000040) != 0);
+    }
+    /**
+     * <code>optional int32 sequence = 7;</code>
+     * @return The sequence.
+     */
+    @java.lang.Override
+    public int getSequence() {
+      return sequence_;
+    }
+    /**
+     * <code>optional int32 sequence = 7;</code>
+     * @param value The sequence to set.
+     * @return This builder for chaining.
+     */
+    public Builder setSequence(int value) {
+
+      sequence_ = value;
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional int32 sequence = 7;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearSequence() {
+      bitField0_ = (bitField0_ & ~0x00000040);
+      sequence_ = 0;
       onChanged();
       return this;
     }

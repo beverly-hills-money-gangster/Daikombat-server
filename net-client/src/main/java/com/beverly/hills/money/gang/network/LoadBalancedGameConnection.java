@@ -4,6 +4,7 @@ import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PushChatEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
+import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
 import com.beverly.hills.money.gang.proto.RespawnCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.stats.NetworkStatsReader;
@@ -13,13 +14,14 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.NonNull;
 
-
+// TODO returns array list of network stats
 public class LoadBalancedGameConnection {
 
+  private int lastSecondaryConnectionId = 0;
   private final GameConnection gameConnection;
 
   @Getter
-  private final Iterable<SecondaryGameConnection> secondaryGameConnections;
+  private final List<SecondaryGameConnection> secondaryGameConnections;
   private final List<AbstractGameConnection> allConnections = new ArrayList<>();
 
   public LoadBalancedGameConnection(
@@ -36,7 +38,13 @@ public class LoadBalancedGameConnection {
   }
 
   public void write(PushGameEventCommand pushGameEventCommand) {
-    gameConnection.write(pushGameEventCommand);
+    if (pushGameEventCommand.getEventType() == GameEventType.MOVE) {
+      lastSecondaryConnectionId++;
+      secondaryGameConnections.get(lastSecondaryConnectionId % secondaryGameConnections.size())
+          .write(pushGameEventCommand);
+    } else {
+      gameConnection.write(pushGameEventCommand);
+    }
   }
 
   public void write(RespawnCommand respawnCommand) {

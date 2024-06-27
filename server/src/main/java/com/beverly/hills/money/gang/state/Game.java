@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -36,6 +37,7 @@ public class Game implements Closeable, GameReader {
   private final int id;
   private final SequenceGenerator playerSequenceGenerator;
 
+  private final AtomicInteger lastEventSequence = new AtomicInteger(-1);
 
   @Getter
   private final PlayersRegistry playersRegistry = new PlayersRegistry();
@@ -93,7 +95,8 @@ public class Game implements Closeable, GameReader {
   public PlayerPowerUpGameState pickupPowerUp(
       final PlayerState.PlayerCoordinates playerCoordinates,
       final PowerUpType powerUpType,
-      final int playerId) {
+      final int playerId,
+      final int eventSequence) {
     PlayerState playerState = getPlayer(playerId).orElse(null);
     if (playerState == null) {
       LOG.warn("Non-existing player can't take power-ups");
@@ -111,7 +114,7 @@ public class Game implements Closeable, GameReader {
       LOG.warn("Power-up can't be taken due to cheating");
       return null;
     }
-    move(playerId, playerCoordinates);
+    move(playerId, playerCoordinates, eventSequence);
     return Optional.ofNullable(powerUpRegistry.take(powerUpType))
         .map(power -> {
           LOG.debug("Power-up taken");
@@ -125,7 +128,8 @@ public class Game implements Closeable, GameReader {
       final PlayerState.PlayerCoordinates attackingPlayerCoordinates,
       final int attackingPlayerId,
       final Integer attackedPlayerId,
-      final AttackType attackType) throws GameLogicError {
+      final AttackType attackType,
+      final int eventSequence) throws GameLogicError {
     validateGameNotClosed();
     PlayerState attackingPlayerState = getPlayer(attackingPlayerId).orElse(null);
     if (attackingPlayerState == null) {
@@ -139,7 +143,7 @@ public class Game implements Closeable, GameReader {
       throw new GameLogicError("You can't attack yourself", GameErrorCode.CAN_NOT_ATTACK_YOURSELF);
     }
 
-    move(attackingPlayerId, attackingPlayerCoordinates);
+    move(attackingPlayerId, attackingPlayerCoordinates, eventSequence);
     if (attackedPlayerId == null) {
       LOG.debug("Nobody got attacked");
       // if nobody was shot
@@ -196,18 +200,19 @@ public class Game implements Closeable, GameReader {
   }
 
   public void bufferMove(final int movingPlayerId,
-      final PlayerState.PlayerCoordinates playerCoordinates) throws GameLogicError {
+      final PlayerState.PlayerCoordinates playerCoordinates,
+      final int eventSequence) throws GameLogicError {
     validateGameNotClosed();
-    move(movingPlayerId, playerCoordinates);
+    move(movingPlayerId, playerCoordinates, eventSequence);
   }
 
   public List<PlayerStateReader> getBufferedMoves() {
-    return playersRegistry.allPlayers().map(PlayersRegistry.PlayerStateChannel::getPlayerState)
+    return playersRegistry.allPlayers().map(PlayerStateChannel::getPlayerState)
         .filter(PlayerState::hasMoved).collect(Collectors.toList());
   }
 
   public void flushBufferedMoves() {
-    playersRegistry.allPlayers().map(PlayersRegistry.PlayerStateChannel::getPlayerState)
+    playersRegistry.allPlayers().map(PlayerStateChannel::getPlayerState)
         .forEach(PlayerState::flushMove);
   }
 
@@ -252,7 +257,16 @@ public class Game implements Closeable, GameReader {
   }
 
   private void move(final int movingPlayerId,
-      final PlayerState.PlayerCoordinates playerCoordinates) {
+      final PlayerState.PlayerCoordinates playerCoordinates,
+      final int eventSequence) {
+    int localLastEventSequence = lastEventSequence.get();
+    if (localLastEventSequence > eventSequence) {
+      LOG.warn("Out-of-order move for player {}. Skip move.", movingPlayerId);
+      return;
+    } else if (!lastEventSequence.compareAndSet(localLastEventSequence, eventSequence)) {
+      LOG.warn("Concurrent move for player {}. Skip move.", movingPlayerId);
+      return;
+    }
     getPlayer(movingPlayerId)
         .ifPresent(playerState -> playerState.move(playerCoordinates));
   }

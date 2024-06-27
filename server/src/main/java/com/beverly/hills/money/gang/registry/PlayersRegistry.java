@@ -5,18 +5,13 @@ import static com.beverly.hills.money.gang.config.ServerConfig.MAX_PLAYERS_PER_G
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.state.PlayerState;
-import com.beverly.hills.money.gang.state.PlayerStateReader;
+import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import io.netty.channel.Channel;
 import java.io.Closeable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +39,7 @@ public class PlayersRegistry implements Closeable {
 
   public Optional<PlayerState> getPlayerState(int playerId) {
     return Optional.ofNullable(players.get(playerId))
-        .map(playerStateChannel -> playerStateChannel.playerState);
+        .map(PlayerStateChannel::getPlayerState);
   }
 
   public Stream<PlayerStateChannel> allPlayers() {
@@ -61,15 +56,15 @@ public class PlayersRegistry implements Closeable {
 
   public Optional<PlayerStateChannel> findPlayer(Channel channel, int playerId) {
     return Optional.ofNullable(players.get(playerId))
-        .filter(playerStateChannel -> playerStateChannel.channel == channel);
+        .filter(playerStateChannel -> playerStateChannel.isOurChannel(channel));
   }
 
   public Optional<PlayerState> disconnectPlayer(int playerId) {
     LOG.debug("Disconnect player {}", playerId);
     PlayerStateChannel playerStateChannel = players.remove(playerId);
     if (playerStateChannel != null) {
-      playerStateChannel.getChannel().close();
-      return Optional.of(playerStateChannel.playerState);
+      playerStateChannel.close();
+      return Optional.of(playerStateChannel.getPlayerState());
     }
     return Optional.empty();
   }
@@ -82,34 +77,7 @@ public class PlayersRegistry implements Closeable {
   @Override
   public void close() {
     LOG.info("Close");
-    players.values().forEach(playerStateChannel -> playerStateChannel.getChannel().close());
+    players.values().forEach(PlayerStateChannel::close);
     players.clear();
-  }
-
-  @Builder
-  @ToString
-  public static class PlayerStateChannel {
-    // TODO make sure channels are closed properly
-
-    @Getter
-    private final Channel channel;
-    private int lastPickedSecondaryChannelIdx;
-    private final List<Channel> secondaryChannels = new ArrayList<>();
-
-    @Getter
-    private final PlayerState playerState;
-
-    public void addSecondaryChannel(Channel channel) {
-      secondaryChannels.add(channel);
-    }
-
-    public Channel getNextSecondaryChannel() {
-      if (secondaryChannels.isEmpty()) {
-        // if we have no secondary channel, then we use the main one
-        return channel;
-      }
-      lastPickedSecondaryChannelIdx++;
-      return secondaryChannels.get(lastPickedSecondaryChannelIdx % secondaryChannels.size());
-    }
   }
 }

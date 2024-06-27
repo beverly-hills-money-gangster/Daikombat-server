@@ -5,7 +5,6 @@ import static com.beverly.hills.money.gang.factory.response.ServerResponseFactor
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
-import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import com.beverly.hills.money.gang.state.Game;
 import io.netty.channel.Channel;
 import lombok.RequiredArgsConstructor;
@@ -38,12 +37,12 @@ public class ChatServerCommandHandler extends ServerCommandHandler {
         .ifPresent(playerStateReader -> {
           var chatMsgToSend = createChatEvent(
               msg.getChatCommand().getMessage(),
-              playerStateReader.getPlayerId(),
-              playerStateReader.getPlayerName());
+              playerStateReader.getPlayerState().getPlayerId(),
+              playerStateReader.getPlayerState().getPlayerName());
           game.getPlayersRegistry().allPlayers()
-              .map(PlayersRegistry.PlayerStateChannel::getChannel)
-              .filter(playerChannel -> playerChannel != currentChannel)
-              .forEach(playerChannel -> playerChannel.writeAndFlush(chatMsgToSend));
+              .filter(
+                  playerStateChannel -> !playerStateChannel.isOurChannel(currentChannel))
+              .forEach(playerChannel -> playerChannel.writeFlushPrimaryChannel(chatMsgToSend));
         });
   }
 }

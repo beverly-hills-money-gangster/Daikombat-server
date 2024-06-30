@@ -20,6 +20,7 @@ public class LoadBalancedGameConnection {
   private final AtomicInteger lastSecondaryConnectionId = new AtomicInteger();
   private final GameConnection gameConnection;
 
+  @Getter
   private final List<SecondaryGameConnection> secondaryGameConnections;
   private final List<AbstractGameConnection> allConnections = new ArrayList<>();
 

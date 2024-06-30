@@ -66,11 +66,6 @@ public class GameConnectionInitializer extends ChannelInitializer<SocketChannel>
         super.write(ctx, msg, promise);
       }
     });
-    if (ClientConfig.COMPRESS) {
-      LOG.info("Client-side compression is on");
-      p.addLast(new JdkZlibDecoder());
-      p.addLast(new JdkZlibEncoder());
-    }
     p.addLast(new ProtobufVarint32FrameDecoder());
     p.addLast(new ProtobufDecoder(ServerResponse.getDefaultInstance()));
     p.addLast(new ProtobufVarint32LengthFieldPrepender());

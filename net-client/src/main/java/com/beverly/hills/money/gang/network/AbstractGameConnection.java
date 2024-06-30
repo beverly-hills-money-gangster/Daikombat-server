@@ -184,13 +184,15 @@ public abstract class AbstractGameConnection {
       return;
     }
     LOG.debug("Write {}", serverCommand);
+    long startMls = System.currentTimeMillis();
     Optional.ofNullable(channelRef.get()).ifPresent(channel -> {
       channel.writeAndFlush(serverCommand).addListener((ChannelFutureListener) future -> {
         if (!future.isSuccess()) {
           errorsQueueAPI.push(new IOException("Failed to write command " + serverCommand));
+          networkStats.setPingMls((int)(System.currentTimeMillis() - startMls));
+          networkStats.incSentMessages();
         }
       });
-      networkStats.incSentMessages();
     });
   }
 

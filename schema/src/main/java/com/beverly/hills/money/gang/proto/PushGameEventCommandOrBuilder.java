@@ -97,4 +97,15 @@ public interface PushGameEventCommandOrBuilder extends
    * @return The sequence.
    */
   int getSequence();
+
+  /**
+   * <code>optional int32 pingMls = 8;</code>
+   * @return Whether the pingMls field is set.
+   */
+  boolean hasPingMls();
+  /**
+   * <code>optional int32 pingMls = 8;</code>
+   * @return The pingMls.
+   */
+  int getPingMls();
 }

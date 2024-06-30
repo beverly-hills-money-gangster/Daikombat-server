@@ -63,7 +63,7 @@ public class GameOverTest extends AbstractGameServerTest {
       float newPositionY = shooterSpawnEvent.getPlayer().getPosition().getY() - 0.1f;
       killerConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(shooterPlayerId)
-          .setSequence(sequenceGenerator.getNext())
+          .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
           .setGameId(gameIdToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.SHOOT)
           .setDirection(

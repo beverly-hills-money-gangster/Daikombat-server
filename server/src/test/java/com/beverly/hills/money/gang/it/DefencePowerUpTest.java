@@ -73,7 +73,8 @@ public class DefencePowerUpTest extends AbstractGameServerTest {
 
     playerConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(playerId)
-        .setSequence(sequenceGenerator.getNext())
+        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
+        .setPingMls(PING_MLS)
         .setGameId(gameIdToConnectTo)
         .setPosition(PushGameEventCommand.Vector.newBuilder()
             .setX(playerSpawnEvent.getPlayer().getPosition().getX())

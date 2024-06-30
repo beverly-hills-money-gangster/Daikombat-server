@@ -106,6 +106,7 @@ message ServerResponse {
     optional int32 health = 5;
     repeated GamePowerUp activePowerUps = 6;
     optional PlayerSkinColor skinColor = 7;
+    optional int32 pingMls = 8;
   }
 
   enum PlayerSkinColor {

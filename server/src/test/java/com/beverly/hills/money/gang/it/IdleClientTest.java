@@ -85,7 +85,7 @@ public class IdleClientTest extends AbstractGameServerTest {
       newPositionX += 0.1f;
       gameConnectionObserver.write(PushGameEventCommand.newBuilder()
           .setPlayerId(observerPlayerId)
-          .setSequence(sequenceGenerator.getNext())
+          .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
           .setGameId(gameToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
           .setDirection(PushGameEventCommand.Vector.newBuilder().setX(0).setY(1).build())
@@ -181,7 +181,7 @@ public class IdleClientTest extends AbstractGameServerTest {
     for (int i = 0; i < punchesToKill - 1; i++) {
       puncherConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(puncherPlayerId)
-          .setSequence(sequenceGenerator.getNext())
+          .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
           .setGameId(gameIdToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.PUNCH)
           .setDirection(
@@ -201,7 +201,7 @@ public class IdleClientTest extends AbstractGameServerTest {
     // this one kills player 2
     puncherConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(puncherPlayerId)
-        .setSequence(sequenceGenerator.getNext())
+        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
         .setGameId(gameIdToConnectTo)
         .setEventType(PushGameEventCommand.GameEventType.PUNCH)
         .setDirection(
@@ -228,7 +228,7 @@ public class IdleClientTest extends AbstractGameServerTest {
       newPositionX += 0.1f;
       puncherConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(puncherPlayerId)
-          .setSequence(sequenceGenerator.getNext())
+          .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
           .setGameId(gameIdToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
           .setDirection(PushGameEventCommand.Vector.newBuilder().setX(0).setY(1).build())
@@ -287,7 +287,7 @@ public class IdleClientTest extends AbstractGameServerTest {
       newPositionX += 0.1f;
       gameConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(playerId)
-          .setSequence(sequenceGenerator.getNext())
+          .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
           .setGameId(gameToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
           .setDirection(PushGameEventCommand.Vector.newBuilder().setX(0).setY(1).build())
@@ -339,7 +339,7 @@ public class IdleClientTest extends AbstractGameServerTest {
 
       gameConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(playerId)
-          .setSequence(sequenceGenerator.getNext())
+          .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
           .setGameId(gameToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
           .setDirection(PushGameEventCommand.Vector.newBuilder().setX(0).setY(1).build())

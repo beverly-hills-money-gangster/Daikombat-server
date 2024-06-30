@@ -86,7 +86,7 @@ public class LoadBalancedGameConnectionTest extends AbstractGameServerTest {
     emptyQueue(movingPlayerConnection.getResponse());
     movingPlayerConnection.write(PushGameEventCommand.newBuilder()
         .setGameId(gameIdToConnectTo)
-        .setSequence(sequenceGenerator.getNext())
+        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
         .setEventType(PushGameEventCommand.GameEventType.MOVE)
         .setPlayerId(playerId1)
         .setPosition(PushGameEventCommand.Vector.newBuilder()

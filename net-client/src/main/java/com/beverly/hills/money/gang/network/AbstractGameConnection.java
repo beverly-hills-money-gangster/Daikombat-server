@@ -188,9 +188,10 @@ public abstract class AbstractGameConnection {
       channel.writeAndFlush(serverCommand).addListener((ChannelFutureListener) future -> {
         if (!future.isSuccess()) {
           errorsQueueAPI.push(new IOException("Failed to write command " + serverCommand));
+        } else {
+          networkStats.incSentMessages();
         }
       });
-      networkStats.incSentMessages();
     });
   }
 

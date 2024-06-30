@@ -62,7 +62,7 @@ public class MoveEventTest extends AbstractGameServerTest {
     emptyQueue(movingPlayerConnection.getResponse());
     movingPlayerConnection.write(PushGameEventCommand.newBuilder()
         .setGameId(gameIdToConnectTo)
-        .setSequence(sequenceGenerator.getNext())
+        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
         .setEventType(PushGameEventCommand.GameEventType.MOVE)
         .setPlayerId(playerId1)
         .setPosition(PushGameEventCommand.Vector.newBuilder()
@@ -150,7 +150,7 @@ public class MoveEventTest extends AbstractGameServerTest {
     for (int i = 0; i < movements; i++) {
       movingPlayerConnection.write(PushGameEventCommand.newBuilder()
           .setGameId(gameIdToConnectTo)
-          .setSequence(sequenceGenerator.getNext())
+          .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
           .setPlayerId(playerId1)
           .setPosition(PushGameEventCommand.Vector.newBuilder()
@@ -309,7 +309,7 @@ public class MoveEventTest extends AbstractGameServerTest {
     emptyQueue(cheatingPlayerConnection.getResponse());
     cheatingPlayerConnection.write(PushGameEventCommand.newBuilder()
         .setGameId(gameIdToConnectTo)
-        .setSequence(sequenceGenerator.getNext())
+        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
         .setEventType(PushGameEventCommand.GameEventType.MOVE)
         .setPlayerId(playerId1)
         .setPosition(PushGameEventCommand.Vector.newBuilder()
@@ -387,7 +387,7 @@ public class MoveEventTest extends AbstractGameServerTest {
     // wrong game connection
     wrongGameConnection.write(PushGameEventCommand.newBuilder()
         .setGameId(gameIdToConnectTo)
-        .setSequence(sequenceGenerator.getNext())
+        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
         .setEventType(PushGameEventCommand.GameEventType.MOVE)
         .setPlayerId(playerId1)
         .setPosition(PushGameEventCommand.Vector.newBuilder()

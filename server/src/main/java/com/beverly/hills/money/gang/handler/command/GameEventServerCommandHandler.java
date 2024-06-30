@@ -58,7 +58,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
     return gameCommand.hasGameId()
         && gameCommand.hasPlayerId()
         && (gameCommand.hasPosition() && gameCommand.hasDirection() && gameCommand.hasEventType())
-        && gameCommand.hasSequence();
+        && gameCommand.hasSequence() && gameCommand.hasPingMls();
   }
 
   @Override
@@ -99,7 +99,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
         case QUAD_DAMAGE_POWER_UP, INVISIBILITY_POWER_UP, DEFENCE_POWER_UP ->
             handlePowerUpPickUp(game, gameCommand, getPowerUpType(gameEventType));
         case MOVE -> game.bufferMove(gameCommand.getPlayerId(), createCoordinates(gameCommand),
-            gameCommand.getSequence());
+            gameCommand.getSequence(), gameCommand.getPingMls());
         default -> throw new GameLogicError("Unsupported event type",
             GameErrorCode.COMMAND_NOT_RECOGNIZED);
       }
@@ -124,7 +124,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
       PowerUpType powerUpType) {
     var result = game.pickupPowerUp(
         createCoordinates(gameCommand), powerUpType, gameCommand.getPlayerId(),
-        gameCommand.getSequence());
+        gameCommand.getSequence(), gameCommand.getPingMls());
     if (result == null) {
       LOG.warn("Can't process power-up");
       return;
@@ -169,7 +169,8 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
         gameCommand.getPlayerId(),
         gameCommand.hasAffectedPlayerId() ? gameCommand.getAffectedPlayerId() : null,
         attackType,
-        gameCommand.getSequence());
+        gameCommand.getSequence(),
+        gameCommand.getPingMls());
     if (attackGameState == null) {
       LOG.debug("No attacking game state");
       return;

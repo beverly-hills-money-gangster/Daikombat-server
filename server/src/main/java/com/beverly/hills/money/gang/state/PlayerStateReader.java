@@ -13,6 +13,8 @@ public interface PlayerStateReader {
 
   int getNextEventId();
 
+  Integer getPingMls();
+
   int getPlayerId();
 
   String getPlayerName();

@@ -2,6 +2,7 @@ package com.beverly.hills.money.gang.stats;
 
 import io.micrometer.core.instrument.DistributionSummary;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.distribution.HistogramSnapshot;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -15,6 +16,7 @@ public class NetworkStats implements NetworkStatsReader {
 
   @Getter
   private final DistributionSummary pingDistributionSummary;
+
 
   @Getter
   private final DistributionSummary outboundDistributionSummary;
@@ -46,6 +48,7 @@ public class NetworkStats implements NetworkStatsReader {
   private final AtomicLong inboundPayloadBytes = new AtomicLong();
 
   private final AtomicInteger pingMls = new AtomicInteger(-1);
+
 
   public void setPingMls(int mls) {
     pingMls.set(mls);
@@ -103,18 +106,18 @@ public class NetworkStats implements NetworkStatsReader {
     var pingSnapshot = pingDistributionSummary.takeSnapshot();
     var inboundSnapshot = inboundDistributionSummary.takeSnapshot();
     var outboundSnapshot = outboundDistributionSummary.takeSnapshot();
-    return "\npingDistributionSummary: probes " + pingSnapshot.count() + ", " + Arrays.toString(
-        pingSnapshot.percentileValues()) +
+    return "\npingDistributionSummary: " + distributionSummaryToString(pingSnapshot) +
         "\nreceivedMessages:" + receivedMessages +
         "\nsentMessages:" + sentMessages +
         "\noutboundPayloadBytes:" + outboundPayloadBytes +
-        "\noutboundPayloadBytesDistributionSummary: probes " + outboundSnapshot.count() + ", "
-        + Arrays.toString(
-        outboundSnapshot.percentileValues()) +
+        "\noutboundDistributionSummary: " + distributionSummaryToString(outboundSnapshot) +
         "\ninboundPayloadBytes:" + inboundPayloadBytes +
-        "\ninboundPayloadBytesDistributionSummary: probes " + inboundSnapshot.count() + ", "
-        + Arrays.toString(
-        inboundSnapshot.percentileValues());
+        "\ninboundDistributionSummary: " + distributionSummaryToString(inboundSnapshot);
+  }
+
+  private String distributionSummaryToString(HistogramSnapshot histogramSnapshot) {
+    return "probes " + histogramSnapshot.count() + ", " + Arrays.toString(
+        histogramSnapshot.percentileValues());
   }
 
 }

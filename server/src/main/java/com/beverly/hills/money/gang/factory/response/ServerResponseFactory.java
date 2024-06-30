@@ -179,6 +179,7 @@ public interface ServerResponseFactory {
                 .build()).collect(Collectors.toList()))
         .setHealth(playerReader.getHealth())
         .setPlayerId(playerReader.getPlayerId())
+        .setPingMls(playerReader.getPingMls()) // TODO check that we set it in integration tests
         .build();
   }
 
@@ -207,6 +208,7 @@ public interface ServerResponseFactory {
         .setPosition(createVector(playerReader.getCoordinates().getPosition()))
         .setDirection(createVector(playerReader.getCoordinates().getDirection()))
         .setPlayerId(playerReader.getPlayerId())
+        .setPingMls(playerReader.getPingMls())
         .build();
   }
 

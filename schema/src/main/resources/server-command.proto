@@ -63,6 +63,7 @@ message PushGameEventCommand {
   optional int32 playerId = 5;
   optional int32 affectedPlayerId = 6;
   optional int32 sequence = 7;
+  optional int32 pingMls = 8;
 
   message Vector {
     optional float x = 1;

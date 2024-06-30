@@ -50,6 +50,7 @@ public abstract class AbstractGameServerTest {
 
   protected final List<SecondaryGameConnection> secondaryGameConnections = new CopyOnWriteArrayList<>();
 
+  protected static final int PING_MLS = 60;
 
   public static boolean isPortAvailable(int port) {
     try (ServerSocket ignored = new ServerSocket(port)) {

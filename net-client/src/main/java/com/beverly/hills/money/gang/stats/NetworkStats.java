@@ -2,6 +2,7 @@ package com.beverly.hills.money.gang.stats;
 
 import io.micrometer.core.instrument.DistributionSummary;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.distribution.HistogramSnapshot;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -17,6 +18,9 @@ public class NetworkStats implements NetworkStatsReader {
   private final DistributionSummary pingDistributionSummary;
 
   @Getter
+  private final DistributionSummary latencyDistributionSummary;
+
+  @Getter
   private final DistributionSummary outboundDistributionSummary;
 
   @Getter
@@ -25,6 +29,10 @@ public class NetworkStats implements NetworkStatsReader {
   public NetworkStats() {
     this.pingDistributionSummary = DistributionSummary
         .builder("ping.distribution.summary" + COUNTER.incrementAndGet())
+        .publishPercentiles(0.5, 0.75, 0.99)
+        .register(METER_REGISTRY);
+    this.latencyDistributionSummary = DistributionSummary
+        .builder("latency.distribution.summary" + COUNTER.incrementAndGet())
         .publishPercentiles(0.5, 0.75, 0.99)
         .register(METER_REGISTRY);
     this.outboundDistributionSummary = DistributionSummary
@@ -47,9 +55,16 @@ public class NetworkStats implements NetworkStatsReader {
 
   private final AtomicInteger pingMls = new AtomicInteger(-1);
 
+  private final AtomicInteger latencyMls = new AtomicInteger(-1);
+
   public void setPingMls(int mls) {
     pingMls.set(mls);
     pingDistributionSummary.record(mls);
+  }
+
+  public void setLatencyMls(int mls) {
+    latencyMls.set(mls);
+    latencyDistributionSummary.record(mls);
   }
 
   public void incReceivedMessages() {
@@ -99,22 +114,29 @@ public class NetworkStats implements NetworkStatsReader {
   }
 
   @Override
+  public int getLatencyMls() {
+    return latencyMls.get();
+  }
+
+  @Override
   public String toString() {
     var pingSnapshot = pingDistributionSummary.takeSnapshot();
+    var latencySnapshot = latencyDistributionSummary.takeSnapshot();
     var inboundSnapshot = inboundDistributionSummary.takeSnapshot();
     var outboundSnapshot = outboundDistributionSummary.takeSnapshot();
-    return "\npingDistributionSummary: probes " + pingSnapshot.count() + ", " + Arrays.toString(
-        pingSnapshot.percentileValues()) +
+    return "\npingDistributionSummary: " + distributionSummaryToString(pingSnapshot) +
+        "\nlatencyDistributionSummary: " + distributionSummaryToString(latencySnapshot) +
         "\nreceivedMessages:" + receivedMessages +
         "\nsentMessages:" + sentMessages +
         "\noutboundPayloadBytes:" + outboundPayloadBytes +
-        "\noutboundPayloadBytesDistributionSummary: probes " + outboundSnapshot.count() + ", "
-        + Arrays.toString(
-        outboundSnapshot.percentileValues()) +
+        "\noutboundDistributionSummary: " + distributionSummaryToString(outboundSnapshot) +
         "\ninboundPayloadBytes:" + inboundPayloadBytes +
-        "\ninboundPayloadBytesDistributionSummary: probes " + inboundSnapshot.count() + ", "
-        + Arrays.toString(
-        inboundSnapshot.percentileValues());
+        "\ninboundDistributionSummary: probes " + distributionSummaryToString(inboundSnapshot);
+  }
+
+  private String distributionSummaryToString(HistogramSnapshot histogramSnapshot) {
+    return "probes " + histogramSnapshot.count() + ", " + Arrays.toString(
+        histogramSnapshot.percentileValues());
   }
 
 }

@@ -7,6 +7,7 @@ import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.Getter;
 
 public class NetworkStats implements NetworkStatsReader {
@@ -16,7 +17,6 @@ public class NetworkStats implements NetworkStatsReader {
 
   @Getter
   private final DistributionSummary pingDistributionSummary;
-
 
   @Getter
   private final DistributionSummary outboundDistributionSummary;
@@ -47,7 +47,7 @@ public class NetworkStats implements NetworkStatsReader {
 
   private final AtomicLong inboundPayloadBytes = new AtomicLong();
 
-  private final AtomicInteger pingMls = new AtomicInteger(-1);
+  private final AtomicReference<Integer> pingMls = new AtomicReference<>();
 
 
   public void setPingMls(int mls) {
@@ -97,7 +97,7 @@ public class NetworkStats implements NetworkStatsReader {
   }
 
   @Override
-  public int getPingMls() {
+  public Integer getPingMls() {
     return pingMls.get();
   }
 

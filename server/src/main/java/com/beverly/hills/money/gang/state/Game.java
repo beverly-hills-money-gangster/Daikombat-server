@@ -220,15 +220,12 @@ public class Game implements Closeable, GameReader {
     move(movingPlayerId, playerCoordinates, eventSequence, pingMls);
   }
 
-  public List<PlayerStateReader> getBufferedMoves(Predicate<PlayerStateReader> playerFilter) {
+  public List<PlayerStateReader> getBufferedMoves() {
     return playersRegistry.allPlayers().map(PlayerStateChannel::getPlayerState)
-        .filter(playerState -> playerState.hasMoved() && playerFilter.test(playerState))
+        .filter(PlayerState::hasMoved)
         .collect(Collectors.toList());
   }
 
-  public List<PlayerStateReader> getBufferedMoves() {
-    return getBufferedMoves(playerStateReader -> true);
-  }
 
   public void flushBufferedMoves() {
     playersRegistry.allPlayers().map(PlayerStateChannel::getPlayerState)

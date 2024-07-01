@@ -2,6 +2,7 @@ package com.beverly.hills.money.gang.state;
 
 import com.beverly.hills.money.gang.state.PlayerState.PowerUpInEffect;
 import java.util.List;
+import javax.annotation.Nullable;
 
 public interface PlayerStateReader {
 
@@ -13,6 +14,7 @@ public interface PlayerStateReader {
 
   int getNextEventId();
 
+  @Nullable
   Integer getPingMls();
 
   int getPlayerId();

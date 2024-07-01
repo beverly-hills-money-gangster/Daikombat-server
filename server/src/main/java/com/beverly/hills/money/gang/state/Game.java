@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
@@ -219,9 +220,14 @@ public class Game implements Closeable, GameReader {
     move(movingPlayerId, playerCoordinates, eventSequence, pingMls);
   }
 
-  public List<PlayerStateReader> getBufferedMoves() {
+  public List<PlayerStateReader> getBufferedMoves(Predicate<PlayerStateReader> playerFilter) {
     return playersRegistry.allPlayers().map(PlayerStateChannel::getPlayerState)
-        .filter(PlayerState::hasMoved).collect(Collectors.toList());
+        .filter(playerState -> playerState.hasMoved() && playerFilter.test(playerState))
+        .collect(Collectors.toList());
+  }
+
+  public List<PlayerStateReader> getBufferedMoves() {
+    return getBufferedMoves(playerStateReader -> true);
   }
 
   public void flushBufferedMoves() {

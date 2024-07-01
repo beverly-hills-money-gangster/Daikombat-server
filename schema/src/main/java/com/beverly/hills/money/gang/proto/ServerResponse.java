@@ -11152,17 +11152,6 @@ private static final long serialVersionUID = 0L;
      * @return The skinColor.
      */
     com.beverly.hills.money.gang.proto.ServerResponse.PlayerSkinColor getSkinColor();
-
-    /**
-     * <code>optional int32 pingMls = 8;</code>
-     * @return Whether the pingMls field is set.
-     */
-    boolean hasPingMls();
-    /**
-     * <code>optional int32 pingMls = 8;</code>
-     * @return The pingMls.
-     */
-    int getPingMls();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.GameEventPlayerStats}
@@ -11406,25 +11395,6 @@ private static final long serialVersionUID = 0L;
       return result == null ? com.beverly.hills.money.gang.proto.ServerResponse.PlayerSkinColor.UNRECOGNIZED : result;
     }
 
-    public static final int PINGMLS_FIELD_NUMBER = 8;
-    private int pingMls_ = 0;
-    /**
-     * <code>optional int32 pingMls = 8;</code>
-     * @return Whether the pingMls field is set.
-     */
-    @java.lang.Override
-    public boolean hasPingMls() {
-      return ((bitField0_ & 0x00000040) != 0);
-    }
-    /**
-     * <code>optional int32 pingMls = 8;</code>
-     * @return The pingMls.
-     */
-    @java.lang.Override
-    public int getPingMls() {
-      return pingMls_;
-    }
-
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -11459,9 +11429,6 @@ private static final long serialVersionUID = 0L;
       }
       if (((bitField0_ & 0x00000020) != 0)) {
         output.writeEnum(7, skinColor_);
-      }
-      if (((bitField0_ & 0x00000040) != 0)) {
-        output.writeInt32(8, pingMls_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -11498,10 +11465,6 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000020) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(7, skinColor_);
-      }
-      if (((bitField0_ & 0x00000040) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(8, pingMls_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -11549,11 +11512,6 @@ private static final long serialVersionUID = 0L;
       if (hasSkinColor()) {
         if (skinColor_ != other.skinColor_) return false;
       }
-      if (hasPingMls() != other.hasPingMls()) return false;
-      if (hasPingMls()) {
-        if (getPingMls()
-            != other.getPingMls()) return false;
-      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -11592,10 +11550,6 @@ private static final long serialVersionUID = 0L;
       if (hasSkinColor()) {
         hash = (37 * hash) + SKINCOLOR_FIELD_NUMBER;
         hash = (53 * hash) + skinColor_;
-      }
-      if (hasPingMls()) {
-        hash = (37 * hash) + PINGMLS_FIELD_NUMBER;
-        hash = (53 * hash) + getPingMls();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -11757,7 +11711,6 @@ private static final long serialVersionUID = 0L;
         }
         bitField0_ = (bitField0_ & ~0x00000020);
         skinColor_ = 0;
-        pingMls_ = 0;
         return this;
       }
 
@@ -11832,10 +11785,6 @@ private static final long serialVersionUID = 0L;
         if (((from_bitField0_ & 0x00000040) != 0)) {
           result.skinColor_ = skinColor_;
           to_bitField0_ |= 0x00000020;
-        }
-        if (((from_bitField0_ & 0x00000080) != 0)) {
-          result.pingMls_ = pingMls_;
-          to_bitField0_ |= 0x00000040;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -11930,9 +11879,6 @@ private static final long serialVersionUID = 0L;
         if (other.hasSkinColor()) {
           setSkinColor(other.getSkinColor());
         }
-        if (other.hasPingMls()) {
-          setPingMls(other.getPingMls());
-        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -12006,11 +11952,6 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000040;
                 break;
               } // case 56
-              case 64: {
-                pingMls_ = input.readInt32();
-                bitField0_ |= 0x00000080;
-                break;
-              } // case 64
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -12725,46 +12666,6 @@ private static final long serialVersionUID = 0L;
       public Builder clearSkinColor() {
         bitField0_ = (bitField0_ & ~0x00000040);
         skinColor_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int pingMls_ ;
-      /**
-       * <code>optional int32 pingMls = 8;</code>
-       * @return Whether the pingMls field is set.
-       */
-      @java.lang.Override
-      public boolean hasPingMls() {
-        return ((bitField0_ & 0x00000080) != 0);
-      }
-      /**
-       * <code>optional int32 pingMls = 8;</code>
-       * @return The pingMls.
-       */
-      @java.lang.Override
-      public int getPingMls() {
-        return pingMls_;
-      }
-      /**
-       * <code>optional int32 pingMls = 8;</code>
-       * @param value The pingMls to set.
-       * @return This builder for chaining.
-       */
-      public Builder setPingMls(int value) {
-
-        pingMls_ = value;
-        bitField0_ |= 0x00000080;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 pingMls = 8;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearPingMls() {
-        bitField0_ = (bitField0_ & ~0x00000080);
-        pingMls_ = 0;
         onChanged();
         return this;
       }

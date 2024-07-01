@@ -1,6 +1,5 @@
 package com.beverly.hills.money.gang.scheduler;
 
-import static com.beverly.hills.money.gang.config.ServerConfig.MOVES_UPDATE_FREQUENCY_MLS;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createErrorEvent;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createMovesEventAllPlayers;
 
@@ -17,6 +16,7 @@ import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
 public class GameScheduler implements Closeable, Scheduler {
 
   private static final Logger LOG = LoggerFactory.getLogger(GameScheduler.class);
-
+  private static final int BAD_PING_THRESHOLD = 100;
 
   private final GameRoomRegistry gameRoomRegistry;
 
@@ -40,7 +40,12 @@ public class GameScheduler implements Closeable, Scheduler {
 
   public void init() {
     LOG.info("Init scheduler");
-    scheduleSendBufferedMoves();
+    scheduleSendBufferedMoves(
+        playerStateReader -> playerStateReader.getPingMls() < BAD_PING_THRESHOLD,
+        ServerConfig.MOVES_UPDATE_FREQUENCY_MLS);
+    scheduleSendBufferedMoves(
+        playerStateReader -> playerStateReader.getPingMls() >= BAD_PING_THRESHOLD,
+        ServerConfig.MOVES_UPDATE_FREQUENCY_MLS * 2);
     schedulePlayerSpeedCheck();
   }
 
@@ -73,13 +78,14 @@ public class GameScheduler implements Closeable, Scheduler {
         }, checkFrequencyMls, checkFrequencyMls, TimeUnit.MILLISECONDS);
   }
 
-  private void scheduleSendBufferedMoves() {
+  private void scheduleSendBufferedMoves(Predicate<PlayerStateReader> playerFilter,
+      int frequencyMls) {
     scheduler.scheduleAtFixedRate(() -> gameRoomRegistry.getGames().forEach(game -> {
       try {
         if (game.getPlayersRegistry().playersOnline() == 0) {
           return;
         }
-        var bufferedMoves = game.getBufferedMoves();
+        var bufferedMoves = game.getBufferedMoves(playerFilter);
         if (bufferedMoves.isEmpty()) {
           return;
         }
@@ -98,7 +104,7 @@ public class GameScheduler implements Closeable, Scheduler {
       } finally {
         game.flushBufferedMoves();
       }
-    }), MOVES_UPDATE_FREQUENCY_MLS, MOVES_UPDATE_FREQUENCY_MLS, TimeUnit.MILLISECONDS);
+    }), frequencyMls, frequencyMls, TimeUnit.MILLISECONDS);
   }
 
   private List<PlayerStateReader> getAllBufferedPlayerMovesExceptMine(

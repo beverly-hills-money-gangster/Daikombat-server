@@ -23,8 +23,7 @@ public class LoadBalancedGameConnection {
   @Getter
   private final List<SecondaryGameConnection> secondaryGameConnections;
   private final List<AbstractGameConnection> allConnections = new ArrayList<>();
-
-
+  
   private final List<NetworkStatsReader> secondaryStats = new ArrayList<>();
 
   public LoadBalancedGameConnection(
@@ -44,8 +43,7 @@ public class LoadBalancedGameConnection {
 
   public void write(PushGameEventCommand pushGameEventCommand) {
     if (pushGameEventCommand.getEventType() == GameEventType.MOVE) {
-      secondaryGameConnections.get(
-              lastSecondaryConnectionId.getAndIncrement() % secondaryGameConnections.size())
+      allConnections.get(lastSecondaryConnectionId.getAndIncrement() % allConnections.size())
           .write(pushGameEventCommand);
     } else {
       gameConnection.write(pushGameEventCommand);

@@ -120,6 +120,10 @@ public abstract class AbstractGameConnection {
     return connectedLatch.await(timeoutMls, TimeUnit.MILLISECONDS);
   }
 
+  public void write(PushGameEventCommand pushGameEventCommand) {
+    writeLocal(pushGameEventCommand);
+  }
+
   public boolean waitUntilConnected() throws InterruptedException {
     return waitUntilConnected(60_000);
   }

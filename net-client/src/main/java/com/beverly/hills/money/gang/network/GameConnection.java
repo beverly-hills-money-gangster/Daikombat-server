@@ -14,10 +14,6 @@ public class GameConnection extends AbstractGameConnection {
     super(gameServerCreds);
   }
 
-  public void write(PushGameEventCommand pushGameEventCommand) {
-    writeLocal(pushGameEventCommand);
-  }
-
   public void write(RespawnCommand respawnCommand) {
     writeLocal(respawnCommand);
   }

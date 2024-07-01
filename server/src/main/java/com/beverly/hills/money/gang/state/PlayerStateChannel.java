@@ -22,24 +22,23 @@ public class PlayerStateChannel {
   private final PlayerState playerState;
   private final List<Channel> secondaryChannels = new ArrayList<>();
   private final AtomicInteger lastPickedSecondaryChannelIdx = new AtomicInteger();
+  private final List<Channel> allChannels = new ArrayList<>();
 
   @Builder
   private PlayerStateChannel(Channel channel, PlayerState playerState) {
     this.channel = channel;
+    allChannels.add(channel);
     this.playerState = playerState;
   }
 
   public void addSecondaryChannel(Channel channel) {
     secondaryChannels.add(channel);
+    allChannels.add(channel);
   }
 
-  public ChannelFuture writeFlushSecondaryChannel(ServerResponse response) {
-    if (secondaryChannels.isEmpty()) {
-      // if we have no secondary channel, then we use the main one
-      return writeFlushPrimaryChannel(response);
-    }
-    return secondaryChannels.get(
-            lastPickedSecondaryChannelIdx.getAndIncrement() % secondaryChannels.size())
+  public ChannelFuture writeFlushBalanced(ServerResponse response) {
+    return allChannels.get(
+            lastPickedSecondaryChannelIdx.getAndIncrement() % allChannels.size())
         .writeAndFlush(setEventSequence(response));
   }
 

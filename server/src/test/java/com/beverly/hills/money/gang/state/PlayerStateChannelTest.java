@@ -82,7 +82,7 @@ public class PlayerStateChannelTest {
   public void testWriteFlushSecondaryChannelNoSecondary() {
     ServerResponse serverResponse = ServerResponse.newBuilder()
         .setChatEvents(ChatEvent.newBuilder().build()).build();
-    playerStateChannel.writeFlushSecondaryChannel(serverResponse);
+    playerStateChannel.writeFlushBalanced(serverResponse);
     verify(channel).writeAndFlush(serverResponse);
   }
 
@@ -97,8 +97,8 @@ public class PlayerStateChannelTest {
     ServerResponse serverResponse = ServerResponse.newBuilder()
         .setChatEvents(ChatEvent.newBuilder().build()).build();
 
-    playerStateChannel.writeFlushSecondaryChannel(serverResponse);
-    playerStateChannel.writeFlushSecondaryChannel(serverResponse);
+    playerStateChannel.writeFlushBalanced(serverResponse);
+    playerStateChannel.writeFlushBalanced(serverResponse);
 
     verify(secondaryGameConnection1).writeAndFlush(serverResponse);
     verify(secondaryGameConnection2).writeAndFlush(serverResponse);
@@ -115,10 +115,10 @@ public class PlayerStateChannelTest {
     ServerResponse serverResponse = ServerResponse.newBuilder()
         .setChatEvents(ChatEvent.newBuilder().build()).build();
 
-    playerStateChannel.writeFlushSecondaryChannel(serverResponse);
-    playerStateChannel.writeFlushSecondaryChannel(serverResponse);
-    playerStateChannel.writeFlushSecondaryChannel(serverResponse);
-    playerStateChannel.writeFlushSecondaryChannel(serverResponse);
+    playerStateChannel.writeFlushBalanced(serverResponse);
+    playerStateChannel.writeFlushBalanced(serverResponse);
+    playerStateChannel.writeFlushBalanced(serverResponse);
+    playerStateChannel.writeFlushBalanced(serverResponse);
 
     verify(secondaryGameConnection1, times(2)).writeAndFlush(serverResponse);
     verify(secondaryGameConnection2, times(2)).writeAndFlush(serverResponse);

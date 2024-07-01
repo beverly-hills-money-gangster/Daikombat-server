@@ -40,8 +40,8 @@ jobs:
           name: Build and push Docker image
           command: |
             echo "${GITHUB_TOKEN}" | docker login ghcr.io -u beverly-hills-money-gangster --password-stdin
-            docker build -t ghcr.io/beverly-hills-money-gangster/daikombat_server:test_tcp_lag .
-            docker push ghcr.io/beverly-hills-money-gangster/daikombat_server:test_tcp_lag
+            docker build -t ghcr.io/beverly-hills-money-gangster/daikombat_server:test_tcp_lag_v2 .
+            docker push ghcr.io/beverly-hills-money-gangster/daikombat_server:test_tcp_lag_v2
   update-prod-configs:
     machine:
       image: ubuntu-2204:2024.05.1

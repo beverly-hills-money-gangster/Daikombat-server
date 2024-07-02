@@ -37,11 +37,23 @@ jobs:
       - setup_remote_docker
       - checkout
       - run:
-          name: Build and push Docker image
+          name: Build and push prod Docker image
           command: |
             echo "${GITHUB_TOKEN}" | docker login ghcr.io -u beverly-hills-money-gangster --password-stdin
-            docker build -t ghcr.io/beverly-hills-money-gangster/daikombat_server:${CIRCLE_TAG} .
-            docker push ghcr.io/beverly-hills-money-gangster/daikombat_server:${CIRCLE_TAG}
+            docker build -t ghcr.io/beverly-hills-money-gangster/daikombat_server:prod_${CIRCLE_TAG} .
+            docker push ghcr.io/beverly-hills-money-gangster/daikombat_server:prod_${CIRCLE_TAG}
+  build-and-publish-docker-beta:
+    docker:
+      - image: docker:20.10.12
+    steps:
+      - setup_remote_docker
+      - checkout
+      - run:
+          name: Build and push beta Docker image
+          command: |
+            echo "${GITHUB_TOKEN}" | docker login ghcr.io -u beverly-hills-money-gangster --password-stdin
+            docker build -t ghcr.io/beverly-hills-money-gangster/daikombat_server:beta_${CIRCLE_PIPELINE_ID} .
+            docker push ghcr.io/beverly-hills-money-gangster/daikombat_server:beta_${CIRCLE_PIPELINE_ID}
   update-prod-configs:
     machine:
       image: ubuntu-2204:2024.05.1
@@ -110,9 +122,15 @@ workflows:
   test:
     jobs:
       - test-java
-      - update-beta-configs:
+      - build-and-publish-docker-beta:
           requires:
             - test-java
+          filters:
+            branches:
+              only: master
+      - update-beta-configs:
+          requires:
+            - build-and-publish-docker-beta
           filters:
             branches:
               only: master

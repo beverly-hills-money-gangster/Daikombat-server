@@ -30,7 +30,7 @@ jobs:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
           paths:
             - ~/.m2/repository
-  build-and-publish-docker:
+  build-and-publish-docker-prod:
     docker:
       - image: docker:20.10.12
     steps:
@@ -55,9 +55,26 @@ jobs:
             export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no"
             git clone --depth 1 git@github.com:beverly-hills-money-gangster/Daikombat-server-configs.git
             cd Daikombat-server-configs
-            echo "TAG=${CIRCLE_TAG}" > prod/.env
+            echo "TAG=prod_${CIRCLE_TAG}" > prod/.env
             git add '*'
-            git commit -m "Release ${CIRCLE_TAG}"
+            git commit -m "Prod update ${CIRCLE_TAG}"
+            git push origin main
+  update-beta-configs:
+    machine:
+      image: ubuntu-2204:2024.05.1
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:jdKeLKf1dmF/oXYZfucpH+NDoCbIm5NsOMRY+tsS09Q"
+      - run:
+          name: Update beta configs
+          command: |
+            export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no"
+            git clone --depth 1 git@github.com:beverly-hills-money-gangster/Daikombat-server-configs.git
+            cd Daikombat-server-configs
+            echo "TAG=beta_${CIRCLE_PIPELINE_ID}" > beta/.env
+            git add '*'
+            git commit -m "Beta update ${CIRCLE_PIPELINE_ID}"
             git push origin main
   update-prod-docker-compose:
     machine:
@@ -70,17 +87,44 @@ jobs:
           name: Update prod docker compose
           command: |
             ssh -v user_cicd@64.226.66.192 '
-            docker stop $(docker ps -a -q)
+            docker stop $(docker ps -a -q -f "name=daikombat-game-server-prod")
             rm -rf Daikombat-server-configs/
             git clone --depth 1 git@github.com:beverly-hills-money-gangster/Daikombat-server-configs.git
             docker compose -f Daikombat-server-configs/prod/docker-compose.yml up -d'
+  update-beta-docker-compose:
+    machine:
+      image: ubuntu-2204:2024.05.1
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:AsQgaOxwm53TcYjkfwwivuqAIS3cwOtl9iHmZxmyoME"
+      - run:
+          name: Update beta docker compose
+          command: |
+            ssh -v user_cicd@64.226.66.192 '
+            docker stop $(docker ps -a -q -f "name=daikombat-game-server-beta")
+            rm -rf Daikombat-server-configs/
+            git clone --depth 1 git@github.com:beverly-hills-money-gangster/Daikombat-server-configs.git
+            docker compose -f Daikombat-server-configs/beta/docker-compose.yml up -d'
 workflows:
   test:
     jobs:
       - test-java
+      - update-beta-configs:
+          requires:
+            - test-java
+          filters:
+            branches:
+              only: master
+      - update-beta-docker-compose:
+          requires:
+            - update-beta-configs
+          filters:
+            branches:
+              only: master
   release-jobs:
     jobs:
-      - build-and-publish-docker:
+      - build-and-publish-docker-prod:
           filters:
             tags:
               only: /^(\d+)\.(\d+)\.(\d+)$/
@@ -93,7 +137,7 @@ workflows:
             branches:
               ignore: /.*/
           requires:
-            - build-and-publish-docker
+            - build-and-publish-docker-prod
       - update-prod-docker-compose:
           filters:
             tags:

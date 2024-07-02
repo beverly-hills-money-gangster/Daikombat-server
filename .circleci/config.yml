@@ -99,6 +99,8 @@ jobs:
           name: Update prod docker compose
           command: |
             ssh -v user_cicd@64.226.66.192 '
+            mkdir -p prod
+            cd prod
             docker stop $(docker ps -a -q -f "name=daikombat-game-server-prod")
             rm -rf Daikombat-server-configs/
             git clone --depth 1 git@github.com:beverly-hills-money-gangster/Daikombat-server-configs.git
@@ -114,6 +116,8 @@ jobs:
           name: Update beta docker compose
           command: |
             ssh -v user_cicd@64.226.66.192 '
+            mkdir -p beta
+            cd beta
             docker stop $(docker ps -a -q -f "name=daikombat-game-server-beta")
             rm -rf Daikombat-server-configs/
             git clone --depth 1 git@github.com:beverly-hills-money-gangster/Daikombat-server-configs.git

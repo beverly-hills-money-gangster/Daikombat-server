@@ -28,6 +28,7 @@ import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import com.beverly.hills.money.gang.state.Vector;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import lombok.Getter;
@@ -154,7 +155,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
         LOG.warn("Can't release power-up {}", powerUp.getType());
         return;
       }
-      ServerResponse serverResponse = createPowerUpSpawn(Stream.of(powerUp));
+      ServerResponse serverResponse = createPowerUpSpawn(List.of(powerUp));
       game.getPlayersRegistry().allPlayers().forEach(
           playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(serverResponse));
     });

@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
@@ -80,11 +79,11 @@ public class Game implements Closeable, GameReader {
     int playerId = playerSequenceGenerator.getNext();
     PlayerState.PlayerCoordinates spawn = spawner.spawnPlayer(this);
     PlayerState connectedPlayerState = new PlayerState(playerName, spawn, playerId, color);
-    playersRegistry.addPlayer(connectedPlayerState, playerChannel);
+    var playerStateChannel = playersRegistry.addPlayer(connectedPlayerState, playerChannel);
     return PlayerJoinedGameState.builder()
         .spawnedPowerUps(powerUpRegistry.getAvailable())
         .leaderBoard(getLeaderBoard())
-        .playerState(connectedPlayerState).build();
+        .playerStateChannel(playerStateChannel).build();
   }
 
   public PlayerRespawnedGameState respawnPlayer(final int playerId) throws GameLogicError {
@@ -99,8 +98,7 @@ public class Game implements Closeable, GameReader {
     player.getPlayerState().respawn(spawner.spawnPlayer(this));
     return PlayerRespawnedGameState.builder()
         .spawnedPowerUps(powerUpRegistry.getAvailable())
-        .playerState(player.getPlayerState())
-        .leaderBoard(getLeaderBoard()).build();
+        .playerStateChannel(player).leaderBoard(getLeaderBoard()).build();
   }
 
   public PlayerPowerUpGameState pickupPowerUp(

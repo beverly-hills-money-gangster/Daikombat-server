@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -70,6 +71,11 @@ public class PlayerStateChannel {
 
   public boolean isOurChannel(Channel otherChannel) {
     return channel == otherChannel || isSameSecondaryChannel(otherChannel);
+  }
+
+  public boolean isOurChannel(PlayerStateChannel playerStateChannel) {
+    return allChannels.stream().anyMatch(
+        playerStateChannel.allChannels::contains);
   }
 
   private boolean isSameSecondaryChannel(Channel otherChannel) {

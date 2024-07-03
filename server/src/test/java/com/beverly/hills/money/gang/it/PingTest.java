@@ -7,6 +7,7 @@ import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.network.SecondaryGameConnection;
 import java.io.IOException;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -22,7 +23,7 @@ public class PingTest extends AbstractGameServerTest {
    * @when a new connection is created, no request is sent
    * @then it's not disconnected as PING messages are sent automatically
    */
-  @Test
+  @RepeatedTest(4)
   public void testPing() throws IOException, InterruptedException {
     GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
     Thread.sleep(5_500);
@@ -39,7 +40,7 @@ public class PingTest extends AbstractGameServerTest {
    * @when a new secondary connection is created, no request is sent
    * @then it's not disconnected as PING messages are sent automatically
    */
-  @Test
+  @RepeatedTest(4)
   public void testPingSecondaryConnection() throws IOException, InterruptedException {
     SecondaryGameConnection secondaryGameConnection = createSecondaryGameConnection(
         ServerConfig.PIN_CODE, "localhost", port);

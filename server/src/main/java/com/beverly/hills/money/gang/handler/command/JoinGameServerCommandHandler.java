@@ -15,15 +15,12 @@ import com.beverly.hills.money.gang.proto.SkinColorSelection;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerJoinedGameState;
-import com.beverly.hills.money.gang.state.PlayerState;
 import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import com.beverly.hills.money.gang.state.PlayerStateColor;
-import com.beverly.hills.money.gang.state.PlayerStateReader;
 import com.beverly.hills.money.gang.util.VersionUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -64,13 +61,13 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
         getSkinColor(msg.getJoinGameCommand().getSkin()));
     ServerResponse playerSpawnEvent = createJoinSinglePlayer(
         game.playersOnline(), playerConnected);
-    currentChannel.writeAndFlush(playerSpawnEvent)
+    playerConnected.getPlayerStateChannel().writeFlushPrimaryChannel(playerSpawnEvent)
         .addListener((ChannelFutureListener) channelFuture -> {
           if (!channelFuture.isSuccess()) {
             currentChannel.close();
             return;
           }
-          sendOtherSpawns(game, currentChannel, playerConnected.getPlayerState(),
+          sendOtherSpawns(game, playerConnected.getPlayerStateChannel(),
               playerConnected.getSpawnedPowerUps());
         });
   }
@@ -87,11 +84,11 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
     };
   }
 
-  protected void sendOtherSpawns(Game game, Channel currentChannel,
-      PlayerState newPlayerState, List<PowerUp> spawnedPowerUps) {
+  protected void sendOtherSpawns(Game game, PlayerStateChannel joinedPlayerStateChannel,
+      List<PowerUp> spawnedPowerUps) {
     var otherPlayers = game.getPlayersRegistry()
         .allPlayers()
-        .filter(playerStateChannel -> !playerStateChannel.isOurChannel(currentChannel))
+        .filter(playerStateChannel -> !playerStateChannel.isOurChannel(joinedPlayerStateChannel))
         .collect(Collectors.toList());
 
     var otherLivePlayers = otherPlayers.stream()
@@ -102,27 +99,28 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
           createSpawnEventAllPlayers(game.playersOnline(), otherLivePlayers.stream()
               .map(PlayerStateChannel::getPlayerState)
               .collect(Collectors.toList()));
-      currentChannel.writeAndFlush(allPlayersSpawnEvent)
+      joinedPlayerStateChannel.writeFlushPrimaryChannel(allPlayersSpawnEvent)
           .addListener((ChannelFutureListener) future -> {
             if (future.isSuccess()) {
-              sendPowerUpSpawn(spawnedPowerUps, currentChannel);
+              sendPowerUpSpawn(spawnedPowerUps, joinedPlayerStateChannel);
               ServerResponse playerSpawnEventForOthers = createSpawnEventSinglePlayerMinimal(
-                  game.playersOnline(), newPlayerState);
+                  game.playersOnline(), joinedPlayerStateChannel.getPlayerState());
               otherPlayers.forEach(playerStateChannel -> playerStateChannel.
                   writeFlushPrimaryChannel(playerSpawnEventForOthers));
             } else {
-              currentChannel.close();
+              joinedPlayerStateChannel.close();
             }
           });
     } else {
-      sendPowerUpSpawn(spawnedPowerUps, currentChannel);
+      sendPowerUpSpawn(spawnedPowerUps, joinedPlayerStateChannel);
     }
   }
 
-  private void sendPowerUpSpawn(List<PowerUp> powerUps, Channel channel) {
+  private void sendPowerUpSpawn(List<PowerUp> powerUps,
+      PlayerStateChannel joinedPlayerStateChannel) {
     if (powerUps.isEmpty()) {
       return;
     }
-    channel.writeAndFlush(createPowerUpSpawn(powerUps.stream()));
+    joinedPlayerStateChannel.writeFlushPrimaryChannel(createPowerUpSpawn(powerUps));
   }
 }

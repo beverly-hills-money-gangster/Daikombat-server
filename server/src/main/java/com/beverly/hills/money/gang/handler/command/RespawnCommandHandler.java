@@ -45,13 +45,13 @@ public class RespawnCommandHandler extends JoinGameServerCommandHandler {
     ServerResponse playerSpawnEvent = createRespawnEventSinglePlayer(
         game.playersOnline(), playerRespawnedGameState);
 
-    currentChannel.writeAndFlush(playerSpawnEvent)
+    playerRespawnedGameState.getPlayerStateChannel().writeFlushPrimaryChannel(playerSpawnEvent)
         .addListener((ChannelFutureListener) channelFuture -> {
           if (!channelFuture.isSuccess()) {
             currentChannel.close();
             return;
           }
-          sendOtherSpawns(game, currentChannel, playerRespawnedGameState.getPlayerState(),
+          sendOtherSpawns(game, playerRespawnedGameState.getPlayerStateChannel(),
               playerRespawnedGameState.getSpawnedPowerUps());
         });
   }

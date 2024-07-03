@@ -30,6 +30,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.EventExecutorGroup;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -37,6 +38,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+import lombok.Getter;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +46,9 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractGameConnection {
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractGameConnection.class);
+
+  @Getter
+  private final String id = UUID.randomUUID().toString();
 
   private static final ServerCommand PING
       = ServerCommand.newBuilder().setPingCommand(PingCommand.newBuilder().build()).build();
@@ -77,7 +82,7 @@ public abstract class AbstractGameConnection {
 
   protected AbstractGameConnection(
       final GameServerCreds gameServerCreds) throws IOException {
-    LOG.info("Initializing game connection");
+    LOG.info("Initializing game connection {}", getId());
     state.set(GameConnectionState.CONNECTING);
     long startTime = System.currentTimeMillis();
     this.hmacService = new ServerHMACService(gameServerCreds.getPassword());

@@ -13,6 +13,7 @@ import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
 import com.beverly.hills.money.gang.proto.SkinColorSelection;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class MergeConnectionTest extends AbstractGameServerTest {
    * @when a player creates a secondary connection and merges it
    * @then merge is successful
    */
-  @Test
+  @RepeatedTest(4)
   public void testMergeConnection() throws Exception {
     int gameIdToConnectTo = 0;
     GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
@@ -68,7 +69,7 @@ public class MergeConnectionTest extends AbstractGameServerTest {
    * @when a player creates a secondary connection and tries merging it with non-existing player id
    * @then merge fails
    */
-  @Test
+  @RepeatedTest(4)
   public void testMergeConnectionNotExistingPlayerId() throws Exception {
     int gameIdToConnectTo = 0;
     SecondaryGameConnection secondaryGameConnection = createSecondaryGameConnection(
@@ -87,7 +88,7 @@ public class MergeConnectionTest extends AbstractGameServerTest {
    * @when a player creates a secondary connection and tries merging it with non-existing game id
    * @then merge fails
    */
-  @Test
+  @RepeatedTest(4)
   public void testMergeConnectionNotExitingGameId() throws Exception {
     int gameIdToConnectTo = 666;
     SecondaryGameConnection secondaryGameConnection = createSecondaryGameConnection(

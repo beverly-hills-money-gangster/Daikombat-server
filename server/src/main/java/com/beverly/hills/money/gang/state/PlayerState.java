@@ -159,10 +159,9 @@ public class PlayerState implements PlayerStateReader {
     revertAllPowerUps();
   }
 
-
   public void move(PlayerCoordinates newPlayerCoordinates, final int eventSequence) {
     int localLastEventSequence = lastEventSequence.get();
-    if (localLastEventSequence > eventSequence) {
+    if (localLastEventSequence >= eventSequence) {
       LOG.warn("Out-of-order move for player {}. Current sequence {}, given {}. Skip move.",
           playerId, localLastEventSequence, eventSequence);
       return;

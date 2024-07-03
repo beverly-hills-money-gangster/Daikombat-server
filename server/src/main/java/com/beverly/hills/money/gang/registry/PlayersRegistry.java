@@ -21,7 +21,7 @@ public class PlayersRegistry implements Closeable {
 
   private final Map<Integer, PlayerStateChannel> players = new ConcurrentHashMap<>();
 
-  public void addPlayer(PlayerState playerState, Channel channel) throws GameLogicError {
+  public PlayerStateChannel addPlayer(PlayerState playerState, Channel channel) throws GameLogicError {
     LOG.debug("Add player {}", playerState);
     // not thread-safe
     if (players.size() >= MAX_PLAYERS_PER_GAME) {
@@ -33,8 +33,10 @@ public class PlayersRegistry implements Closeable {
           GameErrorCode.PLAYER_EXISTS);
     }
     // thread-safe
-    players.put(playerState.getPlayerId(), PlayerStateChannel.builder()
-        .channel(channel).playerState(playerState).build());
+    var playerStateChannel = PlayerStateChannel.builder()
+        .channel(channel).playerState(playerState).build();
+    players.put(playerState.getPlayerId(), playerStateChannel);
+    return playerStateChannel;
   }
 
   public Optional<PlayerState> getPlayerState(int playerId) {

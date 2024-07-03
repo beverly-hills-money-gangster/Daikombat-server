@@ -1,6 +1,10 @@
 package com.beverly.hills.money.gang.it;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 
 import com.beverly.hills.money.gang.entity.GameServerCreds;
 import com.beverly.hills.money.gang.entity.HostPort;
@@ -8,18 +12,27 @@ import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.network.AbstractGameConnection;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.network.SecondaryGameConnection;
+import com.beverly.hills.money.gang.proto.ServerResponse;
+import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
 import com.beverly.hills.money.gang.queue.QueueReader;
 import com.beverly.hills.money.gang.runner.ServerRunner;
+import com.beverly.hills.money.gang.scheduler.GameScheduler;
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.BindException;
 import java.net.ServerSocket;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadLocalRandom;
-import org.junit.jupiter.api.AfterAll;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,10 +56,11 @@ public abstract class AbstractGameServerTest {
 
   protected final SequenceGenerator sequenceGenerator = new SequenceGenerator();
 
+  private final Map<String, List<GameEvent>> allGameEvents = new ConcurrentHashMap<>();
+
   protected static final Logger LOG = LoggerFactory.getLogger(AbstractGameServerTest.class);
 
   protected int port;
-
 
   @Autowired
   private ApplicationContext applicationContext;
@@ -108,6 +122,21 @@ public abstract class AbstractGameServerTest {
   }
 
   @AfterEach
+  public void checkSequences() {
+    allGameEvents.forEach((connectionId, gameEvents) -> {
+      var sequenceList = gameEvents.stream().filter(GameEvent::hasSequence)
+          .map(GameEvent::getSequence)
+          .collect(Collectors.toList());
+      assertEquals(gameEvents.size(), sequenceList.size(),
+          "All game events must have sequence. Checks events: " + gameEvents.stream()
+              .filter(gameEvent -> !gameEvent.hasSequence()).collect(Collectors.toList()));
+      assertEquals(new ArrayList<>(new TreeSet<>(sequenceList)), sequenceList,
+          "Sequence always has to be ascending and contain unique values only. Check connection "
+              + connectionId + " game events " + gameEvents);
+    });
+  }
+
+  @AfterEach
   public void checkResourceLeak(CapturedOutput capturedOutput) {
     assertFalse(capturedOutput.getAll().contains("io.netty.util.ResourceLeakDetector"),
         "A resource leak has been detected. Please check the logs.");
@@ -139,7 +168,25 @@ public abstract class AbstractGameServerTest {
 
   protected GameConnection createGameConnection(
       final String password, final String host, final int port) throws IOException {
-    GameConnection gameConnection = new GameConnection(createCredentials(password, host, port));
+    GameConnection gameConnection = spy(
+        new GameConnection(createCredentials(password, host, port)));
+    allGameEvents.put(gameConnection.getId(), new ArrayList<>());
+    var responseSpy = spy(gameConnection.getResponse());
+    doReturn(responseSpy).when(gameConnection).getResponse();
+
+    doAnswer(invocationOnMock -> {
+      var toReturn = invocationOnMock.callRealMethod();
+      // capture all responses
+      Optional<ServerResponse> serverResponseOpt = (Optional<ServerResponse>) toReturn;
+      serverResponseOpt.ifPresent(serverResponse -> {
+        var gameEvents = Optional.of(serverResponse)
+            .filter(ServerResponse::hasGameEvents)
+            .map(response -> response.getGameEvents().getEventsList()).orElse(new ArrayList<>());
+        allGameEvents.get(gameConnection.getId()).addAll(gameEvents);
+      });
+      return toReturn;
+    }).when(responseSpy).poll();
+
     gameConnections.add(gameConnection);
     try {
       gameConnection.waitUntilConnected(5_000);

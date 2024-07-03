@@ -10,6 +10,7 @@ import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import java.io.IOException;
 import java.util.List;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -24,7 +25,7 @@ public class GameServerInfoTest extends AbstractGameServerTest {
    * @when player 1 requests server info
    * @then player 1 gets server info for all games
    */
-  @Test
+  @RepeatedTest(4)
   public void testGetServerInfo() throws IOException {
     GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
 
@@ -56,7 +57,7 @@ public class GameServerInfoTest extends AbstractGameServerTest {
    * @when player 1 requests server info with incorrect password
    * @then player 1 fails to get server info. server disconnects the player
    */
-  @Test
+  @RepeatedTest(4)
   public void testGetServerInfoBadAuth() throws InterruptedException, IOException {
     GameConnection gameConnection = createGameConnection("wrong password", "localhost", port);
     gameConnection.write(GetServerInfoCommand.newBuilder().build());

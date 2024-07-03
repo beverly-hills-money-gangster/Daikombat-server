@@ -15,6 +15,7 @@ import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.SkinColorSelection;
 import com.beverly.hills.money.gang.stats.NetworkStatsReader;
 import java.util.List;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -31,7 +32,7 @@ public class LoadBalancedGameConnectionTest extends AbstractGameServerTest {
    * @when player 1 moves twice
    * @then player 2 sees player 1 move through the secondary connection
    */
-  @Test
+  @RepeatedTest(4)
   public void testLoadBalancedGameConnection() throws Exception {
     int gameIdToConnectTo = 2;
     GameConnection movingPlayerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",

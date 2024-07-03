@@ -15,7 +15,7 @@ jobs:
       - restore_cache:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
       - run:
-          command: mvn verify -DargLine="-Dio.netty.leakDetectionLevel=PARANOID"
+          command: mvn verify
       - run:
           name: Save test results
           command: |

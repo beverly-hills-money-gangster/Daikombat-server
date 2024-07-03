@@ -9,7 +9,6 @@ import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
-import io.netty.channel.ChannelFutureListener;
 import java.io.Closeable;
 import java.util.List;
 import java.util.Optional;
@@ -21,10 +20,13 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class GameScheduler implements Closeable, Scheduler {
 
   private static final Logger LOG = LoggerFactory.getLogger(GameScheduler.class);
@@ -66,7 +68,7 @@ public class GameScheduler implements Closeable, Scheduler {
                 LOG.warn("Cheating detected for player id {} named {}", state.getPlayerId(),
                     state.getPlayerName());
                 stateChannel.writeFlushPrimaryChannel(cheatingDetected)
-                    .addListener(ChannelFutureListener.CLOSE);
+                    .addListener(future -> stateChannel.close());
               }));
         }, checkFrequencyMls, checkFrequencyMls, TimeUnit.MILLISECONDS);
   }

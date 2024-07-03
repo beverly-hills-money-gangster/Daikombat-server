@@ -5,6 +5,7 @@ import static com.beverly.hills.money.gang.exception.GameErrorCode.COMMAND_NOT_R
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.meter.RequestsMeter;
 import com.beverly.hills.money.gang.proto.ServerCommand;
+import com.beverly.hills.money.gang.proto.ServerCommand.CommandCase;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,8 @@ public abstract class ServerCommandHandler {
   private static final Logger LOG = LoggerFactory.getLogger(ServerCommandHandler.class);
 
   protected abstract boolean isValidCommand(ServerCommand msg, Channel currentChannel);
+
+  public abstract CommandCase getCommandCase();
 
   protected abstract void handleInternal(ServerCommand msg, Channel currentChannel)
       throws GameLogicError;

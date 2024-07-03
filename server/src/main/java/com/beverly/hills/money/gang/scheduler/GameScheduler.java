@@ -1,6 +1,5 @@
 package com.beverly.hills.money.gang.scheduler;
 
-import static com.beverly.hills.money.gang.config.ServerConfig.MOVES_UPDATE_FREQUENCY_MLS;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createErrorEvent;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createMovesEventAllPlayers;
 
@@ -29,7 +28,6 @@ import org.springframework.stereotype.Component;
 public class GameScheduler implements Closeable, Scheduler {
 
   private static final Logger LOG = LoggerFactory.getLogger(GameScheduler.class);
-
 
   private final GameRoomRegistry gameRoomRegistry;
 
@@ -67,7 +65,7 @@ public class GameScheduler implements Closeable, Scheduler {
                 }
                 LOG.warn("Cheating detected for player id {} named {}", state.getPlayerId(),
                     state.getPlayerName());
-                stateChannel.getChannel().writeAndFlush(cheatingDetected)
+                stateChannel.writeFlushPrimaryChannel(cheatingDetected)
                     .addListener(ChannelFutureListener.CLOSE);
               }));
         }, checkFrequencyMls, checkFrequencyMls, TimeUnit.MILLISECONDS);
@@ -75,31 +73,31 @@ public class GameScheduler implements Closeable, Scheduler {
 
   private void scheduleSendBufferedMoves() {
     scheduler.scheduleAtFixedRate(() -> gameRoomRegistry.getGames().forEach(game -> {
-      try {
-        if (game.getPlayersRegistry().playersOnline() == 0) {
-          return;
-        }
-        var bufferedMoves = game.getBufferedMoves();
-        if (bufferedMoves.isEmpty()) {
-          return;
-        }
-        game.getPlayersRegistry().allPlayers().forEach(playerStateChannel -> {
-          // don't send me MY own moves
-          Optional.of(getAllBufferedPlayerMovesExceptMine(
-                  bufferedMoves, playerStateChannel.getPlayerState().getPlayerId()))
-              .filter(playerSpecificBufferedMoves -> !playerSpecificBufferedMoves.isEmpty())
-              .ifPresent(playerSpecificBufferedMoves ->
-                  playerStateChannel.getChannel()
-                      .writeAndFlush(createMovesEventAllPlayers
-                          (game.getPlayersRegistry().playersOnline(),
-                              playerSpecificBufferedMoves)));
-        });
+          try {
+            if (game.getPlayersRegistry().playersOnline() == 0) {
+              return;
+            }
+            var bufferedMoves = game.getBufferedMoves();
+            if (bufferedMoves.isEmpty()) {
+              return;
+            }
+            game.getPlayersRegistry().allPlayers()
+                .forEach(playerStateChannel -> {
+                  // don't send me MY own moves
+                  Optional.of(getAllBufferedPlayerMovesExceptMine(
+                          bufferedMoves, playerStateChannel.getPlayerState().getPlayerId()))
+                      .filter(playerSpecificBufferedMoves -> !playerSpecificBufferedMoves.isEmpty())
+                      .ifPresent(playerSpecificBufferedMoves ->
+                          playerStateChannel.writeFlushBalanced(createMovesEventAllPlayers
+                              (game.getPlayersRegistry().playersOnline(),
+                                  playerSpecificBufferedMoves)));
+                });
 
-
-      } finally {
-        game.flushBufferedMoves();
-      }
-    }), MOVES_UPDATE_FREQUENCY_MLS, MOVES_UPDATE_FREQUENCY_MLS, TimeUnit.MILLISECONDS);
+          } finally {
+            game.flushBufferedMoves();
+          }
+        }), ServerConfig.MOVES_UPDATE_FREQUENCY_MLS, ServerConfig.MOVES_UPDATE_FREQUENCY_MLS,
+        TimeUnit.MILLISECONDS);
   }
 
   private List<PlayerStateReader> getAllBufferedPlayerMovesExceptMine(

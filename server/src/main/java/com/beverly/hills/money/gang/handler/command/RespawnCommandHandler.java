@@ -4,18 +4,23 @@ import static com.beverly.hills.money.gang.factory.response.ServerResponseFactor
 
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.proto.ServerCommand;
+import com.beverly.hills.money.gang.proto.ServerCommand.CommandCase;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerRespawnedGameState;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 public class RespawnCommandHandler extends JoinGameServerCommandHandler {
+
+  @Getter
+  private final CommandCase commandCase = CommandCase.RESPAWNCOMMAND;
 
   private static final Logger LOG = LoggerFactory.getLogger(RespawnCommandHandler.class);
 
@@ -31,6 +36,7 @@ public class RespawnCommandHandler extends JoinGameServerCommandHandler {
 
   @Override
   protected void handleInternal(ServerCommand msg, Channel currentChannel) throws GameLogicError {
+    LOG.info("Respawn {}", msg);
     var respawnCommand = msg.getRespawnCommand();
     Game game = gameRoomRegistry.getGame(respawnCommand.getGameId());
 
@@ -38,7 +44,6 @@ public class RespawnCommandHandler extends JoinGameServerCommandHandler {
         respawnCommand.getPlayerId());
     ServerResponse playerSpawnEvent = createRespawnEventSinglePlayer(
         game.playersOnline(), playerRespawnedGameState);
-    LOG.info("Send my spawn to myself");
 
     currentChannel.writeAndFlush(playerSpawnEvent)
         .addListener((ChannelFutureListener) channelFuture -> {

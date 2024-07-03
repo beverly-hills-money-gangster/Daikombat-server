@@ -1,10 +1,12 @@
 package com.beverly.hills.money.gang.state;
 
+import static com.beverly.hills.money.gang.util.NetworkUtil.getChannelAddress;
+
 import com.beverly.hills.money.gang.cheat.AntiCheat;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
-import com.beverly.hills.money.gang.generator.IdGenerator;
+import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import com.beverly.hills.money.gang.registry.PowerUpRegistry;
@@ -15,8 +17,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -34,8 +38,7 @@ public class Game implements Closeable, GameReader {
 
   @Getter
   private final int id;
-  private final IdGenerator playerIdGenerator;
-
+  private final SequenceGenerator playerSequenceGenerator;
 
   @Getter
   private final PlayersRegistry playersRegistry = new PlayersRegistry();
@@ -49,22 +52,32 @@ public class Game implements Closeable, GameReader {
 
   public Game(
       final Spawner spawner,
-      @Qualifier("gameIdGenerator") final IdGenerator gameIdGenerator,
-      @Qualifier("playerIdGenerator") final IdGenerator playerIdGenerator,
+      @Qualifier("gameIdGenerator") final SequenceGenerator gameSequenceGenerator,
+      @Qualifier("playerIdGenerator") final SequenceGenerator playerSequenceGenerator,
       final PowerUpRegistry powerUpRegistry,
       final AntiCheat antiCheat) {
     this.spawner = spawner;
     this.powerUpRegistry = powerUpRegistry;
-    this.id = gameIdGenerator.getNext();
-    this.playerIdGenerator = playerIdGenerator;
+    this.id = gameSequenceGenerator.getNext();
+    this.playerSequenceGenerator = playerSequenceGenerator;
     this.antiCheat = antiCheat;
+  }
+
+  public void mergeConnection(int playerId, Channel channel) throws GameLogicError {
+    String currentAddress = getChannelAddress(channel);
+    var player = playersRegistry.findPlayer(playerId)
+        .filter(stateChannel -> StringUtils.equals(
+            stateChannel.getPrimaryChannelAddress(), currentAddress))
+        .orElseThrow(() -> new GameLogicError(
+            "Can't merge connections", GameErrorCode.COMMON_ERROR));
+    player.schedulePrimaryChannel(() -> player.addSecondaryChannel(channel), 0);
   }
 
   public PlayerJoinedGameState joinPlayer(
       final String playerName, final Channel playerChannel, PlayerStateColor color)
       throws GameLogicError {
     validateGameNotClosed();
-    int playerId = playerIdGenerator.getNext();
+    int playerId = playerSequenceGenerator.getNext();
     PlayerState.PlayerCoordinates spawn = spawner.spawnPlayer(this);
     PlayerState connectedPlayerState = new PlayerState(playerName, spawn, playerId, color);
     playersRegistry.addPlayer(connectedPlayerState, playerChannel);
@@ -93,7 +106,9 @@ public class Game implements Closeable, GameReader {
   public PlayerPowerUpGameState pickupPowerUp(
       final PlayerState.PlayerCoordinates playerCoordinates,
       final PowerUpType powerUpType,
-      final int playerId) {
+      final int playerId,
+      final int eventSequence,
+      final int pingMls) {
     PlayerState playerState = getPlayer(playerId).orElse(null);
     if (playerState == null) {
       LOG.warn("Non-existing player can't take power-ups");
@@ -111,7 +126,7 @@ public class Game implements Closeable, GameReader {
       LOG.warn("Power-up can't be taken due to cheating");
       return null;
     }
-    move(playerId, playerCoordinates);
+    move(playerId, playerCoordinates, eventSequence, pingMls);
     return Optional.ofNullable(powerUpRegistry.take(powerUpType))
         .map(power -> {
           LOG.debug("Power-up taken");
@@ -125,7 +140,9 @@ public class Game implements Closeable, GameReader {
       final PlayerState.PlayerCoordinates attackingPlayerCoordinates,
       final int attackingPlayerId,
       final Integer attackedPlayerId,
-      final AttackType attackType) throws GameLogicError {
+      final AttackType attackType,
+      final int eventSequence,
+      final int pingMls) throws GameLogicError {
     validateGameNotClosed();
     PlayerState attackingPlayerState = getPlayer(attackingPlayerId).orElse(null);
     if (attackingPlayerState == null) {
@@ -139,7 +156,7 @@ public class Game implements Closeable, GameReader {
       throw new GameLogicError("You can't attack yourself", GameErrorCode.CAN_NOT_ATTACK_YOURSELF);
     }
 
-    move(attackingPlayerId, attackingPlayerCoordinates);
+    move(attackingPlayerId, attackingPlayerCoordinates, eventSequence, pingMls);
     if (attackedPlayerId == null) {
       LOG.debug("Nobody got attacked");
       // if nobody was shot
@@ -196,18 +213,22 @@ public class Game implements Closeable, GameReader {
   }
 
   public void bufferMove(final int movingPlayerId,
-      final PlayerState.PlayerCoordinates playerCoordinates) throws GameLogicError {
+      final PlayerState.PlayerCoordinates playerCoordinates,
+      final int eventSequence,
+      final int pingMls) throws GameLogicError {
     validateGameNotClosed();
-    move(movingPlayerId, playerCoordinates);
+    move(movingPlayerId, playerCoordinates, eventSequence, pingMls);
   }
 
   public List<PlayerStateReader> getBufferedMoves() {
-    return playersRegistry.allPlayers().map(PlayersRegistry.PlayerStateChannel::getPlayerState)
-        .filter(PlayerState::hasMoved).collect(Collectors.toList());
+    return playersRegistry.allPlayers().map(PlayerStateChannel::getPlayerState)
+        .filter(PlayerState::hasMoved)
+        .collect(Collectors.toList());
   }
 
+
   public void flushBufferedMoves() {
-    playersRegistry.allPlayers().map(PlayersRegistry.PlayerStateChannel::getPlayerState)
+    playersRegistry.allPlayers().map(PlayerStateChannel::getPlayerState)
         .forEach(PlayerState::flushMove);
   }
 
@@ -252,8 +273,13 @@ public class Game implements Closeable, GameReader {
   }
 
   private void move(final int movingPlayerId,
-      final PlayerState.PlayerCoordinates playerCoordinates) {
+      final PlayerState.PlayerCoordinates playerCoordinates,
+      final int eventSequence,
+      final int pingMls) {
     getPlayer(movingPlayerId)
-        .ifPresent(playerState -> playerState.move(playerCoordinates));
+        .ifPresent(playerState -> {
+          playerState.move(playerCoordinates, eventSequence);
+          playerState.setPingMls(pingMls);
+        });
   }
 }

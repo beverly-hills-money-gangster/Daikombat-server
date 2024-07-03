@@ -32,11 +32,6 @@ public class GameServerInitializer extends ChannelInitializer<SocketChannel> {
   @Override
   protected void initChannel(SocketChannel ch) {
     ChannelPipeline p = ch.pipeline();
-    if (ServerConfig.COMPRESS) {
-      LOG.info("Server-side compression is on");
-      p.addLast(new JdkZlibDecoder());
-      p.addLast(new JdkZlibEncoder());
-    }
     p.addLast(new ProtobufVarint32FrameDecoder());
     p.addLast(new ProtobufDecoder(ServerCommand.getDefaultInstance()));
     p.addLast(new ProtobufVarint32LengthFieldPrepender());

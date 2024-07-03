@@ -5,16 +5,10 @@ import static com.beverly.hills.money.gang.factory.response.ServerResponseFactor
 
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
-import com.beverly.hills.money.gang.handler.command.ChatServerCommandHandler;
-import com.beverly.hills.money.gang.handler.command.GameEventServerCommandHandler;
-import com.beverly.hills.money.gang.handler.command.GetServerInfoCommandHandler;
-import com.beverly.hills.money.gang.handler.command.JoinGameServerCommandHandler;
-import com.beverly.hills.money.gang.handler.command.PingCommandHandler;
-import com.beverly.hills.money.gang.handler.command.RespawnCommandHandler;
 import com.beverly.hills.money.gang.handler.command.ServerCommandHandler;
 import com.beverly.hills.money.gang.proto.ServerCommand;
+import com.beverly.hills.money.gang.proto.ServerCommand.CommandCase;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
-import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import com.beverly.hills.money.gang.transport.ServerTransport;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -23,7 +17,9 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
-import lombok.RequiredArgsConstructor;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -35,7 +31,6 @@ TODO:
     - Add performance testing
  */
 @Component
-@RequiredArgsConstructor
 @ChannelHandler.Sharable
 public class GameServerInboundHandler extends SimpleChannelInboundHandler<ServerCommand> {
 
@@ -43,12 +38,22 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
 
   private final ServerTransport serverTransport;
   private final GameRoomRegistry gameRoomRegistry;
-  private final JoinGameServerCommandHandler joinGameServerCommandHandler;
-  private final ChatServerCommandHandler chatServerCommandHandler;
-  private final GameEventServerCommandHandler gameServerCommandHandler;
-  private final GetServerInfoCommandHandler getServerInfoCommandHandler;
-  private final PingCommandHandler pingCommandHandler;
-  private final RespawnCommandHandler respawnCommandHandler;
+  private final Map<CommandCase, ServerCommandHandler> handlersMap;
+
+  public GameServerInboundHandler(ServerTransport serverTransport,
+      GameRoomRegistry gameRoomRegistry,
+      List<ServerCommandHandler> handlers) {
+    this.serverTransport = serverTransport;
+    this.gameRoomRegistry = gameRoomRegistry;
+    this.handlersMap = new HashMap<>();
+    // init handlers map
+    for (ServerCommandHandler handler : handlers) {
+      if (handlersMap.putIfAbsent(handler.getCommandCase(), handler) != null) {
+        throw new IllegalStateException("Can't register handler " + handler.getCommandCase()
+            + " as it already exists");
+      }
+    }
+  }
 
   @Override
   public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -62,20 +67,8 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     try {
       serverTransport.setExtraTCPOptions(ctx.channel().config());
       LOG.debug("Got command {}", msg);
-      ServerCommandHandler serverCommandHandler;
-      if (msg.hasJoinGameCommand()) {
-        serverCommandHandler = joinGameServerCommandHandler;
-      } else if (msg.hasGameCommand()) {
-        serverCommandHandler = gameServerCommandHandler;
-      } else if (msg.hasChatCommand()) {
-        serverCommandHandler = chatServerCommandHandler;
-      } else if (msg.hasGetServerInfoCommand()) {
-        serverCommandHandler = getServerInfoCommandHandler;
-      } else if (msg.hasPingCommand()) {
-        serverCommandHandler = pingCommandHandler;
-      } else if (msg.hasRespawnCommand()) {
-        serverCommandHandler = respawnCommandHandler;
-      } else {
+      ServerCommandHandler serverCommandHandler = handlersMap.get(msg.getCommandCase());
+      if (serverCommandHandler == null) {
         throw new GameLogicError("Command is not recognized", GameErrorCode.COMMAND_NOT_RECOGNIZED);
       }
       serverCommandHandler.handle(msg, ctx.channel());
@@ -102,8 +95,10 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     boolean playerWasFound = gameRoomRegistry.removeChannel(channelToRemove,
         (game, playerState) -> {
           var disconnectEvent = createExitEvent(game.playersOnline(), playerState);
-          game.getPlayersRegistry().allPlayers().map(PlayersRegistry.PlayerStateChannel::getChannel)
-              .forEach(channel -> channel.writeAndFlush(disconnectEvent).addListener(ChannelFutureListener.CLOSE_ON_FAILURE));
+          game.getPlayersRegistry().allPlayers()
+              .forEach(
+                  playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(disconnectEvent)
+                      .addListener(ChannelFutureListener.CLOSE_ON_FAILURE));
         });
     if (!playerWasFound) {
       channelToRemove.close();

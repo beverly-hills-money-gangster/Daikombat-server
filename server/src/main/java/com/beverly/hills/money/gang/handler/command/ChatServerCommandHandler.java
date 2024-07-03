@@ -4,10 +4,11 @@ import static com.beverly.hills.money.gang.factory.response.ServerResponseFactor
 
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.proto.ServerCommand;
+import com.beverly.hills.money.gang.proto.ServerCommand.CommandCase;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
-import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import com.beverly.hills.money.gang.state.Game;
 import io.netty.channel.Channel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -21,6 +22,9 @@ public class ChatServerCommandHandler extends ServerCommandHandler {
   private static final Logger LOG = LoggerFactory.getLogger(ChatServerCommandHandler.class);
 
   private final GameRoomRegistry gameRoomRegistry;
+
+  @Getter
+  private final CommandCase commandCase = CommandCase.CHATCOMMAND;
 
   @Override
   protected boolean isValidCommand(ServerCommand msg, Channel currentChannel) {
@@ -38,12 +42,12 @@ public class ChatServerCommandHandler extends ServerCommandHandler {
         .ifPresent(playerStateReader -> {
           var chatMsgToSend = createChatEvent(
               msg.getChatCommand().getMessage(),
-              playerStateReader.getPlayerId(),
-              playerStateReader.getPlayerName());
+              playerStateReader.getPlayerState().getPlayerId(),
+              playerStateReader.getPlayerState().getPlayerName());
           game.getPlayersRegistry().allPlayers()
-              .map(PlayersRegistry.PlayerStateChannel::getChannel)
-              .filter(playerChannel -> playerChannel != currentChannel)
-              .forEach(playerChannel -> playerChannel.writeAndFlush(chatMsgToSend));
+              .filter(
+                  playerStateChannel -> !playerStateChannel.isOurChannel(currentChannel))
+              .forEach(playerChannel -> playerChannel.writeFlushPrimaryChannel(chatMsgToSend));
         });
   }
 }

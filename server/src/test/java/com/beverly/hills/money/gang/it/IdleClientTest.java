@@ -85,6 +85,7 @@ public class IdleClientTest extends AbstractGameServerTest {
       newPositionX += 0.1f;
       gameConnectionObserver.write(PushGameEventCommand.newBuilder()
           .setPlayerId(observerPlayerId)
+          .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
           .setGameId(gameToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
           .setDirection(PushGameEventCommand.Vector.newBuilder().setX(0).setY(1).build())
@@ -180,6 +181,7 @@ public class IdleClientTest extends AbstractGameServerTest {
     for (int i = 0; i < punchesToKill - 1; i++) {
       puncherConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(puncherPlayerId)
+          .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
           .setGameId(gameIdToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.PUNCH)
           .setDirection(
@@ -199,6 +201,7 @@ public class IdleClientTest extends AbstractGameServerTest {
     // this one kills player 2
     puncherConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(puncherPlayerId)
+        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
         .setGameId(gameIdToConnectTo)
         .setEventType(PushGameEventCommand.GameEventType.PUNCH)
         .setDirection(
@@ -225,6 +228,7 @@ public class IdleClientTest extends AbstractGameServerTest {
       newPositionX += 0.1f;
       puncherConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(puncherPlayerId)
+          .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
           .setGameId(gameIdToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
           .setDirection(PushGameEventCommand.Vector.newBuilder().setX(0).setY(1).build())
@@ -238,8 +242,7 @@ public class IdleClientTest extends AbstractGameServerTest {
     boolean exitEventFound = puncherConnection.getResponse().list().stream()
         .filter(ServerResponse::hasGameEvents)
         .map(ServerResponse::getGameEvents)
-        .flatMap((Function<ServerResponse.GameEvents, Stream<ServerResponse.GameEvent>>) gameEvents
-            -> gameEvents.getEventsList().stream())
+        .flatMap(gameEvents -> gameEvents.getEventsList().stream())
         .anyMatch(
             gameEvent -> gameEvent.getEventType() == ServerResponse.GameEvent.GameEventType.EXIT);
     assertTrue(exitEventFound, "Dead inactive players should be EXITed");
@@ -283,6 +286,7 @@ public class IdleClientTest extends AbstractGameServerTest {
       newPositionX += 0.1f;
       gameConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(playerId)
+          .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
           .setGameId(gameToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
           .setDirection(PushGameEventCommand.Vector.newBuilder().setX(0).setY(1).build())
@@ -334,6 +338,7 @@ public class IdleClientTest extends AbstractGameServerTest {
 
       gameConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(playerId)
+          .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
           .setGameId(gameToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
           .setDirection(PushGameEventCommand.Vector.newBuilder().setX(0).setY(1).build())

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,6 +92,7 @@ public class AllPowerUpTest extends AbstractGameServerTest {
 
     allPowerUps.forEach(gameEventType -> playerConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(playerId)
+        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
         .setGameId(gameIdToConnectTo)
         .setPosition(PushGameEventCommand.Vector.newBuilder()
             .setX(playerSpawnEvent.getPlayer().getPosition().getX())

@@ -11,6 +11,7 @@ import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.SkinColorSelection;
 import java.io.IOException;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -58,6 +59,7 @@ public class IdleServerTest extends AbstractGameServerTest {
       newPositionX += 0.1f;
       gameConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(playerId)
+          .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
           .setGameId(gameToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
           .setDirection(PushGameEventCommand.Vector.newBuilder().setX(0).setY(1).build())

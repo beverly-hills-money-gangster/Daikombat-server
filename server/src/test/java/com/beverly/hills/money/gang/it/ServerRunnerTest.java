@@ -12,6 +12,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,7 @@ public class ServerRunnerTest {
    * @when run() is called
    * @then then server starts
    */
-  @Test
+  @RepeatedTest(4)
   public void testRun() throws InterruptedException {
     int port = AbstractGameServerTest.createRandomPort();
     var runner = createRunner();
@@ -73,7 +74,7 @@ public class ServerRunnerTest {
    * @when run() is called again
    * @then it fails
    */
-  @Test
+  @RepeatedTest(4)
   public void testRunTwice() throws InterruptedException {
     int port = AbstractGameServerTest.createRandomPort();
     var runner = createRunner();
@@ -99,7 +100,7 @@ public class ServerRunnerTest {
    * @when stop() is called
    * @then server stops
    */
-  @Test
+  @RepeatedTest(4)
   public void testStop() throws InterruptedException {
     int port = AbstractGameServerTest.createRandomPort();
     var runner = createRunner();
@@ -127,7 +128,7 @@ public class ServerRunnerTest {
    * @when stop() is called
    * @then nothing happens as if it's idempotent
    */
-  @Test
+  @RepeatedTest(4)
   public void testStopTwice() throws InterruptedException {
     int port = AbstractGameServerTest.createRandomPort();
     var runner = createRunner();

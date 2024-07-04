@@ -36,7 +36,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @when a player connects to a server
    * @then the player is connected
    */
-  @Test
+  @RepeatedTest(4)
   public void testJoinGame() throws Exception {
     int gameIdToConnectTo = 0;
     GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
@@ -83,7 +83,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @when a new player connects to a server
    * @then the player sees "6 players online message"
    */
-  @Test
+  @RepeatedTest(4)
   public void testJoinGameAfterManyPlayersJoined() throws Exception {
     int gameIdToConnectTo = 0;
     int playersToConnect = 5;
@@ -165,7 +165,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @when a player connects with older major version connects to a server
    * @then the player is not connected
    */
-  @Test
+  @RepeatedTest(4)
   public void testJoinGameWrongVersion() throws IOException {
     int gameIdToConnectTo = 0;
     GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
@@ -206,7 +206,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @when one more player connects to game 0
    * @then the player is not connected as the server is full
    */
-  @Test
+  @RepeatedTest(4)
   public void testJoinGameTooMany() throws IOException, InterruptedException {
     for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
       GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
@@ -280,7 +280,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @when a new player connects to game 0
    * @then the player is successfully connected
    */
-  @Test
+  @RepeatedTest(4)
   public void testJoinGameAlmostFull() throws Exception {
     int gameIdToConnectTo = 0;
     Map<Integer, ServerResponse.Vector> connectedPlayersPositions = new ConcurrentHashMap<>();
@@ -389,7 +389,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @when max number of player connect to all games
    * @then all players are successfully connected
    */
-  @Test
+  @RepeatedTest(4)
   public void testJoinGameMaxPlayersAllGames() throws Exception {
     List<Thread> threads = new ArrayList<>();
     for (int gameId = 0; gameId < ServerConfig.GAMES_TO_CREATE; gameId++) {

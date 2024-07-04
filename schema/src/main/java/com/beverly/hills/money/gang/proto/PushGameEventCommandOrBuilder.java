@@ -86,4 +86,26 @@ public interface PushGameEventCommandOrBuilder extends
    * @return The affectedPlayerId.
    */
   int getAffectedPlayerId();
+
+  /**
+   * <code>optional int32 sequence = 7;</code>
+   * @return Whether the sequence field is set.
+   */
+  boolean hasSequence();
+  /**
+   * <code>optional int32 sequence = 7;</code>
+   * @return The sequence.
+   */
+  int getSequence();
+
+  /**
+   * <code>optional int32 pingMls = 8;</code>
+   * @return Whether the pingMls field is set.
+   */
+  boolean hasPingMls();
+  /**
+   * <code>optional int32 pingMls = 8;</code>
+   * @return The pingMls.
+   */
+  int getPingMls();
 }

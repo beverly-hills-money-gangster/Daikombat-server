@@ -2,7 +2,6 @@ package com.beverly.hills.money.gang.state;
 
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import java.util.List;
-import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,7 +10,7 @@ import lombok.Getter;
 @Builder
 public class PlayerJoinedGameState {
 
-  private final PlayerState playerState;
+  private final PlayerStateChannel playerStateChannel;
 
   private final List<PowerUp> spawnedPowerUps;
 

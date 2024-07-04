@@ -4,8 +4,10 @@ import static com.beverly.hills.money.gang.factory.response.ServerResponseFactor
 
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.proto.ServerCommand;
+import com.beverly.hills.money.gang.proto.ServerCommand.CommandCase;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import io.netty.channel.Channel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,9 @@ public class GetServerInfoCommandHandler extends ServerCommandHandler {
   private static final Logger LOG = LoggerFactory.getLogger(GetServerInfoCommandHandler.class);
 
   private final GameRoomRegistry gameRoomRegistry;
+
+  @Getter
+  private final CommandCase commandCase = CommandCase.GETSERVERINFOCOMMAND;
 
   @Override
   protected boolean isValidCommand(ServerCommand msg, Channel currentChannel) {

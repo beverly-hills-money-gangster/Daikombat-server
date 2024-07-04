@@ -15,6 +15,7 @@ message ServerCommand {
     GetServerInfoCommand getServerInfoCommand = 6;
     PingCommand pingCommand = 7;
     RespawnCommand respawnCommand = 8;
+    MergeConnectionCommand mergeConnectionCommand = 9;
   }
 }
 
@@ -33,6 +34,11 @@ message JoinGameCommand {
   optional string version = 2;
   optional string playerName = 3;
   optional SkinColorSelection skin = 4;
+}
+
+message MergeConnectionCommand {
+  optional int32 gameId = 1;
+  optional int32 playerId = 2;
 }
 
 enum SkinColorSelection{
@@ -56,6 +62,8 @@ message PushGameEventCommand {
   optional Vector direction = 4;
   optional int32 playerId = 5;
   optional int32 affectedPlayerId = 6;
+  optional int32 sequence = 7;
+  optional int32 pingMls = 8;
 
   message Vector {
     optional float x = 1;

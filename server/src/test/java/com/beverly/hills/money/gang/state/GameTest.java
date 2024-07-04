@@ -9,8 +9,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -24,7 +26,7 @@ import com.beverly.hills.money.gang.cheat.AntiCheat;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
-import com.beverly.hills.money.gang.generator.IdGenerator;
+import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.powerup.DefencePowerUp;
 import com.beverly.hills.money.gang.powerup.InvisibilityPowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUp;
@@ -33,6 +35,9 @@ import com.beverly.hills.money.gang.powerup.QuadDamagePowerUp;
 import com.beverly.hills.money.gang.registry.PowerUpRegistry;
 import com.beverly.hills.money.gang.spawner.Spawner;
 import io.netty.channel.Channel;
+import io.netty.channel.EventLoop;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -65,6 +70,10 @@ public class GameTest {
 
   private AntiCheat antiCheat;
 
+  private final SequenceGenerator testSequenceGenerator = new SequenceGenerator();
+
+  private static final int PING_MLS = 60;
+
   @BeforeEach
   public void setUp() {
     antiCheat = spy(new AntiCheat());
@@ -75,8 +84,8 @@ public class GameTest {
     powerUpRegistry = spy(
         new PowerUpRegistry(List.of(quadDamagePowerUp, defencePowerUp, invisibilityPowerUp)));
     game = new Game(spawner,
-        new IdGenerator(),
-        new IdGenerator(),
+        new SequenceGenerator(),
+        new SequenceGenerator(),
         powerUpRegistry,
         antiCheat);
   }
@@ -113,19 +122,19 @@ public class GameTest {
     assertEquals(0, game.getBufferedMoves().size(), "Nobody moved");
     assertEquals(1, game.getPlayersRegistry().allPlayers().count(), "We connected 1 player only");
     PlayerState playerState = game.getPlayersRegistry()
-        .getPlayerState(playerConnectedGameState.getPlayerState().getPlayerId())
+        .getPlayerState(playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertFalse(playerState.hasMoved(), "Nobody moved");
     assertEquals(playerName, playerState.getPlayerName());
     assertEquals(0, playerState.getKills(), "Nobody got killed yet");
-    assertEquals(playerConnectedGameState.getPlayerState().getPlayerId(),
+    assertEquals(playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         playerState.getPlayerId());
     assertEquals(100, playerState.getHealth(), "Full 100% HP must be set by default");
     assertEquals(1, playerConnectedGameState.getLeaderBoard().size(),
         "Leader board has 1 item as we have 1 player only");
     assertEquals(
-        playerConnectedGameState.getPlayerState().getPlayerId(),
+        playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         playerConnectedGameState.getLeaderBoard().get(0).getPlayerId());
     assertEquals(
         0,
@@ -158,7 +167,7 @@ public class GameTest {
     doCallRealMethod().when(spawner).spawnPlayer(any());
     var connectedPlayer = game.joinPlayer(playerName, channel, PlayerStateColor.GREEN);
     assertEquals(Spawner.SPAWNS.get(Spawner.SPAWNS.size() - 1),
-        connectedPlayer.getPlayerState().getCoordinates(),
+        connectedPlayer.getPlayerStateChannel().getPlayerState().getCoordinates(),
         "Should be spawned to the last spawn position because it's least populated");
   }
 
@@ -175,7 +184,7 @@ public class GameTest {
     int playersToJoin = Math.min(ServerConfig.MAX_PLAYERS_PER_GAME, Spawner.SPAWNS.size());
     for (int i = 0; i < playersToJoin; i++) {
       spawns.add(
-          game.joinPlayer(playerName + " " + i, channel, PlayerStateColor.GREEN).getPlayerState()
+          game.joinPlayer(playerName + " " + i, channel, PlayerStateColor.GREEN).getPlayerStateChannel().getPlayerState()
               .getCoordinates()
               .getPosition());
     }
@@ -204,12 +213,12 @@ public class GameTest {
     assertEquals(0, game.getBufferedMoves().size(), "Nobody moved");
     assertEquals(1, game.getPlayersRegistry().allPlayers().count(), "We connected 1 player only");
     PlayerState playerState = game.getPlayersRegistry()
-        .getPlayerState(playerConnectedGameState.getPlayerState().getPlayerId())
+        .getPlayerState(playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertFalse(playerState.hasMoved(), "Nobody moved");
     assertEquals(playerName, playerState.getPlayerName());
-    assertEquals(playerConnectedGameState.getPlayerState().getPlayerId(),
+    assertEquals(playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         playerState.getPlayerId());
     assertEquals(100, playerState.getHealth(), "Full 100% HP must be set by default");
   }
@@ -300,11 +309,13 @@ public class GameTest {
     PlayerJoinedGameState playerConnectedGameState = game.joinPlayer(playerName, channel,
         PlayerStateColor.GREEN);
     PlayerAttackingGameState playerAttackingGameState = game.attack(
-        playerConnectedGameState.getPlayerState().getCoordinates(),
-        playerConnectedGameState.getPlayerState().getPlayerId(), null, AttackType.SHOOT);
+        playerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), null, AttackType.SHOOT,
+        testSequenceGenerator.getNext(),
+        PING_MLS);
     assertNull(playerAttackingGameState.getPlayerAttacked(), "Nobody is shot");
     PlayerState shooterState = game.getPlayersRegistry()
-        .getPlayerState(playerConnectedGameState.getPlayerState().getPlayerId())
+        .getPlayerState(playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
@@ -327,13 +338,15 @@ public class GameTest {
         channel, PlayerStateColor.GREEN);
     PlayerJoinedGameState shotPlayerConnectedGameState = game.joinPlayer(shotPlayerName, channel,
         PlayerStateColor.GREEN);
-    connectedPlayerIds.add(shotPlayerConnectedGameState.getPlayerState().getPlayerId());
-    connectedPlayerIds.add(shooterPlayerConnectedGameState.getPlayerState().getPlayerId());
+    connectedPlayerIds.add(shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId());
+    connectedPlayerIds.add(shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId());
 
     PlayerAttackingGameState playerAttackingGameState = game.attack(
-        shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
-        shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
-        shotPlayerConnectedGameState.getPlayerState().getPlayerId(), AttackType.SHOOT);
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), AttackType.SHOOT,
+        testSequenceGenerator.getNext(),
+        PING_MLS);
     assertNotNull(playerAttackingGameState.getPlayerAttacked());
 
     assertFalse(playerAttackingGameState.getPlayerAttacked().isDead(),
@@ -341,14 +354,14 @@ public class GameTest {
     assertEquals(100 - ServerConfig.DEFAULT_SHOTGUN_DAMAGE,
         playerAttackingGameState.getPlayerAttacked().getHealth());
     PlayerState shooterState = game.getPlayersRegistry()
-        .getPlayerState(shooterPlayerConnectedGameState.getPlayerState().getPlayerId())
+        .getPlayerState(shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
     assertEquals(0, shooterState.getKills(), "Nobody was killed");
     assertEquals(2, game.playersOnline());
     PlayerState shotState = game.getPlayersRegistry()
-        .getPlayerState(shotPlayerConnectedGameState.getPlayerState().getPlayerId())
+        .getPlayerState(shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(100 - ServerConfig.DEFAULT_SHOTGUN_DAMAGE, shotState.getHealth());
@@ -376,27 +389,31 @@ public class GameTest {
     // after this loop, one player is almost dead
     for (int i = 0; i < shotsToKill - 1; i++) {
       game.attack(
-          shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
-          shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
-          shotPlayerConnectedGameState.getPlayerState().getPlayerId(), AttackType.SHOOT);
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), AttackType.SHOOT,
+          testSequenceGenerator.getNext(),
+          PING_MLS);
     }
     PlayerAttackingGameState playerAttackingGameState = game.attack(
-        shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
-        shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
-        shotPlayerConnectedGameState.getPlayerState().getPlayerId(), AttackType.SHOOT);
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), AttackType.SHOOT,
+        testSequenceGenerator.getNext(),
+        PING_MLS);
     assertNotNull(playerAttackingGameState.getPlayerAttacked());
 
     assertTrue(playerAttackingGameState.getPlayerAttacked().isDead());
     assertEquals(0, playerAttackingGameState.getPlayerAttacked().getHealth());
     PlayerState shooterState = game.getPlayersRegistry()
-        .getPlayerState(shooterPlayerConnectedGameState.getPlayerState().getPlayerId())
+        .getPlayerState(shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
     assertEquals(1, shooterState.getKills(), "One player was killed");
     assertEquals(2, game.playersOnline(), "After death, all players are still online");
     PlayerState shotState = game.getPlayersRegistry()
-        .getPlayerState(shotPlayerConnectedGameState.getPlayerState().getPlayerId())
+        .getPlayerState(shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(0, shotState.getHealth());
@@ -418,14 +435,14 @@ public class GameTest {
         "There should be one kill");
 
     assertEquals(
-        observerPlayerConnectedGameState.getPlayerState().getPlayerId(),
+        observerPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         observerPlayerConnectedGameState.getLeaderBoard().get(1).getPlayerId());
     assertEquals(0, observerPlayerConnectedGameState.getLeaderBoard().get(1).getDeaths());
     assertEquals(
         0, observerPlayerConnectedGameState.getLeaderBoard().get(1).getKills());
 
     assertEquals(
-        shotPlayerConnectedGameState.getPlayerState().getPlayerId(),
+        shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         observerPlayerConnectedGameState.getLeaderBoard().get(2).getPlayerId());
     assertEquals(1, observerPlayerConnectedGameState.getLeaderBoard().get(2).getDeaths());
     assertEquals(
@@ -456,33 +473,39 @@ public class GameTest {
     // after this loop, one player is almost dead
     for (int i = 0; i < shotsToKill - 1; i++) {
       game.attack(
-          shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
-          shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
-          shotPlayerConnectedGameState.getPlayerState().getPlayerId(), AttackType.SHOOT);
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), AttackType.SHOOT,
+          testSequenceGenerator.getNext(),
+          PING_MLS);
     }
     // after this, shooter HP is 80%
     game.attack(
-        shotPlayerConnectedGameState.getPlayerState().getCoordinates(),
-        shotPlayerConnectedGameState.getPlayerState().getPlayerId(),
-        shooterPlayerConnectedGameState.getPlayerState().getPlayerId(), AttackType.SHOOT);
+        shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), AttackType.SHOOT,
+        testSequenceGenerator.getNext(),
+        PING_MLS);
 
     PlayerAttackingGameState playerAttackingGameState = game.attack(
-        shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
-        shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
-        shotPlayerConnectedGameState.getPlayerState().getPlayerId(), AttackType.SHOOT);
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), AttackType.SHOOT,
+        testSequenceGenerator.getNext(),
+        PING_MLS);
     assertNotNull(playerAttackingGameState.getPlayerAttacked());
 
     assertTrue(playerAttackingGameState.getPlayerAttacked().isDead());
     assertEquals(0, playerAttackingGameState.getPlayerAttacked().getHealth());
     PlayerState shooterState = game.getPlayersRegistry()
-        .getPlayerState(shooterPlayerConnectedGameState.getPlayerState().getPlayerId())
+        .getPlayerState(shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(100, shooterState.getHealth(), "Shooter must get a vampire boost");
     assertEquals(1, shooterState.getKills(), "One player was killed");
     assertEquals(2, game.playersOnline(), "After death, 2 players are still online");
     PlayerState shotState = game.getPlayersRegistry()
-        .getPlayerState(shotPlayerConnectedGameState.getPlayerState().getPlayerId())
+        .getPlayerState(shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(0, shotState.getHealth());
@@ -512,27 +535,31 @@ public class GameTest {
     // after this loop, one player is almost dead
     for (int i = 0; i < shotsToKill - 1; i++) {
       game.attack(
-          shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
-          shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
-          shotPlayerConnectedGameState.getPlayerState().getPlayerId(), AttackType.SHOOT);
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), AttackType.SHOOT,
+          testSequenceGenerator.getNext(),
+          PING_MLS);
     }
     PlayerAttackingGameState playerAttackingGameState = game.attack(
-        shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
-        shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
-        shotPlayerConnectedGameState.getPlayerState().getPlayerId(), AttackType.SHOOT);
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), AttackType.SHOOT,
+        testSequenceGenerator.getNext(),
+        PING_MLS);
     assertNotNull(playerAttackingGameState.getPlayerAttacked());
 
     assertTrue(playerAttackingGameState.getPlayerAttacked().isDead());
     assertEquals(0, playerAttackingGameState.getPlayerAttacked().getHealth());
     PlayerState shooterState = game.getPlayersRegistry()
-        .getPlayerState(shooterPlayerConnectedGameState.getPlayerState().getPlayerId())
+        .getPlayerState(shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
     assertEquals(1, shooterState.getKills(), "One player was killed");
     assertEquals(2, game.playersOnline(), "After death, all players are online");
     PlayerState shotState = game.getPlayersRegistry()
-        .getPlayerState(shotPlayerConnectedGameState.getPlayerState().getPlayerId())
+        .getPlayerState(shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(0, shotState.getHealth());
@@ -556,7 +583,7 @@ public class GameTest {
         "There was one kill");
 
     assertEquals(
-        observerPlayerConnectedGameState.getPlayerState().getPlayerId(),
+        observerPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         observerPlayerConnectedGameState.getLeaderBoard().get(1).getPlayerId(),
         "Observer player should be second");
     assertEquals(
@@ -567,7 +594,7 @@ public class GameTest {
         "Observer hasn't killed anybody");
 
     assertEquals(
-        shotPlayerConnectedGameState.getPlayerState().getPlayerId(),
+        shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         observerPlayerConnectedGameState.getLeaderBoard().get(2).getPlayerId());
     assertEquals(
         1, observerPlayerConnectedGameState.getLeaderBoard().get(2).getDeaths());
@@ -589,14 +616,16 @@ public class GameTest {
         channel, PlayerStateColor.GREEN);
 
     GameLogicError gameLogicError = assertThrows(GameLogicError.class, () -> game.attack(
-            shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
-            shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
-            shooterPlayerConnectedGameState.getPlayerState().getPlayerId(), AttackType.SHOOT),
+            shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+            shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+            shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), AttackType.SHOOT,
+            testSequenceGenerator.getNext(),
+            PING_MLS),
         "You can't shoot yourself");
     assertEquals(gameLogicError.getErrorCode(), CAN_NOT_ATTACK_YOURSELF);
 
     PlayerState shooterState = game.getPlayersRegistry().getPlayerState(
-            shooterPlayerConnectedGameState.getPlayerState().getPlayerId())
+            shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
@@ -625,25 +654,29 @@ public class GameTest {
     // after this loop, one player is  dead
     for (int i = 0; i < shotsToKill; i++) {
       game.attack(
-          shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
-          shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
-          shotPlayerConnectedGameState.getPlayerState().getPlayerId(), AttackType.SHOOT);
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), AttackType.SHOOT,
+          testSequenceGenerator.getNext(),
+          PING_MLS);
     }
     PlayerAttackingGameState playerAttackingGameState = game.attack(
-        shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
-        shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
-        shotPlayerConnectedGameState.getPlayerState().getPlayerId(), AttackType.SHOOT);
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), AttackType.SHOOT,
+        testSequenceGenerator.getNext(),
+        PING_MLS);
     assertNull(playerAttackingGameState, "You can't shoot a dead player");
 
     PlayerState shooterState = game.getPlayersRegistry()
-        .getPlayerState(shooterPlayerConnectedGameState.getPlayerState().getPlayerId())
+        .getPlayerState(shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
     assertEquals(1, shooterState.getKills(), "One player got killed");
     assertEquals(2, game.playersOnline(), "After death, all players are online");
     PlayerState shotState = game.getPlayersRegistry()
-        .getPlayerState(shotPlayerConnectedGameState.getPlayerState().getPlayerId())
+        .getPlayerState(shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(0, shotState.getHealth());
@@ -663,13 +696,15 @@ public class GameTest {
         channel, PlayerStateColor.GREEN);
 
     PlayerAttackingGameState playerAttackingGameState = game.attack(
-        shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
-        shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
-        123, AttackType.SHOOT);
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        123, AttackType.SHOOT,
+        testSequenceGenerator.getNext(),
+        PING_MLS);
     assertNull(playerAttackingGameState, "You can't shoot a non-existing player");
 
     PlayerState shooterState = game.getPlayersRegistry()
-        .getPlayerState(shooterPlayerConnectedGameState.getPlayerState().getPlayerId())
+        .getPlayerState(shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
@@ -697,26 +732,30 @@ public class GameTest {
     // after this loop, one player is  dead
     for (int i = 0; i < shotsToKill; i++) {
       game.attack(
-          shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
-          shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
-          shotPlayerConnectedGameState.getPlayerState().getPlayerId(), AttackType.SHOOT);
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), AttackType.SHOOT,
+          testSequenceGenerator.getNext(),
+          PING_MLS);
     }
     PlayerAttackingGameState playerAttackingGameState = game.attack(
-        shotPlayerConnectedGameState.getPlayerState().getCoordinates(),
-        shotPlayerConnectedGameState.getPlayerState().getPlayerId(),
-        shooterPlayerConnectedGameState.getPlayerState().getPlayerId(), AttackType.SHOOT);
+        shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), AttackType.SHOOT,
+        testSequenceGenerator.getNext(),
+        PING_MLS);
 
     assertNull(playerAttackingGameState, "A dead player can't shoot anybody");
 
     PlayerState shooterState = game.getPlayersRegistry()
-        .getPlayerState(shooterPlayerConnectedGameState.getPlayerState().getPlayerId())
+        .getPlayerState(shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
     assertEquals(1, shooterState.getKills(), "One player got killed");
     assertEquals(2, game.playersOnline(), "After death, all players are online");
     PlayerState shotState = game.getPlayersRegistry()
-        .getPlayerState(shotPlayerConnectedGameState.getPlayerState().getPlayerId())
+        .getPlayerState(shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(0, shotState.getHealth());
@@ -753,9 +792,11 @@ public class GameTest {
               (finalI + 1) % connectedPlayers.size());
           PlayerJoinedGameState me = connectedPlayers.get(finalI);
           game.attack(
-              me.getPlayerState().getCoordinates(),
-              me.getPlayerState().getPlayerId(),
-              myTarget.getPlayerState().getPlayerId(), AttackType.SHOOT);
+              me.getPlayerStateChannel().getPlayerState().getCoordinates(),
+              me.getPlayerStateChannel().getPlayerState().getPlayerId(),
+              myTarget.getPlayerStateChannel().getPlayerState().getPlayerId(), AttackType.SHOOT,
+              testSequenceGenerator.getNext(),
+              PING_MLS);
         } catch (Exception e) {
           failures.incrementAndGet();
           throw new RuntimeException(e);
@@ -797,10 +838,12 @@ public class GameTest {
         .builder()
         .direction(Vector.builder().x(1f).y(0).build())
         .position(Vector.builder().x(0f).y(1).build()).build();
-    game.bufferMove(playerConnectedGameState.getPlayerState().getPlayerId(), playerCoordinates);
+    game.bufferMove(playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), playerCoordinates,
+        testSequenceGenerator.getNext(),
+        PING_MLS);
     assertEquals(1, game.getBufferedMoves().size(), "One move should be buffered");
     PlayerState playerState = game.getPlayersRegistry()
-        .getPlayerState(playerConnectedGameState.getPlayerState().getPlayerId())
+        .getPlayerState(playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(100, playerState.getHealth());
@@ -826,16 +869,20 @@ public class GameTest {
         .builder()
         .direction(Vector.builder().x(1f).y(0).build())
         .position(Vector.builder().x(0f).y(1).build()).build();
-    game.bufferMove(playerConnectedGameState.getPlayerState().getPlayerId(), playerCoordinates);
+    game.bufferMove(playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), playerCoordinates,
+        testSequenceGenerator.getNext(),
+        PING_MLS);
     PlayerState.PlayerCoordinates playerNewCoordinates = PlayerState.PlayerCoordinates
         .builder()
         .direction(Vector.builder().x(2f).y(1).build())
         .position(Vector.builder().x(1f).y(2).build()).build();
-    game.bufferMove(playerConnectedGameState.getPlayerState().getPlayerId(), playerNewCoordinates);
+    game.bufferMove(playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), playerNewCoordinates,
+        testSequenceGenerator.getNext(),
+        PING_MLS);
     assertEquals(1, game.getBufferedMoves().size(), "One move should be buffered");
 
     PlayerState playerState = game.getPlayersRegistry()
-        .getPlayerState(playerConnectedGameState.getPlayerState().getPlayerId())
+        .getPlayerState(playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(100, playerState.getHealth());
@@ -858,7 +905,9 @@ public class GameTest {
         .builder()
         .direction(Vector.builder().x(1f).y(0).build())
         .position(Vector.builder().x(0f).y(1).build()).build();
-    game.bufferMove(123, playerCoordinates);
+    game.bufferMove(123, playerCoordinates,
+        testSequenceGenerator.getNext(),
+        PING_MLS);
     assertEquals(0, game.getBufferedMoves().size(),
         "No moves buffered because only existing players can move");
 
@@ -884,25 +933,29 @@ public class GameTest {
     // after this loop, one player is  dead
     for (int i = 0; i < shotsToKill; i++) {
       game.attack(
-          shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
-          shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
-          shotPlayerConnectedGameState.getPlayerState().getPlayerId(), AttackType.SHOOT);
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), AttackType.SHOOT,
+          testSequenceGenerator.getNext(),
+          PING_MLS);
     }
     PlayerState.PlayerCoordinates playerCoordinates = PlayerState.PlayerCoordinates
         .builder()
         .direction(Vector.builder().x(1f).y(0).build())
         .position(Vector.builder().x(0f).y(1).build()).build();
-    game.bufferMove(shotPlayerConnectedGameState.getPlayerState().getPlayerId(), playerCoordinates);
+    game.bufferMove(shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), playerCoordinates,
+        testSequenceGenerator.getNext(),
+        PING_MLS);
 
     PlayerState deadPlayerState = game.getPlayersRegistry()
-        .getPlayerState(shotPlayerConnectedGameState.getPlayerState().getPlayerId())
+        .getPlayerState(shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
 
-    assertEquals(shotPlayerConnectedGameState.getPlayerState().getCoordinates().getDirection(),
+    assertEquals(shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getDirection(),
         deadPlayerState.getCoordinates().getDirection(),
         "Direction should be the same as the player has moved only after getting killed");
-    assertEquals(shotPlayerConnectedGameState.getPlayerState().getCoordinates().getPosition(),
+    assertEquals(shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
         deadPlayerState.getCoordinates().getPosition(),
         "Position should be the same as the player has moved only after getting killed");
   }
@@ -938,7 +991,9 @@ public class GameTest {
                 .builder()
                 .direction(Vector.builder().x(1f + j).y(0).build())
                 .position(Vector.builder().x(0f).y(1 + j).build()).build();
-            game.bufferMove(me.getPlayerState().getPlayerId(), playerCoordinates);
+            game.bufferMove(me.getPlayerStateChannel().getPlayerState().getPlayerId(), playerCoordinates,
+                testSequenceGenerator.getNext(),
+                PING_MLS);
           }
 
         } catch (Exception e) {
@@ -1049,28 +1104,32 @@ public class GameTest {
     // after this loop, victim player is dead
     for (int i = 0; i < shotsToKill; i++) {
       game.attack(
-          playerRespawnedGameState.getPlayerState().getCoordinates(),
-          playerRespawnedGameState.getPlayerState().getPlayerId(),
-          playerVictimGameState.getPlayerState().getPlayerId(), AttackType.SHOOT);
+          playerRespawnedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          playerRespawnedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          playerVictimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), AttackType.SHOOT,
+          testSequenceGenerator.getNext(),
+          PING_MLS);
     }
 
     // after this loop, respawn player is dead
     for (int i = 0; i < shotsToKill; i++) {
       game.attack(
-          killerPlayerConnectedGameState.getPlayerState().getCoordinates(),
-          killerPlayerConnectedGameState.getPlayerState().getPlayerId(),
-          playerRespawnedGameState.getPlayerState().getPlayerId(), AttackType.SHOOT);
+          killerPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          killerPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          playerRespawnedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), AttackType.SHOOT,
+          testSequenceGenerator.getNext(),
+          PING_MLS);
     }
 
-    var respawned = game.respawnPlayer(playerRespawnedGameState.getPlayerState().getPlayerId());
-    assertEquals(playerRespawnedGameState.getPlayerState().getPlayerId(),
-        respawned.getPlayerState().getPlayerId());
-    assertFalse(respawned.getPlayerState().isDead());
-    assertEquals(1, respawned.getPlayerState().getDeaths(),
+    var respawned = game.respawnPlayer(playerRespawnedGameState.getPlayerStateChannel().getPlayerState().getPlayerId());
+    assertEquals(playerRespawnedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        respawned.getPlayerStateChannel().getPlayerState().getPlayerId());
+    assertFalse(respawned.getPlayerStateChannel().getPlayerState().isDead());
+    assertEquals(1, respawned.getPlayerStateChannel().getPlayerState().getDeaths(),
         "Death count should increment after respawn");
-    assertEquals(PlayerState.DEFAULT_HP, respawned.getPlayerState().getHealth(),
+    assertEquals(PlayerState.DEFAULT_HP, respawned.getPlayerStateChannel().getPlayerState().getHealth(),
         "Health must be restored after respawn");
-    assertEquals(1, respawned.getPlayerState().getKills(),
+    assertEquals(1, respawned.getPlayerStateChannel().getPlayerState().getKills(),
         "Number of kills should be the same after respawn");
 
     PlayerJoinedGameState observerPlayerConnectedGameState = game.joinPlayer("observer",
@@ -1082,8 +1141,8 @@ public class GameTest {
 
     var respawnedLeaderBoardItem = observerPlayerConnectedGameState.getLeaderBoard().stream()
         .filter(
-            gameLeaderBoardItem -> gameLeaderBoardItem.getPlayerId() == respawned.getPlayerState()
-                .getPlayerId())
+            gameLeaderBoardItem -> gameLeaderBoardItem.getPlayerId() == respawned.getPlayerStateChannel()
+                .getPlayerState().getPlayerId())
         .findFirst()
         .orElseThrow(
             () -> new IllegalStateException("Can't find respawned player in the leaderboard"));
@@ -1109,7 +1168,7 @@ public class GameTest {
         mock(Channel.class), PlayerStateColor.GREEN);
     GameLogicError gameLogicError
         = assertThrows(GameLogicError.class,
-        () -> game.respawnPlayer(playerRespawnedGameState.getPlayerState().getPlayerId()),
+        () -> game.respawnPlayer(playerRespawnedGameState.getPlayerStateChannel().getPlayerState().getPlayerId()),
         "Live players shouldn't be able to respawn");
     assertEquals(COMMON_ERROR, gameLogicError.getErrorCode());
   }
@@ -1139,7 +1198,9 @@ public class GameTest {
         .builder()
         .direction(Vector.builder().x(10f).y(0).build())
         .position(Vector.builder().x(0f).y(10f).build()).build();
-    var result = game.pickupPowerUp(coordinates, PowerUpType.QUAD_DAMAGE, 123);
+    var result = game.pickupPowerUp(coordinates, PowerUpType.QUAD_DAMAGE, 123,
+        testSequenceGenerator.getNext(),
+        PING_MLS);
     assertNull(result, "Should be no result as a non-existing player can't pickup power-ups");
     verify(powerUpRegistry, never()).take(any());
     verify(powerUpRegistry, never()).release(any());
@@ -1155,9 +1216,11 @@ public class GameTest {
     doReturn(true).when(antiCheat).isPowerUpTooFar(any(), any());
     PlayerJoinedGameState playerGameState = game.joinPlayer("some player",
         mock(Channel.class), PlayerStateColor.GREEN);
-    var result = game.pickupPowerUp(playerGameState.getPlayerState().getCoordinates(),
+    var result = game.pickupPowerUp(playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
         PowerUpType.QUAD_DAMAGE,
-        playerGameState.getPlayerState().getPlayerId());
+        playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        testSequenceGenerator.getNext(),
+        PING_MLS);
     assertNull(result,
         "Should be no result as the player is too far away from the power-up to pick it up");
     verify(powerUpRegistry, never()).take(any());
@@ -1179,14 +1242,18 @@ public class GameTest {
         mock(Channel.class), PlayerStateColor.GREEN);
 
     // pick up
-    game.pickupPowerUp(playerGameState.getPlayerState().getCoordinates(),
+    game.pickupPowerUp(playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
         PowerUpType.QUAD_DAMAGE,
-        playerGameState.getPlayerState().getPlayerId());
+        playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        testSequenceGenerator.getNext(),
+        PING_MLS);
     reset(powerUpRegistry, quadDamagePowerUp); // reset spy objects
     // pick up again without releasing
-    var result = game.pickupPowerUp(otherPlayerGameState.getPlayerState().getCoordinates(),
+    var result = game.pickupPowerUp(otherPlayerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
         PowerUpType.QUAD_DAMAGE,
-        otherPlayerGameState.getPlayerState().getPlayerId());
+        otherPlayerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        testSequenceGenerator.getNext(),
+        PING_MLS);
 
     assertNull(result, "No result as the power-up has been picked up already");
     verify(quadDamagePowerUp, never()).apply(any());
@@ -1207,9 +1274,11 @@ public class GameTest {
     PlayerJoinedGameState victimGameState = game.joinPlayer("victim",
         mock(Channel.class), PlayerStateColor.GREEN);
 
-    var result = game.pickupPowerUp(playerGameState.getPlayerState().getCoordinates(),
+    var result = game.pickupPowerUp(playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
         PowerUpType.QUAD_DAMAGE,
-        playerGameState.getPlayerState().getPlayerId());
+        playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        testSequenceGenerator.getNext(),
+        PING_MLS);
 
     assertEquals(quadDamagePowerUp, result.getPowerUp());
 
@@ -1217,23 +1286,25 @@ public class GameTest {
         "One(quad damage) power-up should be active");
     assertEquals(quadDamagePowerUp,
         result.getPlayerState().getActivePowerUps().get(0).getPowerUp());
-    assertEquals(playerGameState.getPlayerState().getPlayerId(),
+    assertEquals(playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         result.getPlayerState().getPlayerId());
-    assertEquals(playerGameState.getPlayerState().getCoordinates(),
+    assertEquals(playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
         result.getPlayerState().getCoordinates(), "Coordinates shouldn't change");
 
     verify(quadDamagePowerUp).apply(argThat(
-        playerState -> playerGameState.getPlayerState().getPlayerId()
-            == playerGameState.getPlayerState()
-            .getPlayerId()));
-    assertEquals(4, playerGameState.getPlayerState().getDamageAmplifier(),
+        playerState -> playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId()
+            == playerGameState.getPlayerStateChannel()
+            .getPlayerState().getPlayerId()));
+    assertEquals(4, playerGameState.getPlayerStateChannel().getPlayerState().getDamageAmplifier(),
         "Damage should amplify after picking up quad damage power-up");
 
     PlayerAttackingGameState playerAttackingGameState = game.attack(
-        playerGameState.getPlayerState().getCoordinates(),
-        playerGameState.getPlayerState().getPlayerId(),
-        victimGameState.getPlayerState().getPlayerId(),
-        AttackType.PUNCH);
+        playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        AttackType.PUNCH,
+        testSequenceGenerator.getNext(),
+        PING_MLS);
 
     assertTrue(playerAttackingGameState.getPlayerAttacked().isDead(),
         "Attacked player should be dead");
@@ -1253,9 +1324,11 @@ public class GameTest {
     PlayerJoinedGameState victimGameState = game.joinPlayer("victim",
         mock(Channel.class), PlayerStateColor.GREEN);
 
-    var result = game.pickupPowerUp(victimGameState.getPlayerState().getCoordinates(),
+    var result = game.pickupPowerUp(victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
         PowerUpType.DEFENCE,
-        victimGameState.getPlayerState().getPlayerId());
+        victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        testSequenceGenerator.getNext(),
+        PING_MLS);
 
     assertEquals(defencePowerUp, result.getPowerUp());
 
@@ -1263,26 +1336,28 @@ public class GameTest {
         "One(defence) power-up should be active");
     assertEquals(defencePowerUp,
         result.getPlayerState().getActivePowerUps().get(0).getPowerUp());
-    assertEquals(victimGameState.getPlayerState().getPlayerId(),
+    assertEquals(victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         result.getPlayerState().getPlayerId());
-    assertEquals(victimGameState.getPlayerState().getCoordinates(),
+    assertEquals(victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
         result.getPlayerState().getCoordinates(), "Coordinates shouldn't change");
 
     verify(defencePowerUp).apply(argThat(
-        playerState -> victimGameState.getPlayerState().getPlayerId()
-            == victimGameState.getPlayerState()
-            .getPlayerId()));
+        playerState -> victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId()
+            == victimGameState.getPlayerStateChannel()
+            .getPlayerState().getPlayerId()));
 
     for (int i = 0; i < 2; i++) {
       PlayerAttackingGameState playerAttackingGameState = game.attack(
-          playerGameState.getPlayerState().getCoordinates(),
-          playerGameState.getPlayerState().getPlayerId(),
-          victimGameState.getPlayerState().getPlayerId(),
-          AttackType.PUNCH);
+          playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          AttackType.PUNCH,
+          testSequenceGenerator.getNext(),
+          PING_MLS);
       assertFalse(playerAttackingGameState.getPlayerAttacked().isDead(),
           "Attacked player should not be dead. Defence power-up is active");
     }
-    assertEquals(50, victimGameState.getPlayerState().getHealth());
+    assertEquals(50, victimGameState.getPlayerStateChannel().getPlayerState().getHealth());
   }
 
   /**
@@ -1299,9 +1374,11 @@ public class GameTest {
     PlayerJoinedGameState victimGameState = game.joinPlayer("victim",
         mock(Channel.class), PlayerStateColor.GREEN);
 
-    var result = game.pickupPowerUp(victimGameState.getPlayerState().getCoordinates(),
+    var result = game.pickupPowerUp(victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
         PowerUpType.DEFENCE,
-        victimGameState.getPlayerState().getPlayerId());
+        victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        testSequenceGenerator.getNext(),
+        PING_MLS);
 
     assertEquals(defencePowerUp, result.getPowerUp());
 
@@ -1309,31 +1386,35 @@ public class GameTest {
         "One(defence) power-up should be active");
     assertEquals(defencePowerUp,
         result.getPlayerState().getActivePowerUps().get(0).getPowerUp());
-    assertEquals(victimGameState.getPlayerState().getPlayerId(),
+    assertEquals(victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         result.getPlayerState().getPlayerId());
-    assertEquals(victimGameState.getPlayerState().getCoordinates(),
+    assertEquals(victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
         result.getPlayerState().getCoordinates(), "Coordinates shouldn't change");
 
     verify(defencePowerUp).apply(argThat(
-        playerState -> victimGameState.getPlayerState().getPlayerId()
-            == victimGameState.getPlayerState()
-            .getPlayerId()));
+        playerState -> victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId()
+            == victimGameState.getPlayerStateChannel()
+            .getPlayerState().getPlayerId()));
 
     for (int i = 0; i < 3; i++) {
       PlayerAttackingGameState playerAttackingGameState = game.attack(
-          playerGameState.getPlayerState().getCoordinates(),
-          playerGameState.getPlayerState().getPlayerId(),
-          victimGameState.getPlayerState().getPlayerId(),
-          AttackType.PUNCH);
+          playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          AttackType.PUNCH,
+          testSequenceGenerator.getNext(),
+          PING_MLS);
       assertFalse(playerAttackingGameState.getPlayerAttacked().isDead(),
           "Attacked player should not be dead. Defence power-up is active");
     }
     // this is the punch that kills
     PlayerAttackingGameState playerAttackingGameState = game.attack(
-        playerGameState.getPlayerState().getCoordinates(),
-        playerGameState.getPlayerState().getPlayerId(),
-        victimGameState.getPlayerState().getPlayerId(),
-        AttackType.PUNCH);
+        playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        AttackType.PUNCH,
+        testSequenceGenerator.getNext(),
+        PING_MLS);
     assertTrue(playerAttackingGameState.getPlayerAttacked().isDead(),
         "Attacked player should be dead");
   }
@@ -1349,9 +1430,11 @@ public class GameTest {
     PlayerJoinedGameState playerGameState = game.joinPlayer("some player",
         mock(Channel.class), PlayerStateColor.GREEN);
 
-    game.pickupPowerUp(playerGameState.getPlayerState().getCoordinates(),
+    game.pickupPowerUp(playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
         PowerUpType.QUAD_DAMAGE,
-        playerGameState.getPlayerState().getPlayerId());
+        playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        testSequenceGenerator.getNext(),
+        PING_MLS);
 
     PlayerJoinedGameState otherPlayerGameState = game.joinPlayer("some other player",
         mock(Channel.class), PlayerStateColor.GREEN);
@@ -1374,25 +1457,29 @@ public class GameTest {
     PlayerJoinedGameState victimGameState = game.joinPlayer("victim",
         mock(Channel.class), PlayerStateColor.GREEN);
 
-    game.pickupPowerUp(victimGameState.getPlayerState().getCoordinates(),
+    game.pickupPowerUp(victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
         PowerUpType.QUAD_DAMAGE,
-        victimGameState.getPlayerState().getPlayerId());
+        victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        testSequenceGenerator.getNext(),
+        PING_MLS);
 
     int punchesToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_PUNCH_DAMAGE);
     for (int i = 0; i < punchesToKill; i++) {
       game.attack(
-          playerGameState.getPlayerState().getCoordinates(),
-          playerGameState.getPlayerState().getPlayerId(),
-          victimGameState.getPlayerState().getPlayerId(),
-          AttackType.PUNCH);
+          playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          AttackType.PUNCH,
+          testSequenceGenerator.getNext(),
+          PING_MLS);
     }
 
-    assertTrue(victimGameState.getPlayerState().isDead(),
+    assertTrue(victimGameState.getPlayerStateChannel().getPlayerState().isDead(),
         "Attacked player should be dead");
-    assertEquals(0, victimGameState.getPlayerState().getActivePowerUps().size(),
+    assertEquals(0, victimGameState.getPlayerStateChannel().getPlayerState().getActivePowerUps().size(),
         "Power-ups should be cleared out after death");
-    verify(quadDamagePowerUp).revert(victimGameState.getPlayerState());
-    assertEquals(1, victimGameState.getPlayerState().getDamageAmplifier(),
+    verify(quadDamagePowerUp).revert(victimGameState.getPlayerStateChannel().getPlayerState());
+    assertEquals(1, victimGameState.getPlayerStateChannel().getPlayerState().getDamageAmplifier(),
         "Damage amplifier has to default to 1");
 
   }
@@ -1416,9 +1503,11 @@ public class GameTest {
       threads.add(new Thread(() -> {
         try {
           latch.await();
-          var result = game.pickupPowerUp(playerGameState.getPlayerState().getCoordinates(),
+          var result = game.pickupPowerUp(playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
               PowerUpType.QUAD_DAMAGE,
-              playerGameState.getPlayerState().getPlayerId());
+              playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+              testSequenceGenerator.getNext(),
+              PING_MLS);
           if (result != null) {
             pickUps.incrementAndGet();
           }
@@ -1466,15 +1555,19 @@ public class GameTest {
 
     for (int i = 0; i < shotsToKill; i++) {
       game.attack(
-          shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
-          shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
-          shotPlayerConnectedGameState.getPlayerState().getPlayerId(), AttackType.SHOOT);
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), AttackType.SHOOT,
+          testSequenceGenerator.getNext(),
+          PING_MLS);
     }
 
     var result = game.pickupPowerUp(
-        shotPlayerConnectedGameState.getPlayerState().getCoordinates(),
+        shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
         PowerUpType.QUAD_DAMAGE,
-        shotPlayerConnectedGameState.getPlayerState().getPlayerId());
+        shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        testSequenceGenerator.getNext(),
+        PING_MLS);
     assertNull(result, "Should be no result as dead players can't pick up power-ups");
 
     verify(quadDamagePowerUp, never()).apply(any());
@@ -1497,19 +1590,111 @@ public class GameTest {
     PlayerJoinedGameState shotPlayerConnectedGameState = game.joinPlayer(shotPlayerName, channel,
         PlayerStateColor.GREEN);
     game.pickupPowerUp(
-        shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
         PowerUpType.QUAD_DAMAGE,
-        shooterPlayerConnectedGameState.getPlayerState().getPlayerId());
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        testSequenceGenerator.getNext(),
+        PING_MLS);
     game.attack(
-        shooterPlayerConnectedGameState.getPlayerState().getCoordinates(),
-        shooterPlayerConnectedGameState.getPlayerState().getPlayerId(),
-        shotPlayerConnectedGameState.getPlayerState().getPlayerId(), AttackType.PUNCH);
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), AttackType.PUNCH,
+        testSequenceGenerator.getNext(),
+        PING_MLS);
 
-    var result = game.respawnPlayer(shotPlayerConnectedGameState.getPlayerState().getPlayerId());
+    var result = game.respawnPlayer(shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId());
 
     assertEquals(2,
         Streams.stream(result.getSpawnedPowerUps().iterator()).count(),
         "2 power-ups are visible onky because the previous player has picked-up quad damage");
+  }
+
+
+  /**
+   * @when a player tries to merge a connection using wrong(non-existing) player id
+   * @then merging fails
+   */
+  @Test
+  public void testMergeConnectionWrongPlayerId() {
+    InetSocketAddress wrongIpAddress = mock(InetSocketAddress.class);
+    InetAddress wrongInetAddress = mock(InetAddress.class);
+    doReturn(wrongInetAddress).when(wrongIpAddress).getAddress();
+    doReturn("8.8.8.8").when(wrongInetAddress).getHostAddress();
+    Channel secondaryChannel = mock(Channel.class);
+    doReturn(wrongIpAddress).when(secondaryChannel).remoteAddress();
+
+    var ex = assertThrows(GameLogicError.class,
+        () -> game.mergeConnection(666, secondaryChannel));
+    assertEquals("Can't merge connections", ex.getMessage());
+  }
+
+  /**
+   * @given a player with an established connection
+   * @when a new connection tries to merge with the player's connection using a different IP
+   * @then merging fails. IP should match.
+   */
+  @Test
+  public void testMergeConnectionWrongIpAddress() throws GameLogicError {
+
+    InetSocketAddress correctIpAddress = mock(InetSocketAddress.class);
+    InetAddress correctInetAddress = mock(InetAddress.class);
+    doReturn(correctInetAddress).when(correctIpAddress).getAddress();
+    doReturn("127.0.0.1").when(correctInetAddress).getHostAddress();
+    Channel primaryChannel = mock(Channel.class);
+    doReturn(correctIpAddress).when(primaryChannel).remoteAddress();
+
+    InetSocketAddress wrongIpAddress = mock(InetSocketAddress.class);
+    InetAddress wrongInetAddress = mock(InetAddress.class);
+    doReturn(wrongInetAddress).when(wrongIpAddress).getAddress();
+    doReturn("8.8.8.8").when(wrongInetAddress).getHostAddress();
+    Channel secondaryChannel = mock(Channel.class);
+    doReturn(wrongIpAddress).when(secondaryChannel).remoteAddress();
+
+    PlayerJoinedGameState player = game.joinPlayer("some player name",
+        primaryChannel, PlayerStateColor.GREEN);
+
+    var ex = assertThrows(GameLogicError.class,
+        () -> game.mergeConnection(player.getPlayerStateChannel().getPlayerState().getPlayerId(), secondaryChannel),
+        "We can't merge these connections because they have different IPs");
+    assertEquals("Can't merge connections", ex.getMessage());
+  }
+
+  /**
+   * @given a player with an established connection
+   * @when a new connection tries to merge with the player's connection with the same IP
+   * @then mering is successful
+   */
+  @Test
+  public void testMergeConnection() throws GameLogicError {
+    EventLoop eventLoop = mock(EventLoop.class);
+
+    // execute whatever is scheduled
+    doAnswer(invocationOnMock -> {
+      var runnable = (Runnable) invocationOnMock.getArgument(0);
+      runnable.run();
+      return null;
+    }).when(eventLoop).schedule(any(Runnable.class), anyLong(), any());
+
+    InetSocketAddress correctIpAddress = mock(InetSocketAddress.class);
+    InetAddress correctInetAddress = mock(InetAddress.class);
+    doReturn(correctInetAddress).when(correctIpAddress).getAddress();
+    doReturn("127.0.0.1").when(correctInetAddress).getHostAddress();
+    Channel primaryChannel = mock(Channel.class);
+    doReturn(eventLoop).when(primaryChannel).eventLoop();
+    doReturn(correctIpAddress).when(primaryChannel).remoteAddress();
+
+    Channel secondaryChannel = mock(Channel.class);
+    doReturn(eventLoop).when(secondaryChannel).eventLoop();
+    doReturn(correctIpAddress).when(secondaryChannel).remoteAddress();
+
+    PlayerJoinedGameState player = game.joinPlayer("some player name",
+        primaryChannel, PlayerStateColor.GREEN);
+
+    game.mergeConnection(player.getPlayerStateChannel().getPlayerState().getPlayerId(), secondaryChannel);
+
+    assertTrue(game.getPlayersRegistry().findPlayer(
+            player.getPlayerStateChannel().getPlayerState().getPlayerId()).get()
+        .isOurChannel(secondaryChannel), "Secondary connection should be 'ours'");
   }
 
 }

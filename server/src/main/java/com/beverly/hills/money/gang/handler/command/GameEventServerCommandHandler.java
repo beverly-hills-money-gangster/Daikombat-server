@@ -16,20 +16,22 @@ import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerCommand;
+import com.beverly.hills.money.gang.proto.ServerCommand.CommandCase;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
-import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import com.beverly.hills.money.gang.scheduler.Scheduler;
 import com.beverly.hills.money.gang.state.AttackType;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerAttackingGameState;
 import com.beverly.hills.money.gang.state.PlayerState;
-import com.beverly.hills.money.gang.state.PlayerStateReader;
+import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import com.beverly.hills.money.gang.state.Vector;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +45,10 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
   private static final String MDC_GAME_ID = "GAME_ID";
   private static final String MDC_PLAYER_ID = "PLAYER_ID";
   private static final String MDC_PLAYER_NAME = "PLAYER_NAME";
+  private static final String MDC_IP_ADDRESS = "IP_ADDRESS";
 
+  @Getter
+  private final CommandCase commandCase = CommandCase.GAMECOMMAND;
   private static final Logger LOG = LoggerFactory.getLogger(GameEventServerCommandHandler.class);
 
   private final GameRoomRegistry gameRoomRegistry;
@@ -57,7 +62,8 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
     var gameCommand = msg.getGameCommand();
     return gameCommand.hasGameId()
         && gameCommand.hasPlayerId()
-        && (gameCommand.hasPosition() && gameCommand.hasDirection() && gameCommand.hasEventType());
+        && (gameCommand.hasPosition() && gameCommand.hasDirection() && gameCommand.hasEventType())
+        && gameCommand.hasSequence() && gameCommand.hasPingMls();
   }
 
   @Override
@@ -73,28 +79,32 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
             4) victim continues to move or shoot before getting KILL event
             for now, we just ignore such events.
              */
-    Optional<PlayerStateReader> playerStateOpt = gameRoomRegistry.getJoinedPlayer(
+    Optional<PlayerStateChannel> playerStateOpt = gameRoomRegistry.getJoinedPlayer(
         gameCommand.getGameId(),
         currentChannel, gameCommand.getPlayerId());
 
     if (playerStateOpt.isEmpty()) {
       LOG.warn("Player {} doesn't exist. Ignore command.", gameCommand.getPlayerId());
       return;
-    } else if (playerStateOpt.get().isDead()) {
+    }
+    var playerState = playerStateOpt.get();
+    if (playerState.getPlayerState().isDead()) {
       LOG.warn("Player {} is dead. Ignore command.", gameCommand.getPlayerId());
       return;
     }
     try {
       MDC.put(MDC_GAME_ID, String.valueOf(gameCommand.getGameId()));
-      MDC.put(MDC_PLAYER_ID, String.valueOf(playerStateOpt.get().getPlayerId()));
-      MDC.put(MDC_PLAYER_NAME, playerStateOpt.get().getPlayerName());
+      MDC.put(MDC_PLAYER_ID, String.valueOf(playerState.getPlayerState().getPlayerId()));
+      MDC.put(MDC_PLAYER_NAME, playerState.getPlayerState().getPlayerName());
+      MDC.put(MDC_IP_ADDRESS, playerState.getPrimaryChannelAddress());
 
       PushGameEventCommand.GameEventType gameEventType = gameCommand.getEventType();
       switch (gameEventType) {
         case SHOOT, PUNCH -> handleAttackingEvents(game, gameCommand);
         case QUAD_DAMAGE_POWER_UP, INVISIBILITY_POWER_UP, DEFENCE_POWER_UP ->
             handlePowerUpPickUp(game, gameCommand, getPowerUpType(gameEventType));
-        case MOVE -> game.bufferMove(gameCommand.getPlayerId(), createCoordinates(gameCommand));
+        case MOVE -> game.bufferMove(gameCommand.getPlayerId(), createCoordinates(gameCommand),
+            gameCommand.getSequence(), gameCommand.getPingMls());
         default -> throw new GameLogicError("Unsupported event type",
             GameErrorCode.COMMAND_NOT_RECOGNIZED);
       }
@@ -102,6 +112,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
       MDC.remove(MDC_PLAYER_ID);
       MDC.remove(MDC_GAME_ID);
       MDC.remove(MDC_PLAYER_NAME);
+      MDC.remove(MDC_IP_ADDRESS);
     }
   }
 
@@ -114,9 +125,11 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
     };
   }
 
-  private void handlePowerUpPickUp(Game game, PushGameEventCommand gameCommand, PowerUpType powerUpType) {
+  private void handlePowerUpPickUp(Game game, PushGameEventCommand gameCommand,
+      PowerUpType powerUpType) {
     var result = game.pickupPowerUp(
-        createCoordinates(gameCommand), powerUpType, gameCommand.getPlayerId());
+        createCoordinates(gameCommand), powerUpType, gameCommand.getPlayerId(),
+        gameCommand.getSequence(), gameCommand.getPingMls());
     if (result == null) {
       LOG.warn("Can't process power-up");
       return;
@@ -124,7 +137,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
 
     var serverResponse = createPowerUpPlayerServerResponse(result.getPlayerState());
     game.getPlayersRegistry().allPlayers()
-        .forEach(stateChannel -> stateChannel.getChannel().writeAndFlush(serverResponse));
+        .forEach(stateChannel -> stateChannel.writeFlushPrimaryChannel(serverResponse));
 
     scheduler.schedule(result.getPowerUp().getLastsForMls(), () -> {
       if (!result.getPlayerState().isDead()) {
@@ -142,9 +155,9 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
         LOG.warn("Can't release power-up {}", powerUp.getType());
         return;
       }
-      ServerResponse serverResponse = createPowerUpSpawn(Stream.of(powerUp));
+      ServerResponse serverResponse = createPowerUpSpawn(List.of(powerUp));
       game.getPlayersRegistry().allPlayers().forEach(
-          playerStateChannel -> playerStateChannel.getChannel().writeAndFlush(serverResponse));
+          playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(serverResponse));
     });
   }
 
@@ -160,7 +173,9 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
         createCoordinates(gameCommand),
         gameCommand.getPlayerId(),
         gameCommand.hasAffectedPlayerId() ? gameCommand.getAffectedPlayerId() : null,
-        attackType);
+        attackType,
+        gameCommand.getSequence(),
+        gameCommand.getPingMls());
     if (attackGameState == null) {
       LOG.debug("No attacking game state");
       return;
@@ -189,14 +204,14 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
 
             // send KILL event to all players
             game.getPlayersRegistry().allPlayers().forEach(
-                playerStateChannel -> playerStateChannel.getChannel().writeAndFlush(deadEvent)
+                playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(deadEvent)
                     .addListener((ChannelFutureListener) future -> {
                       if (!future.isSuccess()) {
-                        playerStateChannel.getChannel().close();
+                        playerStateChannel.close();
                         return;
                       }
                       Optional.ofNullable(gameOver).ifPresent(serverResponse -> {
-                        playerStateChannel.getChannel().writeAndFlush(serverResponse);
+                        playerStateChannel.writeFlushPrimaryChannel(serverResponse);
                         game.getPlayersRegistry()
                             .removePlayer(playerStateChannel.getPlayerState().getPlayerId());
                       });
@@ -214,8 +229,8 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
                     // don't send me my own attack back
                     -> playerStateChannel.getPlayerState().getPlayerId()
                     != gameCommand.getPlayerId())
-                .map(PlayersRegistry.PlayerStateChannel::getChannel)
-                .forEach(channel -> channel.writeAndFlush(attackEvent));
+                .forEach(
+                    playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(attackEvent));
           }
         }, () -> {
           LOG.debug("Nobody got attacked");
@@ -231,8 +246,8 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
               .filter(playerStateChannel
                   // don't send me my own attack back
                   -> playerStateChannel.getPlayerState().getPlayerId() != gameCommand.getPlayerId())
-              .map(PlayersRegistry.PlayerStateChannel::getChannel)
-              .forEach(channel -> channel.writeAndFlush(attackEvent));
+              .forEach(playerStateChannel
+                  -> playerStateChannel.writeFlushPrimaryChannel(attackEvent));
         });
   }
 

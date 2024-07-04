@@ -1,6 +1,5 @@
 package com.beverly.hills.money.gang.scheduler;
 
-import static com.beverly.hills.money.gang.config.ServerConfig.MOVES_UPDATE_FREQUENCY_MLS;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createErrorEvent;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createMovesEventAllPlayers;
 
@@ -10,7 +9,6 @@ import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
-import io.netty.channel.ChannelFutureListener;
 import java.io.Closeable;
 import java.util.List;
 import java.util.Optional;
@@ -22,14 +20,16 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class GameScheduler implements Closeable, Scheduler {
 
   private static final Logger LOG = LoggerFactory.getLogger(GameScheduler.class);
-
 
   private final GameRoomRegistry gameRoomRegistry;
 
@@ -67,39 +67,39 @@ public class GameScheduler implements Closeable, Scheduler {
                 }
                 LOG.warn("Cheating detected for player id {} named {}", state.getPlayerId(),
                     state.getPlayerName());
-                stateChannel.getChannel().writeAndFlush(cheatingDetected)
-                    .addListener(ChannelFutureListener.CLOSE);
+                stateChannel.writeFlushPrimaryChannel(cheatingDetected)
+                    .addListener(future -> stateChannel.close());
               }));
         }, checkFrequencyMls, checkFrequencyMls, TimeUnit.MILLISECONDS);
   }
 
   private void scheduleSendBufferedMoves() {
     scheduler.scheduleAtFixedRate(() -> gameRoomRegistry.getGames().forEach(game -> {
-      try {
-        if (game.getPlayersRegistry().playersOnline() == 0) {
-          return;
-        }
-        var bufferedMoves = game.getBufferedMoves();
-        if (bufferedMoves.isEmpty()) {
-          return;
-        }
-        game.getPlayersRegistry().allPlayers().forEach(playerStateChannel -> {
-          // don't send me MY own moves
-          Optional.of(getAllBufferedPlayerMovesExceptMine(
-                  bufferedMoves, playerStateChannel.getPlayerState().getPlayerId()))
-              .filter(playerSpecificBufferedMoves -> !playerSpecificBufferedMoves.isEmpty())
-              .ifPresent(playerSpecificBufferedMoves ->
-                  playerStateChannel.getChannel()
-                      .writeAndFlush(createMovesEventAllPlayers
-                          (game.getPlayersRegistry().playersOnline(),
-                              playerSpecificBufferedMoves)));
-        });
+          try {
+            if (game.getPlayersRegistry().playersOnline() == 0) {
+              return;
+            }
+            var bufferedMoves = game.getBufferedMoves();
+            if (bufferedMoves.isEmpty()) {
+              return;
+            }
+            game.getPlayersRegistry().allPlayers()
+                .forEach(playerStateChannel -> {
+                  // don't send me MY own moves
+                  Optional.of(getAllBufferedPlayerMovesExceptMine(
+                          bufferedMoves, playerStateChannel.getPlayerState().getPlayerId()))
+                      .filter(playerSpecificBufferedMoves -> !playerSpecificBufferedMoves.isEmpty())
+                      .ifPresent(playerSpecificBufferedMoves ->
+                          playerStateChannel.writeFlushBalanced(createMovesEventAllPlayers
+                              (game.getPlayersRegistry().playersOnline(),
+                                  playerSpecificBufferedMoves)));
+                });
 
-
-      } finally {
-        game.flushBufferedMoves();
-      }
-    }), MOVES_UPDATE_FREQUENCY_MLS, MOVES_UPDATE_FREQUENCY_MLS, TimeUnit.MILLISECONDS);
+          } finally {
+            game.flushBufferedMoves();
+          }
+        }), ServerConfig.MOVES_UPDATE_FREQUENCY_MLS, ServerConfig.MOVES_UPDATE_FREQUENCY_MLS,
+        TimeUnit.MILLISECONDS);
   }
 
   private List<PlayerStateReader> getAllBufferedPlayerMovesExceptMine(

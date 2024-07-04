@@ -17,11 +17,13 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_POWER_UPS_ENABLED", value = "false")
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "99999")
+@SetEnvironmentVariable(key = "GAME_SERVER_MAX_PLAYERS_PER_GAME", value = "10")
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
 public class ChatEventTest extends AbstractGameServerTest {
@@ -31,7 +33,7 @@ public class ChatEventTest extends AbstractGameServerTest {
    * @when many players connect to server and send messages
    * @then all messages are correctly received by players
    */
-  @Test
+  @RepeatedTest(4)
   public void testChatManyPlayers() throws IOException, InterruptedException {
     int gameIdToConnectTo = 0;
     for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
@@ -42,6 +44,7 @@ public class ChatEventTest extends AbstractGameServerTest {
               .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
               .setPlayerName("my player name " + i)
               .setGameId(gameIdToConnectTo).build());
+      waitUntilGetResponses(gameConnection.getResponse(), 1);
     }
 
     Thread.sleep(2_500);
@@ -89,7 +92,7 @@ public class ChatEventTest extends AbstractGameServerTest {
    * @when many players connect to server and send messages concurrently
    * @then all messages are correctly received by players
    */
-  @Test
+  @RepeatedTest(4)
   public void testChatManyPlayersConcurrent() throws IOException, InterruptedException {
     int gameIdToConnectTo = 0;
     for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
@@ -100,6 +103,7 @@ public class ChatEventTest extends AbstractGameServerTest {
               .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
               .setPlayerName("my player name " + i)
               .setGameId(gameIdToConnectTo).build());
+      waitUntilGetResponses(gameConnection.getResponse(), 1);
     }
 
     Thread.sleep(2_500);

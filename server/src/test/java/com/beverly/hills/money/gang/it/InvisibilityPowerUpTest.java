@@ -19,6 +19,7 @@ import com.beverly.hills.money.gang.proto.SkinColorSelection;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -40,7 +41,7 @@ public class InvisibilityPowerUpTest extends AbstractGameServerTest {
    * @then invisibility is applied, reverted after GAME_SERVER_INVISIBILITY_LASTS_FOR_MLS, and then
    * released after GAME_SERVER_INVISIBILITY_SPAWN_MLS
    */
-  @Test
+  @RepeatedTest(4)
   public void testPickUpPowerUpInvisibility()
       throws IOException, InterruptedException {
     int gameIdToConnectTo = 0;
@@ -74,6 +75,7 @@ public class InvisibilityPowerUpTest extends AbstractGameServerTest {
 
     playerConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(playerId)
+        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
         .setGameId(gameIdToConnectTo)
         .setPosition(PushGameEventCommand.Vector.newBuilder()
             .setX(playerSpawnEvent.getPlayer().getPosition().getX())

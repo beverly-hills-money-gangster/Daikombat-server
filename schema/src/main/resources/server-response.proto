@@ -72,6 +72,7 @@ message ServerResponse {
     optional GameEventPlayerStats affectedPlayer = 2;
     GameEventType eventType = 3;
     optional LeaderBoard leaderBoard = 4;
+    optional int32 sequence = 5;
 
     enum GameEventType {
       MOVE = 0;

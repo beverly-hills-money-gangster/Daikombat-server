@@ -98,6 +98,11 @@ public class ServerRunner implements Closeable {
     } catch (Exception e) {
       LOG.error("Can't close server channel", e);
     }
+    try {
+      gameScheduler.close();
+    } catch (Exception e) {
+      LOG.error("Can't close game scheduler", e);
+    }
   }
 
   @Override

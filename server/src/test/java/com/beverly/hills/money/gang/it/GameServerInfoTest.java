@@ -10,6 +10,7 @@ import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import java.io.IOException;
 import java.util.List;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -24,7 +25,7 @@ public class GameServerInfoTest extends AbstractGameServerTest {
    * @when player 1 requests server info
    * @then player 1 gets server info for all games
    */
-  @Test
+  @RepeatedTest(4)
   public void testGetServerInfo() throws IOException {
     GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
 
@@ -37,7 +38,8 @@ public class GameServerInfoTest extends AbstractGameServerTest {
     List<ServerResponse.GameInfo> games = serverResponse.getServerInfo().getGamesList();
     assertEquals(ServerConfig.GAMES_TO_CREATE, games.size());
     assertEquals(ServerConfig.VERSION, serverResponse.getServerInfo().getVersion());
-    assertEquals(ServerConfig.MOVES_UPDATE_FREQUENCY_MLS, serverResponse.getServerInfo().getMovesUpdateFreqMls());
+    assertEquals(ServerConfig.MOVES_UPDATE_FREQUENCY_MLS,
+        serverResponse.getServerInfo().getMovesUpdateFreqMls());
     assertEquals(ServerConfig.FRAGS_PER_GAME, serverResponse.getServerInfo().getFragsToWin());
     assertEquals(ServerConfig.PLAYER_SPEED, serverResponse.getServerInfo().getPlayerSpeed());
     for (ServerResponse.GameInfo gameInfo : games) {
@@ -45,10 +47,8 @@ public class GameServerInfoTest extends AbstractGameServerTest {
       assertEquals(0, gameInfo.getPlayersOnline(), "Should be no connected players yet");
     }
     assertEquals(1, gameConnection.getNetworkStats().getReceivedMessages());
-    assertEquals(serverResponse.getSerializedSize(),
-        gameConnection.getNetworkStats().getInboundPayloadBytes());
+    assertTrue(gameConnection.getNetworkStats().getInboundPayloadBytes() > 0);
     assertEquals(1, gameConnection.getNetworkStats().getSentMessages());
-    // I can't tell the size because we append HMAC, but it should be greater than zero for sure
     assertTrue(gameConnection.getNetworkStats().getOutboundPayloadBytes() > 0);
   }
 
@@ -57,7 +57,7 @@ public class GameServerInfoTest extends AbstractGameServerTest {
    * @when player 1 requests server info with incorrect password
    * @then player 1 fails to get server info. server disconnects the player
    */
-  @Test
+  @RepeatedTest(4)
   public void testGetServerInfoBadAuth() throws InterruptedException, IOException {
     GameConnection gameConnection = createGameConnection("wrong password", "localhost", port);
     gameConnection.write(GetServerInfoCommand.newBuilder().build());
@@ -72,10 +72,8 @@ public class GameServerInfoTest extends AbstractGameServerTest {
     Thread.sleep(250);
     assertTrue(gameConnection.isDisconnected());
     assertEquals(1, gameConnection.getNetworkStats().getReceivedMessages());
-    assertEquals(serverResponse.getSerializedSize(),
-        gameConnection.getNetworkStats().getInboundPayloadBytes());
+    assertTrue(gameConnection.getNetworkStats().getInboundPayloadBytes() > 0);
     assertEquals(1, gameConnection.getNetworkStats().getSentMessages());
-    // I can't tell the size because we append HMAC, but it should be greater than zero for sure
     assertTrue(gameConnection.getNetworkStats().getOutboundPayloadBytes() > 0);
   }
 

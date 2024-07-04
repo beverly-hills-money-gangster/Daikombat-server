@@ -42,14 +42,7 @@ public class AuthInboundHandler extends SimpleChannelInboundHandler<ServerComman
       if (!msg.hasHmac()) {
         throw new GameLogicError("No HMAC provided", GameErrorCode.AUTH_ERROR);
       }
-      // TODO generify that
-      GeneratedMessageV3 command = msg.hasGameCommand() ? msg.getGameCommand()
-          : msg.hasChatCommand() ? msg.getChatCommand()
-              : msg.hasJoinGameCommand() ? msg.getJoinGameCommand()
-                  : msg.hasGetServerInfoCommand() ? msg.getGetServerInfoCommand()
-                      : msg.hasRespawnCommand() ? msg.getRespawnCommand()
-                          : null;
-
+      GeneratedMessageV3 command = getCommand(msg);
       if (command == null) {
         throw new GameLogicError("No command specified", GameErrorCode.AUTH_ERROR);
       } else if (!hmacService.isValidMac(command.toByteArray(), msg.getHmac().toByteArray())) {
@@ -60,6 +53,19 @@ public class AuthInboundHandler extends SimpleChannelInboundHandler<ServerComman
       LOG.error("Game logic error", ex);
       ctx.writeAndFlush(createErrorEvent(ex)).addListener(ChannelFutureListener.CLOSE);
     }
+  }
+
+  private GeneratedMessageV3 getCommand(ServerCommand msg) {
+    return switch (msg.getCommandCase()) {
+      case CHATCOMMAND -> msg.getChatCommand();
+      case GAMECOMMAND -> msg.getGameCommand();
+      case JOINGAMECOMMAND -> msg.getJoinGameCommand();
+      case GETSERVERINFOCOMMAND -> msg.getGetServerInfoCommand();
+      case PINGCOMMAND -> msg.getPingCommand();
+      case RESPAWNCOMMAND -> msg.getRespawnCommand();
+      case MERGECONNECTIONCOMMAND -> msg.getMergeConnectionCommand();
+      case COMMAND_NOT_SET -> throw new IllegalArgumentException("Command is not set");
+    };
   }
 
 

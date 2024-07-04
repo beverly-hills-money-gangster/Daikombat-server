@@ -139,10 +139,10 @@ public interface ServerResponseFactory {
         .build();
   }
 
-  static ServerResponse createPowerUpSpawn(Stream<PowerUp> powerUps) {
+  static ServerResponse createPowerUpSpawn(List<PowerUp> powerUps) {
     return ServerResponse.newBuilder()
         .setPowerUpSpawn(PowerUpSpawnEvent.newBuilder()
-            .addAllItems(powerUps.map(power -> PowerUpSpawnEventItem.newBuilder()
+            .addAllItems(powerUps.stream().map(power -> PowerUpSpawnEventItem.newBuilder()
                     .setType(createGamePowerUpType(power.getType()))
                     .setPosition(createVector(power.getSpawnPosition())).build())
                 .collect(Collectors.toList())))
@@ -307,7 +307,7 @@ public interface ServerResponseFactory {
         .setGameEvents(ServerResponse.GameEvents.newBuilder()
             .setPlayersOnline(playersOnline)
             .addEvents(createSpawnEvent(
-                playerConnected.getPlayerState(),
+                playerConnected.getPlayerStateChannel().getPlayerState(),
                 playerConnected.getLeaderBoard()))).build();
   }
 
@@ -317,7 +317,7 @@ public interface ServerResponseFactory {
         .setGameEvents(ServerResponse.GameEvents.newBuilder()
             .setPlayersOnline(playersOnline)
             .addEvents(createSpawnEvent(
-                playerRespawned.getPlayerState(),
+                playerRespawned.getPlayerStateChannel().getPlayerState(),
                 playerRespawned.getLeaderBoard()))).build();
   }
 

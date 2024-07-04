@@ -108,7 +108,7 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
     LOG.error("Error caught", cause);
-    ctx.close();
+    removeChannel(ctx.channel());
   }
 
   @Override

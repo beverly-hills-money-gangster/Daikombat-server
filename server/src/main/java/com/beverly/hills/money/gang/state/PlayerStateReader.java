@@ -14,6 +14,8 @@ public interface PlayerStateReader {
 
   int getNextEventId();
 
+  int getLastReceivedEventSequenceId();
+
   @Nullable
   Integer getPingMls();
 

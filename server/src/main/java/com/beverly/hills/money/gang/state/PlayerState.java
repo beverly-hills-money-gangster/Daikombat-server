@@ -35,7 +35,7 @@ public class PlayerState implements PlayerStateReader {
   private final AtomicInteger kills = new AtomicInteger();
   private final AtomicInteger deaths = new AtomicInteger();
   private final AtomicInteger health = new AtomicInteger(DEFAULT_HP);
-  private final AtomicInteger lastEventSequence = new AtomicInteger(-1);
+  private final AtomicInteger lastReceivedEventSequence = new AtomicInteger(-1);
 
   @Getter
   private final PlayerStateColor color;
@@ -62,6 +62,11 @@ public class PlayerState implements PlayerStateReader {
   @Override
   public int getNextEventId() {
     return eventSequenceGenerator.getNext();
+  }
+
+  @Override
+  public int getLastReceivedEventSequenceId() {
+    return lastReceivedEventSequence.get();
   }
 
   public void setPingMls(int mls) {
@@ -127,6 +132,7 @@ public class PlayerState implements PlayerStateReader {
     this.playerCoordinatesRef.set(coordinates);
     health.set(DEFAULT_HP);
     dead.set(false);
+    lastReceivedEventSequence.set(-1);
   }
 
   public int getKills() {
@@ -160,12 +166,12 @@ public class PlayerState implements PlayerStateReader {
   }
 
   public void move(PlayerCoordinates newPlayerCoordinates, final int eventSequence) {
-    int localLastEventSequence = lastEventSequence.get();
+    int localLastEventSequence = lastReceivedEventSequence.get();
     if (localLastEventSequence >= eventSequence) {
       LOG.warn("Out-of-order move for player {}. Current sequence {}, given {}. Skip move.",
           playerId, localLastEventSequence, eventSequence);
       return;
-    } else if (!lastEventSequence.compareAndSet(localLastEventSequence, eventSequence)) {
+    } else if (!lastReceivedEventSequence.compareAndSet(localLastEventSequence, eventSequence)) {
       LOG.warn("Concurrent move for player {}. Skip move.", playerId);
       return;
     }

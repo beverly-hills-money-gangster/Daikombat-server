@@ -91,9 +91,12 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
         .filter(playerStateChannel -> !playerStateChannel.isOurChannel(joinedPlayerStateChannel))
         .collect(Collectors.toList());
 
-    if (!otherPlayers.isEmpty()) {
+    var otherLivePlayers = otherPlayers.stream()
+        .filter(playerStateChannel -> !playerStateChannel.getPlayerState().isDead())
+        .collect(Collectors.toList());
+    if (!otherLivePlayers.isEmpty()) {
       ServerResponse allPlayersSpawnEvent =
-          createSpawnEventAllPlayers(game.playersOnline(), otherPlayers.stream()
+          createSpawnEventAllPlayers(game.playersOnline(), otherLivePlayers.stream()
               .map(PlayerStateChannel::getPlayerState)
               .collect(Collectors.toList()));
       joinedPlayerStateChannel.writeFlushPrimaryChannel(allPlayersSpawnEvent)

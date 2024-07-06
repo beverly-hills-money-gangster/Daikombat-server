@@ -10,6 +10,7 @@ import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.SkinColorSelection;
 import com.beverly.hills.money.gang.queue.QueueReader;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 import lombok.Builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,13 +20,14 @@ public class BotRunnable implements Runnable {
 
   private static final Logger LOG = LoggerFactory.getLogger(BotRunnable.class);
 
-  private static final float MOVE_DELTA = 0.00001f;
+  private static final float MOVE_DELTA = 0.0001f;
 
   private static final int MAX_NUMBER_OF_ITERATIONS = 1000;
 
   private static final int MAX_QUEUE_WAIT_TIME_MLS = 30_000;
 
   private static final int GAME_ID_TO_CONNECT = 0;
+
 
   private final GameServerCreds gameServerCreds;
 
@@ -36,6 +38,7 @@ public class BotRunnable implements Runnable {
 
     while (!Thread.currentThread().isInterrupted()) {
       try {
+        AtomicInteger sequenceGenerator = new AtomicInteger(-1);
         GameConnection gameConnection = new GameConnection(gameServerCreds);
         gameConnection.waitUntilConnected(10_000);
         gameConnection.write(JoinGameCommand.newBuilder()
@@ -57,12 +60,12 @@ public class BotRunnable implements Runnable {
             throw gameConnection.getErrors().poll().get();
           }
           if (i % 25 == 0) {
-            pushShoot(gameConnection, mySpawn.getPlayer(), i);
+            pushShoot(gameConnection, mySpawn.getPlayer(), i, sequenceGenerator.incrementAndGet());
           }
           if (i % 50 == 0) {
             pushChat(gameConnection, mySpawn.getPlayer(), i);
           }
-          pushMove(gameConnection, mySpawn.getPlayer(), i);
+          pushMove(gameConnection, mySpawn.getPlayer(), i, sequenceGenerator.incrementAndGet());
           emptyQueue(gameConnection.getResponse());
           Thread.sleep(10);
         }
@@ -76,13 +79,16 @@ public class BotRunnable implements Runnable {
 
   private void pushMove(
       GameConnection gameConnection, ServerResponse.GameEventPlayerStats playerStats,
-      int iteration) {
+      int iteration,
+      int sequence) {
     var myPosition = playerStats.getPosition();
     var myDirection = playerStats.getDirection();
     gameConnection.write(PushGameEventCommand.newBuilder()
         .setEventType(PushGameEventCommand.GameEventType.MOVE)
         .setPlayerId(playerStats.getPlayerId())
         .setGameId(GAME_ID_TO_CONNECT)
+        .setPingMls(0)
+        .setSequence(sequence)
         .setPosition(PushGameEventCommand.Vector.newBuilder()
             .setX(myPosition.getX() + MOVE_DELTA * iteration)
             .setY(myPosition.getY() + MOVE_DELTA * iteration).build())
@@ -93,13 +99,16 @@ public class BotRunnable implements Runnable {
 
   private void pushShoot(
       GameConnection gameConnection, ServerResponse.GameEventPlayerStats playerStats,
-      int iteration) {
+      int iteration,
+      int sequence) {
     var myPosition = playerStats.getPosition();
     var myDirection = playerStats.getDirection();
     gameConnection.write(PushGameEventCommand.newBuilder()
         .setEventType(PushGameEventCommand.GameEventType.SHOOT)
         .setPlayerId(playerStats.getPlayerId())
         .setGameId(GAME_ID_TO_CONNECT)
+        .setPingMls(0)
+        .setSequence(sequence)
         .setPosition(PushGameEventCommand.Vector.newBuilder()
             .setX(myPosition.getX() + MOVE_DELTA * iteration)
             .setY(myPosition.getY() + MOVE_DELTA * iteration).build())

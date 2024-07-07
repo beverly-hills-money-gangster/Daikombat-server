@@ -19,7 +19,6 @@ import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import com.beverly.hills.money.gang.state.PlayerStateColor;
 import com.beverly.hills.money.gang.util.VersionUtil;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFutureListener;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Getter;
@@ -54,19 +53,19 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
 
   @Override
   protected void handleInternal(ServerCommand msg, Channel currentChannel) throws GameLogicError {
-    LOG.info("Join game {}", msg);
     Game game = gameRoomRegistry.getGame(msg.getJoinGameCommand().getGameId());
     PlayerJoinedGameState playerConnected = game.joinPlayer(
         msg.getJoinGameCommand().getPlayerName(), currentChannel,
         getSkinColor(msg.getJoinGameCommand().getSkin()));
     ServerResponse playerSpawnEvent = createJoinSinglePlayer(
         game.playersOnline(), playerConnected);
-    playerConnected.getPlayerStateChannel().writeFlushPrimaryChannel(playerSpawnEvent)
-        .addListener((ChannelFutureListener) channelFuture -> {
+    playerConnected.getPlayerStateChannel()
+        .writeFlushPrimaryChannel(playerSpawnEvent, channelFuture -> {
           if (!channelFuture.isSuccess()) {
             currentChannel.close();
             return;
           }
+          playerConnected.getPlayerStateChannel().getPlayerState().fullyJoined();
           sendOtherSpawns(game, playerConnected.getPlayerStateChannel(),
               playerConnected.getSpawnedPowerUps());
         });
@@ -99,14 +98,16 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
           createSpawnEventAllPlayers(game.playersOnline(), otherLivePlayers.stream()
               .map(PlayerStateChannel::getPlayerState)
               .collect(Collectors.toList()));
-      joinedPlayerStateChannel.writeFlushPrimaryChannel(allPlayersSpawnEvent)
-          .addListener((ChannelFutureListener) future -> {
+      joinedPlayerStateChannel.writeFlushPrimaryChannel(allPlayersSpawnEvent,
+          future -> {
             if (future.isSuccess()) {
               sendPowerUpSpawn(spawnedPowerUps, joinedPlayerStateChannel);
               ServerResponse playerSpawnEventForOthers = createSpawnEventSinglePlayerMinimal(
                   game.playersOnline(), joinedPlayerStateChannel.getPlayerState());
-              otherPlayers.forEach(playerStateChannel -> playerStateChannel.
-                  writeFlushPrimaryChannel(playerSpawnEventForOthers));
+              otherPlayers.stream().filter(
+                      playerStateChannel -> playerStateChannel.getPlayerState().isFullyJoined())
+                  .forEach(playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(
+                      playerSpawnEventForOthers));
             } else {
               joinedPlayerStateChannel.close();
             }

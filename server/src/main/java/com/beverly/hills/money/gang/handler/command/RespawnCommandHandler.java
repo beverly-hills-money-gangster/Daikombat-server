@@ -36,7 +36,6 @@ public class RespawnCommandHandler extends JoinGameServerCommandHandler {
 
   @Override
   protected void handleInternal(ServerCommand msg, Channel currentChannel) throws GameLogicError {
-    LOG.info("Respawn {}", msg);
     var respawnCommand = msg.getRespawnCommand();
     Game game = gameRoomRegistry.getGame(respawnCommand.getGameId());
 
@@ -45,8 +44,8 @@ public class RespawnCommandHandler extends JoinGameServerCommandHandler {
     ServerResponse playerSpawnEvent = createRespawnEventSinglePlayer(
         game.playersOnline(), playerRespawnedGameState);
 
-    playerRespawnedGameState.getPlayerStateChannel().writeFlushPrimaryChannel(playerSpawnEvent)
-        .addListener((ChannelFutureListener) channelFuture -> {
+    playerRespawnedGameState.getPlayerStateChannel()
+        .writeFlushPrimaryChannel(playerSpawnEvent, channelFuture -> {
           if (!channelFuture.isSuccess()) {
             currentChannel.close();
             return;

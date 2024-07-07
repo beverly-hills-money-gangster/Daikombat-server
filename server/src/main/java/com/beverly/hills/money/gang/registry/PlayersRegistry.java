@@ -11,6 +11,7 @@ import java.io.Closeable;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +48,12 @@ public class PlayersRegistry implements Closeable {
   public Stream<PlayerStateChannel> allPlayers() {
     return players.values().stream();
   }
+
+  public Stream<PlayerStateChannel> allJoinedPlayers() {
+    return players.values().stream().filter(
+        playerStateChannel -> playerStateChannel.getPlayerState().isFullyJoined());
+  }
+
 
   public Optional<PlayerStateChannel> findPlayer(int playerId) {
     return Optional.ofNullable(players.get(playerId));

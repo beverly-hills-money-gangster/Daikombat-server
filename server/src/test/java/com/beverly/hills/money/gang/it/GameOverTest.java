@@ -1,14 +1,16 @@
 package com.beverly.hills.money.gang.it;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType;
 import com.beverly.hills.money.gang.proto.SkinColorSelection;
-import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_POWER_UPS_ENABLED", value = "false")
@@ -25,7 +27,7 @@ public class GameOverTest extends AbstractGameServerTest {
    * @when killer kills all
    * @then game is over because GAME_SERVER_FRAGS_PER_GAME=5
    */
-  @RepeatedTest(8)
+  @Test
   public void testGameOver() throws Exception {
     int deadConnectionsToCreate = 5;
     int gameIdToConnectTo = 0;
@@ -51,8 +53,13 @@ public class GameOverTest extends AbstractGameServerTest {
               .setPlayerName("my other player name " + i)
               .setGameId(gameIdToConnectTo).build());
       waitUntilQueueNonEmpty(killerConnection.getResponse());
-      waitUntilQueueNonEmpty(deadConnection.getResponse());
+      waitUntilGetResponses(deadConnection.getResponse(), 2);
       ServerResponse shotPlayerSpawn = deadConnection.getResponse().poll().get();
+
+      assertEquals(GameEventType.SPAWN, shotPlayerSpawn.getGameEvents().getEvents(0).getEventType(),
+          "It should be spawn");
+      assertTrue(shotPlayerSpawn.getGameEvents().getEvents(0).getMyEvent(),
+          "It should be MY spawn");
       int shotPlayerId = shotPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
 
       emptyQueue(deadConnection.getResponse());

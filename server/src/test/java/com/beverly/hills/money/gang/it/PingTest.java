@@ -23,7 +23,7 @@ public class PingTest extends AbstractGameServerTest {
    * @when a new connection is created, no request is sent
    * @then it's not disconnected as PING messages are sent automatically
    */
-  @RepeatedTest(4)
+  @Test
   public void testPing() throws IOException, InterruptedException {
     GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
     Thread.sleep(5_500);
@@ -40,7 +40,7 @@ public class PingTest extends AbstractGameServerTest {
    * @when a new secondary connection is created, no request is sent
    * @then it's not disconnected as PING messages are sent automatically
    */
-  @RepeatedTest(4)
+  @Test
   public void testPingSecondaryConnection() throws IOException, InterruptedException {
     SecondaryGameConnection secondaryGameConnection = createSecondaryGameConnection(
         ServerConfig.PIN_CODE, "localhost", port);

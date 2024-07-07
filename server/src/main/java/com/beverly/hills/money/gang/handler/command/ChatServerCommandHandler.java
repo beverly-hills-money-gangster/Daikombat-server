@@ -44,7 +44,7 @@ public class ChatServerCommandHandler extends ServerCommandHandler {
               msg.getChatCommand().getMessage(),
               playerStateReader.getPlayerState().getPlayerId(),
               playerStateReader.getPlayerState().getPlayerName());
-          game.getPlayersRegistry().allPlayers()
+          game.getPlayersRegistry().allJoinedPlayers()
               .filter(
                   playerStateChannel -> !playerStateChannel.isOurChannel(currentChannel))
               .forEach(playerChannel -> playerChannel.writeFlushPrimaryChannel(chatMsgToSend));

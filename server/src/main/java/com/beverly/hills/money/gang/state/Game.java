@@ -69,7 +69,7 @@ public class Game implements Closeable, GameReader {
             stateChannel.getPrimaryChannelAddress(), currentAddress))
         .orElseThrow(() -> new GameLogicError(
             "Can't merge connections", GameErrorCode.COMMON_ERROR));
-    player.schedulePrimaryChannel(() -> player.addSecondaryChannel(channel), 0);
+    player.executeInPrimaryEventLoop(() -> player.addSecondaryChannel(channel));
   }
 
   public PlayerJoinedGameState joinPlayer(
@@ -219,7 +219,7 @@ public class Game implements Closeable, GameReader {
   }
 
   public List<PlayerStateReader> getBufferedMoves() {
-    return playersRegistry.allPlayers().map(PlayerStateChannel::getPlayerState)
+    return playersRegistry.allJoinedPlayers().map(PlayerStateChannel::getPlayerState)
         .filter(PlayerState::hasMoved)
         .collect(Collectors.toList());
   }

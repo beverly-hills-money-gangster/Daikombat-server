@@ -24,6 +24,7 @@ public class PlayerState implements PlayerStateReader {
 
   private static final Logger LOG = LoggerFactory.getLogger(PlayerState.class);
 
+  private final AtomicBoolean fullyJoined = new AtomicBoolean(false);
   public static final int VAMPIRE_HP_BOOST = 20;
   private final AtomicBoolean moved = new AtomicBoolean(false);
   private final SequenceGenerator eventSequenceGenerator = new SequenceGenerator();
@@ -71,6 +72,14 @@ public class PlayerState implements PlayerStateReader {
 
   public void setPingMls(int mls) {
     pingMls.set(mls);
+  }
+
+  public boolean isFullyJoined() {
+    return fullyJoined.get();
+  }
+
+  public void fullyJoined() {
+    fullyJoined.set(true);
   }
 
   @Override

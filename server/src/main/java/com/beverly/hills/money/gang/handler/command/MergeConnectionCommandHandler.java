@@ -31,7 +31,6 @@ public class MergeConnectionCommandHandler extends ServerCommandHandler {
 
   @Override
   protected void handleInternal(ServerCommand msg, Channel currentChannel) throws GameLogicError {
-    LOG.info("Merge connection {}", msg);
     var mergeConnection = msg.getMergeConnectionCommand();
     Game game = gameRoomRegistry.getGame(mergeConnection.getGameId());
     game.mergeConnection(mergeConnection.getPlayerId(), currentChannel);

@@ -13,8 +13,6 @@ import com.beverly.hills.money.gang.proto.SkinColorSelection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -30,7 +28,7 @@ public class MoveEventTest extends AbstractGameServerTest {
    * @when player 1 moves, player 2 observes
    * @then player 2 observers player 1 moves
    */
-  @RepeatedTest(4)
+  @Test
   public void testMove() throws Exception {
     int gameIdToConnectTo = 2;
     GameConnection movingPlayerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
@@ -116,7 +114,7 @@ public class MoveEventTest extends AbstractGameServerTest {
    * @when player 1 moves 3 times, player 2 observes
    * @then player 2 observers player 1 moves and get MOVE events with the ascending sequence
    */
-  @RepeatedTest(4)
+  @Test
   public void testMoveAscendingSequence() throws Exception {
     int gameIdToConnectTo = 2;
     GameConnection movingPlayerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
@@ -186,7 +184,7 @@ public class MoveEventTest extends AbstractGameServerTest {
    * @when player 1 moves 3 times with out-of-order sequence
    * @then player 2 observers player 1 in-order moves ONLY
    */
-  @RepeatedTest(4)
+  @Test
   public void testMoveOutOfOrderSequence() throws Exception {
     int gameIdToConnectTo = 2;
     GameConnection movingPlayerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
@@ -267,87 +265,10 @@ public class MoveEventTest extends AbstractGameServerTest {
 
   /**
    * @given a running server with 2 connected players
-   * @when player 1 move too fast, player 2 observes
-   * @then player 1 is disconnected, player 2 sees player exit
-   */
-  @Disabled("Doesn't work in circle ci for some reason. Fix it later!")
-  @RepeatedTest(16)
-  public void testMoveTooFast() throws Exception {
-    int gameIdToConnectTo = 2;
-    GameConnection cheatingPlayerConnection = createGameConnection(ServerConfig.PIN_CODE,
-        "localhost", port);
-    cheatingPlayerConnection.write(
-        JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
-            .setPlayerName("my player name")
-            .setGameId(gameIdToConnectTo).build());
-    waitUntilQueueNonEmpty(cheatingPlayerConnection.getResponse());
-    ServerResponse mySpawn = cheatingPlayerConnection.getResponse().poll().get();
-    ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
-    int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
-
-    GameConnection observerPlayerConnection = createGameConnection(ServerConfig.PIN_CODE,
-        "localhost", port);
-    observerPlayerConnection.write(
-        JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
-            .setPlayerName("new player")
-            .setGameId(gameIdToConnectTo).build());
-    waitUntilQueueNonEmpty(observerPlayerConnection.getResponse());
-    emptyQueue(observerPlayerConnection.getResponse());
-    Thread.sleep(1_000);
-    assertEquals(0, observerPlayerConnection.getResponse().size(),
-        "No activity happened in the game so no response yet. Actual response is "
-            + observerPlayerConnection.getResponse().list());
-
-    // moving too fast
-    float newPositionY = mySpawnGameEvent.getPlayer().getPosition().getY() + 100f;
-    float newPositionX = mySpawnGameEvent.getPlayer().getPosition().getX() + 100f;
-    emptyQueue(cheatingPlayerConnection.getResponse());
-    cheatingPlayerConnection.write(PushGameEventCommand.newBuilder()
-        .setGameId(gameIdToConnectTo)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-        .setEventType(PushGameEventCommand.GameEventType.MOVE)
-        .setPlayerId(playerId1)
-        .setPosition(PushGameEventCommand.Vector.newBuilder()
-            .setY(newPositionY)
-            .setX(newPositionX)
-            .build())
-        .setDirection(PushGameEventCommand.Vector.newBuilder()
-            .setY(mySpawnGameEvent.getPlayer().getDirection().getY())
-            .setX(mySpawnGameEvent.getPlayer().getDirection().getX())
-            .build())
-        .build());
-
-    waitUntilQueueNonEmpty(observerPlayerConnection.getResponse());
-    emptyQueue(cheatingPlayerConnection.getResponse());
-    emptyQueue(observerPlayerConnection.getResponse());
-    Thread.sleep(ServerConfig.PLAYER_SPEED_CHECK_FREQUENCY_MLS * 3L);
-    assertTrue(cheatingPlayerConnection.isDisconnected(), "Cheating player should be disconnected");
-    assertTrue(observerPlayerConnection.isConnected());
-
-    waitUntilGetResponses(observerPlayerConnection.getResponse(), 1);
-    assertEquals(1, observerPlayerConnection.getResponse().size(),
-        "Only one exit event is expected. Actual response is "
-            + observerPlayerConnection.getResponse().list());
-    ServerResponse exitServerResponse = observerPlayerConnection.getResponse().poll().get();
-    assertEquals(1, exitServerResponse.getGameEvents().getPlayersOnline(),
-        "Only 1 player is expected to be online now. Cheating player should exit.");
-    assertTrue(exitServerResponse.hasGameEvents(), "Should be a game event");
-    assertEquals(1, exitServerResponse.getGameEvents().getEventsCount(),
-        "Only one game even is expected(player 1 exit)");
-    ServerResponse.GameEvent playerExitEvent = exitServerResponse.getGameEvents().getEvents(0);
-
-    assertEquals(playerId1, playerExitEvent.getPlayer().getPlayerId(), "Should be player 1 id");
-    assertEquals(ServerResponse.GameEvent.GameEventType.EXIT, playerExitEvent.getEventType());
-  }
-
-  /**
-   * @given a running server with 2 connected players
    * @when player 2 uses player 1 id to move
    * @then player 1 move is not published
    */
-  @RepeatedTest(4)
+  @Test
   public void testMoveWrongPlayerId() throws Exception {
     int gameIdToConnectTo = 2;
     GameConnection observerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",

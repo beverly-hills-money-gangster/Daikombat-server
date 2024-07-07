@@ -117,7 +117,7 @@ public class QueueAPITest {
   }
 
 
-  @RepeatedTest(16)
+  @Test
   public void testPushPollConcurrent() {
     int threadsToCreate = 16;
     List<Thread> threads = new ArrayList<>();

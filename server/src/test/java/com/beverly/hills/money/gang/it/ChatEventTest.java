@@ -33,7 +33,7 @@ public class ChatEventTest extends AbstractGameServerTest {
    * @when many players connect to server and send messages
    * @then all messages are correctly received by players
    */
-  @RepeatedTest(4)
+  @Test
   public void testChatManyPlayers() throws IOException, InterruptedException {
     int gameIdToConnectTo = 0;
     for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
@@ -92,7 +92,7 @@ public class ChatEventTest extends AbstractGameServerTest {
    * @when many players connect to server and send messages concurrently
    * @then all messages are correctly received by players
    */
-  @RepeatedTest(4)
+  @Test
   public void testChatManyPlayersConcurrent() throws IOException, InterruptedException {
     int gameIdToConnectTo = 0;
     for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {

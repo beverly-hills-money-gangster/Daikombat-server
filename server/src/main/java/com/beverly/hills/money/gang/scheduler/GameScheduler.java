@@ -8,6 +8,7 @@ import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
+import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
 import java.io.Closeable;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
@@ -56,9 +58,8 @@ public class GameScheduler implements Closeable, Scheduler {
     LOG.info("Speed checking frequency {} mls", checkFrequencyMls);
     scheduler.scheduleAtFixedRate(
         () -> {
-          LOG.info("Check speed cheating");
           gameRoomRegistry.getGames().forEach(game -> game.getPlayersRegistry()
-              .allPlayers().forEach(stateChannel -> {
+              .allJoinedPlayers().forEach(stateChannel -> {
                 var state = stateChannel.getPlayerState();
                 if (!antiCheat.isTooMuchDistanceTravelled(state.getLastDistanceTravelled(),
                     checkFrequencySec)) {
@@ -67,8 +68,8 @@ public class GameScheduler implements Closeable, Scheduler {
                 }
                 LOG.warn("Cheating detected for player id {} named {}", state.getPlayerId(),
                     state.getPlayerName());
-                stateChannel.writeFlushPrimaryChannel(cheatingDetected)
-                    .addListener(future -> stateChannel.close());
+                stateChannel.writeFlushPrimaryChannel(cheatingDetected,
+                    future -> stateChannel.close());
               }));
         }, checkFrequencyMls, checkFrequencyMls, TimeUnit.MILLISECONDS);
   }
@@ -83,7 +84,7 @@ public class GameScheduler implements Closeable, Scheduler {
             if (bufferedMoves.isEmpty()) {
               return;
             }
-            game.getPlayersRegistry().allPlayers()
+            game.getPlayersRegistry().allJoinedPlayers()
                 .forEach(playerStateChannel -> {
                   // don't send me MY own moves
                   Optional.of(getAllBufferedPlayerMovesExceptMine(

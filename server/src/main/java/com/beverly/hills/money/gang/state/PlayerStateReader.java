@@ -12,6 +12,8 @@ public interface PlayerStateReader {
 
   PlayerStateColor getColor();
 
+  boolean isFullyJoined();
+
   int getNextEventId();
 
   int getLastReceivedEventSequenceId();

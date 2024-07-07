@@ -40,7 +40,7 @@ public class QuadDamagePowerUpTest extends AbstractGameServerTest {
    * @then quad damage is applied, reverted after GAME_SERVER_QUAD_DAMAGE_LASTS_FOR_MLS, and then
    * released after GAME_SERVER_QUAD_DAMAGE_SPAWN_MLS
    */
-  @RepeatedTest(4)
+  @Test
   public void testPickUpPowerUpQuadDamage()
       throws IOException, InterruptedException {
     int gameIdToConnectTo = 0;

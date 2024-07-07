@@ -43,7 +43,7 @@ public class LoadBalancedGameConnection {
 
   public void write(PushGameEventCommand pushGameEventCommand) {
     if (pushGameEventCommand.getEventType() == GameEventType.MOVE) {
-      allConnections.get(lastPickedConnectionId.getAndIncrement() % allConnections.size())
+      allConnections.get(lastPickedConnectionId.incrementAndGet() % allConnections.size())
           .write(pushGameEventCommand);
     } else {
       gameConnection.write(pushGameEventCommand);

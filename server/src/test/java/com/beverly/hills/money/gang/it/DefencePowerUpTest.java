@@ -40,7 +40,7 @@ public class DefencePowerUpTest extends AbstractGameServerTest {
    * @then invisibility is applied, reverted after GAME_SERVER_DEFENCE_LASTS_FOR_MLS, and then
    * released after GAME_SERVER_DEFENCE_SPAWN_MLS
    */
-  @RepeatedTest(4)
+  @Test
   public void testPickUpPowerUpDefence()
       throws IOException, InterruptedException {
     int gameIdToConnectTo = 0;

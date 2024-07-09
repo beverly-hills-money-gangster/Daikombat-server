@@ -95,10 +95,9 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     boolean playerWasFound = gameRoomRegistry.removeChannel(channelToRemove,
         (game, playerState) -> {
           var disconnectEvent = createExitEvent(game.playersOnline(), playerState);
-          game.getPlayersRegistry().allPlayers()
-              .forEach(
-                  playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(disconnectEvent)
-                      .addListener(ChannelFutureListener.CLOSE_ON_FAILURE));
+          game.getPlayersRegistry().allJoinedPlayers()
+              .forEach(playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(disconnectEvent,
+                      ChannelFutureListener.CLOSE_ON_FAILURE));
         });
     if (!playerWasFound) {
       channelToRemove.close();

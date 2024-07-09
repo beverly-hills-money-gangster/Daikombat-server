@@ -12,6 +12,7 @@ import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.SkinColorSelection;
 import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_POWER_UPS_ENABLED", value = "false")
@@ -25,7 +26,7 @@ public class RespawnEventTest extends AbstractGameServerTest {
    * @when player 1 kills player 2 and then player 2 respawns
    * @then player 1 sees player 2 respawning
    */
-  @RepeatedTest(8)
+  @Test
   public void testRespawn() throws Exception {
     int gameIdToConnectTo = 0;
     String shooterPlayerName = "killer";

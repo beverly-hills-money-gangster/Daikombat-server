@@ -16,8 +16,6 @@ import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
 import com.beverly.hills.money.gang.queue.QueueReader;
 import com.beverly.hills.money.gang.runner.ServerRunner;
-import com.beverly.hills.money.gang.scheduler.GameScheduler;
-import java.io.Closeable;
 import java.io.IOException;
 import java.net.BindException;
 import java.net.ServerSocket;
@@ -29,7 +27,6 @@ import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -162,7 +159,8 @@ public abstract class AbstractGameServerTest {
         throw new RuntimeException(e);
       }
     }
-    throw new IllegalStateException("Timeout waiting for response");
+    throw new IllegalStateException(
+        "Timeout waiting for response. Actual response is: " + queueReader.list());
   }
 
 

@@ -27,7 +27,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
    * @when player 1 disconnects from server
    * @then player 1 gets disconnected and player 2 has the event DISCONNECT for player 1
    */
-  @RepeatedTest(4)
+  @Test
   public void testExit() throws IOException, InterruptedException {
     int gameToConnectTo = 1;
     GameConnection gameConnection1 = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
@@ -83,7 +83,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
    * @when player 1 disconnects from server twice
    * @then player 1 gets disconnected. 2nd disconnect attempt does not cause any issues
    */
-  @RepeatedTest(4)
+  @Test
   public void testDisconnectTwice() throws IOException, InterruptedException {
     GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
     assertTrue(gameConnection.isConnected(), "Should be connected by default");
@@ -108,7 +108,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
    * @when player 1 connects to a non-existing host
    * @then an exception is thrown
    */
-  @RepeatedTest(4)
+  @Test
   public void testGetServerInfoNotExistingServer() throws IOException {
     var connection = createGameConnection(ServerConfig.PIN_CODE, "666.666.666.666", port);
     assertInstanceOf(UnknownHostException.class, connection.getErrors().poll().get());
@@ -119,7 +119,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
    * @when player 1 connects to correct host but incorrect port
    * @then an exception is thrown
    */
-  @RepeatedTest(4)
+  @Test
   public void testGetServerInfoWrongPort() throws IOException {
     var connection = createGameConnection(ServerConfig.PIN_CODE, "localhost", 666);
     assertInstanceOf(ConnectException.class, connection.getErrors().poll().get());

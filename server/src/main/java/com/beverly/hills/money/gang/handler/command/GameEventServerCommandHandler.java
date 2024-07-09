@@ -27,10 +27,8 @@ import com.beverly.hills.money.gang.state.PlayerState;
 import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import com.beverly.hills.money.gang.state.Vector;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFutureListener;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -136,7 +134,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
     }
 
     var serverResponse = createPowerUpPlayerServerResponse(result.getPlayerState());
-    game.getPlayersRegistry().allPlayers()
+    game.getPlayersRegistry().allJoinedPlayers()
         .forEach(stateChannel -> stateChannel.writeFlushPrimaryChannel(serverResponse));
 
     scheduler.schedule(result.getPowerUp().getLastsForMls(), () -> {
@@ -156,7 +154,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
         return;
       }
       ServerResponse serverResponse = createPowerUpSpawn(List.of(powerUp));
-      game.getPlayersRegistry().allPlayers().forEach(
+      game.getPlayersRegistry().allJoinedPlayers().forEach(
           playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(serverResponse));
     });
   }
@@ -203,9 +201,9 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
             }
 
             // send KILL event to all players
-            game.getPlayersRegistry().allPlayers().forEach(
-                playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(deadEvent)
-                    .addListener((ChannelFutureListener) future -> {
+            game.getPlayersRegistry().allJoinedPlayers().forEach(
+                playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(deadEvent,
+                    future -> {
                       if (!future.isSuccess()) {
                         playerStateChannel.close();
                         return;
@@ -224,7 +222,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
                 attackGameState.getAttackingPlayer(),
                 attackGameState.getPlayerAttacked(),
                 attackType);
-            game.getPlayersRegistry().allPlayers()
+            game.getPlayersRegistry().allJoinedPlayers()
                 .filter(playerStateChannel
                     // don't send me my own attack back
                     -> playerStateChannel.getPlayerState().getPlayerId()
@@ -242,7 +240,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
                 game.playersOnline(),
                 attackGameState.getAttackingPlayer());
           };
-          game.getPlayersRegistry().allPlayers()
+          game.getPlayersRegistry().allJoinedPlayers()
               .filter(playerStateChannel
                   // don't send me my own attack back
                   -> playerStateChannel.getPlayerState().getPlayerId() != gameCommand.getPlayerId())

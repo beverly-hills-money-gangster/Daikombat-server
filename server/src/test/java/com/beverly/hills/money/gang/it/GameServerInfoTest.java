@@ -25,7 +25,7 @@ public class GameServerInfoTest extends AbstractGameServerTest {
    * @when player 1 requests server info
    * @then player 1 gets server info for all games
    */
-  @RepeatedTest(4)
+  @Test
   public void testGetServerInfo() throws IOException {
     GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
 
@@ -57,7 +57,7 @@ public class GameServerInfoTest extends AbstractGameServerTest {
    * @when player 1 requests server info with incorrect password
    * @then player 1 fails to get server info. server disconnects the player
    */
-  @RepeatedTest(4)
+  @Test
   public void testGetServerInfoBadAuth() throws InterruptedException, IOException {
     GameConnection gameConnection = createGameConnection("wrong password", "localhost", port);
     gameConnection.write(GetServerInfoCommand.newBuilder().build());

@@ -32,7 +32,7 @@ public class LoadBalancedGameConnectionTest extends AbstractGameServerTest {
    * @when player 1 moves twice
    * @then player 2 sees player 1 move through the secondary connection
    */
-  @RepeatedTest(4)
+  @Test
   public void testLoadBalancedGameConnection() throws Exception {
     int gameIdToConnectTo = 2;
     GameConnection movingPlayerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",

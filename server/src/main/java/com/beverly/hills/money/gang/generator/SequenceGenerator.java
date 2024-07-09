@@ -11,11 +11,11 @@ public class SequenceGenerator {
   }
 
   public SequenceGenerator() {
-    this(0);
+    this(-1);
   }
 
 
   public int getNext() {
-    return generator.getAndIncrement();
+    return generator.incrementAndGet();
   }
 }

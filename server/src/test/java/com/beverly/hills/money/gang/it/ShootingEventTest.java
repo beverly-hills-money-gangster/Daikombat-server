@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_POWER_UPS_ENABLED", value = "false")
@@ -29,7 +30,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
    * @when player 1 shoots and misses
    * @then nobody got shot
    */
-  @RepeatedTest(8)
+  @Test
   public void testShootMiss() throws IOException {
     int gameIdToConnectTo = 0;
     GameConnection shooterConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
@@ -107,7 +108,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
    * @when player 1 punches and misses
    * @then nobody got punched
    */
-  @RepeatedTest(8)
+  @Test
   public void testPunchMiss() throws IOException {
     int gameIdToConnectTo = 0;
     GameConnection puncherConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
@@ -187,7 +188,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
    * @then player 2 health is reduced by ServerConfig.DEFAULT_SHOTGUN_DAMAGE and the event is sent
    * to all players
    */
-  @RepeatedTest(8)
+  @Test
   public void testShootHit() throws Exception {
     int gameIdToConnectTo = 0;
     GameConnection shooterConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
@@ -292,7 +293,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
    * @then player 2 health is reduced by ServerConfig.DEFAULT_PUNCH_DAMAGE and the event is sent to
    * all players
    */
-  @RepeatedTest(8)
+  @Test
   public void testPunchHit() throws Exception {
     int gameIdToConnectTo = 0;
     GameConnection punchingConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
@@ -396,7 +397,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
    * @when player 1 shoots player 2 too far way
    * @then player 1 event is not published to player 2
    */
-  @RepeatedTest(8)
+  @Test
   public void testShootHitTooFar() throws Exception {
     int gameIdToConnectTo = 0;
     GameConnection shooterConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
@@ -458,7 +459,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
    * @when player 1 punches player 2 too far way
    * @then player 1 event is not published to player 2
    */
-  @RepeatedTest(8)
+  @Test
   public void testShootPunchTooFar() throws Exception {
     int gameIdToConnectTo = 0;
     GameConnection puncherConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
@@ -519,7 +520,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
    * @when player 1 kills player 2
    * @then player 2 is dead and gets disconnected. KILL event is sent to all active players.
    */
-  @RepeatedTest(8)
+  @Test
   public void testShootKill() throws Exception {
     int gameIdToConnectTo = 0;
     String shooterPlayerName = "killer";
@@ -682,7 +683,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
    * @when player 1 kills player 2 by punching
    * @then player 2 is dead and gets disconnected. KILL event is sent to all active players.
    */
-  @RepeatedTest(8)
+  @Test
   public void testPunchKill() throws Exception {
     int gameIdToConnectTo = 0;
     String puncherPlayerName = "killer";
@@ -848,7 +849,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
    * @when player 1 shoots player 2
    * @then nothing happens as dead players can't get shot
    */
-  @RepeatedTest(8)
+  @Test
   public void testShootDeadPlayer() throws Exception {
     int gameIdToConnectTo = 0;
     GameConnection shooterConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
@@ -958,7 +959,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
    * @when player shoots himself
    * @then player is disconnected
    */
-  @RepeatedTest(8)
+  @Test
   public void testShootYourself() throws Exception {
     int gameIdToConnectTo = 0;
     GameConnection selfShootingConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",

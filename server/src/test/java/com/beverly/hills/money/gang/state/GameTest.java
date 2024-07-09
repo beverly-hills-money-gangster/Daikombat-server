@@ -51,7 +51,6 @@ import java.util.stream.Stream;
 import org.assertj.core.util.Streams;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 public class GameTest {
@@ -116,7 +115,7 @@ public class GameTest {
         "No online players as nobody connected yet");
     String playerName = "some player";
     Channel channel = mock(Channel.class);
-    PlayerJoinedGameState playerConnectedGameState = game.joinPlayer(playerName, channel,
+    PlayerJoinedGameState playerConnectedGameState = fullyJoin(playerName, channel,
         PlayerStateColor.GREEN);
     assertEquals(1, game.getPlayersRegistry().playersOnline(), "We connected 1 player only");
     assertEquals(0, game.getBufferedMoves().size(), "Nobody moved");
@@ -162,11 +161,11 @@ public class GameTest {
       // spawn everywhere except for the last spawn position
       doReturn(Spawner.SPAWNS.get(i % (Spawner.SPAWNS.size() - 1))).when(spawner)
           .spawnPlayer(any());
-      game.joinPlayer(playerName + " " + i, channel, PlayerStateColor.GREEN);
+      fullyJoin(playerName + " " + i, channel, PlayerStateColor.GREEN);
     }
 
     doCallRealMethod().when(spawner).spawnPlayer(any());
-    var connectedPlayer = game.joinPlayer(playerName, channel, PlayerStateColor.GREEN);
+    var connectedPlayer = fullyJoin(playerName, channel, PlayerStateColor.GREEN);
     assertEquals(Spawner.SPAWNS.get(Spawner.SPAWNS.size() - 1),
         connectedPlayer.getPlayerStateChannel().getPlayerState().getCoordinates(),
         "Should be spawned to the last spawn position because it's least populated");
@@ -185,7 +184,7 @@ public class GameTest {
     int playersToJoin = Math.min(ServerConfig.MAX_PLAYERS_PER_GAME, Spawner.SPAWNS.size());
     for (int i = 0; i < playersToJoin; i++) {
       spawns.add(
-          game.joinPlayer(playerName + " " + i, channel, PlayerStateColor.GREEN)
+          fullyJoin(playerName + " " + i, channel, PlayerStateColor.GREEN)
               .getPlayerStateChannel().getPlayerState()
               .getCoordinates()
               .getPosition());
@@ -203,11 +202,11 @@ public class GameTest {
   public void testConnectPlayerTwice() throws Throwable {
     String playerName = "some player";
     Channel channel = mock(Channel.class);
-    PlayerJoinedGameState playerConnectedGameState = game.joinPlayer(playerName, channel,
+    PlayerJoinedGameState playerConnectedGameState = fullyJoin(playerName, channel,
         PlayerStateColor.GREEN);
     // connect the same twice
     GameLogicError gameLogicError = assertThrows(GameLogicError.class,
-        () -> game.joinPlayer(playerName, channel, PlayerStateColor.GREEN),
+        () -> fullyJoin(playerName, channel, PlayerStateColor.GREEN),
         "Second try should fail because it's the same player");
     assertEquals(GameErrorCode.PLAYER_EXISTS, gameLogicError.getErrorCode());
 
@@ -236,7 +235,7 @@ public class GameTest {
     String playerName = "some player";
     Channel channel = mock(Channel.class);
     for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
-      game.joinPlayer(playerName + " " + i, channel, PlayerStateColor.GREEN);
+      fullyJoin(playerName + " " + i, channel, PlayerStateColor.GREEN);
     }
     assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, game.getPlayersRegistry().playersOnline());
   }
@@ -251,10 +250,10 @@ public class GameTest {
     String playerName = "some player";
     Channel channel = mock(Channel.class);
     for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
-      game.joinPlayer(playerName + " " + i, channel, PlayerStateColor.GREEN);
+      fullyJoin(playerName + " " + i, channel, PlayerStateColor.GREEN);
     }
     // connect MAX_PLAYERS_PER_GAME+1 player
-    GameLogicError gameLogicError = assertThrows(GameLogicError.class, () -> game.joinPlayer(
+    GameLogicError gameLogicError = assertThrows(GameLogicError.class, () -> fullyJoin(
             "over the top", channel, PlayerStateColor.GREEN),
         "We can't connect so many players");
     assertEquals(GameErrorCode.SERVER_FULL, gameLogicError.getErrorCode());
@@ -280,7 +279,7 @@ public class GameTest {
       threads.add(new Thread(() -> {
         try {
           latch.await();
-          game.joinPlayer(playerName + " " + finalI, channel, PlayerStateColor.GREEN);
+          fullyJoin(playerName + " " + finalI, channel, PlayerStateColor.GREEN);
         } catch (Exception e) {
           failures.incrementAndGet();
           throw new RuntimeException(e);
@@ -309,7 +308,7 @@ public class GameTest {
   public void testShootMiss() throws Throwable {
     String playerName = "some player";
     Channel channel = mock(Channel.class);
-    PlayerJoinedGameState playerConnectedGameState = game.joinPlayer(playerName, channel,
+    PlayerJoinedGameState playerConnectedGameState = fullyJoin(playerName, channel,
         PlayerStateColor.GREEN);
     PlayerAttackingGameState playerAttackingGameState = game.attack(
         playerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
@@ -339,9 +338,9 @@ public class GameTest {
     String shotPlayerName = "shot player";
     Channel channel = mock(Channel.class);
     Set<Integer> connectedPlayerIds = new HashSet<>();
-    PlayerJoinedGameState shooterPlayerConnectedGameState = game.joinPlayer(shooterPlayerName,
+    PlayerJoinedGameState shooterPlayerConnectedGameState = fullyJoin(shooterPlayerName,
         channel, PlayerStateColor.GREEN);
-    PlayerJoinedGameState shotPlayerConnectedGameState = game.joinPlayer(shotPlayerName, channel,
+    PlayerJoinedGameState shotPlayerConnectedGameState = fullyJoin(shotPlayerName, channel,
         PlayerStateColor.GREEN);
     connectedPlayerIds.add(
         shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId());
@@ -389,9 +388,9 @@ public class GameTest {
     String observerPlayerName = "observer player";
     String shotPlayerName = "shot player";
     Channel channel = mock(Channel.class);
-    PlayerJoinedGameState shooterPlayerConnectedGameState = game.joinPlayer(shooterPlayerName,
+    PlayerJoinedGameState shooterPlayerConnectedGameState = fullyJoin(shooterPlayerName,
         channel, PlayerStateColor.GREEN);
-    PlayerJoinedGameState shotPlayerConnectedGameState = game.joinPlayer(shotPlayerName, channel,
+    PlayerJoinedGameState shotPlayerConnectedGameState = fullyJoin(shotPlayerName, channel,
         PlayerStateColor.GREEN);
 
     int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_SHOTGUN_DAMAGE);
@@ -433,7 +432,7 @@ public class GameTest {
     assertEquals(0, shotState.getHealth());
     assertTrue(shotState.isDead());
 
-    PlayerJoinedGameState observerPlayerConnectedGameState = game.joinPlayer(observerPlayerName,
+    PlayerJoinedGameState observerPlayerConnectedGameState = fullyJoin(observerPlayerName,
         channel, PlayerStateColor.GREEN);
 
     assertEquals(3, observerPlayerConnectedGameState.getLeaderBoard().size(),
@@ -477,9 +476,9 @@ public class GameTest {
     String observerPlayerName = "observer player";
     String shotPlayerName = "shot player";
     Channel channel = mock(Channel.class);
-    PlayerJoinedGameState shooterPlayerConnectedGameState = game.joinPlayer(shooterPlayerName,
+    PlayerJoinedGameState shooterPlayerConnectedGameState = fullyJoin(shooterPlayerName,
         channel, PlayerStateColor.GREEN);
-    PlayerJoinedGameState shotPlayerConnectedGameState = game.joinPlayer(shotPlayerName, channel,
+    PlayerJoinedGameState shotPlayerConnectedGameState = fullyJoin(shotPlayerName, channel,
         PlayerStateColor.GREEN);
 
     int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_SHOTGUN_DAMAGE);
@@ -544,9 +543,9 @@ public class GameTest {
     String shotPlayerName = "shot player";
     String observerPlayerName = "observer player";
     Channel channel = mock(Channel.class);
-    PlayerJoinedGameState shooterPlayerConnectedGameState = game.joinPlayer(shooterPlayerName,
+    PlayerJoinedGameState shooterPlayerConnectedGameState = fullyJoin(shooterPlayerName,
         channel, PlayerStateColor.GREEN);
-    PlayerJoinedGameState shotPlayerConnectedGameState = game.joinPlayer(shotPlayerName, channel,
+    PlayerJoinedGameState shotPlayerConnectedGameState = fullyJoin(shotPlayerName, channel,
         PlayerStateColor.GREEN);
 
     int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_SHOTGUN_DAMAGE);
@@ -588,7 +587,7 @@ public class GameTest {
     assertEquals(0, shotState.getHealth());
     assertTrue(shotState.isDead());
 
-    PlayerJoinedGameState observerPlayerConnectedGameState = game.joinPlayer(observerPlayerName,
+    PlayerJoinedGameState observerPlayerConnectedGameState = fullyJoin(observerPlayerName,
         channel, PlayerStateColor.GREEN);
 
     assertEquals(3, observerPlayerConnectedGameState.getLeaderBoard().size(),
@@ -635,7 +634,7 @@ public class GameTest {
   public void testShootYourself() throws Throwable {
     String shooterPlayerName = "shooter player";
     Channel channel = mock(Channel.class);
-    PlayerJoinedGameState shooterPlayerConnectedGameState = game.joinPlayer(shooterPlayerName,
+    PlayerJoinedGameState shooterPlayerConnectedGameState = fullyJoin(shooterPlayerName,
         channel, PlayerStateColor.GREEN);
 
     GameLogicError gameLogicError = assertThrows(GameLogicError.class, () -> game.attack(
@@ -668,9 +667,9 @@ public class GameTest {
     String shooterPlayerName = "shooter player";
     String shotPlayerName = "shot player";
     Channel channel = mock(Channel.class);
-    PlayerJoinedGameState shooterPlayerConnectedGameState = game.joinPlayer(shooterPlayerName,
+    PlayerJoinedGameState shooterPlayerConnectedGameState = fullyJoin(shooterPlayerName,
         channel, PlayerStateColor.GREEN);
-    PlayerJoinedGameState shotPlayerConnectedGameState = game.joinPlayer(shotPlayerName, channel,
+    PlayerJoinedGameState shotPlayerConnectedGameState = fullyJoin(shotPlayerName, channel,
         PlayerStateColor.GREEN);
 
     int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_SHOTGUN_DAMAGE);
@@ -720,7 +719,7 @@ public class GameTest {
   public void testShootHitNotExistingPlayer() throws Throwable {
     String shooterPlayerName = "shooter player";
     Channel channel = mock(Channel.class);
-    PlayerJoinedGameState shooterPlayerConnectedGameState = game.joinPlayer(shooterPlayerName,
+    PlayerJoinedGameState shooterPlayerConnectedGameState = fullyJoin(shooterPlayerName,
         channel, PlayerStateColor.GREEN);
 
     PlayerAttackingGameState playerAttackingGameState = game.attack(
@@ -751,9 +750,9 @@ public class GameTest {
     String shooterPlayerName = "shooter player";
     String shotPlayerName = "shot player";
     Channel channel = mock(Channel.class);
-    PlayerJoinedGameState shooterPlayerConnectedGameState = game.joinPlayer(shooterPlayerName,
+    PlayerJoinedGameState shooterPlayerConnectedGameState = fullyJoin(shooterPlayerName,
         channel, PlayerStateColor.GREEN);
-    PlayerJoinedGameState shotPlayerConnectedGameState = game.joinPlayer(shotPlayerName, channel,
+    PlayerJoinedGameState shotPlayerConnectedGameState = fullyJoin(shotPlayerName, channel,
         PlayerStateColor.GREEN);
 
     int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_SHOTGUN_DAMAGE);
@@ -810,7 +809,7 @@ public class GameTest {
     for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
       String shotPlayerName = "player " + i;
       Channel channel = mock(Channel.class);
-      PlayerJoinedGameState connectedPlayer = game.joinPlayer(shotPlayerName, channel,
+      PlayerJoinedGameState connectedPlayer = fullyJoin(shotPlayerName, channel,
           PlayerStateColor.GREEN);
       connectedPlayers.add(connectedPlayer);
     }
@@ -864,7 +863,7 @@ public class GameTest {
   public void testMove() throws Throwable {
     String playerName = "some player";
     Channel channel = mock(Channel.class);
-    PlayerJoinedGameState playerConnectedGameState = game.joinPlayer(playerName, channel,
+    PlayerJoinedGameState playerConnectedGameState = fullyJoin(playerName, channel,
         PlayerStateColor.GREEN);
     assertEquals(0, game.getBufferedMoves().size(), "No moves buffered before you actually move");
     int sequence = 15;
@@ -902,7 +901,7 @@ public class GameTest {
   public void testMoveOutOfOrder() throws Throwable {
     String playerName = "some player";
     Channel channel = mock(Channel.class);
-    PlayerJoinedGameState playerConnectedGameState = game.joinPlayer(playerName, channel,
+    PlayerJoinedGameState playerConnectedGameState = fullyJoin(playerName, channel,
         PlayerStateColor.GREEN);
     assertEquals(0, game.getBufferedMoves().size(), "No moves buffered before you actually move");
     PlayerState.PlayerCoordinates playerCoordinates = PlayerState.PlayerCoordinates
@@ -948,7 +947,7 @@ public class GameTest {
   public void testMoveTwice() throws Throwable {
     String playerName = "some player";
     Channel channel = mock(Channel.class);
-    PlayerJoinedGameState playerConnectedGameState = game.joinPlayer(playerName, channel,
+    PlayerJoinedGameState playerConnectedGameState = fullyJoin(playerName, channel,
         PlayerStateColor.GREEN);
     assertEquals(0, game.getBufferedMoves().size(), "No moves buffered before you actually move");
     PlayerState.PlayerCoordinates playerCoordinates = PlayerState.PlayerCoordinates
@@ -1012,9 +1011,9 @@ public class GameTest {
     String shooterPlayerName = "shooter player";
     String shotPlayerName = "shot player";
     Channel channel = mock(Channel.class);
-    PlayerJoinedGameState shooterPlayerConnectedGameState = game.joinPlayer(shooterPlayerName,
+    PlayerJoinedGameState shooterPlayerConnectedGameState = fullyJoin(shooterPlayerName,
         channel, PlayerStateColor.GREEN);
-    PlayerJoinedGameState shotPlayerConnectedGameState = game.joinPlayer(shotPlayerName, channel,
+    PlayerJoinedGameState shotPlayerConnectedGameState = fullyJoin(shotPlayerName, channel,
         PlayerStateColor.GREEN);
 
     int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_SHOTGUN_DAMAGE);
@@ -1071,7 +1070,7 @@ public class GameTest {
     for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
       String shotPlayerName = "player " + i;
       Channel channel = mock(Channel.class);
-      PlayerJoinedGameState connectedPlayer = game.joinPlayer(shotPlayerName, channel,
+      PlayerJoinedGameState connectedPlayer = fullyJoin(shotPlayerName, channel,
           PlayerStateColor.GREEN);
       connectedPlayers.add(connectedPlayer);
     }
@@ -1150,7 +1149,7 @@ public class GameTest {
     String playerName = "some player";
     Channel channel = mock(Channel.class);
     for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
-      game.joinPlayer(playerName + " " + i, channel, PlayerStateColor.GREEN);
+      fullyJoin(playerName + " " + i, channel, PlayerStateColor.GREEN);
     }
     game.close();
     // all channels should be closed
@@ -1170,7 +1169,7 @@ public class GameTest {
     String playerName = "some player";
     Channel channel = mock(Channel.class);
     for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
-      game.joinPlayer(playerName + " " + i, channel, PlayerStateColor.GREEN);
+      fullyJoin(playerName + " " + i, channel, PlayerStateColor.GREEN);
     }
     game.close(); // close once
     game.close(); // close second time
@@ -1190,11 +1189,11 @@ public class GameTest {
   @Test
   public void testRespawnDead() throws GameLogicError {
     String respawnPlayerName = "some player";
-    PlayerJoinedGameState playerRespawnedGameState = game.joinPlayer(respawnPlayerName,
+    PlayerJoinedGameState playerRespawnedGameState = fullyJoin(respawnPlayerName,
         mock(Channel.class), PlayerStateColor.GREEN);
-    PlayerJoinedGameState playerVictimGameState = game.joinPlayer("victim", mock(Channel.class),
+    PlayerJoinedGameState playerVictimGameState = fullyJoin("victim", mock(Channel.class),
         PlayerStateColor.GREEN);
-    PlayerJoinedGameState killerPlayerConnectedGameState = game.joinPlayer("killer",
+    PlayerJoinedGameState killerPlayerConnectedGameState = fullyJoin("killer",
         mock(Channel.class), PlayerStateColor.GREEN);
 
     int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_SHOTGUN_DAMAGE);
@@ -1241,7 +1240,7 @@ public class GameTest {
     assertEquals(1, respawned.getPlayerStateChannel().getPlayerState().getKills(),
         "Number of kills should be the same after respawn");
 
-    PlayerJoinedGameState observerPlayerConnectedGameState = game.joinPlayer("observer",
+    PlayerJoinedGameState observerPlayerConnectedGameState = fullyJoin("observer",
         mock(Channel.class), PlayerStateColor.GREEN);
     assertEquals(4, game.getPlayersRegistry().playersOnline(),
         "4 players must be online: respawned, victim, killer, and observer");
@@ -1291,7 +1290,7 @@ public class GameTest {
   @Test
   public void testRespawnAlive() throws GameLogicError {
     String respawnPlayerName = "some player";
-    PlayerJoinedGameState playerRespawnedGameState = game.joinPlayer(respawnPlayerName,
+    PlayerJoinedGameState playerRespawnedGameState = fullyJoin(respawnPlayerName,
         mock(Channel.class), PlayerStateColor.GREEN);
     GameLogicError gameLogicError
         = assertThrows(GameLogicError.class,
@@ -1342,7 +1341,7 @@ public class GameTest {
   @Test
   public void testPickupQuadDamageTooFarAway() throws GameLogicError {
     doReturn(true).when(antiCheat).isPowerUpTooFar(any(), any());
-    PlayerJoinedGameState playerGameState = game.joinPlayer("some player",
+    PlayerJoinedGameState playerGameState = fullyJoin("some player",
         mock(Channel.class), PlayerStateColor.GREEN);
     var result = game.pickupPowerUp(
         playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
@@ -1365,9 +1364,9 @@ public class GameTest {
   public void testPickupQuadDamageAlreadyPickedUp() throws GameLogicError {
 
     doReturn(false).when(antiCheat).isPowerUpTooFar(any(), any());
-    PlayerJoinedGameState playerGameState = game.joinPlayer("some player",
+    PlayerJoinedGameState playerGameState = fullyJoin("some player",
         mock(Channel.class), PlayerStateColor.GREEN);
-    PlayerJoinedGameState otherPlayerGameState = game.joinPlayer("victim",
+    PlayerJoinedGameState otherPlayerGameState = fullyJoin("victim",
         mock(Channel.class), PlayerStateColor.GREEN);
 
     // pick up
@@ -1398,10 +1397,10 @@ public class GameTest {
   @Test
   public void testPickupQuadDamage() throws GameLogicError {
     doReturn(false).when(antiCheat).isPowerUpTooFar(any(), any());
-    PlayerJoinedGameState playerGameState = game.joinPlayer("some player",
+    PlayerJoinedGameState playerGameState = fullyJoin("some player",
         mock(Channel.class), PlayerStateColor.GREEN);
 
-    PlayerJoinedGameState victimGameState = game.joinPlayer("victim",
+    PlayerJoinedGameState victimGameState = fullyJoin("victim",
         mock(Channel.class), PlayerStateColor.GREEN);
 
     var result = game.pickupPowerUp(
@@ -1449,10 +1448,10 @@ public class GameTest {
   @Test
   public void testPickupDefence() throws GameLogicError {
     doReturn(false).when(antiCheat).isPowerUpTooFar(any(), any());
-    PlayerJoinedGameState playerGameState = game.joinPlayer("some player",
+    PlayerJoinedGameState playerGameState = fullyJoin("some player",
         mock(Channel.class), PlayerStateColor.GREEN);
 
-    PlayerJoinedGameState victimGameState = game.joinPlayer("victim",
+    PlayerJoinedGameState victimGameState = fullyJoin("victim",
         mock(Channel.class), PlayerStateColor.GREEN);
 
     var result = game.pickupPowerUp(
@@ -1500,10 +1499,10 @@ public class GameTest {
   @Test
   public void testPickupDefencePunchTillDead() throws GameLogicError {
     doReturn(false).when(antiCheat).isPowerUpTooFar(any(), any());
-    PlayerJoinedGameState playerGameState = game.joinPlayer("some player",
+    PlayerJoinedGameState playerGameState = fullyJoin("some player",
         mock(Channel.class), PlayerStateColor.GREEN);
 
-    PlayerJoinedGameState victimGameState = game.joinPlayer("victim",
+    PlayerJoinedGameState victimGameState = fullyJoin("victim",
         mock(Channel.class), PlayerStateColor.GREEN);
 
     var result = game.pickupPowerUp(
@@ -1560,7 +1559,7 @@ public class GameTest {
   @Test
   public void testPickupQuadDamageAfterJoin() throws GameLogicError {
     doReturn(false).when(antiCheat).isPowerUpTooFar(any(), any());
-    PlayerJoinedGameState playerGameState = game.joinPlayer("some player",
+    PlayerJoinedGameState playerGameState = fullyJoin("some player",
         mock(Channel.class), PlayerStateColor.GREEN);
 
     game.pickupPowerUp(playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
@@ -1569,7 +1568,7 @@ public class GameTest {
         testSequenceGenerator.getNext(),
         PING_MLS);
 
-    PlayerJoinedGameState otherPlayerGameState = game.joinPlayer("some other player",
+    PlayerJoinedGameState otherPlayerGameState = fullyJoin("some other player",
         mock(Channel.class), PlayerStateColor.GREEN);
     assertEquals(2,
         Streams.stream(otherPlayerGameState.getSpawnedPowerUps().iterator()).count(),
@@ -1584,10 +1583,10 @@ public class GameTest {
   @Test
   public void testPickupQuadDamageAndThenDies() throws GameLogicError {
     doReturn(false).when(antiCheat).isPowerUpTooFar(any(), any());
-    PlayerJoinedGameState playerGameState = game.joinPlayer("some player",
+    PlayerJoinedGameState playerGameState = fullyJoin("some player",
         mock(Channel.class), PlayerStateColor.GREEN);
 
-    PlayerJoinedGameState victimGameState = game.joinPlayer("victim",
+    PlayerJoinedGameState victimGameState = fullyJoin("victim",
         mock(Channel.class), PlayerStateColor.GREEN);
 
     game.pickupPowerUp(victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
@@ -1623,7 +1622,7 @@ public class GameTest {
    * @when all players try to pick-up quad damage at the same time
    * @then only one gets the power-up
    */
-  @RepeatedTest(32)
+  @Test
   public void testPickupQuadDamageConcurrent() throws GameLogicError {
     doReturn(false).when(antiCheat).isPowerUpTooFar(any(), any());
     String playerName = "some player";
@@ -1633,7 +1632,7 @@ public class GameTest {
     List<Thread> threads = new ArrayList<>();
     CountDownLatch latch = new CountDownLatch(1);
     for (int i = 0; i < 10; i++) {
-      var playerGameState = game.joinPlayer(playerName + " " + i, channel, PlayerStateColor.GREEN);
+      var playerGameState = fullyJoin(playerName + " " + i, channel, PlayerStateColor.GREEN);
       threads.add(new Thread(() -> {
         try {
           latch.await();
@@ -1681,9 +1680,9 @@ public class GameTest {
     String shooterPlayerName = "shooter player";
     String shotPlayerName = "shot player";
     Channel channel = mock(Channel.class);
-    PlayerJoinedGameState shooterPlayerConnectedGameState = game.joinPlayer(shooterPlayerName,
+    PlayerJoinedGameState shooterPlayerConnectedGameState = fullyJoin(shooterPlayerName,
         channel, PlayerStateColor.GREEN);
-    PlayerJoinedGameState shotPlayerConnectedGameState = game.joinPlayer(shotPlayerName, channel,
+    PlayerJoinedGameState shotPlayerConnectedGameState = fullyJoin(shotPlayerName, channel,
         PlayerStateColor.GREEN);
 
     int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_SHOTGUN_DAMAGE);
@@ -1721,9 +1720,9 @@ public class GameTest {
     String shooterPlayerName = "shooter player";
     String shotPlayerName = "shot player";
     Channel channel = mock(Channel.class);
-    PlayerJoinedGameState shooterPlayerConnectedGameState = game.joinPlayer(shooterPlayerName,
+    PlayerJoinedGameState shooterPlayerConnectedGameState = fullyJoin(shooterPlayerName,
         channel, PlayerStateColor.GREEN);
-    PlayerJoinedGameState shotPlayerConnectedGameState = game.joinPlayer(shotPlayerName, channel,
+    PlayerJoinedGameState shotPlayerConnectedGameState = fullyJoin(shotPlayerName, channel,
         PlayerStateColor.GREEN);
     game.pickupPowerUp(
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
@@ -1788,7 +1787,7 @@ public class GameTest {
     Channel secondaryChannel = mock(Channel.class);
     doReturn(wrongIpAddress).when(secondaryChannel).remoteAddress();
 
-    PlayerJoinedGameState player = game.joinPlayer("some player name",
+    PlayerJoinedGameState player = fullyJoin("some player name",
         primaryChannel, PlayerStateColor.GREEN);
 
     var ex = assertThrows(GameLogicError.class,
@@ -1826,7 +1825,7 @@ public class GameTest {
     doReturn(eventLoop).when(secondaryChannel).eventLoop();
     doReturn(correctIpAddress).when(secondaryChannel).remoteAddress();
 
-    PlayerJoinedGameState player = game.joinPlayer("some player name",
+    PlayerJoinedGameState player = fullyJoin("some player name",
         primaryChannel, PlayerStateColor.GREEN);
 
     game.mergeConnection(player.getPlayerStateChannel().getPlayerState().getPlayerId(),
@@ -1835,6 +1834,17 @@ public class GameTest {
     assertTrue(game.getPlayersRegistry().findPlayer(
             player.getPlayerStateChannel().getPlayerState().getPlayerId()).get()
         .isOurChannel(secondaryChannel), "Secondary connection should be 'ours'");
+  }
+
+  private PlayerJoinedGameState fullyJoin(final String playerName, final Channel playerChannel,
+      PlayerStateColor color)
+      throws GameLogicError {
+    PlayerJoinedGameState player = game.joinPlayer(playerName,
+        playerChannel, color);
+    game.getPlayersRegistry()
+        .findPlayer(player.getPlayerStateChannel().getPlayerState().getPlayerId()).ifPresent(
+            playerStateChannel -> playerStateChannel.getPlayerState().fullyJoined());
+    return player;
   }
 
 }

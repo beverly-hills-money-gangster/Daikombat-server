@@ -11,6 +11,7 @@ import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
+import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType;
 import com.beverly.hills.money.gang.proto.ServerResponse.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.SkinColorSelection;
 import java.io.IOException;
@@ -20,8 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -31,12 +32,39 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
 public class JoinGameTest extends AbstractGameServerTest {
 
+  /*
+  2024-07-08 17:49:13.452 [Thread-119] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 102
+2024-07-08 17:49:13.435 [Thread-112] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 118
+2024-07-08 17:49:13.452 [Thread-102] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 107
+2024-07-08 17:49:13.453 [Thread-120] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 101
+2024-07-08 17:49:13.452 [Thread-123] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 103
+2024-07-08 17:49:13.452 [Thread-124] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 106
+2024-07-08 17:49:13.453 [Thread-122] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 100
+2024-07-08 17:49:13.468 [Thread-106] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 109
+2024-07-08 17:49:13.468 [Thread-104] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 117
+2024-07-08 17:49:13.468 [Thread-115] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 105
+2024-07-08 17:49:13.468 [Thread-117] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 121
+2024-07-08 17:49:13.468 [Thread-121] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 111
+2024-07-08 17:49:13.468 [Thread-118] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 108
+2024-07-08 17:49:13.468 [Thread-109] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 112
+2024-07-08 17:49:13.468 [Thread-101] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 115
+2024-07-08 17:49:13.468 [Thread-108] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 119
+2024-07-08 17:49:13.468 [Thread-107] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 110
+2024-07-08 17:49:13.468 [Thread-103] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 115
+2024-07-08 17:49:13.468 [Thread-110] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 104
+2024-07-08 17:49:13.468 [Thread-111] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 122
+2024-07-08 17:49:13.469 [Thread-113] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 113
+2024-07-08 17:49:13.469 [Thread-105] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 114
+2024-07-08 17:49:13.469 [Thread-114] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 120
+2024-07-08 17:49:13.500 [Thread-116] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 123
+   */
+
   /**
    * @given a running game server
    * @when a player connects to a server
    * @then the player is connected
    */
-  @RepeatedTest(4)
+  @Test
   public void testJoinGame() throws Exception {
     int gameIdToConnectTo = 0;
     GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
@@ -83,7 +111,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @when a new player connects to a server
    * @then the player sees "6 players online message"
    */
-  @RepeatedTest(4)
+  @Test
   public void testJoinGameAfterManyPlayersJoined() throws Exception {
     int gameIdToConnectTo = 0;
     int playersToConnect = 5;
@@ -124,7 +152,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @when a player connects to a server using wrong game id
    * @then the player is not connected
    */
-  @RepeatedTest(16)
+  @Test
   public void testJoinGameNotExistingGame() throws IOException {
     int gameIdToConnectTo = 666;
     GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
@@ -165,7 +193,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @when a player connects with older major version connects to a server
    * @then the player is not connected
    */
-  @RepeatedTest(4)
+  @Test
   public void testJoinGameWrongVersion() throws IOException {
     int gameIdToConnectTo = 0;
     GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
@@ -206,7 +234,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @when one more player connects to game 0
    * @then the player is not connected as the server is full
    */
-  @RepeatedTest(4)
+  @Test
   public void testJoinGameTooMany() throws IOException, InterruptedException {
     for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
       GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
@@ -243,7 +271,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @when 2 players connect with the same name
    * @then 1st player is connected, 2nd player is not
    */
-  @RepeatedTest(8)
+  @Test
   public void testJoinSameName() throws IOException, InterruptedException {
 
     GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
@@ -252,6 +280,7 @@ public class JoinGameTest extends AbstractGameServerTest {
             .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
             .setPlayerName("same name")
             .setGameId(0).build());
+    waitUntilQueueNonEmpty(gameConnection.getResponse());
 
     GameConnection sameNameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
         port);
@@ -265,6 +294,8 @@ public class JoinGameTest extends AbstractGameServerTest {
     assertEquals(1, sameNameConnection.getResponse().size(), "Should be 1 response");
 
     ServerResponse serverResponse = sameNameConnection.getResponse().poll().get();
+    assertTrue(serverResponse.hasErrorEvent(),
+        "Error event expected. Actual response " + serverResponse);
     ServerResponse.ErrorEvent errorEvent = serverResponse.getErrorEvent();
     assertEquals("Can't connect player. Player name already taken.", errorEvent.getMessage());
     assertEquals(GameErrorCode.PLAYER_EXISTS.ordinal(), errorEvent.getErrorCode(),
@@ -280,10 +311,11 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @when a new player connects to game 0
    * @then the player is successfully connected
    */
-  @RepeatedTest(4)
+  @Test
   public void testJoinGameAlmostFull() throws Exception {
     int gameIdToConnectTo = 0;
     Map<Integer, ServerResponse.Vector> connectedPlayersPositions = new ConcurrentHashMap<>();
+    AtomicInteger fails = new AtomicInteger();
     List<Thread> threads = new ArrayList<>();
     for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME - 1; i++) {
       int finalI = i;
@@ -298,10 +330,15 @@ public class JoinGameTest extends AbstractGameServerTest {
                   .setGameId(gameIdToConnectTo).build());
           waitUntilQueueNonEmpty(gameConnection.getResponse());
           ServerResponse mySpawnResponse = gameConnection.getResponse().poll().get();
+
+          assertEquals(1, mySpawnResponse.getGameEvents().getEventsCount(),
+              "Only one spawn(my spawn) is expected");
           var mySpawnEvent = mySpawnResponse.getGameEvents().getEvents(0);
+          assertEquals(GameEventType.SPAWN, mySpawnEvent.getEventType());
           connectedPlayersPositions.put(mySpawnEvent.getPlayer().getPlayerId(),
               mySpawnEvent.getPlayer().getPosition());
-        } catch (Exception e) {
+        } catch (Throwable e) {
+          fails.incrementAndGet();
           LOG.error("Error while running test", e);
         }
       }));
@@ -316,8 +353,9 @@ public class JoinGameTest extends AbstractGameServerTest {
       }
     });
 
-    assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME - 1, connectedPlayersPositions.size(),
-        "All players must have unique ids. Something is off");
+    assertEquals(0, fails.get(), "Should be no error");
+    Thread.sleep(1_500);
+    assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME - 1, connectedPlayersPositions.size());
 
     GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
     gameConnection.write(
@@ -389,7 +427,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @when max number of player connect to all games
    * @then all players are successfully connected
    */
-  @RepeatedTest(4)
+  @Test
   public void testJoinGameMaxPlayersAllGames() throws Exception {
     List<Thread> threads = new ArrayList<>();
     for (int gameId = 0; gameId < ServerConfig.GAMES_TO_CREATE; gameId++) {

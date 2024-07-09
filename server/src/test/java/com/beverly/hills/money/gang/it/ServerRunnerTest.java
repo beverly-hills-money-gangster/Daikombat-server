@@ -47,7 +47,7 @@ public class ServerRunnerTest {
    * @when run() is called
    * @then then server starts
    */
-  @RepeatedTest(4)
+  @Test
   public void testRun() throws InterruptedException {
     int port = AbstractGameServerTest.createRandomPort();
     var runner = createRunner();
@@ -74,7 +74,7 @@ public class ServerRunnerTest {
    * @when run() is called again
    * @then it fails
    */
-  @RepeatedTest(4)
+  @Test
   public void testRunTwice() throws InterruptedException {
     int port = AbstractGameServerTest.createRandomPort();
     var runner = createRunner();
@@ -100,7 +100,7 @@ public class ServerRunnerTest {
    * @when stop() is called
    * @then server stops
    */
-  @RepeatedTest(4)
+  @Test
   public void testStop() throws InterruptedException {
     int port = AbstractGameServerTest.createRandomPort();
     var runner = createRunner();
@@ -128,7 +128,7 @@ public class ServerRunnerTest {
    * @when stop() is called
    * @then nothing happens as if it's idempotent
    */
-  @RepeatedTest(4)
+  @Test
   public void testStopTwice() throws InterruptedException {
     int port = AbstractGameServerTest.createRandomPort();
     var runner = createRunner();

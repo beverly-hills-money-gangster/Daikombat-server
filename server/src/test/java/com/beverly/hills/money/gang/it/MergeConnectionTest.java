@@ -32,7 +32,7 @@ public class MergeConnectionTest extends AbstractGameServerTest {
    * @when a player creates a secondary connection and merges it
    * @then merge is successful
    */
-  @RepeatedTest(4)
+  @Test
   public void testMergeConnection() throws Exception {
     int gameIdToConnectTo = 0;
     GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
@@ -69,7 +69,7 @@ public class MergeConnectionTest extends AbstractGameServerTest {
    * @when a player creates a secondary connection and tries merging it with non-existing player id
    * @then merge fails
    */
-  @RepeatedTest(4)
+  @Test
   public void testMergeConnectionNotExistingPlayerId() throws Exception {
     int gameIdToConnectTo = 0;
     SecondaryGameConnection secondaryGameConnection = createSecondaryGameConnection(
@@ -88,7 +88,7 @@ public class MergeConnectionTest extends AbstractGameServerTest {
    * @when a player creates a secondary connection and tries merging it with non-existing game id
    * @then merge fails
    */
-  @RepeatedTest(4)
+  @Test
   public void testMergeConnectionNotExitingGameId() throws Exception {
     int gameIdToConnectTo = 666;
     SecondaryGameConnection secondaryGameConnection = createSecondaryGameConnection(

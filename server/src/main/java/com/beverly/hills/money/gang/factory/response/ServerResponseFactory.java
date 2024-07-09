@@ -44,9 +44,9 @@ public interface ServerResponseFactory {
     return leaderBoardResponse.build();
   }
 
+
   static ServerResponse.GameEvent createSpawnEvent(PlayerStateReader playerStateReader,
       List<GameLeaderBoardItem> leaderBoard) {
-
     return ServerResponse.GameEvent.newBuilder()
         .setEventType(ServerResponse.GameEvent.GameEventType.SPAWN)
         .setLeaderBoard(createLeaderBoard(leaderBoard))

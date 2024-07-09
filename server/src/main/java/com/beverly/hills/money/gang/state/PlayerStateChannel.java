@@ -4,27 +4,31 @@ import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
 import com.beverly.hills.money.gang.util.NetworkUtil;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelOutboundInvoker;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ToString
 public class PlayerStateChannel {
 
+  private static final Logger LOG = LoggerFactory.getLogger(PlayerStateChannel.class);
+
   private final Channel channel;
   @Getter
   private final PlayerState playerState;
-  private final List<Channel> secondaryChannels = new ArrayList<>();
+  private final List<Channel> secondaryChannels = new CopyOnWriteArrayList<>();
   private final AtomicInteger lastPickedChannelIdx = new AtomicInteger();
-  private final List<Channel> allChannels = new ArrayList<>();
+  private final List<Channel> allChannels = new CopyOnWriteArrayList<>();
 
   @Builder
   private PlayerStateChannel(Channel channel, PlayerState playerState) {
@@ -38,18 +42,38 @@ public class PlayerStateChannel {
     allChannels.add(channel);
   }
 
-  public ChannelFuture writeFlushBalanced(ServerResponse response) {
-    return allChannels.get(
-            lastPickedChannelIdx.getAndIncrement() % allChannels.size())
-        .writeAndFlush(setEventSequence(response));
+  public void writeFlushBalanced(ServerResponse response) {
+    var channelToUse = allChannels.get(
+        lastPickedChannelIdx.incrementAndGet() % allChannels.size());
+    writeFlush(channelToUse, response, null);
   }
 
-  public ChannelFuture writeFlushPrimaryChannel(ServerResponse response) {
-    return channel.writeAndFlush(setEventSequence(response));
+  public void writeFlushPrimaryChannel(ServerResponse response,
+      ChannelFutureListener channelFutureListener) {
+    writeFlush(channel, response, channelFutureListener);
   }
 
-  public void schedulePrimaryChannel(Runnable runnable, int delayMls) {
-    channel.eventLoop().schedule(runnable, delayMls, TimeUnit.MILLISECONDS);
+  public void writeFlushPrimaryChannel(ServerResponse response) {
+    writeFlush(channel, response, null);
+  }
+
+  void writeFlush(Channel channelToWriteFlush, ServerResponse response,
+      ChannelFutureListener channelFutureListener) {
+    channelToWriteFlush.eventLoop()
+        .schedule(() -> setEventSequence(response), 0, TimeUnit.MILLISECONDS)
+        .addListener(future -> {
+          if (future.isSuccess()) {
+            var writeFlushFuture = channelToWriteFlush.writeAndFlush(future.get());
+            Optional.ofNullable(channelFutureListener).ifPresent(
+                writeFlushFuture::addListener);
+          } else {
+            LOG.error("Can't write flush {}", response);
+          }
+        });
+  }
+
+  public void executeInPrimaryEventLoop(Runnable runnable) {
+    channel.eventLoop().schedule(runnable, 0, TimeUnit.MILLISECONDS);
   }
 
   protected ServerResponse setEventSequence(ServerResponse response) {
@@ -66,6 +90,7 @@ public class PlayerStateChannel {
   }
 
   public void close() {
+    LOG.info("Close connection");
     allChannels.forEach(ChannelOutboundInvoker::close);
   }
 

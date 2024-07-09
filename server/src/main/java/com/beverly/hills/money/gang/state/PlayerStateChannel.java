@@ -9,6 +9,7 @@ import io.netty.channel.ChannelOutboundInvoker;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.Builder;
@@ -25,9 +26,9 @@ public class PlayerStateChannel {
   private final Channel channel;
   @Getter
   private final PlayerState playerState;
-  private final List<Channel> secondaryChannels = new ArrayList<>();
+  private final List<Channel> secondaryChannels = new CopyOnWriteArrayList<>();
   private final AtomicInteger lastPickedChannelIdx = new AtomicInteger();
-  private final List<Channel> allChannels = new ArrayList<>();
+  private final List<Channel> allChannels = new CopyOnWriteArrayList<>();
 
   @Builder
   private PlayerStateChannel(Channel channel, PlayerState playerState) {

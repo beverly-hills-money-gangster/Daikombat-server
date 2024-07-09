@@ -96,8 +96,7 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
         (game, playerState) -> {
           var disconnectEvent = createExitEvent(game.playersOnline(), playerState);
           game.getPlayersRegistry().allJoinedPlayers()
-              .forEach(
-                  playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(disconnectEvent,
+              .forEach(playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(disconnectEvent,
                       ChannelFutureListener.CLOSE_ON_FAILURE));
         });
     if (!playerWasFound) {

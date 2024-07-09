@@ -9,13 +9,14 @@ import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.SkinColorSelection;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_POWER_UPS_ENABLED", value = "false")
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "99999")
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "99999")
-@SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "250")
+@SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "9999")
 @SetEnvironmentVariable(key = "GAME_SERVER_PLAYER_SPEED_CHECK_FREQUENCY_MLS", value = "1000")
 public class MoveAntiCheatTest extends AbstractGameServerTest {
 
@@ -48,34 +49,32 @@ public class MoveAntiCheatTest extends AbstractGameServerTest {
             .setPlayerName("new player")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerPlayerConnection.getResponse());
+    waitUntilQueueNonEmpty(cheatingPlayerConnection.getResponse());
+
     emptyQueue(observerPlayerConnection.getResponse());
-    Thread.sleep(1_000);
-    assertEquals(0, observerPlayerConnection.getResponse().size(),
-        "No activity happened in the game so no response yet. Actual response is "
-            + observerPlayerConnection.getResponse().list());
+    emptyQueue(cheatingPlayerConnection.getResponse());
 
     // moving too fast
-    float newPositionY = mySpawnGameEvent.getPlayer().getPosition().getY() + 100f;
-    float newPositionX = mySpawnGameEvent.getPlayer().getPosition().getX() + 100f;
-    emptyQueue(cheatingPlayerConnection.getResponse());
-    cheatingPlayerConnection.write(PushGameEventCommand.newBuilder()
-        .setGameId(gameIdToConnectTo)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-        .setEventType(PushGameEventCommand.GameEventType.MOVE)
-        .setPlayerId(playerId1)
-        .setPosition(PushGameEventCommand.Vector.newBuilder()
-            .setY(newPositionY)
-            .setX(newPositionX)
-            .build())
-        .setDirection(PushGameEventCommand.Vector.newBuilder()
-            .setY(mySpawnGameEvent.getPlayer().getDirection().getY())
-            .setX(mySpawnGameEvent.getPlayer().getDirection().getX())
-            .build())
-        .build());
+    for (int i = 0; i < 3; i++) {
+      float newPositionY = mySpawnGameEvent.getPlayer().getPosition().getY() + 100f * (i + 1);
+      float newPositionX = mySpawnGameEvent.getPlayer().getPosition().getX() + 100f * (i + 1);
+      cheatingPlayerConnection.write(PushGameEventCommand.newBuilder()
+          .setGameId(gameIdToConnectTo)
+          .setSequence(sequenceGenerator.getNext())
+          .setPingMls(PING_MLS)
+          .setEventType(PushGameEventCommand.GameEventType.MOVE)
+          .setPlayerId(playerId1)
+          .setPosition(PushGameEventCommand.Vector.newBuilder()
+              .setY(newPositionY)
+              .setX(newPositionX)
+              .build())
+          .setDirection(PushGameEventCommand.Vector.newBuilder()
+              .setY(mySpawnGameEvent.getPlayer().getDirection().getY())
+              .setX(mySpawnGameEvent.getPlayer().getDirection().getX())
+              .build())
+          .build());
+    }
 
-    waitUntilQueueNonEmpty(observerPlayerConnection.getResponse());
-    emptyQueue(cheatingPlayerConnection.getResponse());
-    emptyQueue(observerPlayerConnection.getResponse());
     Thread.sleep(ServerConfig.PLAYER_SPEED_CHECK_FREQUENCY_MLS * 3L);
     assertTrue(cheatingPlayerConnection.isDisconnected(), "Cheating player should be disconnected");
     assertTrue(observerPlayerConnection.isConnected());

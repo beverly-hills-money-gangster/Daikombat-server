@@ -8063,17 +8063,6 @@ private static final long serialVersionUID = 0L;
      * @return The sequence.
      */
     int getSequence();
-
-    /**
-     * <code>optional bool myEvent = 6;</code>
-     * @return Whether the myEvent field is set.
-     */
-    boolean hasMyEvent();
-    /**
-     * <code>optional bool myEvent = 6;</code>
-     * @return The myEvent.
-     */
-    boolean getMyEvent();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.GameEvent}
@@ -8398,25 +8387,6 @@ private static final long serialVersionUID = 0L;
       return sequence_;
     }
 
-    public static final int MYEVENT_FIELD_NUMBER = 6;
-    private boolean myEvent_ = false;
-    /**
-     * <code>optional bool myEvent = 6;</code>
-     * @return Whether the myEvent field is set.
-     */
-    @java.lang.Override
-    public boolean hasMyEvent() {
-      return ((bitField0_ & 0x00000010) != 0);
-    }
-    /**
-     * <code>optional bool myEvent = 6;</code>
-     * @return The myEvent.
-     */
-    @java.lang.Override
-    public boolean getMyEvent() {
-      return myEvent_;
-    }
-
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -8446,9 +8416,6 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000008) != 0)) {
         output.writeInt32(5, sequence_);
       }
-      if (((bitField0_ & 0x00000010) != 0)) {
-        output.writeBool(6, myEvent_);
-      }
       getUnknownFields().writeTo(output);
     }
 
@@ -8477,10 +8444,6 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000008) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(5, sequence_);
-      }
-      if (((bitField0_ & 0x00000010) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(6, myEvent_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -8518,11 +8481,6 @@ private static final long serialVersionUID = 0L;
         if (getSequence()
             != other.getSequence()) return false;
       }
-      if (hasMyEvent() != other.hasMyEvent()) return false;
-      if (hasMyEvent()) {
-        if (getMyEvent()
-            != other.getMyEvent()) return false;
-      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -8551,11 +8509,6 @@ private static final long serialVersionUID = 0L;
       if (hasSequence()) {
         hash = (37 * hash) + SEQUENCE_FIELD_NUMBER;
         hash = (53 * hash) + getSequence();
-      }
-      if (hasMyEvent()) {
-        hash = (37 * hash) + MYEVENT_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-            getMyEvent());
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -8713,7 +8666,6 @@ private static final long serialVersionUID = 0L;
           leaderBoardBuilder_ = null;
         }
         sequence_ = 0;
-        myEvent_ = false;
         return this;
       }
 
@@ -8772,10 +8724,6 @@ private static final long serialVersionUID = 0L;
         if (((from_bitField0_ & 0x00000010) != 0)) {
           result.sequence_ = sequence_;
           to_bitField0_ |= 0x00000008;
-        }
-        if (((from_bitField0_ & 0x00000020) != 0)) {
-          result.myEvent_ = myEvent_;
-          to_bitField0_ |= 0x00000010;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -8839,9 +8787,6 @@ private static final long serialVersionUID = 0L;
         if (other.hasSequence()) {
           setSequence(other.getSequence());
         }
-        if (other.hasMyEvent()) {
-          setMyEvent(other.getMyEvent());
-        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -8899,11 +8844,6 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000010;
                 break;
               } // case 40
-              case 48: {
-                myEvent_ = input.readBool();
-                bitField0_ |= 0x00000020;
-                break;
-              } // case 48
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -9373,46 +9313,6 @@ private static final long serialVersionUID = 0L;
       public Builder clearSequence() {
         bitField0_ = (bitField0_ & ~0x00000010);
         sequence_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private boolean myEvent_ ;
-      /**
-       * <code>optional bool myEvent = 6;</code>
-       * @return Whether the myEvent field is set.
-       */
-      @java.lang.Override
-      public boolean hasMyEvent() {
-        return ((bitField0_ & 0x00000020) != 0);
-      }
-      /**
-       * <code>optional bool myEvent = 6;</code>
-       * @return The myEvent.
-       */
-      @java.lang.Override
-      public boolean getMyEvent() {
-        return myEvent_;
-      }
-      /**
-       * <code>optional bool myEvent = 6;</code>
-       * @param value The myEvent to set.
-       * @return This builder for chaining.
-       */
-      public Builder setMyEvent(boolean value) {
-
-        myEvent_ = value;
-        bitField0_ |= 0x00000020;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional bool myEvent = 6;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearMyEvent() {
-        bitField0_ = (bitField0_ & ~0x00000020);
-        myEvent_ = false;
         onChanged();
         return this;
       }

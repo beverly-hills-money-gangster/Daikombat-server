@@ -57,21 +57,19 @@ public class GameScheduler implements Closeable, Scheduler {
         new GameLogicError("Cheating detected", GameErrorCode.CHEATING));
     LOG.info("Speed checking frequency {} mls", checkFrequencyMls);
     scheduler.scheduleAtFixedRate(
-        () -> {
-          gameRoomRegistry.getGames().forEach(game -> game.getPlayersRegistry()
-              .allJoinedPlayers().forEach(stateChannel -> {
-                var state = stateChannel.getPlayerState();
-                if (!antiCheat.isTooMuchDistanceTravelled(state.getLastDistanceTravelled(),
-                    checkFrequencySec)) {
-                  state.clearLastDistanceTravelled();
-                  return;
-                }
-                LOG.warn("Cheating detected for player id {} named {}", state.getPlayerId(),
-                    state.getPlayerName());
-                stateChannel.writeFlushPrimaryChannel(cheatingDetected,
-                    future -> stateChannel.close());
-              }));
-        }, checkFrequencyMls, checkFrequencyMls, TimeUnit.MILLISECONDS);
+        () -> gameRoomRegistry.getGames().forEach(game -> game.getPlayersRegistry()
+            .allJoinedPlayers().forEach(stateChannel -> {
+              var state = stateChannel.getPlayerState();
+              if (!antiCheat.isTooMuchDistanceTravelled(state.getLastDistanceTravelled(),
+                  checkFrequencySec)) {
+                state.clearLastDistanceTravelled();
+                return;
+              }
+              LOG.warn("Cheating detected for player id {} named {}", state.getPlayerId(),
+                  state.getPlayerName());
+              stateChannel.writeFlushPrimaryChannel(cheatingDetected,
+                  future -> stateChannel.close());
+            })), checkFrequencyMls, checkFrequencyMls, TimeUnit.MILLISECONDS);
   }
 
   private void scheduleSendBufferedMoves() {

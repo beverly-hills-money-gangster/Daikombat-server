@@ -58,8 +58,6 @@ public class GameOverTest extends AbstractGameServerTest {
 
       assertEquals(GameEventType.SPAWN, shotPlayerSpawn.getGameEvents().getEvents(0).getEventType(),
           "It should be spawn");
-      assertTrue(shotPlayerSpawn.getGameEvents().getEvents(0).getMyEvent(),
-          "It should be MY spawn");
       int shotPlayerId = shotPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
 
       emptyQueue(deadConnection.getResponse());

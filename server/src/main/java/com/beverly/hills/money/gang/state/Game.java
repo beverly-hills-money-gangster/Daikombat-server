@@ -69,7 +69,7 @@ public class Game implements Closeable, GameReader {
             stateChannel.getPrimaryChannelAddress(), currentAddress))
         .orElseThrow(() -> new GameLogicError(
             "Can't merge connections", GameErrorCode.COMMON_ERROR));
-    player.executeInPrimaryEventLoop(() -> player.addSecondaryChannel(channel));
+    player.addSecondaryChannel(channel);
   }
 
   public PlayerJoinedGameState joinPlayer(

@@ -44,19 +44,12 @@ public interface ServerResponseFactory {
     return leaderBoardResponse.build();
   }
 
+
   static ServerResponse.GameEvent createSpawnEvent(PlayerStateReader playerStateReader,
       List<GameLeaderBoardItem> leaderBoard) {
-
-    return createSpawnEvent(playerStateReader, leaderBoard, false);
-  }
-
-  static ServerResponse.GameEvent createSpawnEvent(PlayerStateReader playerStateReader,
-      List<GameLeaderBoardItem> leaderBoard, boolean myEvent) {
-
     return ServerResponse.GameEvent.newBuilder()
         .setEventType(ServerResponse.GameEvent.GameEventType.SPAWN)
         .setLeaderBoard(createLeaderBoard(leaderBoard))
-        .setMyEvent(myEvent)
         .setPlayer(createFullPlayerStats(playerStateReader))
         .build();
   }
@@ -315,8 +308,7 @@ public interface ServerResponseFactory {
             .setPlayersOnline(playersOnline)
             .addEvents(createSpawnEvent(
                 playerConnected.getPlayerStateChannel().getPlayerState(),
-                playerConnected.getLeaderBoard(),
-                true))).build();
+                playerConnected.getLeaderBoard()))).build();
   }
 
   static ServerResponse createRespawnEventSinglePlayer(int playersOnline,

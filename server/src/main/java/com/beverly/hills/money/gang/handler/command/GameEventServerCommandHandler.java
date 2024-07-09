@@ -27,10 +27,8 @@ import com.beverly.hills.money.gang.state.PlayerState;
 import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import com.beverly.hills.money.gang.state.Vector;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFutureListener;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -156,8 +154,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
         return;
       }
       ServerResponse serverResponse = createPowerUpSpawn(List.of(powerUp));
-      game.getPlayersRegistry().allJoinedPlayers().filter(
-          playerStateChannel -> playerStateChannel.getPlayerState().isFullyJoined()).forEach(
+      game.getPlayersRegistry().allJoinedPlayers().forEach(
           playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(serverResponse));
     });
   }

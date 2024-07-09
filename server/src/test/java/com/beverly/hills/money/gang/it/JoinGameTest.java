@@ -335,7 +335,6 @@ public class JoinGameTest extends AbstractGameServerTest {
               "Only one spawn(my spawn) is expected");
           var mySpawnEvent = mySpawnResponse.getGameEvents().getEvents(0);
           assertEquals(GameEventType.SPAWN, mySpawnEvent.getEventType());
-          assertTrue(mySpawnEvent.getMyEvent(), "It should be MY event");
           connectedPlayersPositions.put(mySpawnEvent.getPlayer().getPlayerId(),
               mySpawnEvent.getPlayer().getPosition());
         } catch (Throwable e) {

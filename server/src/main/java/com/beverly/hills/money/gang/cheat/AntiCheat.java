@@ -13,6 +13,8 @@ public class AntiCheat {
 
   private static final double MAX_POWER_UP_DISTANCE = 1;
 
+  private static final double MAX_TELEPORT_DISTANCE = 1;
+
   // 20% error
   private static final double MAX_DISTANCE_TRAVELLED_IN_ONE_SEC = ServerConfig.PLAYER_SPEED * 1.2;
 
@@ -26,6 +28,10 @@ public class AntiCheat {
 
   public boolean isPowerUpTooFar(final Vector playerPosition, final Vector powerUpPosition) {
     return Vector.getDistance(playerPosition, powerUpPosition) > MAX_POWER_UP_DISTANCE;
+  }
+
+  public boolean isTeleportTooFar(final Vector playerPosition, final Vector teleportPosition) {
+    return Vector.getDistance(playerPosition, teleportPosition) > MAX_TELEPORT_DISTANCE;
   }
 
   public boolean isTooMuchDistanceTravelled(final double distanceTravelled,

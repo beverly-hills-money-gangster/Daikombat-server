@@ -191,6 +191,11 @@ public class PlayerState implements PlayerStateReader {
     moved.set(true);
   }
 
+  public void teleport(PlayerCoordinates newPlayerCoordinates, int eventSequence) {
+    lastReceivedEventSequence.set(eventSequence);
+    playerCoordinatesRef.set(newPlayerCoordinates);
+  }
+
 
   public void clearLastDistanceTravelled() {
     lastDistanceTravelled.set(0);

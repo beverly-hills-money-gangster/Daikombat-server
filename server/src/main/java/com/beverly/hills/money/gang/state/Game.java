@@ -10,13 +10,16 @@ import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import com.beverly.hills.money.gang.registry.PowerUpRegistry;
+import com.beverly.hills.money.gang.registry.TeleportRegistry;
 import com.beverly.hills.money.gang.spawner.Spawner;
+import com.beverly.hills.money.gang.teleport.Teleport;
 import io.netty.channel.Channel;
 import java.io.Closeable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
@@ -45,6 +48,8 @@ public class Game implements Closeable, GameReader {
   @Getter
   private final PowerUpRegistry powerUpRegistry;
 
+  private final TeleportRegistry teleportRegistry;
+
   private final AntiCheat antiCheat;
 
   private final AtomicBoolean gameClosed = new AtomicBoolean();
@@ -54,9 +59,11 @@ public class Game implements Closeable, GameReader {
       @Qualifier("gameIdGenerator") final SequenceGenerator gameSequenceGenerator,
       @Qualifier("playerIdGenerator") final SequenceGenerator playerSequenceGenerator,
       final PowerUpRegistry powerUpRegistry,
+      final TeleportRegistry teleportRegistry,
       final AntiCheat antiCheat) {
     this.spawner = spawner;
     this.powerUpRegistry = powerUpRegistry;
+    this.teleportRegistry = teleportRegistry;
     this.id = gameSequenceGenerator.getNext();
     this.playerSequenceGenerator = playerSequenceGenerator;
     this.antiCheat = antiCheat;
@@ -269,6 +276,21 @@ public class Game implements Closeable, GameReader {
   private Optional<PlayerState> getPlayer(int playerId) {
     return playersRegistry.getPlayerState(playerId);
   }
+
+  public void teleport(final int teleportedPlayerId,
+      final int teleportId,
+      final int eventSequence) {
+    teleportRegistry.getTeleport(teleportId).ifPresentOrElse(new Consumer<Teleport>() {
+      @Override
+      public void accept(Teleport teleport) {
+        getPlayer(teleportedPlayerId)
+            .ifPresent(playerState -> {
+              playerState.teleport(teleport.getTeleportCoordinates(), eventSequence);
+            });
+      }
+    }
+
+    }
 
   private void move(final int movingPlayerId,
       final PlayerState.PlayerCoordinates playerCoordinates,

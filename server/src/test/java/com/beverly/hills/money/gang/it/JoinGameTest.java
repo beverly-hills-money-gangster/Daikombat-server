@@ -33,33 +33,6 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
 public class JoinGameTest extends AbstractGameServerTest {
 
-  /*
-  2024-07-08 17:49:13.452 [Thread-119] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 102
-2024-07-08 17:49:13.435 [Thread-112] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 118
-2024-07-08 17:49:13.452 [Thread-102] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 107
-2024-07-08 17:49:13.453 [Thread-120] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 101
-2024-07-08 17:49:13.452 [Thread-123] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 103
-2024-07-08 17:49:13.452 [Thread-124] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 106
-2024-07-08 17:49:13.453 [Thread-122] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 100
-2024-07-08 17:49:13.468 [Thread-106] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 109
-2024-07-08 17:49:13.468 [Thread-104] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 117
-2024-07-08 17:49:13.468 [Thread-115] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 105
-2024-07-08 17:49:13.468 [Thread-117] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 121
-2024-07-08 17:49:13.468 [Thread-121] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 111
-2024-07-08 17:49:13.468 [Thread-118] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 108
-2024-07-08 17:49:13.468 [Thread-109] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 112
-2024-07-08 17:49:13.468 [Thread-101] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 115
-2024-07-08 17:49:13.468 [Thread-108] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 119
-2024-07-08 17:49:13.468 [Thread-107] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 110
-2024-07-08 17:49:13.468 [Thread-103] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 115
-2024-07-08 17:49:13.468 [Thread-110] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 104
-2024-07-08 17:49:13.468 [Thread-111] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 122
-2024-07-08 17:49:13.469 [Thread-113] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 113
-2024-07-08 17:49:13.469 [Thread-105] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 114
-2024-07-08 17:49:13.469 [Thread-114] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 120
-2024-07-08 17:49:13.500 [Thread-116] INFO  c.b.h.m.g.it.AbstractGameServerTest - Put player id 123
-   */
-
   /**
    * @given a running game server
    * @when a player connects to a server

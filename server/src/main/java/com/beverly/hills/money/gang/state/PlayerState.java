@@ -184,15 +184,14 @@ public class PlayerState implements PlayerStateReader {
       LOG.warn("Concurrent move for player {}. Skip move.", playerId);
       return;
     }
-    lastDistanceTravelled.addAndGet(
-        Vector.getDistance(newPlayerCoordinates.getPosition(),
-            playerCoordinatesRef.get().position));
+    double travelledDistance = Vector.getDistance(
+        newPlayerCoordinates.getPosition(), playerCoordinatesRef.get().position);
+    lastDistanceTravelled.addAndGet(travelledDistance);
     playerCoordinatesRef.set(newPlayerCoordinates);
     moved.set(true);
   }
 
-  public void teleport(PlayerCoordinates newPlayerCoordinates, int eventSequence) {
-    lastReceivedEventSequence.set(eventSequence);
+  public void teleport(PlayerCoordinates newPlayerCoordinates) {
     playerCoordinatesRef.set(newPlayerCoordinates);
   }
 

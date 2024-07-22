@@ -9,11 +9,11 @@ public class AntiCheat {
 
   private static final double MAX_SHOOTING_DISTANCE = 10;
 
-  private static final double MAX_PUNCHING_DISTANCE = 1;
+  private static final double MAX_PUNCHING_DISTANCE = 1.5;
 
-  private static final double MAX_POWER_UP_DISTANCE = 1;
+  private static final double MAX_POWER_UP_DISTANCE = 1.5;
 
-  private static final double MAX_TELEPORT_DISTANCE = 1;
+  private static final double MAX_TELEPORT_DISTANCE = 1.5;
 
   // 20% error
   private static final double MAX_DISTANCE_TRAVELLED_IN_ONE_SEC = ServerConfig.PLAYER_SPEED * 1.2;

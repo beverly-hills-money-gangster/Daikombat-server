@@ -1,5 +1,6 @@
 package com.beverly.hills.money.gang.handler.command;
 
+import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createErrorEvent;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createGameOverEvent;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createGetAttackedEvent;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createKillPunchingEvent;
@@ -28,8 +29,10 @@ import com.beverly.hills.money.gang.state.PlayerState;
 import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import com.beverly.hills.money.gang.state.Vector;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFutureListener;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -42,11 +45,11 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class GameEventServerCommandHandler extends ServerCommandHandler {
 
-  private static final String MDC_GAME_ID = "GAME_ID";
-  private static final String MDC_PLAYER_ID = "PLAYER_ID";
-  private static final String MDC_PLAYER_NAME = "PLAYER_NAME";
-  private static final String MDC_IP_ADDRESS = "IP_ADDRESS";
-  private static final String MDC_PING_MLS = "PING_MLS";
+  private static final String MDC_GAME_ID = "game_id";
+  private static final String MDC_PLAYER_ID = "player_id";
+  private static final String MDC_PLAYER_NAME = "player_name";
+  private static final String MDC_IP_ADDRESS = "ip_address";
+  private static final String MDC_PING_MLS = "ping_mls";
 
   @Getter
   private final CommandCase commandCase = CommandCase.GAMECOMMAND;
@@ -71,24 +74,24 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
   protected void handleInternal(ServerCommand msg, Channel currentChannel) throws GameLogicError {
     Game game = gameRoomRegistry.getGame(msg.getGameCommand().getGameId());
     PushGameEventCommand gameCommand = msg.getGameCommand();
-         /*
-            player can be null/non-existing due to network latency.
-            for example:
-            1) killer and victim players join the server
-            2) killer kills the victim
-            3) victim is killed on the server but due to network latency it doesn't know it yet
-            4) victim continues to move or shoot before getting KILL event
-            for now, we just ignore such events.
-             */
-    Optional<PlayerStateChannel> playerStateOpt = gameRoomRegistry.getJoinedPlayer(
+    gameRoomRegistry.getJoinedPlayer(
         gameCommand.getGameId(),
-        currentChannel, gameCommand.getPlayerId());
+        currentChannel, gameCommand.getPlayerId()).ifPresent(
+        playerStateChannel -> playerStateChannel.executeInPrimaryEventLoop(() -> {
+          try {
+            handleGameEvents(game, msg.getGameCommand(), playerStateChannel);
+          } catch (GameLogicError e) {
+            LOG.error("Game logic error", e);
+            currentChannel.writeAndFlush(createErrorEvent(e))
+                .addListener(ChannelFutureListener.CLOSE);
+          }
+        }));
 
-    if (playerStateOpt.isEmpty()) {
-      LOG.warn("Player {} doesn't exist. Ignore command.", gameCommand.getPlayerId());
-      return;
-    }
-    var playerState = playerStateOpt.get();
+  }
+
+  protected void handleGameEvents(Game game, PushGameEventCommand gameCommand,
+      PlayerStateChannel playerState) throws GameLogicError {
+
     if (playerState.getPlayerState().isDead()) {
       LOG.warn("Player {} is dead. Ignore command.", gameCommand.getPlayerId());
       return;
@@ -131,8 +134,12 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
   }
 
   private void handleTeleport(Game game, PushGameEventCommand gameCommand) throws GameLogicError {
-    var result = game.teleport(gameCommand.getPlayerId(), gameCommand.getTeleportId(),
-        gameCommand.getSequence());
+    var result = game.teleport(
+        gameCommand.getPlayerId(), createCoordinates(gameCommand),
+        gameCommand.getTeleportId(),
+        gameCommand.getSequence(),
+        gameCommand.getPingMls());
+    LOG.info("Teleport player");
     var serverResponse = createTeleportPlayerServerResponse(result.getTeleportedPlayer());
     game.getPlayersRegistry().allJoinedPlayers()
         .forEach(stateChannel -> stateChannel.writeFlushPrimaryChannel(serverResponse));

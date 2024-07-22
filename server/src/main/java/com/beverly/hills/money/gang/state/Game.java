@@ -88,6 +88,7 @@ public class Game implements Closeable, GameReader {
     return PlayerJoinedGameState.builder()
         .spawnedPowerUps(powerUpRegistry.getAvailable())
         .leaderBoard(getLeaderBoard())
+        .teleports(teleportRegistry.getAllTeleports())
         .playerStateChannel(playerStateChannel).build();
   }
 
@@ -103,6 +104,7 @@ public class Game implements Closeable, GameReader {
     player.getPlayerState().respawn(spawner.spawnPlayer(this));
     return PlayerRespawnedGameState.builder()
         .spawnedPowerUps(powerUpRegistry.getAvailable())
+        .teleports(teleportRegistry.getAllTeleports())
         .playerStateChannel(player).leaderBoard(getLeaderBoard()).build();
   }
 
@@ -277,8 +279,12 @@ public class Game implements Closeable, GameReader {
 
   public PlayerTeleportingGameState teleport(
       final int teleportedPlayerId,
+      final PlayerState.PlayerCoordinates playerCoordinates,
       final int teleportId,
-      final int eventSequence) throws GameLogicError {
+      final int eventSequence,
+      final int pingMls) throws GameLogicError {
+    move(teleportedPlayerId, playerCoordinates, eventSequence, pingMls);
+
     var teleport = teleportRegistry.getTeleport(teleportId).orElseThrow(
         () -> new GameLogicError("Can't find teleport", GameErrorCode.COMMON_ERROR));
     var player = getPlayersRegistry().getPlayerState(teleportedPlayerId).orElseThrow(
@@ -287,7 +293,7 @@ public class Game implements Closeable, GameReader {
         player.getCoordinates().getPosition(), teleport.getLocation())) {
       throw new GameLogicError("Teleport is too far", GameErrorCode.CHEATING);
     }
-    player.teleport(teleport.getTeleportCoordinates(), eventSequence);
+    player.teleport(teleport.getTeleportCoordinates());
     return PlayerTeleportingGameState.builder().teleportedPlayer(player).build();
   }
 

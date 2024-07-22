@@ -4,6 +4,7 @@ import static com.beverly.hills.money.gang.factory.response.ServerResponseFactor
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createPowerUpSpawn;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createSpawnEventAllPlayers;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createSpawnEventSinglePlayerMinimal;
+import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createTeleportSpawn;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameLogicError;
@@ -17,6 +18,7 @@ import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerJoinedGameState;
 import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import com.beverly.hills.money.gang.state.PlayerStateColor;
+import com.beverly.hills.money.gang.teleport.Teleport;
 import com.beverly.hills.money.gang.util.VersionUtil;
 import io.netty.channel.Channel;
 import java.util.List;
@@ -67,7 +69,7 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
           }
           playerConnected.getPlayerStateChannel().getPlayerState().fullyJoined();
           sendOtherSpawns(game, playerConnected.getPlayerStateChannel(),
-              playerConnected.getSpawnedPowerUps());
+              playerConnected.getSpawnedPowerUps(), playerConnected.getTeleports());
         });
   }
 
@@ -84,7 +86,8 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
   }
 
   protected void sendOtherSpawns(Game game, PlayerStateChannel joinedPlayerStateChannel,
-      List<PowerUp> spawnedPowerUps) {
+      List<PowerUp> spawnedPowerUps,
+      List<Teleport> teleports) {
     var otherPlayers = game.getPlayersRegistry()
         .allPlayers()
         .filter(playerStateChannel -> !playerStateChannel.isOurChannel(joinedPlayerStateChannel))
@@ -98,24 +101,25 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
           createSpawnEventAllPlayers(game.playersOnline(), otherLivePlayers.stream()
               .map(PlayerStateChannel::getPlayerState)
               .collect(Collectors.toList()));
-      joinedPlayerStateChannel.writeFlushPrimaryChannel(allPlayersSpawnEvent,
-          future -> {
-            if (future.isSuccess()) {
-              sendPowerUpSpawn(spawnedPowerUps, joinedPlayerStateChannel);
-              ServerResponse playerSpawnEventForOthers = createSpawnEventSinglePlayerMinimal(
-                  game.playersOnline(), joinedPlayerStateChannel.getPlayerState());
-              otherPlayers.stream().filter(
-                      playerStateChannel -> playerStateChannel.getPlayerState().isFullyJoined())
-                  .forEach(playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(
-                      playerSpawnEventForOthers));
-            } else {
-              joinedPlayerStateChannel.close();
-            }
-          });
-    } else {
-      sendPowerUpSpawn(spawnedPowerUps, joinedPlayerStateChannel);
+      joinedPlayerStateChannel.writeFlushPrimaryChannel(allPlayersSpawnEvent);
     }
+    sendMapItems(joinedPlayerStateChannel, spawnedPowerUps, teleports);
+    ServerResponse playerSpawnEventForOthers = createSpawnEventSinglePlayerMinimal(
+        game.playersOnline(), joinedPlayerStateChannel.getPlayerState());
+    otherPlayers.stream().filter(
+            playerStateChannel -> playerStateChannel.getPlayerState().isFullyJoined())
+        .forEach(playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(
+            playerSpawnEventForOthers));
+
   }
+
+  private void sendMapItems(
+      PlayerStateChannel joinedPlayerStateChannel, List<PowerUp> powerUps,
+      List<Teleport> teleports) {
+    sendPowerUpSpawn(powerUps, joinedPlayerStateChannel);
+    sendTeleportSpawn(teleports, joinedPlayerStateChannel);
+  }
+
 
   private void sendPowerUpSpawn(List<PowerUp> powerUps,
       PlayerStateChannel joinedPlayerStateChannel) {
@@ -123,5 +127,13 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
       return;
     }
     joinedPlayerStateChannel.writeFlushPrimaryChannel(createPowerUpSpawn(powerUps));
+  }
+
+  private void sendTeleportSpawn(List<Teleport> teleports,
+      PlayerStateChannel joinedPlayerStateChannel) {
+    if (teleports.isEmpty()) {
+      return;
+    }
+    joinedPlayerStateChannel.writeFlushPrimaryChannel(createTeleportSpawn(teleports));
   }
 }

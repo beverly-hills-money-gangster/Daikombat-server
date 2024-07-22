@@ -108,4 +108,15 @@ public interface PushGameEventCommandOrBuilder extends
    * @return The pingMls.
    */
   int getPingMls();
+
+  /**
+   * <code>optional int32 teleportId = 9;</code>
+   * @return Whether the teleportId field is set.
+   */
+  boolean hasTeleportId();
+  /**
+   * <code>optional int32 teleportId = 9;</code>
+   * @return The teleportId.
+   */
+  int getTeleportId();
 }

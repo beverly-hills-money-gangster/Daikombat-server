@@ -8,6 +8,7 @@ import static com.beverly.hills.money.gang.factory.response.ServerResponseFactor
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createPowerUpSpawn;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createPunchingEvent;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createShootingEvent;
+import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createTeleportPlayerServerResponse;
 
 import com.beverly.hills.money.gang.cheat.AntiCheat;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
@@ -36,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
+// TODO refactor
 @Component
 @RequiredArgsConstructor
 public class GameEventServerCommandHandler extends ServerCommandHandler {
@@ -44,6 +46,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
   private static final String MDC_PLAYER_ID = "PLAYER_ID";
   private static final String MDC_PLAYER_NAME = "PLAYER_NAME";
   private static final String MDC_IP_ADDRESS = "IP_ADDRESS";
+  private static final String MDC_PING_MLS = "PING_MLS";
 
   @Getter
   private final CommandCase commandCase = CommandCase.GAMECOMMAND;
@@ -95,6 +98,8 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
       MDC.put(MDC_PLAYER_ID, String.valueOf(playerState.getPlayerState().getPlayerId()));
       MDC.put(MDC_PLAYER_NAME, playerState.getPlayerState().getPlayerName());
       MDC.put(MDC_IP_ADDRESS, playerState.getPrimaryChannelAddress());
+      MDC.put(MDC_PING_MLS, Optional.ofNullable(playerState.getPlayerState().getPingMls())
+          .map(String::valueOf).orElse(""));
 
       PushGameEventCommand.GameEventType gameEventType = gameCommand.getEventType();
       switch (gameEventType) {
@@ -103,6 +108,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
             handlePowerUpPickUp(game, gameCommand, getPowerUpType(gameEventType));
         case MOVE -> game.bufferMove(gameCommand.getPlayerId(), createCoordinates(gameCommand),
             gameCommand.getSequence(), gameCommand.getPingMls());
+        case TELEPORT -> handleTeleport(game, gameCommand);
         default -> throw new GameLogicError("Unsupported event type",
             GameErrorCode.COMMAND_NOT_RECOGNIZED);
       }
@@ -111,6 +117,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
       MDC.remove(MDC_GAME_ID);
       MDC.remove(MDC_PLAYER_NAME);
       MDC.remove(MDC_IP_ADDRESS);
+      MDC.remove(MDC_PING_MLS);
     }
   }
 
@@ -121,6 +128,14 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
       case INVISIBILITY_POWER_UP -> PowerUpType.INVISIBILITY;
       default -> throw new IllegalArgumentException("Not-supported power-up " + gameEventType);
     };
+  }
+
+  private void handleTeleport(Game game, PushGameEventCommand gameCommand) throws GameLogicError {
+    var result = game.teleport(gameCommand.getPlayerId(), gameCommand.getTeleportId(),
+        gameCommand.getSequence());
+    var serverResponse = createTeleportPlayerServerResponse(result.getTeleportedPlayer());
+    game.getPlayersRegistry().allJoinedPlayers()
+        .forEach(stateChannel -> stateChannel.writeFlushPrimaryChannel(serverResponse));
   }
 
   private void handlePowerUpPickUp(Game game, PushGameEventCommand gameCommand,

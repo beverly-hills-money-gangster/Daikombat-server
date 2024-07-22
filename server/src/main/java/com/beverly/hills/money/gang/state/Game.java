@@ -12,14 +12,12 @@ import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import com.beverly.hills.money.gang.registry.PowerUpRegistry;
 import com.beverly.hills.money.gang.registry.TeleportRegistry;
 import com.beverly.hills.money.gang.spawner.Spawner;
-import com.beverly.hills.money.gang.teleport.Teleport;
 import io.netty.channel.Channel;
 import java.io.Closeable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
@@ -277,20 +275,21 @@ public class Game implements Closeable, GameReader {
     return playersRegistry.getPlayerState(playerId);
   }
 
-  public void teleport(final int teleportedPlayerId,
+  public PlayerTeleportingGameState teleport(
+      final int teleportedPlayerId,
       final int teleportId,
-      final int eventSequence) {
-    teleportRegistry.getTeleport(teleportId).ifPresentOrElse(new Consumer<Teleport>() {
-      @Override
-      public void accept(Teleport teleport) {
-        getPlayer(teleportedPlayerId)
-            .ifPresent(playerState -> {
-              playerState.teleport(teleport.getTeleportCoordinates(), eventSequence);
-            });
-      }
+      final int eventSequence) throws GameLogicError {
+    var teleport = teleportRegistry.getTeleport(teleportId).orElseThrow(
+        () -> new GameLogicError("Can't find teleport", GameErrorCode.COMMON_ERROR));
+    var player = getPlayersRegistry().getPlayerState(teleportedPlayerId).orElseThrow(
+        () -> new GameLogicError("Can't find player", GameErrorCode.COMMON_ERROR));
+    if (antiCheat.isTeleportTooFar(
+        player.getCoordinates().getPosition(), teleport.getLocation())) {
+      throw new GameLogicError("Teleport is too far", GameErrorCode.CHEATING);
     }
-
-    }
+    player.teleport(teleport.getTeleportCoordinates(), eventSequence);
+    return PlayerTeleportingGameState.builder().teleportedPlayer(player).build();
+  }
 
   private void move(final int movingPlayerId,
       final PlayerState.PlayerCoordinates playerCoordinates,

@@ -15,6 +15,16 @@ message ServerResponse {
     Ping ping = 5;
     GameOver gameOver = 6;
     PowerUpSpawnEvent powerUpSpawn = 7;
+    TeleportSpawnEvent teleportSpawn = 8;
+  }
+
+  message TeleportSpawnEvent {
+    repeated TeleportSpawnEventItem items = 1;
+  }
+
+  message TeleportSpawnEventItem {
+    optional Vector position = 1;
+    optional int32 id = 2;
   }
 
   message PowerUpSpawnEvent {
@@ -84,6 +94,7 @@ message ServerResponse {
       GET_PUNCHED = 6;
       KILL_PUNCHING = 7;
       PUNCH = 8;
+      TELEPORT = 9;
     }
   }
 

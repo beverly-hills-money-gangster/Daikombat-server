@@ -33,6 +33,7 @@ import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
 import com.beverly.hills.money.gang.powerup.QuadDamagePowerUp;
 import com.beverly.hills.money.gang.registry.PowerUpRegistry;
+import com.beverly.hills.money.gang.registry.TeleportRegistry;
 import com.beverly.hills.money.gang.spawner.Spawner;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoop;
@@ -61,6 +62,8 @@ public class GameTest {
 
   private PowerUpRegistry powerUpRegistry;
 
+  private TeleportRegistry teleportRegistry;
+
   private QuadDamagePowerUp quadDamagePowerUp;
 
   private InvisibilityPowerUp invisibilityPowerUp;
@@ -80,12 +83,14 @@ public class GameTest {
     quadDamagePowerUp = spy(new QuadDamagePowerUp(spawner));
     defencePowerUp = spy(new DefencePowerUp(spawner));
     invisibilityPowerUp = spy(new InvisibilityPowerUp(spawner));
+    teleportRegistry = spy(new TeleportRegistry());
     powerUpRegistry = spy(
         new PowerUpRegistry(List.of(quadDamagePowerUp, defencePowerUp, invisibilityPowerUp)));
     game = new Game(spawner,
         new SequenceGenerator(),
         new SequenceGenerator(),
         powerUpRegistry,
+        teleportRegistry,
         antiCheat);
   }
 

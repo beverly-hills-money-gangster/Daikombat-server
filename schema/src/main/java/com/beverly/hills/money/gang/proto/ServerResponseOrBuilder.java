@@ -113,5 +113,20 @@ public interface ServerResponseOrBuilder extends
    */
   com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventOrBuilder getPowerUpSpawnOrBuilder();
 
+  /**
+   * <code>.daikombat.dto.ServerResponse.TeleportSpawnEvent teleportSpawn = 8;</code>
+   * @return Whether the teleportSpawn field is set.
+   */
+  boolean hasTeleportSpawn();
+  /**
+   * <code>.daikombat.dto.ServerResponse.TeleportSpawnEvent teleportSpawn = 8;</code>
+   * @return The teleportSpawn.
+   */
+  com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent getTeleportSpawn();
+  /**
+   * <code>.daikombat.dto.ServerResponse.TeleportSpawnEvent teleportSpawn = 8;</code>
+   */
+  com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventOrBuilder getTeleportSpawnOrBuilder();
+
   com.beverly.hills.money.gang.proto.ServerResponse.ResponseCase getResponseCase();
 }

@@ -58,6 +58,9 @@ public interface ServerConfig {
   boolean POWER_UPS_ENABLED = Boolean.parseBoolean(StringUtils.defaultIfBlank(
       System.getenv("GAME_SERVER_POWER_UPS_ENABLED"), "true"));
 
+  boolean TELEPORTS_ENABLED = Boolean.parseBoolean(StringUtils.defaultIfBlank(
+      System.getenv("GAME_SERVER_TELEPORTS_ENABLED"), "true"));
+
   int FRAGS_PER_GAME = NumberUtils.toInt(System.getenv("GAME_SERVER_FRAGS_PER_GAME"), 25);
 
   String VERSION = Optional.ofNullable(

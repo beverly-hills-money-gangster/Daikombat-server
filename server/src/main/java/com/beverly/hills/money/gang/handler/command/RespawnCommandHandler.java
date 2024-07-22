@@ -10,7 +10,6 @@ import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerRespawnedGameState;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFutureListener;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,8 +49,10 @@ public class RespawnCommandHandler extends JoinGameServerCommandHandler {
             currentChannel.close();
             return;
           }
-          sendOtherSpawns(game, playerRespawnedGameState.getPlayerStateChannel(),
-              playerRespawnedGameState.getSpawnedPowerUps());
+          sendOtherSpawns(game,
+              playerRespawnedGameState.getPlayerStateChannel(),
+              playerRespawnedGameState.getSpawnedPowerUps(),
+              playerRespawnedGameState.getTeleports());
         });
   }
 }

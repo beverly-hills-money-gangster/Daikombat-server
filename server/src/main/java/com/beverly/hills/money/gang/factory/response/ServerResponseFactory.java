@@ -4,12 +4,15 @@ import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStats;
 import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUp;
 import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType;
 import com.beverly.hills.money.gang.proto.ServerResponse.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent;
 import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem;
+import com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent;
+import com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem;
 import com.beverly.hills.money.gang.state.AttackType;
 import com.beverly.hills.money.gang.state.GameLeaderBoardItem;
 import com.beverly.hills.money.gang.state.GameReader;
@@ -19,6 +22,7 @@ import com.beverly.hills.money.gang.state.PlayerState;
 import com.beverly.hills.money.gang.state.PlayerStateColor;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
 import com.beverly.hills.money.gang.state.Vector;
+import com.beverly.hills.money.gang.teleport.Teleport;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -72,10 +76,24 @@ public interface ServerResponseFactory {
         .setEventType(ServerResponse.GameEvent.GameEventType.MOVE).build();
   }
 
+  static ServerResponse.GameEvent createPlayerTeleportGameEvent(
+      PlayerStateReader playerStateReader) {
+    return ServerResponse.GameEvent.newBuilder()
+        .setPlayer(createMinimalPlayerStats(playerStateReader))
+        .setEventType(GameEventType.TELEPORT).build();
+  }
+
   static ServerResponse createPowerUpPlayerServerResponse(PlayerStateReader playerStateReader) {
     return ServerResponse.newBuilder()
         .setGameEvents(ServerResponse.GameEvents.newBuilder()
             .addEvents(createPowerUpPlayerMoveGameEvent(playerStateReader)))
+        .build();
+  }
+
+  static ServerResponse createTeleportPlayerServerResponse(PlayerStateReader playerStateReader) {
+    return ServerResponse.newBuilder()
+        .setGameEvents(ServerResponse.GameEvents.newBuilder()
+            .addEvents(createPlayerTeleportGameEvent(playerStateReader)))
         .build();
   }
 
@@ -145,6 +163,17 @@ public interface ServerResponseFactory {
             .addAllItems(powerUps.stream().map(power -> PowerUpSpawnEventItem.newBuilder()
                     .setType(createGamePowerUpType(power.getType()))
                     .setPosition(createVector(power.getSpawnPosition())).build())
+                .collect(Collectors.toList())))
+        .build();
+  }
+
+  static ServerResponse createTeleportSpawn(List<Teleport> teleports) {
+    return ServerResponse.newBuilder()
+        .setTeleportSpawn(TeleportSpawnEvent.newBuilder()
+            .addAllItems(teleports.stream().map(teleport -> TeleportSpawnEventItem.newBuilder()
+                    .setPosition(createVector(teleport.getLocation()))
+                    .setId(teleport.getId())
+                    .build())
                 .collect(Collectors.toList())))
         .build();
   }

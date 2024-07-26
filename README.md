@@ -44,6 +44,7 @@ Game server can be configured using the following environment variables:
 - `GAME_SERVER_INVISIBILITY_SPAWN_MLS` Time (in millisecond) it takes to spawn an invisibility power-up orb. Default - `30_000`.
 - `GAME_SERVER_INVISIBILITY_LASTS_FOR_MLS` Time (in millisecond) invisibility lasts for. Default - `15_000`.
 - `GAME_SERVER_POWER_UPS_ENABLED` Turns power-ups on and off. Default - `true`.
+- `GAME_SERVER_TELEPORTS_ENABLED` Turns teleports on and off. Default - `true`.
 - `GAME_SERVER_PLAYER_SPEED` Player speed. Default - `5`.
 - `GAME_SERVER_PLAYER_SPEED_CHECK_FREQUENCY_MLS` Frequency(in milliseconds) at which server checks all players' speed. Anybody moving faster than `GAME_SERVER_PLAYER_SPEED` will be kicked-out. Default - `10_000`
 - `SENTRY_DSN` Sentry DSN. Not specified by default.

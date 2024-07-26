@@ -1,13 +1,13 @@
 package com.beverly.hills.money.gang.spawner;
 
-import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerState;
-import com.beverly.hills.money.gang.state.PlayerStateReader;
+import com.beverly.hills.money.gang.state.PlayerState.PlayerCoordinates;
+import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import com.beverly.hills.money.gang.state.Vector;
+import com.beverly.hills.money.gang.teleport.Teleport;
 import java.util.List;
 import java.util.TreeMap;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
@@ -16,14 +16,40 @@ public class Spawner {
 
   private static final double CLOSE_PROXIMITY = 3;
 
+  public static final List<Teleport> TELEPORTS = List.of(
+      Teleport.builder().id(1)
+          .location(Vector.builder().x(-25f).y(23f).build())
+          .teleportCoordinates(PlayerCoordinates.builder()
+              .position(Vector.builder().x(8.045f + 0.3f).y(21.556356f).build())
+              .direction(Vector.builder().x(0.0076999734f).y(-0.99996966f).build())
+              .build()).build(),
+      Teleport.builder().id(2)
+          .location(Vector.builder().x(8.045f).y(23.0f).build())
+          .teleportCoordinates(
+              PlayerCoordinates.builder()
+                  .position(Vector.builder().x(-22.39956f).y(23.152378f+0.2f).build())
+                  .direction(Vector.builder().x(0.9999982f).y(-0.0021766382f).build())
+                  .build()
+          ).build(),
+      Teleport.builder().id(3)
+          .location(Vector.builder().x(8.045f).y(13.0f).build())
+          .teleportCoordinates(
+              PlayerCoordinates.builder()
+                  .position(Vector.builder().x(-24.676086f).y(9.441682f).build())
+                  .direction(Vector.builder().x(-0.008718174f).y(0.99996203f).build())
+                  .build()
+          ).build());
+
+
   private static final Vector QUAD_DAMAGE_SPAWN_POSITION
       = Vector.builder().x(-13.984175f).y(17.946176f).build();
 
   private static final Vector DEFENCE_SPAWN_POSITION
-      = Vector.builder().x(-21.767122f-0.2f).y(11.956983f).build();
+      = Vector.builder().x(-24.609121f - 0.35f).y(11.956983f).build();
 
+  // + -> right
   private static final Vector INVISIBILITY_SPAWN_POSITION
-      = Vector.builder().x(-27.786005f-0.21f).y(11.956983f).build();
+      = Vector.builder().x(8.045f).y(18.5f - 0.5f).build();
 
   public static final List<PlayerState.PlayerCoordinates> SPAWNS = List.of(
 

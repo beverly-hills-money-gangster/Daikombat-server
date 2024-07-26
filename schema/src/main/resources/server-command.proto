@@ -64,6 +64,7 @@ message PushGameEventCommand {
   optional int32 affectedPlayerId = 6;
   optional int32 sequence = 7;
   optional int32 pingMls = 8;
+  optional int32 teleportId = 9;
 
   message Vector {
     optional float x = 1;
@@ -77,5 +78,6 @@ message PushGameEventCommand {
     QUAD_DAMAGE_POWER_UP = 3;
     INVISIBILITY_POWER_UP = 4;
     DEFENCE_POWER_UP = 5;
+    TELEPORT = 6;
   }
 }

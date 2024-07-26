@@ -14,31 +14,33 @@ import org.springframework.context.annotation.Primary;
 @Import(AppConfig.class)
 public class TestConfig {
 
+  public static final Vector MAIN_LOCATION = Vector.builder()
+      .x(-24.657965F).y(23.160273F).build();
+
   @Bean
   @Primary
   public Spawner testSpawner() {
     return new Spawner() {
       @Override
       public Vector spawnQuadDamage() {
-        return Vector.builder().x(-24.657965F).y(23.160273F).build();
+        return MAIN_LOCATION;
       }
 
       @Override
       public Vector spawnInvisibility() {
-        return Vector.builder().x(-24.657965F).y(23.160273F).build();
+        return MAIN_LOCATION;
       }
 
 
       @Override
       public Vector spawnDefence() {
-        return Vector.builder().x(-24.657965F).y(23.160273F).build();
+        return MAIN_LOCATION;
       }
 
 
       @Override
       public PlayerState.PlayerCoordinates spawnPlayer(Game game) {
-        return PlayerState.PlayerCoordinates.builder().position(
-                Vector.builder().x(-24.657965F).y(23.160273F).build())
+        return PlayerState.PlayerCoordinates.builder().position(MAIN_LOCATION)
             .direction(
                 Vector.builder().x(-0.00313453F).y(-0.9999952F).build()).build();
       }

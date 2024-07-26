@@ -1,6 +1,7 @@
 package com.beverly.hills.money.gang.state;
 
 import static com.beverly.hills.money.gang.exception.GameErrorCode.CAN_NOT_ATTACK_YOURSELF;
+import static com.beverly.hills.money.gang.exception.GameErrorCode.CHEATING;
 import static com.beverly.hills.money.gang.exception.GameErrorCode.COMMON_ERROR;
 import static com.beverly.hills.money.gang.exception.GameErrorCode.PLAYER_DOES_NOT_EXIST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,6 +34,7 @@ import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
 import com.beverly.hills.money.gang.powerup.QuadDamagePowerUp;
 import com.beverly.hills.money.gang.registry.PowerUpRegistry;
+import com.beverly.hills.money.gang.registry.TeleportRegistry;
 import com.beverly.hills.money.gang.spawner.Spawner;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoop;
@@ -61,6 +63,8 @@ public class GameTest {
 
   private PowerUpRegistry powerUpRegistry;
 
+  private TeleportRegistry teleportRegistry;
+
   private QuadDamagePowerUp quadDamagePowerUp;
 
   private InvisibilityPowerUp invisibilityPowerUp;
@@ -80,12 +84,14 @@ public class GameTest {
     quadDamagePowerUp = spy(new QuadDamagePowerUp(spawner));
     defencePowerUp = spy(new DefencePowerUp(spawner));
     invisibilityPowerUp = spy(new InvisibilityPowerUp(spawner));
+    teleportRegistry = spy(new TeleportRegistry());
     powerUpRegistry = spy(
         new PowerUpRegistry(List.of(quadDamagePowerUp, defencePowerUp, invisibilityPowerUp)));
     game = new Game(spawner,
         new SequenceGenerator(),
         new SequenceGenerator(),
         powerUpRegistry,
+        teleportRegistry,
         antiCheat);
   }
 
@@ -1834,6 +1840,127 @@ public class GameTest {
     assertTrue(game.getPlayersRegistry().findPlayer(
             player.getPlayerStateChannel().getPlayerState().getPlayerId()).get()
         .isOurChannel(secondaryChannel), "Secondary connection should be 'ours'");
+  }
+
+  /**
+   * @given a player that stands too far from a teleport
+   * @when the player tries to teleport
+   * @then it fails
+   */
+  @Test
+  public void testTeleportTooFar() throws GameLogicError {
+    doReturn(true).when(antiCheat).isTeleportTooFar(any(), any());
+    String teleportedPlayerName = "teleported player";
+    Channel channel = mock(Channel.class);
+
+    PlayerJoinedGameState teleportedPlayerGameState = fullyJoin(teleportedPlayerName,
+        channel, PlayerStateColor.GREEN);
+    var oldCoordinates = teleportedPlayerGameState.getPlayerStateChannel().getPlayerState()
+        .getCoordinates();
+    var teleportToUse = teleportedPlayerGameState.getTeleports().get(0);
+
+    GameLogicError error = assertThrows(GameLogicError.class, () -> game.teleport(
+        teleportedPlayerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        oldCoordinates,
+        teleportToUse.getId(),
+        testSequenceGenerator.getNext(),
+        PING_MLS
+    ));
+    assertEquals(CHEATING, error.getErrorCode());
+    assertEquals("Teleport is too far", error.getMessage());
+    assertEquals(oldCoordinates,
+        teleportedPlayerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        "Coordinates should NOT change if there was an error");
+  }
+
+  /**
+   * @given a player
+   * @when the player tries to teleport using a non-existing teleport id
+   * @then it fails
+   */
+  @Test
+  public void testTeleportWrongTeleportId() throws GameLogicError {
+    doReturn(false).when(antiCheat).isTeleportTooFar(any(), any());
+    String teleportedPlayerName = "teleported player";
+    Channel channel = mock(Channel.class);
+
+    PlayerJoinedGameState teleportedPlayerGameState = fullyJoin(teleportedPlayerName,
+        channel, PlayerStateColor.GREEN);
+    var oldCoordinates = teleportedPlayerGameState.getPlayerStateChannel().getPlayerState()
+        .getCoordinates();
+
+    GameLogicError error = assertThrows(GameLogicError.class, () -> game.teleport(
+        teleportedPlayerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        oldCoordinates,
+        666, // not real
+        testSequenceGenerator.getNext(),
+        PING_MLS
+    ));
+    assertEquals(COMMON_ERROR, error.getErrorCode());
+    assertEquals("Can't find teleport", error.getMessage());
+    assertEquals(oldCoordinates,
+        teleportedPlayerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        "Coordinates should NOT change if there was an error");
+  }
+
+  /**
+   * @given a player
+   * @when the player tries to teleport using a non-existing player id
+   * @then it fails
+   */
+  @Test
+  public void testTeleportWrongPlayerId() throws GameLogicError {
+    doReturn(false).when(antiCheat).isTeleportTooFar(any(), any());
+    String teleportedPlayerName = "teleported player";
+    Channel channel = mock(Channel.class);
+
+    PlayerJoinedGameState teleportedPlayerGameState = fullyJoin(teleportedPlayerName,
+        channel, PlayerStateColor.GREEN);
+    var oldCoordinates = teleportedPlayerGameState.getPlayerStateChannel().getPlayerState()
+        .getCoordinates();
+
+    GameLogicError error = assertThrows(GameLogicError.class, () -> game.teleport(
+        666, // not real
+        oldCoordinates,
+        teleportedPlayerGameState.getTeleports().get(0).getId(),
+        testSequenceGenerator.getNext(),
+        PING_MLS
+    ));
+    assertEquals(COMMON_ERROR, error.getErrorCode());
+    assertEquals("Can't find player", error.getMessage());
+    assertEquals(oldCoordinates,
+        teleportedPlayerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        "Coordinates should NOT change if there was an error");
+  }
+
+  /**
+   * @given a player that stands close a teleport
+   * @when the player tries to teleport
+   * @then it gets teleported
+   */
+  @Test
+  public void testTeleport() throws GameLogicError {
+    doReturn(false).when(antiCheat).isTeleportTooFar(any(), any());
+    String teleportedPlayerName = "teleported player";
+    Channel channel = mock(Channel.class);
+
+    PlayerJoinedGameState teleportedPlayerGameState = fullyJoin(teleportedPlayerName,
+        channel, PlayerStateColor.GREEN);
+
+    var teleportToUse = teleportedPlayerGameState.getTeleports().get(0);
+
+    var result = game.teleport(
+        teleportedPlayerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        teleportedPlayerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        teleportToUse.getId(),
+        testSequenceGenerator.getNext(),
+        PING_MLS
+    );
+
+    assertEquals(
+        teleportToUse.getTeleportCoordinates(),
+        result.getTeleportedPlayer().getCoordinates());
+
   }
 
   private PlayerJoinedGameState fullyJoin(final String playerName, final Channel playerChannel,

@@ -300,6 +300,1499 @@ private static final long serialVersionUID = 0L;
     // @@protoc_insertion_point(enum_scope:daikombat.dto.ServerResponse.GamePowerUpType)
   }
 
+  public interface TeleportSpawnEventOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:daikombat.dto.ServerResponse.TeleportSpawnEvent)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+     */
+    java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem> 
+        getItemsList();
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+     */
+    com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem getItems(int index);
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+     */
+    int getItemsCount();
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+     */
+    java.util.List<? extends com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItemOrBuilder> 
+        getItemsOrBuilderList();
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+     */
+    com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItemOrBuilder getItemsOrBuilder(
+        int index);
+  }
+  /**
+   * Protobuf type {@code daikombat.dto.ServerResponse.TeleportSpawnEvent}
+   */
+  public static final class TeleportSpawnEvent extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:daikombat.dto.ServerResponse.TeleportSpawnEvent)
+      TeleportSpawnEventOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use TeleportSpawnEvent.newBuilder() to construct.
+    private TeleportSpawnEvent(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private TeleportSpawnEvent() {
+      items_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new TeleportSpawnEvent();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_TeleportSpawnEvent_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_TeleportSpawnEvent_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent.class, com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent.Builder.class);
+    }
+
+    public static final int ITEMS_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem> items_;
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem> getItemsList() {
+      return items_;
+    }
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItemOrBuilder> 
+        getItemsOrBuilderList() {
+      return items_;
+    }
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+     */
+    @java.lang.Override
+    public int getItemsCount() {
+      return items_.size();
+    }
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem getItems(int index) {
+      return items_.get(index);
+    }
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItemOrBuilder getItemsOrBuilder(
+        int index) {
+      return items_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < items_.size(); i++) {
+        output.writeMessage(1, items_.get(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < items_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, items_.get(i));
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent)) {
+        return super.equals(obj);
+      }
+      com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent other = (com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent) obj;
+
+      if (!getItemsList()
+          .equals(other.getItemsList())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getItemsCount() > 0) {
+        hash = (37 * hash) + ITEMS_FIELD_NUMBER;
+        hash = (53 * hash) + getItemsList().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code daikombat.dto.ServerResponse.TeleportSpawnEvent}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:daikombat.dto.ServerResponse.TeleportSpawnEvent)
+        com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_TeleportSpawnEvent_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_TeleportSpawnEvent_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent.class, com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent.Builder.class);
+      }
+
+      // Construct using com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        if (itemsBuilder_ == null) {
+          items_ = java.util.Collections.emptyList();
+        } else {
+          items_ = null;
+          itemsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_TeleportSpawnEvent_descriptor;
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent getDefaultInstanceForType() {
+        return com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent build() {
+        com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent buildPartial() {
+        com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent result = new com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent(this);
+        buildPartialRepeatedFields(result);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartialRepeatedFields(com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent result) {
+        if (itemsBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            items_ = java.util.Collections.unmodifiableList(items_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.items_ = items_;
+        } else {
+          result.items_ = itemsBuilder_.build();
+        }
+      }
+
+      private void buildPartial0(com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent result) {
+        int from_bitField0_ = bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent) {
+          return mergeFrom((com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent other) {
+        if (other == com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent.getDefaultInstance()) return this;
+        if (itemsBuilder_ == null) {
+          if (!other.items_.isEmpty()) {
+            if (items_.isEmpty()) {
+              items_ = other.items_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureItemsIsMutable();
+              items_.addAll(other.items_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.items_.isEmpty()) {
+            if (itemsBuilder_.isEmpty()) {
+              itemsBuilder_.dispose();
+              itemsBuilder_ = null;
+              items_ = other.items_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              itemsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getItemsFieldBuilder() : null;
+            } else {
+              itemsBuilder_.addAllMessages(other.items_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem m =
+                    input.readMessage(
+                        com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem.parser(),
+                        extensionRegistry);
+                if (itemsBuilder_ == null) {
+                  ensureItemsIsMutable();
+                  items_.add(m);
+                } else {
+                  itemsBuilder_.addMessage(m);
+                }
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem> items_ =
+        java.util.Collections.emptyList();
+      private void ensureItemsIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          items_ = new java.util.ArrayList<com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem>(items_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem, com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem.Builder, com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItemOrBuilder> itemsBuilder_;
+
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+       */
+      public java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem> getItemsList() {
+        if (itemsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(items_);
+        } else {
+          return itemsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+       */
+      public int getItemsCount() {
+        if (itemsBuilder_ == null) {
+          return items_.size();
+        } else {
+          return itemsBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem getItems(int index) {
+        if (itemsBuilder_ == null) {
+          return items_.get(index);
+        } else {
+          return itemsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+       */
+      public Builder setItems(
+          int index, com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem value) {
+        if (itemsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureItemsIsMutable();
+          items_.set(index, value);
+          onChanged();
+        } else {
+          itemsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+       */
+      public Builder setItems(
+          int index, com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem.Builder builderForValue) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          itemsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+       */
+      public Builder addItems(com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem value) {
+        if (itemsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureItemsIsMutable();
+          items_.add(value);
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+       */
+      public Builder addItems(
+          int index, com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem value) {
+        if (itemsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureItemsIsMutable();
+          items_.add(index, value);
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+       */
+      public Builder addItems(
+          com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem.Builder builderForValue) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.add(builderForValue.build());
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+       */
+      public Builder addItems(
+          int index, com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem.Builder builderForValue) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+       */
+      public Builder addAllItems(
+          java.lang.Iterable<? extends com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem> values) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, items_);
+          onChanged();
+        } else {
+          itemsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+       */
+      public Builder clearItems() {
+        if (itemsBuilder_ == null) {
+          items_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          itemsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+       */
+      public Builder removeItems(int index) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.remove(index);
+          onChanged();
+        } else {
+          itemsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem.Builder getItemsBuilder(
+          int index) {
+        return getItemsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItemOrBuilder getItemsOrBuilder(
+          int index) {
+        if (itemsBuilder_ == null) {
+          return items_.get(index);  } else {
+          return itemsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+       */
+      public java.util.List<? extends com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItemOrBuilder> 
+           getItemsOrBuilderList() {
+        if (itemsBuilder_ != null) {
+          return itemsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(items_);
+        }
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem.Builder addItemsBuilder() {
+        return getItemsFieldBuilder().addBuilder(
+            com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem.Builder addItemsBuilder(
+          int index) {
+        return getItemsFieldBuilder().addBuilder(
+            index, com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.TeleportSpawnEventItem items = 1;</code>
+       */
+      public java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem.Builder> 
+           getItemsBuilderList() {
+        return getItemsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem, com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem.Builder, com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItemOrBuilder> 
+          getItemsFieldBuilder() {
+        if (itemsBuilder_ == null) {
+          itemsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem, com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem.Builder, com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItemOrBuilder>(
+                  items_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          items_ = null;
+        }
+        return itemsBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:daikombat.dto.ServerResponse.TeleportSpawnEvent)
+    }
+
+    // @@protoc_insertion_point(class_scope:daikombat.dto.ServerResponse.TeleportSpawnEvent)
+    private static final com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent();
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<TeleportSpawnEvent>
+        PARSER = new com.google.protobuf.AbstractParser<TeleportSpawnEvent>() {
+      @java.lang.Override
+      public TeleportSpawnEvent parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<TeleportSpawnEvent> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<TeleportSpawnEvent> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface TeleportSpawnEventItemOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:daikombat.dto.ServerResponse.TeleportSpawnEventItem)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.Vector position = 1;</code>
+     * @return Whether the position field is set.
+     */
+    boolean hasPosition();
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.Vector position = 1;</code>
+     * @return The position.
+     */
+    com.beverly.hills.money.gang.proto.ServerResponse.Vector getPosition();
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.Vector position = 1;</code>
+     */
+    com.beverly.hills.money.gang.proto.ServerResponse.VectorOrBuilder getPositionOrBuilder();
+
+    /**
+     * <code>optional int32 id = 2;</code>
+     * @return Whether the id field is set.
+     */
+    boolean hasId();
+    /**
+     * <code>optional int32 id = 2;</code>
+     * @return The id.
+     */
+    int getId();
+  }
+  /**
+   * Protobuf type {@code daikombat.dto.ServerResponse.TeleportSpawnEventItem}
+   */
+  public static final class TeleportSpawnEventItem extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:daikombat.dto.ServerResponse.TeleportSpawnEventItem)
+      TeleportSpawnEventItemOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use TeleportSpawnEventItem.newBuilder() to construct.
+    private TeleportSpawnEventItem(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private TeleportSpawnEventItem() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new TeleportSpawnEventItem();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_TeleportSpawnEventItem_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_TeleportSpawnEventItem_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem.class, com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int POSITION_FIELD_NUMBER = 1;
+    private com.beverly.hills.money.gang.proto.ServerResponse.Vector position_;
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.Vector position = 1;</code>
+     * @return Whether the position field is set.
+     */
+    @java.lang.Override
+    public boolean hasPosition() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.Vector position = 1;</code>
+     * @return The position.
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.Vector getPosition() {
+      return position_ == null ? com.beverly.hills.money.gang.proto.ServerResponse.Vector.getDefaultInstance() : position_;
+    }
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.Vector position = 1;</code>
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.VectorOrBuilder getPositionOrBuilder() {
+      return position_ == null ? com.beverly.hills.money.gang.proto.ServerResponse.Vector.getDefaultInstance() : position_;
+    }
+
+    public static final int ID_FIELD_NUMBER = 2;
+    private int id_ = 0;
+    /**
+     * <code>optional int32 id = 2;</code>
+     * @return Whether the id field is set.
+     */
+    @java.lang.Override
+    public boolean hasId() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>optional int32 id = 2;</code>
+     * @return The id.
+     */
+    @java.lang.Override
+    public int getId() {
+      return id_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeMessage(1, getPosition());
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        output.writeInt32(2, id_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getPosition());
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, id_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem)) {
+        return super.equals(obj);
+      }
+      com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem other = (com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem) obj;
+
+      if (hasPosition() != other.hasPosition()) return false;
+      if (hasPosition()) {
+        if (!getPosition()
+            .equals(other.getPosition())) return false;
+      }
+      if (hasId() != other.hasId()) return false;
+      if (hasId()) {
+        if (getId()
+            != other.getId()) return false;
+      }
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasPosition()) {
+        hash = (37 * hash) + POSITION_FIELD_NUMBER;
+        hash = (53 * hash) + getPosition().hashCode();
+      }
+      if (hasId()) {
+        hash = (37 * hash) + ID_FIELD_NUMBER;
+        hash = (53 * hash) + getId();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code daikombat.dto.ServerResponse.TeleportSpawnEventItem}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:daikombat.dto.ServerResponse.TeleportSpawnEventItem)
+        com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItemOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_TeleportSpawnEventItem_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_TeleportSpawnEventItem_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem.class, com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem.Builder.class);
+      }
+
+      // Construct using com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getPositionFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        position_ = null;
+        if (positionBuilder_ != null) {
+          positionBuilder_.dispose();
+          positionBuilder_ = null;
+        }
+        id_ = 0;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_TeleportSpawnEventItem_descriptor;
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem getDefaultInstanceForType() {
+        return com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem build() {
+        com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem buildPartial() {
+        com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem result = new com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem result) {
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.position_ = positionBuilder_ == null
+              ? position_
+              : positionBuilder_.build();
+          to_bitField0_ |= 0x00000001;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.id_ = id_;
+          to_bitField0_ |= 0x00000002;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem) {
+          return mergeFrom((com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem other) {
+        if (other == com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem.getDefaultInstance()) return this;
+        if (other.hasPosition()) {
+          mergePosition(other.getPosition());
+        }
+        if (other.hasId()) {
+          setId(other.getId());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                input.readMessage(
+                    getPositionFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 16: {
+                id_ = input.readInt32();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private com.beverly.hills.money.gang.proto.ServerResponse.Vector position_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.beverly.hills.money.gang.proto.ServerResponse.Vector, com.beverly.hills.money.gang.proto.ServerResponse.Vector.Builder, com.beverly.hills.money.gang.proto.ServerResponse.VectorOrBuilder> positionBuilder_;
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.Vector position = 1;</code>
+       * @return Whether the position field is set.
+       */
+      public boolean hasPosition() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.Vector position = 1;</code>
+       * @return The position.
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.Vector getPosition() {
+        if (positionBuilder_ == null) {
+          return position_ == null ? com.beverly.hills.money.gang.proto.ServerResponse.Vector.getDefaultInstance() : position_;
+        } else {
+          return positionBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.Vector position = 1;</code>
+       */
+      public Builder setPosition(com.beverly.hills.money.gang.proto.ServerResponse.Vector value) {
+        if (positionBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          position_ = value;
+        } else {
+          positionBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.Vector position = 1;</code>
+       */
+      public Builder setPosition(
+          com.beverly.hills.money.gang.proto.ServerResponse.Vector.Builder builderForValue) {
+        if (positionBuilder_ == null) {
+          position_ = builderForValue.build();
+        } else {
+          positionBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.Vector position = 1;</code>
+       */
+      public Builder mergePosition(com.beverly.hills.money.gang.proto.ServerResponse.Vector value) {
+        if (positionBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0) &&
+            position_ != null &&
+            position_ != com.beverly.hills.money.gang.proto.ServerResponse.Vector.getDefaultInstance()) {
+            getPositionBuilder().mergeFrom(value);
+          } else {
+            position_ = value;
+          }
+        } else {
+          positionBuilder_.mergeFrom(value);
+        }
+        if (position_ != null) {
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.Vector position = 1;</code>
+       */
+      public Builder clearPosition() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        position_ = null;
+        if (positionBuilder_ != null) {
+          positionBuilder_.dispose();
+          positionBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.Vector position = 1;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.Vector.Builder getPositionBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return getPositionFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.Vector position = 1;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.VectorOrBuilder getPositionOrBuilder() {
+        if (positionBuilder_ != null) {
+          return positionBuilder_.getMessageOrBuilder();
+        } else {
+          return position_ == null ?
+              com.beverly.hills.money.gang.proto.ServerResponse.Vector.getDefaultInstance() : position_;
+        }
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.Vector position = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.beverly.hills.money.gang.proto.ServerResponse.Vector, com.beverly.hills.money.gang.proto.ServerResponse.Vector.Builder, com.beverly.hills.money.gang.proto.ServerResponse.VectorOrBuilder> 
+          getPositionFieldBuilder() {
+        if (positionBuilder_ == null) {
+          positionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.beverly.hills.money.gang.proto.ServerResponse.Vector, com.beverly.hills.money.gang.proto.ServerResponse.Vector.Builder, com.beverly.hills.money.gang.proto.ServerResponse.VectorOrBuilder>(
+                  getPosition(),
+                  getParentForChildren(),
+                  isClean());
+          position_ = null;
+        }
+        return positionBuilder_;
+      }
+
+      private int id_ ;
+      /**
+       * <code>optional int32 id = 2;</code>
+       * @return Whether the id field is set.
+       */
+      @java.lang.Override
+      public boolean hasId() {
+        return ((bitField0_ & 0x00000002) != 0);
+      }
+      /**
+       * <code>optional int32 id = 2;</code>
+       * @return The id.
+       */
+      @java.lang.Override
+      public int getId() {
+        return id_;
+      }
+      /**
+       * <code>optional int32 id = 2;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setId(int value) {
+
+        id_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 id = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearId() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        id_ = 0;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:daikombat.dto.ServerResponse.TeleportSpawnEventItem)
+    }
+
+    // @@protoc_insertion_point(class_scope:daikombat.dto.ServerResponse.TeleportSpawnEventItem)
+    private static final com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem();
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<TeleportSpawnEventItem>
+        PARSER = new com.google.protobuf.AbstractParser<TeleportSpawnEventItem>() {
+      @java.lang.Override
+      public TeleportSpawnEventItem parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<TeleportSpawnEventItem> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<TeleportSpawnEventItem> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface PowerUpSpawnEventOrBuilder extends
       // @@protoc_insertion_point(interface_extends:daikombat.dto.ServerResponse.PowerUpSpawnEvent)
       com.google.protobuf.MessageOrBuilder {
@@ -8141,6 +9634,10 @@ private static final long serialVersionUID = 0L;
        * <code>PUNCH = 8;</code>
        */
       PUNCH(8),
+      /**
+       * <code>TELEPORT = 9;</code>
+       */
+      TELEPORT(9),
       UNRECOGNIZED(-1),
       ;
 
@@ -8180,6 +9677,10 @@ private static final long serialVersionUID = 0L;
        * <code>PUNCH = 8;</code>
        */
       public static final int PUNCH_VALUE = 8;
+      /**
+       * <code>TELEPORT = 9;</code>
+       */
+      public static final int TELEPORT_VALUE = 9;
 
 
       public final int getNumber() {
@@ -8215,6 +9716,7 @@ private static final long serialVersionUID = 0L;
           case 6: return GET_PUNCHED;
           case 7: return KILL_PUNCHING;
           case 8: return PUNCH;
+          case 9: return TELEPORT;
           default: return null;
         }
       }
@@ -13991,6 +15493,7 @@ private static final long serialVersionUID = 0L;
     PING(5),
     GAMEOVER(6),
     POWERUPSPAWN(7),
+    TELEPORTSPAWN(8),
     RESPONSE_NOT_SET(0);
     private final int value;
     private ResponseCase(int value) {
@@ -14015,6 +15518,7 @@ private static final long serialVersionUID = 0L;
         case 5: return PING;
         case 6: return GAMEOVER;
         case 7: return POWERUPSPAWN;
+        case 8: return TELEPORTSPAWN;
         case 0: return RESPONSE_NOT_SET;
         default: return null;
       }
@@ -14247,6 +15751,37 @@ private static final long serialVersionUID = 0L;
     return com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent.getDefaultInstance();
   }
 
+  public static final int TELEPORTSPAWN_FIELD_NUMBER = 8;
+  /**
+   * <code>.daikombat.dto.ServerResponse.TeleportSpawnEvent teleportSpawn = 8;</code>
+   * @return Whether the teleportSpawn field is set.
+   */
+  @java.lang.Override
+  public boolean hasTeleportSpawn() {
+    return responseCase_ == 8;
+  }
+  /**
+   * <code>.daikombat.dto.ServerResponse.TeleportSpawnEvent teleportSpawn = 8;</code>
+   * @return The teleportSpawn.
+   */
+  @java.lang.Override
+  public com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent getTeleportSpawn() {
+    if (responseCase_ == 8) {
+       return (com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent) response_;
+    }
+    return com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent.getDefaultInstance();
+  }
+  /**
+   * <code>.daikombat.dto.ServerResponse.TeleportSpawnEvent teleportSpawn = 8;</code>
+   */
+  @java.lang.Override
+  public com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventOrBuilder getTeleportSpawnOrBuilder() {
+    if (responseCase_ == 8) {
+       return (com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent) response_;
+    }
+    return com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -14281,6 +15816,9 @@ private static final long serialVersionUID = 0L;
     }
     if (responseCase_ == 7) {
       output.writeMessage(7, (com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent) response_);
+    }
+    if (responseCase_ == 8) {
+      output.writeMessage(8, (com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent) response_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -14318,6 +15856,10 @@ private static final long serialVersionUID = 0L;
     if (responseCase_ == 7) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(7, (com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent) response_);
+    }
+    if (responseCase_ == 8) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(8, (com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent) response_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -14364,6 +15906,10 @@ private static final long serialVersionUID = 0L;
         if (!getPowerUpSpawn()
             .equals(other.getPowerUpSpawn())) return false;
         break;
+      case 8:
+        if (!getTeleportSpawn()
+            .equals(other.getTeleportSpawn())) return false;
+        break;
       case 0:
       default:
     }
@@ -14406,6 +15952,10 @@ private static final long serialVersionUID = 0L;
       case 7:
         hash = (37 * hash) + POWERUPSPAWN_FIELD_NUMBER;
         hash = (53 * hash) + getPowerUpSpawn().hashCode();
+        break;
+      case 8:
+        hash = (37 * hash) + TELEPORTSPAWN_FIELD_NUMBER;
+        hash = (53 * hash) + getTeleportSpawn().hashCode();
         break;
       case 0:
       default:
@@ -14562,6 +16112,9 @@ private static final long serialVersionUID = 0L;
       if (powerUpSpawnBuilder_ != null) {
         powerUpSpawnBuilder_.clear();
       }
+      if (teleportSpawnBuilder_ != null) {
+        teleportSpawnBuilder_.clear();
+      }
       responseCase_ = 0;
       response_ = null;
       return this;
@@ -14630,6 +16183,10 @@ private static final long serialVersionUID = 0L;
       if (responseCase_ == 7 &&
           powerUpSpawnBuilder_ != null) {
         result.response_ = powerUpSpawnBuilder_.build();
+      }
+      if (responseCase_ == 8 &&
+          teleportSpawnBuilder_ != null) {
+        result.response_ = teleportSpawnBuilder_.build();
       }
     }
 
@@ -14704,6 +16261,10 @@ private static final long serialVersionUID = 0L;
         }
         case POWERUPSPAWN: {
           mergePowerUpSpawn(other.getPowerUpSpawn());
+          break;
+        }
+        case TELEPORTSPAWN: {
+          mergeTeleportSpawn(other.getTeleportSpawn());
           break;
         }
         case RESPONSE_NOT_SET: {
@@ -14785,6 +16346,13 @@ private static final long serialVersionUID = 0L;
               responseCase_ = 7;
               break;
             } // case 58
+            case 66: {
+              input.readMessage(
+                  getTeleportSpawnFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              responseCase_ = 8;
+              break;
+            } // case 66
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -15809,6 +17377,148 @@ private static final long serialVersionUID = 0L;
       responseCase_ = 7;
       onChanged();
       return powerUpSpawnBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent, com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent.Builder, com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventOrBuilder> teleportSpawnBuilder_;
+    /**
+     * <code>.daikombat.dto.ServerResponse.TeleportSpawnEvent teleportSpawn = 8;</code>
+     * @return Whether the teleportSpawn field is set.
+     */
+    @java.lang.Override
+    public boolean hasTeleportSpawn() {
+      return responseCase_ == 8;
+    }
+    /**
+     * <code>.daikombat.dto.ServerResponse.TeleportSpawnEvent teleportSpawn = 8;</code>
+     * @return The teleportSpawn.
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent getTeleportSpawn() {
+      if (teleportSpawnBuilder_ == null) {
+        if (responseCase_ == 8) {
+          return (com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent) response_;
+        }
+        return com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent.getDefaultInstance();
+      } else {
+        if (responseCase_ == 8) {
+          return teleportSpawnBuilder_.getMessage();
+        }
+        return com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.daikombat.dto.ServerResponse.TeleportSpawnEvent teleportSpawn = 8;</code>
+     */
+    public Builder setTeleportSpawn(com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent value) {
+      if (teleportSpawnBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        response_ = value;
+        onChanged();
+      } else {
+        teleportSpawnBuilder_.setMessage(value);
+      }
+      responseCase_ = 8;
+      return this;
+    }
+    /**
+     * <code>.daikombat.dto.ServerResponse.TeleportSpawnEvent teleportSpawn = 8;</code>
+     */
+    public Builder setTeleportSpawn(
+        com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent.Builder builderForValue) {
+      if (teleportSpawnBuilder_ == null) {
+        response_ = builderForValue.build();
+        onChanged();
+      } else {
+        teleportSpawnBuilder_.setMessage(builderForValue.build());
+      }
+      responseCase_ = 8;
+      return this;
+    }
+    /**
+     * <code>.daikombat.dto.ServerResponse.TeleportSpawnEvent teleportSpawn = 8;</code>
+     */
+    public Builder mergeTeleportSpawn(com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent value) {
+      if (teleportSpawnBuilder_ == null) {
+        if (responseCase_ == 8 &&
+            response_ != com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent.getDefaultInstance()) {
+          response_ = com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent.newBuilder((com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent) response_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          response_ = value;
+        }
+        onChanged();
+      } else {
+        if (responseCase_ == 8) {
+          teleportSpawnBuilder_.mergeFrom(value);
+        } else {
+          teleportSpawnBuilder_.setMessage(value);
+        }
+      }
+      responseCase_ = 8;
+      return this;
+    }
+    /**
+     * <code>.daikombat.dto.ServerResponse.TeleportSpawnEvent teleportSpawn = 8;</code>
+     */
+    public Builder clearTeleportSpawn() {
+      if (teleportSpawnBuilder_ == null) {
+        if (responseCase_ == 8) {
+          responseCase_ = 0;
+          response_ = null;
+          onChanged();
+        }
+      } else {
+        if (responseCase_ == 8) {
+          responseCase_ = 0;
+          response_ = null;
+        }
+        teleportSpawnBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.daikombat.dto.ServerResponse.TeleportSpawnEvent teleportSpawn = 8;</code>
+     */
+    public com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent.Builder getTeleportSpawnBuilder() {
+      return getTeleportSpawnFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.daikombat.dto.ServerResponse.TeleportSpawnEvent teleportSpawn = 8;</code>
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventOrBuilder getTeleportSpawnOrBuilder() {
+      if ((responseCase_ == 8) && (teleportSpawnBuilder_ != null)) {
+        return teleportSpawnBuilder_.getMessageOrBuilder();
+      } else {
+        if (responseCase_ == 8) {
+          return (com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent) response_;
+        }
+        return com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.daikombat.dto.ServerResponse.TeleportSpawnEvent teleportSpawn = 8;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent, com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent.Builder, com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventOrBuilder> 
+        getTeleportSpawnFieldBuilder() {
+      if (teleportSpawnBuilder_ == null) {
+        if (!(responseCase_ == 8)) {
+          response_ = com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent.getDefaultInstance();
+        }
+        teleportSpawnBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent, com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent.Builder, com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventOrBuilder>(
+                (com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent) response_,
+                getParentForChildren(),
+                isClean());
+        response_ = null;
+      }
+      responseCase_ = 8;
+      onChanged();
+      return teleportSpawnBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

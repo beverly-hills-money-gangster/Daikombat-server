@@ -69,6 +69,10 @@ private static final long serialVersionUID = 0L;
      * <code>DEFENCE_POWER_UP = 5;</code>
      */
     DEFENCE_POWER_UP(5),
+    /**
+     * <code>TELEPORT = 6;</code>
+     */
+    TELEPORT(6),
     UNRECOGNIZED(-1),
     ;
 
@@ -96,6 +100,10 @@ private static final long serialVersionUID = 0L;
      * <code>DEFENCE_POWER_UP = 5;</code>
      */
     public static final int DEFENCE_POWER_UP_VALUE = 5;
+    /**
+     * <code>TELEPORT = 6;</code>
+     */
+    public static final int TELEPORT_VALUE = 6;
 
 
     public final int getNumber() {
@@ -128,6 +136,7 @@ private static final long serialVersionUID = 0L;
         case 3: return QUAD_DAMAGE_POWER_UP;
         case 4: return INVISIBILITY_POWER_UP;
         case 5: return DEFENCE_POWER_UP;
+        case 6: return TELEPORT;
         default: return null;
       }
     }
@@ -966,6 +975,25 @@ private static final long serialVersionUID = 0L;
     return pingMls_;
   }
 
+  public static final int TELEPORTID_FIELD_NUMBER = 9;
+  private int teleportId_ = 0;
+  /**
+   * <code>optional int32 teleportId = 9;</code>
+   * @return Whether the teleportId field is set.
+   */
+  @java.lang.Override
+  public boolean hasTeleportId() {
+    return ((bitField0_ & 0x00000100) != 0);
+  }
+  /**
+   * <code>optional int32 teleportId = 9;</code>
+   * @return The teleportId.
+   */
+  @java.lang.Override
+  public int getTeleportId() {
+    return teleportId_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -1003,6 +1031,9 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000080) != 0)) {
       output.writeInt32(8, pingMls_);
+    }
+    if (((bitField0_ & 0x00000100) != 0)) {
+      output.writeInt32(9, teleportId_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -1044,6 +1075,10 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000080) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(8, pingMls_);
+    }
+    if (((bitField0_ & 0x00000100) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(9, teleportId_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1099,6 +1134,11 @@ private static final long serialVersionUID = 0L;
       if (getPingMls()
           != other.getPingMls()) return false;
     }
+    if (hasTeleportId() != other.hasTeleportId()) return false;
+    if (hasTeleportId()) {
+      if (getTeleportId()
+          != other.getTeleportId()) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -1141,6 +1181,10 @@ private static final long serialVersionUID = 0L;
     if (hasPingMls()) {
       hash = (37 * hash) + PINGMLS_FIELD_NUMBER;
       hash = (53 * hash) + getPingMls();
+    }
+    if (hasTeleportId()) {
+      hash = (37 * hash) + TELEPORTID_FIELD_NUMBER;
+      hash = (53 * hash) + getTeleportId();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -1296,6 +1340,7 @@ private static final long serialVersionUID = 0L;
       affectedPlayerId_ = 0;
       sequence_ = 0;
       pingMls_ = 0;
+      teleportId_ = 0;
       return this;
     }
 
@@ -1365,6 +1410,10 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000080) != 0)) {
         result.pingMls_ = pingMls_;
         to_bitField0_ |= 0x00000080;
+      }
+      if (((from_bitField0_ & 0x00000100) != 0)) {
+        result.teleportId_ = teleportId_;
+        to_bitField0_ |= 0x00000100;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -1437,6 +1486,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasPingMls()) {
         setPingMls(other.getPingMls());
       }
+      if (other.hasTeleportId()) {
+        setTeleportId(other.getTeleportId());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -1507,6 +1559,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000080;
               break;
             } // case 64
+            case 72: {
+              teleportId_ = input.readInt32();
+              bitField0_ |= 0x00000100;
+              break;
+            } // case 72
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -2022,6 +2079,46 @@ private static final long serialVersionUID = 0L;
     public Builder clearPingMls() {
       bitField0_ = (bitField0_ & ~0x00000080);
       pingMls_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private int teleportId_ ;
+    /**
+     * <code>optional int32 teleportId = 9;</code>
+     * @return Whether the teleportId field is set.
+     */
+    @java.lang.Override
+    public boolean hasTeleportId() {
+      return ((bitField0_ & 0x00000100) != 0);
+    }
+    /**
+     * <code>optional int32 teleportId = 9;</code>
+     * @return The teleportId.
+     */
+    @java.lang.Override
+    public int getTeleportId() {
+      return teleportId_;
+    }
+    /**
+     * <code>optional int32 teleportId = 9;</code>
+     * @param value The teleportId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTeleportId(int value) {
+
+      teleportId_ = value;
+      bitField0_ |= 0x00000100;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional int32 teleportId = 9;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearTeleportId() {
+      bitField0_ = (bitField0_ & ~0x00000100);
+      teleportId_ = 0;
       onChanged();
       return this;
     }

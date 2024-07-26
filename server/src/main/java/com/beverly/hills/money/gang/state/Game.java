@@ -10,6 +10,7 @@ import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import com.beverly.hills.money.gang.registry.PowerUpRegistry;
+import com.beverly.hills.money.gang.registry.TeleportRegistry;
 import com.beverly.hills.money.gang.spawner.Spawner;
 import io.netty.channel.Channel;
 import java.io.Closeable;
@@ -45,6 +46,8 @@ public class Game implements Closeable, GameReader {
   @Getter
   private final PowerUpRegistry powerUpRegistry;
 
+  private final TeleportRegistry teleportRegistry;
+
   private final AntiCheat antiCheat;
 
   private final AtomicBoolean gameClosed = new AtomicBoolean();
@@ -54,9 +57,11 @@ public class Game implements Closeable, GameReader {
       @Qualifier("gameIdGenerator") final SequenceGenerator gameSequenceGenerator,
       @Qualifier("playerIdGenerator") final SequenceGenerator playerSequenceGenerator,
       final PowerUpRegistry powerUpRegistry,
+      final TeleportRegistry teleportRegistry,
       final AntiCheat antiCheat) {
     this.spawner = spawner;
     this.powerUpRegistry = powerUpRegistry;
+    this.teleportRegistry = teleportRegistry;
     this.id = gameSequenceGenerator.getNext();
     this.playerSequenceGenerator = playerSequenceGenerator;
     this.antiCheat = antiCheat;
@@ -83,6 +88,7 @@ public class Game implements Closeable, GameReader {
     return PlayerJoinedGameState.builder()
         .spawnedPowerUps(powerUpRegistry.getAvailable())
         .leaderBoard(getLeaderBoard())
+        .teleports(teleportRegistry.getAllTeleports())
         .playerStateChannel(playerStateChannel).build();
   }
 
@@ -98,6 +104,7 @@ public class Game implements Closeable, GameReader {
     player.getPlayerState().respawn(spawner.spawnPlayer(this));
     return PlayerRespawnedGameState.builder()
         .spawnedPowerUps(powerUpRegistry.getAvailable())
+        .teleports(teleportRegistry.getAllTeleports())
         .playerStateChannel(player).leaderBoard(getLeaderBoard()).build();
   }
 
@@ -268,6 +275,26 @@ public class Game implements Closeable, GameReader {
 
   private Optional<PlayerState> getPlayer(int playerId) {
     return playersRegistry.getPlayerState(playerId);
+  }
+
+  public PlayerTeleportingGameState teleport(
+      final int teleportedPlayerId,
+      final PlayerState.PlayerCoordinates playerCoordinates,
+      final int teleportId,
+      final int eventSequence,
+      final int pingMls) throws GameLogicError {
+    move(teleportedPlayerId, playerCoordinates, eventSequence, pingMls);
+
+    var teleport = teleportRegistry.getTeleport(teleportId).orElseThrow(
+        () -> new GameLogicError("Can't find teleport", GameErrorCode.COMMON_ERROR));
+    var player = getPlayersRegistry().getPlayerState(teleportedPlayerId).orElseThrow(
+        () -> new GameLogicError("Can't find player", GameErrorCode.COMMON_ERROR));
+    if (antiCheat.isTeleportTooFar(
+        player.getCoordinates().getPosition(), teleport.getLocation())) {
+      throw new GameLogicError("Teleport is too far", GameErrorCode.CHEATING);
+    }
+    player.teleport(teleport.getTeleportCoordinates());
+    return PlayerTeleportingGameState.builder().teleportedPlayer(player).build();
   }
 
   private void move(final int movingPlayerId,

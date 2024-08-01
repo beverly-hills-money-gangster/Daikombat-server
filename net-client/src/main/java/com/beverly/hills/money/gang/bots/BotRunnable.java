@@ -6,6 +6,8 @@ import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PushChatEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
+import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
+import com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.SkinColorSelection;
 import com.beverly.hills.money.gang.queue.QueueReader;
@@ -104,7 +106,8 @@ public class BotRunnable implements Runnable {
     var myPosition = playerStats.getPosition();
     var myDirection = playerStats.getDirection();
     gameConnection.write(PushGameEventCommand.newBuilder()
-        .setEventType(PushGameEventCommand.GameEventType.SHOOT)
+        .setEventType(GameEventType.ATTACK)
+        .setWeaponType(WeaponType.SHOTGUN)
         .setPlayerId(playerStats.getPlayerId())
         .setGameId(GAME_ID_TO_CONNECT)
         .setPingMls(0)

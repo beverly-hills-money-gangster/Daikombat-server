@@ -7,9 +7,11 @@ import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
+import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
+import com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.SkinColorSelection;
-import com.beverly.hills.money.gang.state.PlayerState;
+import com.beverly.hills.money.gang.state.entity.PlayerState;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -92,7 +94,8 @@ public class ConcurrentKillTest extends AbstractGameServerTest {
               .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
               .setPlayerId(mySpawn.getPlayer().getPlayerId())
               .setGameId(0)
-              .setEventType(PushGameEventCommand.GameEventType.SHOOT)
+              .setEventType(GameEventType.ATTACK)
+              .setWeaponType(WeaponType.SHOTGUN)
               .setDirection(
                   PushGameEventCommand.Vector.newBuilder()
                       .setX(mySpawn.getPlayer().getDirection().getX())

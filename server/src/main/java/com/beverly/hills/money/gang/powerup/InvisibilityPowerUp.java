@@ -2,8 +2,8 @@ package com.beverly.hills.money.gang.powerup;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.spawner.Spawner;
-import com.beverly.hills.money.gang.state.PlayerState;
-import com.beverly.hills.money.gang.state.Vector;
+import com.beverly.hills.money.gang.state.entity.PlayerState;
+import com.beverly.hills.money.gang.state.entity.Vector;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

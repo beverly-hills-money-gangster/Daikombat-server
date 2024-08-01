@@ -1,5 +1,6 @@
-package com.beverly.hills.money.gang.state;
+package com.beverly.hills.money.gang.state.entity;
 
+import com.beverly.hills.money.gang.state.PlayerStateReader;
 import lombok.Builder;
 import lombok.Getter;
 

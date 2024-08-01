@@ -1,10 +1,10 @@
 package com.beverly.hills.money.gang.spawner;
 
 import com.beverly.hills.money.gang.state.Game;
-import com.beverly.hills.money.gang.state.PlayerState;
-import com.beverly.hills.money.gang.state.PlayerState.PlayerCoordinates;
+import com.beverly.hills.money.gang.state.entity.PlayerState;
+import com.beverly.hills.money.gang.state.entity.PlayerState.PlayerCoordinates;
 import com.beverly.hills.money.gang.state.PlayerStateChannel;
-import com.beverly.hills.money.gang.state.Vector;
+import com.beverly.hills.money.gang.state.entity.Vector;
 import com.beverly.hills.money.gang.teleport.Teleport;
 import java.util.List;
 import java.util.TreeMap;

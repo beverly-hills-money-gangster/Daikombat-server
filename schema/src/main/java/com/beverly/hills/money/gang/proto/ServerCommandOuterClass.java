@@ -96,7 +96,7 @@ public final class ServerCommandOuterClass {
       "Id\030\002 \001(\005H\001\210\001\001B\t\n\007_gameIdB\013\n\t_playerId\"T\n" +
       "\016RespawnCommand\022\023\n\006gameId\030\001 \001(\005H\000\210\001\001\022\025\n\010" +
       "playerId\030\002 \001(\005H\001\210\001\001B\t\n\007_gameIdB\013\n\t_playe" +
-      "rId\"\270\005\n\024PushGameEventCommand\022\023\n\006gameId\030\001" +
+      "rId\"\270\006\n\024PushGameEventCommand\022\023\n\006gameId\030\001" +
       " \001(\005H\000\210\001\001\022I\n\teventType\030\002 \001(\01621.daikombat" +
       ".dto.PushGameEventCommand.GameEventTypeH" +
       "\001\210\001\001\022A\n\010position\030\003 \001(\0132*.daikombat.dto.P" +
@@ -105,18 +105,22 @@ public final class ServerCommandOuterClass {
       "Command.VectorH\003\210\001\001\022\025\n\010playerId\030\005 \001(\005H\004\210" +
       "\001\001\022\035\n\020affectedPlayerId\030\006 \001(\005H\005\210\001\001\022\025\n\010seq" +
       "uence\030\007 \001(\005H\006\210\001\001\022\024\n\007pingMls\030\010 \001(\005H\007\210\001\001\022\027" +
-      "\n\nteleportId\030\t \001(\005H\010\210\001\001\0324\n\006Vector\022\016\n\001x\030\001" +
-      " \001(\002H\000\210\001\001\022\016\n\001y\030\002 \001(\002H\001\210\001\001B\004\n\002_xB\004\n\002_y\"\210\001" +
-      "\n\rGameEventType\022\010\n\004MOVE\020\000\022\t\n\005SHOOT\020\001\022\t\n\005" +
-      "PUNCH\020\002\022\030\n\024QUAD_DAMAGE_POWER_UP\020\003\022\031\n\025INV" +
-      "ISIBILITY_POWER_UP\020\004\022\024\n\020DEFENCE_POWER_UP" +
-      "\020\005\022\014\n\010TELEPORT\020\006B\t\n\007_gameIdB\014\n\n_eventTyp" +
-      "eB\013\n\t_positionB\014\n\n_directionB\013\n\t_playerI" +
-      "dB\023\n\021_affectedPlayerIdB\013\n\t_sequenceB\n\n\010_" +
-      "pingMlsB\r\n\013_teleportId*W\n\022SkinColorSelec" +
-      "tion\022\t\n\005GREEN\020\000\022\010\n\004PINK\020\001\022\n\n\006PURPLE\020\002\022\010\n" +
-      "\004BLUE\020\003\022\n\n\006YELLOW\020\004\022\n\n\006ORANGE\020\005B&\n\"com.b" +
-      "everly.hills.money.gang.protoP\001b\006proto3"
+      "\n\nteleportId\030\t \001(\005H\010\210\001\001\022G\n\nweaponType\030\n " +
+      "\001(\0162..daikombat.dto.PushGameEventCommand" +
+      ".WeaponTypeH\t\210\001\001\0324\n\006Vector\022\016\n\001x\030\001 \001(\002H\000\210" +
+      "\001\001\022\016\n\001y\030\002 \001(\002H\001\210\001\001B\004\n\002_xB\004\n\002_y\"1\n\nWeapon" +
+      "Type\022\t\n\005PUNCH\020\000\022\013\n\007SHOTGUN\020\001\022\013\n\007RAILGUN\020" +
+      "\002\"~\n\rGameEventType\022\010\n\004MOVE\020\000\022\n\n\006ATTACK\020\001" +
+      "\022\030\n\024QUAD_DAMAGE_POWER_UP\020\002\022\031\n\025INVISIBILI" +
+      "TY_POWER_UP\020\003\022\024\n\020DEFENCE_POWER_UP\020\004\022\014\n\010T" +
+      "ELEPORT\020\005B\t\n\007_gameIdB\014\n\n_eventTypeB\013\n\t_p" +
+      "ositionB\014\n\n_directionB\013\n\t_playerIdB\023\n\021_a" +
+      "ffectedPlayerIdB\013\n\t_sequenceB\n\n\010_pingMls" +
+      "B\r\n\013_teleportIdB\r\n\013_weaponType*W\n\022SkinCo" +
+      "lorSelection\022\t\n\005GREEN\020\000\022\010\n\004PINK\020\001\022\n\n\006PUR" +
+      "PLE\020\002\022\010\n\004BLUE\020\003\022\n\n\006YELLOW\020\004\022\n\n\006ORANGE\020\005B" +
+      "&\n\"com.beverly.hills.money.gang.protoP\001b" +
+      "\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -169,7 +173,7 @@ public final class ServerCommandOuterClass {
     internal_static_daikombat_dto_PushGameEventCommand_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_PushGameEventCommand_descriptor,
-        new java.lang.String[] { "GameId", "EventType", "Position", "Direction", "PlayerId", "AffectedPlayerId", "Sequence", "PingMls", "TeleportId", });
+        new java.lang.String[] { "GameId", "EventType", "Position", "Direction", "PlayerId", "AffectedPlayerId", "Sequence", "PingMls", "TeleportId", "WeaponType", });
     internal_static_daikombat_dto_PushGameEventCommand_Vector_descriptor =
       internal_static_daikombat_dto_PushGameEventCommand_descriptor.getNestedTypes().get(0);
     internal_static_daikombat_dto_PushGameEventCommand_Vector_fieldAccessorTable = new

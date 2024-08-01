@@ -5,6 +5,10 @@
 package com.beverly.hills.money.gang.proto;
 
 /**
+ * <pre>
+ * TODO refactor
+ * </pre>
+ *
  * Protobuf type {@code daikombat.dto.PushGameEventCommand}
  */
 public final class PushGameEventCommand extends
@@ -18,6 +22,7 @@ private static final long serialVersionUID = 0L;
   }
   private PushGameEventCommand() {
     eventType_ = 0;
+    weaponType_ = 0;
   }
 
   @java.lang.Override
@@ -41,6 +46,123 @@ private static final long serialVersionUID = 0L;
   }
 
   /**
+   * Protobuf enum {@code daikombat.dto.PushGameEventCommand.WeaponType}
+   */
+  public enum WeaponType
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>PUNCH = 0;</code>
+     */
+    PUNCH(0),
+    /**
+     * <code>SHOTGUN = 1;</code>
+     */
+    SHOTGUN(1),
+    /**
+     * <code>RAILGUN = 2;</code>
+     */
+    RAILGUN(2),
+    UNRECOGNIZED(-1),
+    ;
+
+    /**
+     * <code>PUNCH = 0;</code>
+     */
+    public static final int PUNCH_VALUE = 0;
+    /**
+     * <code>SHOTGUN = 1;</code>
+     */
+    public static final int SHOTGUN_VALUE = 1;
+    /**
+     * <code>RAILGUN = 2;</code>
+     */
+    public static final int RAILGUN_VALUE = 2;
+
+
+    public final int getNumber() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalArgumentException(
+            "Can't get the number of an unknown enum value.");
+      }
+      return value;
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static WeaponType valueOf(int value) {
+      return forNumber(value);
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     */
+    public static WeaponType forNumber(int value) {
+      switch (value) {
+        case 0: return PUNCH;
+        case 1: return SHOTGUN;
+        case 2: return RAILGUN;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<WeaponType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        WeaponType> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<WeaponType>() {
+            public WeaponType findValueByNumber(int number) {
+              return WeaponType.forNumber(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalStateException(
+            "Can't get the descriptor of an unrecognized enum value.");
+      }
+      return getDescriptor().getValues().get(ordinal());
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return com.beverly.hills.money.gang.proto.PushGameEventCommand.getDescriptor().getEnumTypes().get(0);
+    }
+
+    private static final WeaponType[] VALUES = values();
+
+    public static WeaponType valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      if (desc.getIndex() == -1) {
+        return UNRECOGNIZED;
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int value;
+
+    private WeaponType(int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:daikombat.dto.PushGameEventCommand.WeaponType)
+  }
+
+  /**
    * Protobuf enum {@code daikombat.dto.PushGameEventCommand.GameEventType}
    */
   public enum GameEventType
@@ -50,29 +172,25 @@ private static final long serialVersionUID = 0L;
      */
     MOVE(0),
     /**
-     * <code>SHOOT = 1;</code>
+     * <code>ATTACK = 1;</code>
      */
-    SHOOT(1),
+    ATTACK(1),
     /**
-     * <code>PUNCH = 2;</code>
+     * <code>QUAD_DAMAGE_POWER_UP = 2;</code>
      */
-    PUNCH(2),
+    QUAD_DAMAGE_POWER_UP(2),
     /**
-     * <code>QUAD_DAMAGE_POWER_UP = 3;</code>
+     * <code>INVISIBILITY_POWER_UP = 3;</code>
      */
-    QUAD_DAMAGE_POWER_UP(3),
+    INVISIBILITY_POWER_UP(3),
     /**
-     * <code>INVISIBILITY_POWER_UP = 4;</code>
+     * <code>DEFENCE_POWER_UP = 4;</code>
      */
-    INVISIBILITY_POWER_UP(4),
+    DEFENCE_POWER_UP(4),
     /**
-     * <code>DEFENCE_POWER_UP = 5;</code>
+     * <code>TELEPORT = 5;</code>
      */
-    DEFENCE_POWER_UP(5),
-    /**
-     * <code>TELEPORT = 6;</code>
-     */
-    TELEPORT(6),
+    TELEPORT(5),
     UNRECOGNIZED(-1),
     ;
 
@@ -81,29 +199,25 @@ private static final long serialVersionUID = 0L;
      */
     public static final int MOVE_VALUE = 0;
     /**
-     * <code>SHOOT = 1;</code>
+     * <code>ATTACK = 1;</code>
      */
-    public static final int SHOOT_VALUE = 1;
+    public static final int ATTACK_VALUE = 1;
     /**
-     * <code>PUNCH = 2;</code>
+     * <code>QUAD_DAMAGE_POWER_UP = 2;</code>
      */
-    public static final int PUNCH_VALUE = 2;
+    public static final int QUAD_DAMAGE_POWER_UP_VALUE = 2;
     /**
-     * <code>QUAD_DAMAGE_POWER_UP = 3;</code>
+     * <code>INVISIBILITY_POWER_UP = 3;</code>
      */
-    public static final int QUAD_DAMAGE_POWER_UP_VALUE = 3;
+    public static final int INVISIBILITY_POWER_UP_VALUE = 3;
     /**
-     * <code>INVISIBILITY_POWER_UP = 4;</code>
+     * <code>DEFENCE_POWER_UP = 4;</code>
      */
-    public static final int INVISIBILITY_POWER_UP_VALUE = 4;
+    public static final int DEFENCE_POWER_UP_VALUE = 4;
     /**
-     * <code>DEFENCE_POWER_UP = 5;</code>
+     * <code>TELEPORT = 5;</code>
      */
-    public static final int DEFENCE_POWER_UP_VALUE = 5;
-    /**
-     * <code>TELEPORT = 6;</code>
-     */
-    public static final int TELEPORT_VALUE = 6;
+    public static final int TELEPORT_VALUE = 5;
 
 
     public final int getNumber() {
@@ -131,12 +245,11 @@ private static final long serialVersionUID = 0L;
     public static GameEventType forNumber(int value) {
       switch (value) {
         case 0: return MOVE;
-        case 1: return SHOOT;
-        case 2: return PUNCH;
-        case 3: return QUAD_DAMAGE_POWER_UP;
-        case 4: return INVISIBILITY_POWER_UP;
-        case 5: return DEFENCE_POWER_UP;
-        case 6: return TELEPORT;
+        case 1: return ATTACK;
+        case 2: return QUAD_DAMAGE_POWER_UP;
+        case 3: return INVISIBILITY_POWER_UP;
+        case 4: return DEFENCE_POWER_UP;
+        case 5: return TELEPORT;
         default: return null;
       }
     }
@@ -167,7 +280,7 @@ private static final long serialVersionUID = 0L;
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return com.beverly.hills.money.gang.proto.PushGameEventCommand.getDescriptor().getEnumTypes().get(0);
+      return com.beverly.hills.money.gang.proto.PushGameEventCommand.getDescriptor().getEnumTypes().get(1);
     }
 
     private static final GameEventType[] VALUES = values();
@@ -994,6 +1107,31 @@ private static final long serialVersionUID = 0L;
     return teleportId_;
   }
 
+  public static final int WEAPONTYPE_FIELD_NUMBER = 10;
+  private int weaponType_ = 0;
+  /**
+   * <code>optional .daikombat.dto.PushGameEventCommand.WeaponType weaponType = 10;</code>
+   * @return Whether the weaponType field is set.
+   */
+  @java.lang.Override public boolean hasWeaponType() {
+    return ((bitField0_ & 0x00000200) != 0);
+  }
+  /**
+   * <code>optional .daikombat.dto.PushGameEventCommand.WeaponType weaponType = 10;</code>
+   * @return The enum numeric value on the wire for weaponType.
+   */
+  @java.lang.Override public int getWeaponTypeValue() {
+    return weaponType_;
+  }
+  /**
+   * <code>optional .daikombat.dto.PushGameEventCommand.WeaponType weaponType = 10;</code>
+   * @return The weaponType.
+   */
+  @java.lang.Override public com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType getWeaponType() {
+    com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType result = com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType.forNumber(weaponType_);
+    return result == null ? com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType.UNRECOGNIZED : result;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -1034,6 +1172,9 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000100) != 0)) {
       output.writeInt32(9, teleportId_);
+    }
+    if (((bitField0_ & 0x00000200) != 0)) {
+      output.writeEnum(10, weaponType_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -1079,6 +1220,10 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000100) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(9, teleportId_);
+    }
+    if (((bitField0_ & 0x00000200) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(10, weaponType_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1139,6 +1284,10 @@ private static final long serialVersionUID = 0L;
       if (getTeleportId()
           != other.getTeleportId()) return false;
     }
+    if (hasWeaponType() != other.hasWeaponType()) return false;
+    if (hasWeaponType()) {
+      if (weaponType_ != other.weaponType_) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -1185,6 +1334,10 @@ private static final long serialVersionUID = 0L;
     if (hasTeleportId()) {
       hash = (37 * hash) + TELEPORTID_FIELD_NUMBER;
       hash = (53 * hash) + getTeleportId();
+    }
+    if (hasWeaponType()) {
+      hash = (37 * hash) + WEAPONTYPE_FIELD_NUMBER;
+      hash = (53 * hash) + weaponType_;
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -1284,6 +1437,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * TODO refactor
+   * </pre>
+   *
    * Protobuf type {@code daikombat.dto.PushGameEventCommand}
    */
   public static final class Builder extends
@@ -1341,6 +1498,7 @@ private static final long serialVersionUID = 0L;
       sequence_ = 0;
       pingMls_ = 0;
       teleportId_ = 0;
+      weaponType_ = 0;
       return this;
     }
 
@@ -1415,6 +1573,10 @@ private static final long serialVersionUID = 0L;
         result.teleportId_ = teleportId_;
         to_bitField0_ |= 0x00000100;
       }
+      if (((from_bitField0_ & 0x00000200) != 0)) {
+        result.weaponType_ = weaponType_;
+        to_bitField0_ |= 0x00000200;
+      }
       result.bitField0_ |= to_bitField0_;
     }
 
@@ -1488,6 +1650,9 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasTeleportId()) {
         setTeleportId(other.getTeleportId());
+      }
+      if (other.hasWeaponType()) {
+        setWeaponType(other.getWeaponType());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -1564,6 +1729,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000100;
               break;
             } // case 72
+            case 80: {
+              weaponType_ = input.readEnum();
+              bitField0_ |= 0x00000200;
+              break;
+            } // case 80
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -2119,6 +2289,66 @@ private static final long serialVersionUID = 0L;
     public Builder clearTeleportId() {
       bitField0_ = (bitField0_ & ~0x00000100);
       teleportId_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private int weaponType_ = 0;
+    /**
+     * <code>optional .daikombat.dto.PushGameEventCommand.WeaponType weaponType = 10;</code>
+     * @return Whether the weaponType field is set.
+     */
+    @java.lang.Override public boolean hasWeaponType() {
+      return ((bitField0_ & 0x00000200) != 0);
+    }
+    /**
+     * <code>optional .daikombat.dto.PushGameEventCommand.WeaponType weaponType = 10;</code>
+     * @return The enum numeric value on the wire for weaponType.
+     */
+    @java.lang.Override public int getWeaponTypeValue() {
+      return weaponType_;
+    }
+    /**
+     * <code>optional .daikombat.dto.PushGameEventCommand.WeaponType weaponType = 10;</code>
+     * @param value The enum numeric value on the wire for weaponType to set.
+     * @return This builder for chaining.
+     */
+    public Builder setWeaponTypeValue(int value) {
+      weaponType_ = value;
+      bitField0_ |= 0x00000200;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .daikombat.dto.PushGameEventCommand.WeaponType weaponType = 10;</code>
+     * @return The weaponType.
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType getWeaponType() {
+      com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType result = com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType.forNumber(weaponType_);
+      return result == null ? com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType.UNRECOGNIZED : result;
+    }
+    /**
+     * <code>optional .daikombat.dto.PushGameEventCommand.WeaponType weaponType = 10;</code>
+     * @param value The weaponType to set.
+     * @return This builder for chaining.
+     */
+    public Builder setWeaponType(com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      bitField0_ |= 0x00000200;
+      weaponType_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .daikombat.dto.PushGameEventCommand.WeaponType weaponType = 10;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearWeaponType() {
+      bitField0_ = (bitField0_ & ~0x00000200);
+      weaponType_ = 0;
       onChanged();
       return this;
     }

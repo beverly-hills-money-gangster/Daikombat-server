@@ -1,7 +1,6 @@
-package com.beverly.hills.money.gang.state;
+package com.beverly.hills.money.gang.state.entity;
 
 import com.beverly.hills.money.gang.powerup.PowerUp;
-import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 

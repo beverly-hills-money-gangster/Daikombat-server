@@ -3,7 +3,10 @@ package com.beverly.hills.money.gang.state;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
-import com.beverly.hills.money.gang.state.PlayerState.PlayerCoordinates;
+import com.beverly.hills.money.gang.state.entity.PlayerState;
+import com.beverly.hills.money.gang.state.entity.PlayerState.PlayerCoordinates;
+import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
+import com.beverly.hills.money.gang.state.entity.Vector;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -41,8 +44,8 @@ public class PlayerStateTest {
     PlayerState playerState = new PlayerState(
         "test player",
         PlayerState.PlayerCoordinates.builder().build(), 123, PlayerStateColor.GREEN);
-    playerState.getShot(1);
-    playerState.getShot(1);
+    playerState.getAttacked(AttackType.SHOTGUN, 1);
+    playerState.getAttacked(AttackType.SHOTGUN, 1);
 
     playerState.registerKill();
 
@@ -60,10 +63,10 @@ public class PlayerStateTest {
         "test player",
         PlayerState.PlayerCoordinates.builder().build(), 123, PlayerStateColor.GREEN);
 
-    playerState.getShot(1);
-    playerState.getShot(1);
-    playerState.getShot(1);
-    playerState.getShot(1);
+    playerState.getAttacked(AttackType.SHOTGUN, 1);
+    playerState.getAttacked(AttackType.SHOTGUN, 1);
+    playerState.getAttacked(AttackType.SHOTGUN, 1);
+    playerState.getAttacked(AttackType.SHOTGUN, 1);
 
     CountDownLatch latch = new CountDownLatch(1);
     List<Thread> threads = new ArrayList<>();

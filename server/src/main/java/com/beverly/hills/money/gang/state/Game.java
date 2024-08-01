@@ -12,6 +12,14 @@ import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import com.beverly.hills.money.gang.registry.PowerUpRegistry;
 import com.beverly.hills.money.gang.registry.TeleportRegistry;
 import com.beverly.hills.money.gang.spawner.Spawner;
+import com.beverly.hills.money.gang.state.entity.GameLeaderBoardItem;
+import com.beverly.hills.money.gang.state.entity.PlayerAttackingGameState;
+import com.beverly.hills.money.gang.state.entity.PlayerJoinedGameState;
+import com.beverly.hills.money.gang.state.entity.PlayerPowerUpGameState;
+import com.beverly.hills.money.gang.state.entity.PlayerRespawnedGameState;
+import com.beverly.hills.money.gang.state.entity.PlayerState;
+import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
+import com.beverly.hills.money.gang.state.entity.PlayerTeleportingGameState;
 import io.netty.channel.Channel;
 import java.io.Closeable;
 import java.util.List;
@@ -174,12 +182,7 @@ public class Game implements Closeable, GameReader {
         LOG.warn("You can't attack a dead player");
         return null;
       }
-
-      switch (attackType) {
-        case PUNCH -> attackedPlayer.getPunched(attackingPlayerState.getDamageAmplifier());
-        case SHOOT -> attackedPlayer.getShot(attackingPlayerState.getDamageAmplifier());
-        default -> throw new IllegalArgumentException("Not supported attack type " + attackType);
-      }
+      attackedPlayer.getAttacked(attackType, attackingPlayerState.getDamageAmplifier());
       if (attackedPlayer.isDead()) {
         attackingPlayerState.registerKill();
       }

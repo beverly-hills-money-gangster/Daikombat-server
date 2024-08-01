@@ -55,6 +55,7 @@ message RespawnCommand {
   optional int32 playerId = 2;
 }
 
+// TODO refactor
 message PushGameEventCommand {
   optional int32 gameId = 1;
   optional GameEventType eventType = 2;
@@ -65,19 +66,25 @@ message PushGameEventCommand {
   optional int32 sequence = 7;
   optional int32 pingMls = 8;
   optional int32 teleportId = 9;
+  optional WeaponType weaponType = 10;
 
   message Vector {
     optional float x = 1;
     optional float y = 2;
   }
 
+  enum WeaponType {
+    PUNCH = 0;
+    SHOTGUN = 1;
+    RAILGUN = 2;
+  }
+
   enum GameEventType {
     MOVE = 0;
-    SHOOT = 1;
-    PUNCH = 2;
-    QUAD_DAMAGE_POWER_UP = 3;
-    INVISIBILITY_POWER_UP = 4;
-    DEFENCE_POWER_UP = 5;
-    TELEPORT = 6;
+    ATTACK = 1;
+    QUAD_DAMAGE_POWER_UP = 2;
+    INVISIBILITY_POWER_UP = 3;
+    DEFENCE_POWER_UP = 4;
+    TELEPORT = 5;
   }
 }

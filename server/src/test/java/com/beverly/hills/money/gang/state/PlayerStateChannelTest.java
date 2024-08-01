@@ -18,6 +18,7 @@ import com.beverly.hills.money.gang.proto.ServerResponse.ChatEvent;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvents;
+import com.beverly.hills.money.gang.state.entity.PlayerState;
 import io.netty.channel.Channel;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,7 +49,7 @@ public class PlayerStateChannelTest {
             GameEvents.newBuilder().setPlayersOnline(123)
                 .addAllEvents(List.of(
                     GameEvent.newBuilder().setEventType(GameEventType.MOVE).build(),
-                    GameEvent.newBuilder().setEventType(GameEventType.PUNCH).build())))
+                    GameEvent.newBuilder().setEventType(GameEventType.ATTACK).build())))
         .build();
     ServerResponse newResponse = playerStateChannel.setEventSequence(serverResponse);
     assertTrue(newResponse.hasGameEvents());
@@ -67,7 +68,7 @@ public class PlayerStateChannelTest {
 
     assertEquals(GameEventType.MOVE, firstGameEvent.getEventType(),
         "Response data should be the same");
-    assertEquals(GameEventType.PUNCH, secondGameEvent.getEventType(),
+    assertEquals(GameEventType.ATTACK, secondGameEvent.getEventType(),
         "Response data should be the same");
     assertEquals(666, firstGameEvent.getSequence());
     assertEquals(777, secondGameEvent.getSequence());

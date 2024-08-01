@@ -11,6 +11,7 @@ import static org.mockito.Mockito.verify;
 
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
+import com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.queue.QueueAPI;
 import java.util.List;
@@ -52,8 +53,9 @@ public class LoadBalancedGameConnectionTest {
 
   @Test
   public void testWritePunch() {
-    var gameEvent = PushGameEventCommand.newBuilder().setGameId(0).setSequence(1).setEventType(
-        GameEventType.PUNCH).build();
+    var gameEvent = PushGameEventCommand.newBuilder().setGameId(0).setSequence(1)
+        .setEventType(GameEventType.ATTACK)
+        .setWeaponType(WeaponType.PUNCH).build();
     loadBalancedGameConnection.write(gameEvent);
 
     verify(secondaryGameConnection1, never()).write(any(PushGameEventCommand.class));

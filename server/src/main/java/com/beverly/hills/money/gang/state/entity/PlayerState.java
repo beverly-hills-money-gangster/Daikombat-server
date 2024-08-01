@@ -1,9 +1,11 @@
-package com.beverly.hills.money.gang.state;
+package com.beverly.hills.money.gang.state.entity;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
+import com.beverly.hills.money.gang.state.AttackType;
+import com.beverly.hills.money.gang.state.PlayerStateReader;
 import com.google.common.util.concurrent.AtomicDouble;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +25,17 @@ import org.slf4j.LoggerFactory;
 public class PlayerState implements PlayerStateReader {
 
   private static final Logger LOG = LoggerFactory.getLogger(PlayerState.class);
+
+  private static final Map<AttackType, Integer> ATTACK_DAMAGE = Map.of(
+      AttackType.PUNCH, ServerConfig.DEFAULT_PUNCH_DAMAGE,
+      AttackType.SHOTGUN, ServerConfig.DEFAULT_SHOTGUN_DAMAGE,
+      AttackType.RAILGUN, ServerConfig.DEFAULT_RAILGUN_DAMAGE);
+
+  static {
+    if (ATTACK_DAMAGE.size() != AttackType.values().length) {
+      throw new IllegalStateException("Not all attack types have damage configured");
+    }
+  }
 
   private final AtomicBoolean fullyJoined = new AtomicBoolean(false);
   public static final int VAMPIRE_HP_BOOST = 20;
@@ -152,20 +165,12 @@ public class PlayerState implements PlayerStateReader {
     return deaths.get();
   }
 
-  public void getShot(int damageAmplifier) {
+  public void getAttacked(AttackType attackType, int damageAmplifier) {
     if (health.addAndGet(
-        -(ServerConfig.DEFAULT_SHOTGUN_DAMAGE * damageAmplifier) / defenceAmplifier.get()) <= 0) {
+        -(ATTACK_DAMAGE.get(attackType) * damageAmplifier) / defenceAmplifier.get()) <= 0) {
       onDeath();
     }
   }
-
-  public void getPunched(int damageAmplifier) {
-    if (health.addAndGet(
-        -(ServerConfig.DEFAULT_PUNCH_DAMAGE * damageAmplifier) / defenceAmplifier.get()) <= 0) {
-      onDeath();
-    }
-  }
-
 
   private void onDeath() {
     deaths.incrementAndGet();

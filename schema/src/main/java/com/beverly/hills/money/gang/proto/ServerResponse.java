@@ -4006,6 +4006,30 @@ private static final long serialVersionUID = 0L;
      * @return The playerSpeed.
      */
     int getPlayerSpeed();
+
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+     */
+    java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo> 
+        getWeaponsInfoList();
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+     */
+    com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo getWeaponsInfo(int index);
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+     */
+    int getWeaponsInfoCount();
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+     */
+    java.util.List<? extends com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfoOrBuilder> 
+        getWeaponsInfoOrBuilderList();
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+     */
+    com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfoOrBuilder getWeaponsInfoOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.ServerInfo}
@@ -4022,6 +4046,7 @@ private static final long serialVersionUID = 0L;
     private ServerInfo() {
       games_ = java.util.Collections.emptyList();
       version_ = "";
+      weaponsInfo_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -4190,6 +4215,47 @@ private static final long serialVersionUID = 0L;
       return playerSpeed_;
     }
 
+    public static final int WEAPONSINFO_FIELD_NUMBER = 6;
+    @SuppressWarnings("serial")
+    private java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo> weaponsInfo_;
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+     */
+    @java.lang.Override
+    public java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo> getWeaponsInfoList() {
+      return weaponsInfo_;
+    }
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfoOrBuilder> 
+        getWeaponsInfoOrBuilderList() {
+      return weaponsInfo_;
+    }
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+     */
+    @java.lang.Override
+    public int getWeaponsInfoCount() {
+      return weaponsInfo_.size();
+    }
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo getWeaponsInfo(int index) {
+      return weaponsInfo_.get(index);
+    }
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfoOrBuilder getWeaponsInfoOrBuilder(
+        int index) {
+      return weaponsInfo_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -4219,6 +4285,9 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000008) != 0)) {
         output.writeInt32(5, playerSpeed_);
       }
+      for (int i = 0; i < weaponsInfo_.size(); i++) {
+        output.writeMessage(6, weaponsInfo_.get(i));
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -4246,6 +4315,10 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000008) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(5, playerSpeed_);
+      }
+      for (int i = 0; i < weaponsInfo_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(6, weaponsInfo_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -4284,6 +4357,8 @@ private static final long serialVersionUID = 0L;
         if (getPlayerSpeed()
             != other.getPlayerSpeed()) return false;
       }
+      if (!getWeaponsInfoList()
+          .equals(other.getWeaponsInfoList())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -4314,6 +4389,10 @@ private static final long serialVersionUID = 0L;
       if (hasPlayerSpeed()) {
         hash = (37 * hash) + PLAYERSPEED_FIELD_NUMBER;
         hash = (53 * hash) + getPlayerSpeed();
+      }
+      if (getWeaponsInfoCount() > 0) {
+        hash = (37 * hash) + WEAPONSINFO_FIELD_NUMBER;
+        hash = (53 * hash) + getWeaponsInfoList().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -4457,6 +4536,13 @@ private static final long serialVersionUID = 0L;
         fragsToWin_ = 0;
         movesUpdateFreqMls_ = 0;
         playerSpeed_ = 0;
+        if (weaponsInfoBuilder_ == null) {
+          weaponsInfo_ = java.util.Collections.emptyList();
+        } else {
+          weaponsInfo_ = null;
+          weaponsInfoBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000020);
         return this;
       }
 
@@ -4498,6 +4584,15 @@ private static final long serialVersionUID = 0L;
           result.games_ = games_;
         } else {
           result.games_ = gamesBuilder_.build();
+        }
+        if (weaponsInfoBuilder_ == null) {
+          if (((bitField0_ & 0x00000020) != 0)) {
+            weaponsInfo_ = java.util.Collections.unmodifiableList(weaponsInfo_);
+            bitField0_ = (bitField0_ & ~0x00000020);
+          }
+          result.weaponsInfo_ = weaponsInfo_;
+        } else {
+          result.weaponsInfo_ = weaponsInfoBuilder_.build();
         }
       }
 
@@ -4607,6 +4702,32 @@ private static final long serialVersionUID = 0L;
         if (other.hasPlayerSpeed()) {
           setPlayerSpeed(other.getPlayerSpeed());
         }
+        if (weaponsInfoBuilder_ == null) {
+          if (!other.weaponsInfo_.isEmpty()) {
+            if (weaponsInfo_.isEmpty()) {
+              weaponsInfo_ = other.weaponsInfo_;
+              bitField0_ = (bitField0_ & ~0x00000020);
+            } else {
+              ensureWeaponsInfoIsMutable();
+              weaponsInfo_.addAll(other.weaponsInfo_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.weaponsInfo_.isEmpty()) {
+            if (weaponsInfoBuilder_.isEmpty()) {
+              weaponsInfoBuilder_.dispose();
+              weaponsInfoBuilder_ = null;
+              weaponsInfo_ = other.weaponsInfo_;
+              bitField0_ = (bitField0_ & ~0x00000020);
+              weaponsInfoBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getWeaponsInfoFieldBuilder() : null;
+            } else {
+              weaponsInfoBuilder_.addAllMessages(other.weaponsInfo_);
+            }
+          }
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -4666,6 +4787,19 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000010;
                 break;
               } // case 40
+              case 50: {
+                com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo m =
+                    input.readMessage(
+                        com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo.parser(),
+                        extensionRegistry);
+                if (weaponsInfoBuilder_ == null) {
+                  ensureWeaponsInfoIsMutable();
+                  weaponsInfo_.add(m);
+                } else {
+                  weaponsInfoBuilder_.addMessage(m);
+                }
+                break;
+              } // case 50
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -5121,6 +5255,246 @@ private static final long serialVersionUID = 0L;
         onChanged();
         return this;
       }
+
+      private java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo> weaponsInfo_ =
+        java.util.Collections.emptyList();
+      private void ensureWeaponsInfoIsMutable() {
+        if (!((bitField0_ & 0x00000020) != 0)) {
+          weaponsInfo_ = new java.util.ArrayList<com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo>(weaponsInfo_);
+          bitField0_ |= 0x00000020;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo, com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo.Builder, com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfoOrBuilder> weaponsInfoBuilder_;
+
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+       */
+      public java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo> getWeaponsInfoList() {
+        if (weaponsInfoBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(weaponsInfo_);
+        } else {
+          return weaponsInfoBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+       */
+      public int getWeaponsInfoCount() {
+        if (weaponsInfoBuilder_ == null) {
+          return weaponsInfo_.size();
+        } else {
+          return weaponsInfoBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo getWeaponsInfo(int index) {
+        if (weaponsInfoBuilder_ == null) {
+          return weaponsInfo_.get(index);
+        } else {
+          return weaponsInfoBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+       */
+      public Builder setWeaponsInfo(
+          int index, com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo value) {
+        if (weaponsInfoBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureWeaponsInfoIsMutable();
+          weaponsInfo_.set(index, value);
+          onChanged();
+        } else {
+          weaponsInfoBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+       */
+      public Builder setWeaponsInfo(
+          int index, com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo.Builder builderForValue) {
+        if (weaponsInfoBuilder_ == null) {
+          ensureWeaponsInfoIsMutable();
+          weaponsInfo_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          weaponsInfoBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+       */
+      public Builder addWeaponsInfo(com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo value) {
+        if (weaponsInfoBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureWeaponsInfoIsMutable();
+          weaponsInfo_.add(value);
+          onChanged();
+        } else {
+          weaponsInfoBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+       */
+      public Builder addWeaponsInfo(
+          int index, com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo value) {
+        if (weaponsInfoBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureWeaponsInfoIsMutable();
+          weaponsInfo_.add(index, value);
+          onChanged();
+        } else {
+          weaponsInfoBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+       */
+      public Builder addWeaponsInfo(
+          com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo.Builder builderForValue) {
+        if (weaponsInfoBuilder_ == null) {
+          ensureWeaponsInfoIsMutable();
+          weaponsInfo_.add(builderForValue.build());
+          onChanged();
+        } else {
+          weaponsInfoBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+       */
+      public Builder addWeaponsInfo(
+          int index, com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo.Builder builderForValue) {
+        if (weaponsInfoBuilder_ == null) {
+          ensureWeaponsInfoIsMutable();
+          weaponsInfo_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          weaponsInfoBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+       */
+      public Builder addAllWeaponsInfo(
+          java.lang.Iterable<? extends com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo> values) {
+        if (weaponsInfoBuilder_ == null) {
+          ensureWeaponsInfoIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, weaponsInfo_);
+          onChanged();
+        } else {
+          weaponsInfoBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+       */
+      public Builder clearWeaponsInfo() {
+        if (weaponsInfoBuilder_ == null) {
+          weaponsInfo_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000020);
+          onChanged();
+        } else {
+          weaponsInfoBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+       */
+      public Builder removeWeaponsInfo(int index) {
+        if (weaponsInfoBuilder_ == null) {
+          ensureWeaponsInfoIsMutable();
+          weaponsInfo_.remove(index);
+          onChanged();
+        } else {
+          weaponsInfoBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo.Builder getWeaponsInfoBuilder(
+          int index) {
+        return getWeaponsInfoFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfoOrBuilder getWeaponsInfoOrBuilder(
+          int index) {
+        if (weaponsInfoBuilder_ == null) {
+          return weaponsInfo_.get(index);  } else {
+          return weaponsInfoBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+       */
+      public java.util.List<? extends com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfoOrBuilder> 
+           getWeaponsInfoOrBuilderList() {
+        if (weaponsInfoBuilder_ != null) {
+          return weaponsInfoBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(weaponsInfo_);
+        }
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo.Builder addWeaponsInfoBuilder() {
+        return getWeaponsInfoFieldBuilder().addBuilder(
+            com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo.Builder addWeaponsInfoBuilder(
+          int index) {
+        return getWeaponsInfoFieldBuilder().addBuilder(
+            index, com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
+       */
+      public java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo.Builder> 
+           getWeaponsInfoBuilderList() {
+        return getWeaponsInfoFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo, com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo.Builder, com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfoOrBuilder> 
+          getWeaponsInfoFieldBuilder() {
+        if (weaponsInfoBuilder_ == null) {
+          weaponsInfoBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo, com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo.Builder, com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfoOrBuilder>(
+                  weaponsInfo_,
+                  ((bitField0_ & 0x00000020) != 0),
+                  getParentForChildren(),
+                  isClean());
+          weaponsInfo_ = null;
+        }
+        return weaponsInfoBuilder_;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -5180,6 +5554,644 @@ private static final long serialVersionUID = 0L;
 
     @java.lang.Override
     public com.beverly.hills.money.gang.proto.ServerResponse.ServerInfo getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface WeaponInfoOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:daikombat.dto.ServerResponse.WeaponInfo)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.GameEvent.WeaponType weaponType = 1;</code>
+     * @return Whether the weaponType field is set.
+     */
+    boolean hasWeaponType();
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.GameEvent.WeaponType weaponType = 1;</code>
+     * @return The enum numeric value on the wire for weaponType.
+     */
+    int getWeaponTypeValue();
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.GameEvent.WeaponType weaponType = 1;</code>
+     * @return The weaponType.
+     */
+    com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.WeaponType getWeaponType();
+
+    /**
+     * <code>optional double maxDistance = 2;</code>
+     * @return Whether the maxDistance field is set.
+     */
+    boolean hasMaxDistance();
+    /**
+     * <code>optional double maxDistance = 2;</code>
+     * @return The maxDistance.
+     */
+    double getMaxDistance();
+  }
+  /**
+   * Protobuf type {@code daikombat.dto.ServerResponse.WeaponInfo}
+   */
+  public static final class WeaponInfo extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:daikombat.dto.ServerResponse.WeaponInfo)
+      WeaponInfoOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use WeaponInfo.newBuilder() to construct.
+    private WeaponInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private WeaponInfo() {
+      weaponType_ = 0;
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new WeaponInfo();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_WeaponInfo_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_WeaponInfo_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo.class, com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int WEAPONTYPE_FIELD_NUMBER = 1;
+    private int weaponType_ = 0;
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.GameEvent.WeaponType weaponType = 1;</code>
+     * @return Whether the weaponType field is set.
+     */
+    @java.lang.Override public boolean hasWeaponType() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.GameEvent.WeaponType weaponType = 1;</code>
+     * @return The enum numeric value on the wire for weaponType.
+     */
+    @java.lang.Override public int getWeaponTypeValue() {
+      return weaponType_;
+    }
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.GameEvent.WeaponType weaponType = 1;</code>
+     * @return The weaponType.
+     */
+    @java.lang.Override public com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.WeaponType getWeaponType() {
+      com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.WeaponType result = com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.WeaponType.forNumber(weaponType_);
+      return result == null ? com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.WeaponType.UNRECOGNIZED : result;
+    }
+
+    public static final int MAXDISTANCE_FIELD_NUMBER = 2;
+    private double maxDistance_ = 0D;
+    /**
+     * <code>optional double maxDistance = 2;</code>
+     * @return Whether the maxDistance field is set.
+     */
+    @java.lang.Override
+    public boolean hasMaxDistance() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>optional double maxDistance = 2;</code>
+     * @return The maxDistance.
+     */
+    @java.lang.Override
+    public double getMaxDistance() {
+      return maxDistance_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeEnum(1, weaponType_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        output.writeDouble(2, maxDistance_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(1, weaponType_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(2, maxDistance_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo)) {
+        return super.equals(obj);
+      }
+      com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo other = (com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo) obj;
+
+      if (hasWeaponType() != other.hasWeaponType()) return false;
+      if (hasWeaponType()) {
+        if (weaponType_ != other.weaponType_) return false;
+      }
+      if (hasMaxDistance() != other.hasMaxDistance()) return false;
+      if (hasMaxDistance()) {
+        if (java.lang.Double.doubleToLongBits(getMaxDistance())
+            != java.lang.Double.doubleToLongBits(
+                other.getMaxDistance())) return false;
+      }
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasWeaponType()) {
+        hash = (37 * hash) + WEAPONTYPE_FIELD_NUMBER;
+        hash = (53 * hash) + weaponType_;
+      }
+      if (hasMaxDistance()) {
+        hash = (37 * hash) + MAXDISTANCE_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            java.lang.Double.doubleToLongBits(getMaxDistance()));
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code daikombat.dto.ServerResponse.WeaponInfo}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:daikombat.dto.ServerResponse.WeaponInfo)
+        com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfoOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_WeaponInfo_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_WeaponInfo_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo.class, com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo.Builder.class);
+      }
+
+      // Construct using com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        weaponType_ = 0;
+        maxDistance_ = 0D;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_WeaponInfo_descriptor;
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo getDefaultInstanceForType() {
+        return com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo build() {
+        com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo buildPartial() {
+        com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo result = new com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo result) {
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.weaponType_ = weaponType_;
+          to_bitField0_ |= 0x00000001;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.maxDistance_ = maxDistance_;
+          to_bitField0_ |= 0x00000002;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo) {
+          return mergeFrom((com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo other) {
+        if (other == com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo.getDefaultInstance()) return this;
+        if (other.hasWeaponType()) {
+          setWeaponType(other.getWeaponType());
+        }
+        if (other.hasMaxDistance()) {
+          setMaxDistance(other.getMaxDistance());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                weaponType_ = input.readEnum();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              case 17: {
+                maxDistance_ = input.readDouble();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 17
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private int weaponType_ = 0;
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.GameEvent.WeaponType weaponType = 1;</code>
+       * @return Whether the weaponType field is set.
+       */
+      @java.lang.Override public boolean hasWeaponType() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.GameEvent.WeaponType weaponType = 1;</code>
+       * @return The enum numeric value on the wire for weaponType.
+       */
+      @java.lang.Override public int getWeaponTypeValue() {
+        return weaponType_;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.GameEvent.WeaponType weaponType = 1;</code>
+       * @param value The enum numeric value on the wire for weaponType to set.
+       * @return This builder for chaining.
+       */
+      public Builder setWeaponTypeValue(int value) {
+        weaponType_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.GameEvent.WeaponType weaponType = 1;</code>
+       * @return The weaponType.
+       */
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.WeaponType getWeaponType() {
+        com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.WeaponType result = com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.WeaponType.forNumber(weaponType_);
+        return result == null ? com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.WeaponType.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.GameEvent.WeaponType weaponType = 1;</code>
+       * @param value The weaponType to set.
+       * @return This builder for chaining.
+       */
+      public Builder setWeaponType(com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.WeaponType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000001;
+        weaponType_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.GameEvent.WeaponType weaponType = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearWeaponType() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        weaponType_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private double maxDistance_ ;
+      /**
+       * <code>optional double maxDistance = 2;</code>
+       * @return Whether the maxDistance field is set.
+       */
+      @java.lang.Override
+      public boolean hasMaxDistance() {
+        return ((bitField0_ & 0x00000002) != 0);
+      }
+      /**
+       * <code>optional double maxDistance = 2;</code>
+       * @return The maxDistance.
+       */
+      @java.lang.Override
+      public double getMaxDistance() {
+        return maxDistance_;
+      }
+      /**
+       * <code>optional double maxDistance = 2;</code>
+       * @param value The maxDistance to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxDistance(double value) {
+
+        maxDistance_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional double maxDistance = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxDistance() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        maxDistance_ = 0D;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:daikombat.dto.ServerResponse.WeaponInfo)
+    }
+
+    // @@protoc_insertion_point(class_scope:daikombat.dto.ServerResponse.WeaponInfo)
+    private static final com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo();
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<WeaponInfo>
+        PARSER = new com.google.protobuf.AbstractParser<WeaponInfo>() {
+      @java.lang.Override
+      public WeaponInfo parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<WeaponInfo> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<WeaponInfo> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -9556,6 +10568,22 @@ private static final long serialVersionUID = 0L;
      * @return The sequence.
      */
     int getSequence();
+
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.GameEvent.WeaponType weaponType = 6;</code>
+     * @return Whether the weaponType field is set.
+     */
+    boolean hasWeaponType();
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.GameEvent.WeaponType weaponType = 6;</code>
+     * @return The enum numeric value on the wire for weaponType.
+     */
+    int getWeaponTypeValue();
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.GameEvent.WeaponType weaponType = 6;</code>
+     * @return The weaponType.
+     */
+    com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.WeaponType getWeaponType();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.GameEvent}
@@ -9571,6 +10599,7 @@ private static final long serialVersionUID = 0L;
     }
     private GameEvent() {
       eventType_ = 0;
+      weaponType_ = 0;
     }
 
     @java.lang.Override
@@ -9603,17 +10632,17 @@ private static final long serialVersionUID = 0L;
        */
       MOVE(0),
       /**
-       * <code>SHOOT = 1;</code>
+       * <code>ATTACK = 1;</code>
        */
-      SHOOT(1),
+      ATTACK(1),
       /**
-       * <code>GET_SHOT = 2;</code>
+       * <code>GET_ATTACKED = 2;</code>
        */
-      GET_SHOT(2),
+      GET_ATTACKED(2),
       /**
-       * <code>KILL_SHOOTING = 3;</code>
+       * <code>KILL = 3;</code>
        */
-      KILL_SHOOTING(3),
+      KILL(3),
       /**
        * <code>SPAWN = 4;</code>
        */
@@ -9623,21 +10652,9 @@ private static final long serialVersionUID = 0L;
        */
       EXIT(5),
       /**
-       * <code>GET_PUNCHED = 6;</code>
+       * <code>TELEPORT = 6;</code>
        */
-      GET_PUNCHED(6),
-      /**
-       * <code>KILL_PUNCHING = 7;</code>
-       */
-      KILL_PUNCHING(7),
-      /**
-       * <code>PUNCH = 8;</code>
-       */
-      PUNCH(8),
-      /**
-       * <code>TELEPORT = 9;</code>
-       */
-      TELEPORT(9),
+      TELEPORT(6),
       UNRECOGNIZED(-1),
       ;
 
@@ -9646,17 +10663,17 @@ private static final long serialVersionUID = 0L;
        */
       public static final int MOVE_VALUE = 0;
       /**
-       * <code>SHOOT = 1;</code>
+       * <code>ATTACK = 1;</code>
        */
-      public static final int SHOOT_VALUE = 1;
+      public static final int ATTACK_VALUE = 1;
       /**
-       * <code>GET_SHOT = 2;</code>
+       * <code>GET_ATTACKED = 2;</code>
        */
-      public static final int GET_SHOT_VALUE = 2;
+      public static final int GET_ATTACKED_VALUE = 2;
       /**
-       * <code>KILL_SHOOTING = 3;</code>
+       * <code>KILL = 3;</code>
        */
-      public static final int KILL_SHOOTING_VALUE = 3;
+      public static final int KILL_VALUE = 3;
       /**
        * <code>SPAWN = 4;</code>
        */
@@ -9666,21 +10683,9 @@ private static final long serialVersionUID = 0L;
        */
       public static final int EXIT_VALUE = 5;
       /**
-       * <code>GET_PUNCHED = 6;</code>
+       * <code>TELEPORT = 6;</code>
        */
-      public static final int GET_PUNCHED_VALUE = 6;
-      /**
-       * <code>KILL_PUNCHING = 7;</code>
-       */
-      public static final int KILL_PUNCHING_VALUE = 7;
-      /**
-       * <code>PUNCH = 8;</code>
-       */
-      public static final int PUNCH_VALUE = 8;
-      /**
-       * <code>TELEPORT = 9;</code>
-       */
-      public static final int TELEPORT_VALUE = 9;
+      public static final int TELEPORT_VALUE = 6;
 
 
       public final int getNumber() {
@@ -9708,15 +10713,12 @@ private static final long serialVersionUID = 0L;
       public static GameEventType forNumber(int value) {
         switch (value) {
           case 0: return MOVE;
-          case 1: return SHOOT;
-          case 2: return GET_SHOT;
-          case 3: return KILL_SHOOTING;
+          case 1: return ATTACK;
+          case 2: return GET_ATTACKED;
+          case 3: return KILL;
           case 4: return SPAWN;
           case 5: return EXIT;
-          case 6: return GET_PUNCHED;
-          case 7: return KILL_PUNCHING;
-          case 8: return PUNCH;
-          case 9: return TELEPORT;
+          case 6: return TELEPORT;
           default: return null;
         }
       }
@@ -9771,6 +10773,123 @@ private static final long serialVersionUID = 0L;
       }
 
       // @@protoc_insertion_point(enum_scope:daikombat.dto.ServerResponse.GameEvent.GameEventType)
+    }
+
+    /**
+     * Protobuf enum {@code daikombat.dto.ServerResponse.GameEvent.WeaponType}
+     */
+    public enum WeaponType
+        implements com.google.protobuf.ProtocolMessageEnum {
+      /**
+       * <code>PUNCH = 0;</code>
+       */
+      PUNCH(0),
+      /**
+       * <code>SHOTGUN = 1;</code>
+       */
+      SHOTGUN(1),
+      /**
+       * <code>RAILGUN = 2;</code>
+       */
+      RAILGUN(2),
+      UNRECOGNIZED(-1),
+      ;
+
+      /**
+       * <code>PUNCH = 0;</code>
+       */
+      public static final int PUNCH_VALUE = 0;
+      /**
+       * <code>SHOTGUN = 1;</code>
+       */
+      public static final int SHOTGUN_VALUE = 1;
+      /**
+       * <code>RAILGUN = 2;</code>
+       */
+      public static final int RAILGUN_VALUE = 2;
+
+
+      public final int getNumber() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalArgumentException(
+              "Can't get the number of an unknown enum value.");
+        }
+        return value;
+      }
+
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
+      public static WeaponType valueOf(int value) {
+        return forNumber(value);
+      }
+
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       */
+      public static WeaponType forNumber(int value) {
+        switch (value) {
+          case 0: return PUNCH;
+          case 1: return SHOTGUN;
+          case 2: return RAILGUN;
+          default: return null;
+        }
+      }
+
+      public static com.google.protobuf.Internal.EnumLiteMap<WeaponType>
+          internalGetValueMap() {
+        return internalValueMap;
+      }
+      private static final com.google.protobuf.Internal.EnumLiteMap<
+          WeaponType> internalValueMap =
+            new com.google.protobuf.Internal.EnumLiteMap<WeaponType>() {
+              public WeaponType findValueByNumber(int number) {
+                return WeaponType.forNumber(number);
+              }
+            };
+
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalStateException(
+              "Can't get the descriptor of an unrecognized enum value.");
+        }
+        return getDescriptor().getValues().get(ordinal());
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.getDescriptor().getEnumTypes().get(1);
+      }
+
+      private static final WeaponType[] VALUES = values();
+
+      public static WeaponType valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
+        return VALUES[desc.getIndex()];
+      }
+
+      private final int value;
+
+      private WeaponType(int value) {
+        this.value = value;
+      }
+
+      // @@protoc_insertion_point(enum_scope:daikombat.dto.ServerResponse.GameEvent.WeaponType)
     }
 
     private int bitField0_;
@@ -9889,6 +11008,31 @@ private static final long serialVersionUID = 0L;
       return sequence_;
     }
 
+    public static final int WEAPONTYPE_FIELD_NUMBER = 6;
+    private int weaponType_ = 0;
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.GameEvent.WeaponType weaponType = 6;</code>
+     * @return Whether the weaponType field is set.
+     */
+    @java.lang.Override public boolean hasWeaponType() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.GameEvent.WeaponType weaponType = 6;</code>
+     * @return The enum numeric value on the wire for weaponType.
+     */
+    @java.lang.Override public int getWeaponTypeValue() {
+      return weaponType_;
+    }
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.GameEvent.WeaponType weaponType = 6;</code>
+     * @return The weaponType.
+     */
+    @java.lang.Override public com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.WeaponType getWeaponType() {
+      com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.WeaponType result = com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.WeaponType.forNumber(weaponType_);
+      return result == null ? com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.WeaponType.UNRECOGNIZED : result;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -9918,6 +11062,9 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000008) != 0)) {
         output.writeInt32(5, sequence_);
       }
+      if (((bitField0_ & 0x00000010) != 0)) {
+        output.writeEnum(6, weaponType_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -9946,6 +11093,10 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000008) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(5, sequence_);
+      }
+      if (((bitField0_ & 0x00000010) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(6, weaponType_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -9983,6 +11134,10 @@ private static final long serialVersionUID = 0L;
         if (getSequence()
             != other.getSequence()) return false;
       }
+      if (hasWeaponType() != other.hasWeaponType()) return false;
+      if (hasWeaponType()) {
+        if (weaponType_ != other.weaponType_) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -10011,6 +11166,10 @@ private static final long serialVersionUID = 0L;
       if (hasSequence()) {
         hash = (37 * hash) + SEQUENCE_FIELD_NUMBER;
         hash = (53 * hash) + getSequence();
+      }
+      if (hasWeaponType()) {
+        hash = (37 * hash) + WEAPONTYPE_FIELD_NUMBER;
+        hash = (53 * hash) + weaponType_;
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -10168,6 +11327,7 @@ private static final long serialVersionUID = 0L;
           leaderBoardBuilder_ = null;
         }
         sequence_ = 0;
+        weaponType_ = 0;
         return this;
       }
 
@@ -10226,6 +11386,10 @@ private static final long serialVersionUID = 0L;
         if (((from_bitField0_ & 0x00000010) != 0)) {
           result.sequence_ = sequence_;
           to_bitField0_ |= 0x00000008;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.weaponType_ = weaponType_;
+          to_bitField0_ |= 0x00000010;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -10289,6 +11453,9 @@ private static final long serialVersionUID = 0L;
         if (other.hasSequence()) {
           setSequence(other.getSequence());
         }
+        if (other.hasWeaponType()) {
+          setWeaponType(other.getWeaponType());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -10346,6 +11513,11 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000010;
                 break;
               } // case 40
+              case 48: {
+                weaponType_ = input.readEnum();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 48
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -10815,6 +11987,66 @@ private static final long serialVersionUID = 0L;
       public Builder clearSequence() {
         bitField0_ = (bitField0_ & ~0x00000010);
         sequence_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int weaponType_ = 0;
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.GameEvent.WeaponType weaponType = 6;</code>
+       * @return Whether the weaponType field is set.
+       */
+      @java.lang.Override public boolean hasWeaponType() {
+        return ((bitField0_ & 0x00000020) != 0);
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.GameEvent.WeaponType weaponType = 6;</code>
+       * @return The enum numeric value on the wire for weaponType.
+       */
+      @java.lang.Override public int getWeaponTypeValue() {
+        return weaponType_;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.GameEvent.WeaponType weaponType = 6;</code>
+       * @param value The enum numeric value on the wire for weaponType to set.
+       * @return This builder for chaining.
+       */
+      public Builder setWeaponTypeValue(int value) {
+        weaponType_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.GameEvent.WeaponType weaponType = 6;</code>
+       * @return The weaponType.
+       */
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.WeaponType getWeaponType() {
+        com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.WeaponType result = com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.WeaponType.forNumber(weaponType_);
+        return result == null ? com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.WeaponType.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.GameEvent.WeaponType weaponType = 6;</code>
+       * @param value The weaponType to set.
+       * @return This builder for chaining.
+       */
+      public Builder setWeaponType(com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.WeaponType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000020;
+        weaponType_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.GameEvent.WeaponType weaponType = 6;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearWeaponType() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        weaponType_ = 0;
         onChanged();
         return this;
       }

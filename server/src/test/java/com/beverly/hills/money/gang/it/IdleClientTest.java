@@ -10,13 +10,12 @@ import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
+import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
+import com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.SkinColorSelection;
 import java.io.IOException;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Stream;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -185,7 +184,8 @@ public class IdleClientTest extends AbstractGameServerTest {
           .setPlayerId(puncherPlayerId)
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
           .setGameId(gameIdToConnectTo)
-          .setEventType(PushGameEventCommand.GameEventType.PUNCH)
+          .setEventType(GameEventType.ATTACK)
+          .setWeaponType(WeaponType.PUNCH)
           .setDirection(
               PushGameEventCommand.Vector.newBuilder()
                   .setX(puncherSpawnEvent.getPlayer().getDirection().getX())
@@ -205,7 +205,8 @@ public class IdleClientTest extends AbstractGameServerTest {
         .setPlayerId(puncherPlayerId)
         .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
         .setGameId(gameIdToConnectTo)
-        .setEventType(PushGameEventCommand.GameEventType.PUNCH)
+        .setEventType(GameEventType.ATTACK)
+        .setWeaponType(WeaponType.PUNCH)
         .setDirection(
             PushGameEventCommand.Vector.newBuilder()
                 .setX(puncherSpawnEvent.getPlayer().getDirection().getX())

@@ -1,7 +1,7 @@
 package com.beverly.hills.money.gang.teleport;
 
-import com.beverly.hills.money.gang.state.PlayerState.PlayerCoordinates;
-import com.beverly.hills.money.gang.state.Vector;
+import com.beverly.hills.money.gang.state.entity.PlayerState.PlayerCoordinates;
+import com.beverly.hills.money.gang.state.entity.Vector;
 import lombok.Builder;
 import lombok.Getter;
 

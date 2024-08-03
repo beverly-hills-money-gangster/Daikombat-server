@@ -5,6 +5,7 @@ import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType;
+import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.WeaponType;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStats;
 import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUp;
 import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType;
@@ -13,17 +14,20 @@ import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent;
 import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem;
 import com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent;
 import com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem;
+import com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo;
 import com.beverly.hills.money.gang.state.AttackType;
-import com.beverly.hills.money.gang.state.GameLeaderBoardItem;
 import com.beverly.hills.money.gang.state.GameReader;
-import com.beverly.hills.money.gang.state.PlayerJoinedGameState;
-import com.beverly.hills.money.gang.state.PlayerRespawnedGameState;
-import com.beverly.hills.money.gang.state.PlayerState;
-import com.beverly.hills.money.gang.state.PlayerStateColor;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
-import com.beverly.hills.money.gang.state.Vector;
+import com.beverly.hills.money.gang.state.entity.AttackInfo;
+import com.beverly.hills.money.gang.state.entity.GameLeaderBoardItem;
+import com.beverly.hills.money.gang.state.entity.PlayerJoinedGameState;
+import com.beverly.hills.money.gang.state.entity.PlayerRespawnedGameState;
+import com.beverly.hills.money.gang.state.entity.PlayerState;
+import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
+import com.beverly.hills.money.gang.state.entity.Vector;
 import com.beverly.hills.money.gang.teleport.Teleport;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -126,6 +130,7 @@ public interface ServerResponseFactory {
   static ServerResponse createServerInfo(
       String serverVersion, Stream<GameReader> games,
       int fragsToWin,
+      List<AttackInfo> attacksInfo,
       int movesUpdateFreqMls,
       int playerSpeed) {
     var serverInfo = ServerResponse.ServerInfo.newBuilder();
@@ -133,6 +138,10 @@ public interface ServerResponseFactory {
     serverInfo.setPlayerSpeed(playerSpeed);
     serverInfo.setMovesUpdateFreqMls(movesUpdateFreqMls);
     serverInfo.setVersion(serverVersion);
+    serverInfo.addAllWeaponsInfo(attacksInfo.stream().map(attackInfo -> WeaponInfo.newBuilder()
+        .setWeaponType(getWeaponType(attackInfo.getAttackType()))
+        .setMaxDistance(attackInfo.getMaxDistance())
+        .build()).collect(Collectors.toList()));
     games.forEach(game
         -> serverInfo.addGames(
         ServerResponse.GameInfo.newBuilder()
@@ -239,28 +248,6 @@ public interface ServerResponseFactory {
         .build();
   }
 
-  static ServerResponse createKillShootingEvent(
-      int playersOnline,
-      PlayerStateReader shooterPlayerReader,
-      PlayerStateReader deadPlayerReader) {
-    return createKillEvent(
-        playersOnline,
-        shooterPlayerReader,
-        deadPlayerReader,
-        ServerResponse.GameEvent.GameEventType.KILL_SHOOTING);
-  }
-
-  static ServerResponse createKillPunchingEvent(
-      int playersOnline,
-      PlayerStateReader shooterPlayerReader,
-      PlayerStateReader deadPlayerReader) {
-    return createKillEvent(
-        playersOnline,
-        shooterPlayerReader,
-        deadPlayerReader,
-        ServerResponse.GameEvent.GameEventType.KILL_PUNCHING);
-  }
-
 
   static ServerResponse createGameOverEvent(
       List<GameLeaderBoardItem> leaderBoard) {
@@ -274,10 +261,11 @@ public interface ServerResponseFactory {
       int playersOnline,
       PlayerStateReader shooterPlayerReader,
       PlayerStateReader deadPlayerReader,
-      ServerResponse.GameEvent.GameEventType killType) {
+      AttackType attackType) {
     var deadPlayerEvent = ServerResponse.GameEvents.newBuilder()
         .addEvents(ServerResponse.GameEvent.newBuilder()
-            .setEventType(killType)
+            .setEventType(GameEventType.KILL)
+            .setWeaponType(getWeaponType(attackType))
             .setPlayer(createFullPlayerStats(shooterPlayerReader))
             .setAffectedPlayer(createFullPlayerStats(deadPlayerReader)))
         .setPlayersOnline(playersOnline);
@@ -290,13 +278,10 @@ public interface ServerResponseFactory {
       PlayerStateReader shooterPlayerReader,
       PlayerStateReader shotPlayerReader,
       AttackType attackType) {
-    ServerResponse.GameEvent.GameEventType attackEventType = switch (attackType) {
-      case PUNCH -> ServerResponse.GameEvent.GameEventType.GET_PUNCHED;
-      case SHOOT -> ServerResponse.GameEvent.GameEventType.GET_SHOT;
-    };
     var deadPlayerEvent = ServerResponse.GameEvents.newBuilder()
         .addEvents(ServerResponse.GameEvent.newBuilder()
-            .setEventType(attackEventType)
+            .setEventType(GameEventType.GET_ATTACKED)
+            .setWeaponType(getWeaponType(attackType))
             .setPlayer(createFullPlayerStats(shooterPlayerReader))
             .setAffectedPlayer(createFullPlayerStats(shotPlayerReader)));
     deadPlayerEvent.setPlayersOnline(playersOnline);
@@ -305,29 +290,27 @@ public interface ServerResponseFactory {
         .build();
   }
 
-  static ServerResponse createShootingEvent(int playersOnline,
-      PlayerStateReader shooterPlayerReader) {
-    return createAttackingEvent(playersOnline, shooterPlayerReader,
-        ServerResponse.GameEvent.GameEventType.SHOOT);
-  }
-
-  static ServerResponse createPunchingEvent(int playersOnline,
-      PlayerStateReader puncherPlayerReader) {
-    return createAttackingEvent(playersOnline, puncherPlayerReader,
-        ServerResponse.GameEvent.GameEventType.PUNCH);
-  }
-
-  static ServerResponse createAttackingEvent(int playersOnline,
+  static ServerResponse createAttackingEvent(
+      int playersOnline,
       PlayerStateReader shooterPlayerReader,
-      ServerResponse.GameEvent.GameEventType attackType) {
+      AttackType attackType) {
     var deadPlayerEvent = ServerResponse.GameEvents.newBuilder()
         .addEvents(ServerResponse.GameEvent.newBuilder()
-            .setEventType(attackType)
+            .setEventType(GameEventType.ATTACK)
+            .setWeaponType(getWeaponType(attackType))
             .setPlayer(createFullPlayerStats(shooterPlayerReader)));
     deadPlayerEvent.setPlayersOnline(playersOnline);
     return ServerResponse.newBuilder()
         .setGameEvents(deadPlayerEvent)
         .build();
+  }
+
+  private static WeaponType getWeaponType(AttackType attackType) {
+    return switch (attackType) {
+      case PUNCH -> WeaponType.PUNCH;
+      case SHOTGUN -> WeaponType.SHOTGUN;
+      case RAILGUN -> WeaponType.RAILGUN;
+    };
   }
 
   static ServerResponse createJoinSinglePlayer(int playersOnline,

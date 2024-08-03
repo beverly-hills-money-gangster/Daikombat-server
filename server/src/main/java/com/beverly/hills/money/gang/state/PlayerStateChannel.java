@@ -2,6 +2,7 @@ package com.beverly.hills.money.gang.state;
 
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
+import com.beverly.hills.money.gang.state.entity.PlayerState;
 import com.beverly.hills.money.gang.util.NetworkUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;

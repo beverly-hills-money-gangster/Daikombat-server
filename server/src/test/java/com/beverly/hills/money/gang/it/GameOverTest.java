@@ -1,12 +1,12 @@
 package com.beverly.hills.money.gang.it;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
+import com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType;
 import com.beverly.hills.money.gang.proto.SkinColorSelection;
@@ -72,7 +72,8 @@ public class GameOverTest extends AbstractGameServerTest {
           .setPlayerId(shooterPlayerId)
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
           .setGameId(gameIdToConnectTo)
-          .setEventType(PushGameEventCommand.GameEventType.SHOOT)
+          .setEventType(PushGameEventCommand.GameEventType.ATTACK)
+          .setWeaponType(WeaponType.SHOTGUN)
           .setDirection(
               PushGameEventCommand.Vector.newBuilder()
                   .setX(shooterSpawnEvent.getPlayer().getDirection().getX())

@@ -1,4 +1,4 @@
-package com.beverly.hills.money.gang.state;
+package com.beverly.hills.money.gang.state.entity;
 
 import lombok.Builder;
 import lombok.Getter;

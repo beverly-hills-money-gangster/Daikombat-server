@@ -8,7 +8,7 @@ import com.beverly.hills.money.gang.proto.ServerCommand.CommandCase;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.state.Game;
-import com.beverly.hills.money.gang.state.PlayerRespawnedGameState;
+import com.beverly.hills.money.gang.state.entity.PlayerRespawnedGameState;
 import io.netty.channel.Channel;
 import lombok.Getter;
 import org.slf4j.Logger;

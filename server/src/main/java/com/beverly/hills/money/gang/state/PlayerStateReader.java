@@ -1,6 +1,8 @@
 package com.beverly.hills.money.gang.state;
 
-import com.beverly.hills.money.gang.state.PlayerState.PowerUpInEffect;
+import com.beverly.hills.money.gang.state.entity.PlayerState;
+import com.beverly.hills.money.gang.state.entity.PlayerState.PowerUpInEffect;
+import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
 import java.util.List;
 import javax.annotation.Nullable;
 

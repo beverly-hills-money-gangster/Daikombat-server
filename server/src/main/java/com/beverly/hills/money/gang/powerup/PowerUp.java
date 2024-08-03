@@ -1,7 +1,7 @@
 package com.beverly.hills.money.gang.powerup;
 
-import com.beverly.hills.money.gang.state.PlayerState;
-import com.beverly.hills.money.gang.state.Vector;
+import com.beverly.hills.money.gang.state.entity.PlayerState;
+import com.beverly.hills.money.gang.state.entity.Vector;
 
 public interface PowerUp {
 

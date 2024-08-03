@@ -69,7 +69,7 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
       LOG.debug("Got command {}", msg);
       ServerCommandHandler serverCommandHandler = handlersMap.get(msg.getCommandCase());
       if (serverCommandHandler == null) {
-        throw new GameLogicError("Command is not recognized", GameErrorCode.COMMAND_NOT_RECOGNIZED);
+        throw new GameLogicError("Command is not recognized. Try updating client.", GameErrorCode.COMMAND_NOT_RECOGNIZED);
       }
       serverCommandHandler.handle(msg, ctx.channel());
     } catch (GameLogicError e) {

@@ -2,6 +2,7 @@ package com.beverly.hills.money.gang.handler.command;
 
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createServerInfo;
 
+import com.beverly.hills.money.gang.cheat.AntiCheat;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.proto.ServerCommand.CommandCase;
@@ -35,6 +36,7 @@ public class GetServerInfoCommandHandler extends ServerCommandHandler {
         ServerConfig.VERSION,
         gameRoomRegistry.getGames().map(game -> game),
         ServerConfig.FRAGS_PER_GAME,
+        AntiCheat.ATTACKS_INFO,
         ServerConfig.MOVES_UPDATE_FREQUENCY_MLS,
         ServerConfig.PLAYER_SPEED));
   }

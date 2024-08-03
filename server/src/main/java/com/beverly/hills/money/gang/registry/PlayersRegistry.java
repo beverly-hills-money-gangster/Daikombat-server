@@ -4,14 +4,13 @@ import static com.beverly.hills.money.gang.config.ServerConfig.MAX_PLAYERS_PER_G
 
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
-import com.beverly.hills.money.gang.state.PlayerState;
+import com.beverly.hills.money.gang.state.entity.PlayerState;
 import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import io.netty.channel.Channel;
 import java.io.Closeable;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

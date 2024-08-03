@@ -119,4 +119,20 @@ public interface PushGameEventCommandOrBuilder extends
    * @return The teleportId.
    */
   int getTeleportId();
+
+  /**
+   * <code>optional .daikombat.dto.PushGameEventCommand.WeaponType weaponType = 10;</code>
+   * @return Whether the weaponType field is set.
+   */
+  boolean hasWeaponType();
+  /**
+   * <code>optional .daikombat.dto.PushGameEventCommand.WeaponType weaponType = 10;</code>
+   * @return The enum numeric value on the wire for weaponType.
+   */
+  int getWeaponTypeValue();
+  /**
+   * <code>optional .daikombat.dto.PushGameEventCommand.WeaponType weaponType = 10;</code>
+   * @return The weaponType.
+   */
+  com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType getWeaponType();
 }

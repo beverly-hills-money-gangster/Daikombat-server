@@ -47,6 +47,12 @@ message ServerResponse {
     optional int32 fragsToWin = 3;
     optional int32 movesUpdateFreqMls = 4;
     optional int32 playerSpeed = 5;
+    repeated WeaponInfo weaponsInfo = 6;
+  }
+
+  message WeaponInfo {
+    optional GameEvent.WeaponType weaponType = 1;
+    optional double maxDistance = 2;
   }
 
   message Ping {}
@@ -83,18 +89,22 @@ message ServerResponse {
     GameEventType eventType = 3;
     optional LeaderBoard leaderBoard = 4;
     optional int32 sequence = 5;
+    optional WeaponType weaponType = 6;
 
     enum GameEventType {
       MOVE = 0;
-      SHOOT = 1;
-      GET_SHOT = 2;
-      KILL_SHOOTING = 3;
+      ATTACK = 1;
+      GET_ATTACKED = 2;
+      KILL = 3;
       SPAWN = 4;
       EXIT = 5;
-      GET_PUNCHED = 6;
-      KILL_PUNCHING = 7;
-      PUNCH = 8;
-      TELEPORT = 9;
+      TELEPORT = 6;
+    }
+
+    enum WeaponType {
+      PUNCH = 0;
+      SHOTGUN = 1;
+      RAILGUN = 2;
     }
   }
 

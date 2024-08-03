@@ -6,7 +6,7 @@ import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import com.beverly.hills.money.gang.state.Game;
-import com.beverly.hills.money.gang.state.PlayerState;
+import com.beverly.hills.money.gang.state.entity.PlayerState;
 import io.netty.channel.Channel;
 import java.io.Closeable;
 import java.util.HashMap;

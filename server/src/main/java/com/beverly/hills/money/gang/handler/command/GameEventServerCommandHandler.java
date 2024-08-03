@@ -1,14 +1,17 @@
 package com.beverly.hills.money.gang.handler.command;
 
+import static com.beverly.hills.money.gang.constants.Constants.MDC_GAME_ID;
+import static com.beverly.hills.money.gang.constants.Constants.MDC_IP_ADDRESS;
+import static com.beverly.hills.money.gang.constants.Constants.MDC_PING_MLS;
+import static com.beverly.hills.money.gang.constants.Constants.MDC_PLAYER_ID;
+import static com.beverly.hills.money.gang.constants.Constants.MDC_PLAYER_NAME;
+import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createAttackingEvent;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createErrorEvent;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createGameOverEvent;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createGetAttackedEvent;
-import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createKillPunchingEvent;
-import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createKillShootingEvent;
+import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createKillEvent;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createPowerUpPlayerServerResponse;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createPowerUpSpawn;
-import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createPunchingEvent;
-import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createShootingEvent;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createTeleportPlayerServerResponse;
 
 import com.beverly.hills.money.gang.cheat.AntiCheat;
@@ -24,15 +27,14 @@ import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.scheduler.Scheduler;
 import com.beverly.hills.money.gang.state.AttackType;
 import com.beverly.hills.money.gang.state.Game;
-import com.beverly.hills.money.gang.state.PlayerAttackingGameState;
-import com.beverly.hills.money.gang.state.PlayerState;
+import com.beverly.hills.money.gang.state.entity.PlayerAttackingGameState;
+import com.beverly.hills.money.gang.state.entity.PlayerState;
 import com.beverly.hills.money.gang.state.PlayerStateChannel;
-import com.beverly.hills.money.gang.state.Vector;
+import com.beverly.hills.money.gang.state.entity.Vector;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -45,11 +47,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class GameEventServerCommandHandler extends ServerCommandHandler {
 
-  private static final String MDC_GAME_ID = "game_id";
-  private static final String MDC_PLAYER_ID = "player_id";
-  private static final String MDC_PLAYER_NAME = "player_name";
-  private static final String MDC_IP_ADDRESS = "ip_address";
-  private static final String MDC_PING_MLS = "ping_mls";
 
   @Getter
   private final CommandCase commandCase = CommandCase.GAMECOMMAND;
@@ -106,13 +103,13 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
 
       PushGameEventCommand.GameEventType gameEventType = gameCommand.getEventType();
       switch (gameEventType) {
-        case SHOOT, PUNCH -> handleAttackingEvents(game, gameCommand);
+        case ATTACK -> handleAttackingEvents(game, gameCommand);
         case QUAD_DAMAGE_POWER_UP, INVISIBILITY_POWER_UP, DEFENCE_POWER_UP ->
             handlePowerUpPickUp(game, gameCommand, getPowerUpType(gameEventType));
         case MOVE -> game.bufferMove(gameCommand.getPlayerId(), createCoordinates(gameCommand),
             gameCommand.getSequence(), gameCommand.getPingMls());
         case TELEPORT -> handleTeleport(game, gameCommand);
-        default -> throw new GameLogicError("Unsupported event type",
+        default -> throw new GameLogicError("Unsupported event type. Try updating client.",
             GameErrorCode.COMMAND_NOT_RECOGNIZED);
       }
     } finally {
@@ -186,6 +183,9 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
     if (isAttackCheating(gameCommand, game)) {
       LOG.warn("Cheating detected");
       return;
+    } else if (!gameCommand.hasWeaponType()) {
+      throw new GameLogicError("No weapon specified while attacking. Try updating client.",
+          GameErrorCode.COMMAND_NOT_RECOGNIZED);
     }
     AttackType attackType = getAttackType(gameCommand);
 
@@ -204,16 +204,9 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
         .ifPresentOrElse(attackedPlayer -> {
           if (attackedPlayer.isDead()) {
             LOG.debug("Player {} is dead", attackedPlayer.getPlayerId());
-            ServerResponse deadEvent = switch (attackType) {
-              case PUNCH -> createKillPunchingEvent(
-                  game.playersOnline(),
-                  attackGameState.getAttackingPlayer(),
-                  attackGameState.getPlayerAttacked());
-              case SHOOT -> createKillShootingEvent(
-                  game.playersOnline(),
-                  attackGameState.getAttackingPlayer(),
-                  attackGameState.getPlayerAttacked());
-            };
+            ServerResponse deadEvent = createKillEvent(game.playersOnline(),
+                attackGameState.getAttackingPlayer(),
+                attackGameState.getPlayerAttacked(), attackType);
             ServerResponse gameOver;
             if (attackGameState.isGameOver()) {
               LOG.info("Game {} is over", game.gameId());
@@ -254,14 +247,9 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
           }
         }, () -> {
           LOG.debug("Nobody got attacked");
-          ServerResponse attackEvent = switch (attackType) {
-            case PUNCH -> createPunchingEvent(
-                game.playersOnline(),
-                attackGameState.getAttackingPlayer());
-            case SHOOT -> createShootingEvent(
-                game.playersOnline(),
-                attackGameState.getAttackingPlayer());
-          };
+          ServerResponse attackEvent = createAttackingEvent(
+              game.playersOnline(),
+              attackGameState.getAttackingPlayer(), attackType);
           game.getPlayersRegistry().allJoinedPlayers()
               .filter(playerStateChannel
                   // don't send me my own attack back
@@ -281,19 +269,16 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
     }
     return game.getPlayersRegistry()
         .getPlayerState(gameCommand.getAffectedPlayerId())
-        .map(affectedPlayerState -> switch (gameCommand.getEventType()) {
-          case PUNCH -> antiCheat.isPunchingTooFar(
-              newPlayerPosition, affectedPlayerState.getCoordinates().getPosition());
-          case SHOOT -> antiCheat.isShootingTooFar(
-              newPlayerPosition, affectedPlayerState.getCoordinates().getPosition());
-          default -> false;
-        }).orElse(false);
+        .map(affectedPlayerState -> antiCheat.isAttackingTooFar(
+            newPlayerPosition, affectedPlayerState.getCoordinates().getPosition(),
+            getAttackType(gameCommand))).orElse(false);
   }
 
   private AttackType getAttackType(PushGameEventCommand gameCommand) {
-    return switch (gameCommand.getEventType()) {
-      case SHOOT -> AttackType.SHOOT;
+    return switch (gameCommand.getWeaponType()) {
+      case SHOTGUN -> AttackType.SHOTGUN;
       case PUNCH -> AttackType.PUNCH;
+      case RAILGUN -> AttackType.RAILGUN;
       default -> throw new IllegalArgumentException(
           "Not supported attack type " + gameCommand.getEventType());
     };

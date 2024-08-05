@@ -12,4 +12,6 @@ public class AttackInfo {
 
   private final double maxDistance;
 
+  private final int delayMls;
+
 }

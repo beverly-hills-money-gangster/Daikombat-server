@@ -53,6 +53,7 @@ message ServerResponse {
   message WeaponInfo {
     optional GameEvent.WeaponType weaponType = 1;
     optional double maxDistance = 2;
+    optional int32 delayMls = 3;
   }
 
   message Ping {}

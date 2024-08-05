@@ -5589,6 +5589,17 @@ private static final long serialVersionUID = 0L;
      * @return The maxDistance.
      */
     double getMaxDistance();
+
+    /**
+     * <code>optional int32 delayMls = 3;</code>
+     * @return Whether the delayMls field is set.
+     */
+    boolean hasDelayMls();
+    /**
+     * <code>optional int32 delayMls = 3;</code>
+     * @return The delayMls.
+     */
+    int getDelayMls();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.WeaponInfo}
@@ -5671,6 +5682,25 @@ private static final long serialVersionUID = 0L;
       return maxDistance_;
     }
 
+    public static final int DELAYMLS_FIELD_NUMBER = 3;
+    private int delayMls_ = 0;
+    /**
+     * <code>optional int32 delayMls = 3;</code>
+     * @return Whether the delayMls field is set.
+     */
+    @java.lang.Override
+    public boolean hasDelayMls() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>optional int32 delayMls = 3;</code>
+     * @return The delayMls.
+     */
+    @java.lang.Override
+    public int getDelayMls() {
+      return delayMls_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -5691,6 +5721,9 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000002) != 0)) {
         output.writeDouble(2, maxDistance_);
       }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        output.writeInt32(3, delayMls_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -5707,6 +5740,10 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000002) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(2, maxDistance_);
+      }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, delayMls_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -5733,6 +5770,11 @@ private static final long serialVersionUID = 0L;
             != java.lang.Double.doubleToLongBits(
                 other.getMaxDistance())) return false;
       }
+      if (hasDelayMls() != other.hasDelayMls()) return false;
+      if (hasDelayMls()) {
+        if (getDelayMls()
+            != other.getDelayMls()) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -5752,6 +5794,10 @@ private static final long serialVersionUID = 0L;
         hash = (37 * hash) + MAXDISTANCE_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
             java.lang.Double.doubleToLongBits(getMaxDistance()));
+      }
+      if (hasDelayMls()) {
+        hash = (37 * hash) + DELAYMLS_FIELD_NUMBER;
+        hash = (53 * hash) + getDelayMls();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -5886,6 +5932,7 @@ private static final long serialVersionUID = 0L;
         bitField0_ = 0;
         weaponType_ = 0;
         maxDistance_ = 0D;
+        delayMls_ = 0;
         return this;
       }
 
@@ -5927,6 +5974,10 @@ private static final long serialVersionUID = 0L;
         if (((from_bitField0_ & 0x00000002) != 0)) {
           result.maxDistance_ = maxDistance_;
           to_bitField0_ |= 0x00000002;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.delayMls_ = delayMls_;
+          to_bitField0_ |= 0x00000004;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -5981,6 +6032,9 @@ private static final long serialVersionUID = 0L;
         if (other.hasMaxDistance()) {
           setMaxDistance(other.getMaxDistance());
         }
+        if (other.hasDelayMls()) {
+          setDelayMls(other.getDelayMls());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -6017,6 +6071,11 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000002;
                 break;
               } // case 17
+              case 24: {
+                delayMls_ = input.readInt32();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -6130,6 +6189,46 @@ private static final long serialVersionUID = 0L;
       public Builder clearMaxDistance() {
         bitField0_ = (bitField0_ & ~0x00000002);
         maxDistance_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private int delayMls_ ;
+      /**
+       * <code>optional int32 delayMls = 3;</code>
+       * @return Whether the delayMls field is set.
+       */
+      @java.lang.Override
+      public boolean hasDelayMls() {
+        return ((bitField0_ & 0x00000004) != 0);
+      }
+      /**
+       * <code>optional int32 delayMls = 3;</code>
+       * @return The delayMls.
+       */
+      @java.lang.Override
+      public int getDelayMls() {
+        return delayMls_;
+      }
+      /**
+       * <code>optional int32 delayMls = 3;</code>
+       * @param value The delayMls to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDelayMls(int value) {
+
+        delayMls_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 delayMls = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDelayMls() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        delayMls_ = 0;
         onChanged();
         return this;
       }

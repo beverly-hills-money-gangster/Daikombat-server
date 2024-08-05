@@ -16,16 +16,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class AntiCheat {
 
-  private static final double MAX_SHOOTING_DISTANCE = 10;
-
-  private static final double MAX_RAILGUN_DISTANCE = 20;
-
-  private static final double MAX_PUNCHING_DISTANCE = 1.5;
 
   private static final Map<AttackType, Double> MAX_ATTACK_DISTANCE = Map.of(
-      AttackType.PUNCH, MAX_PUNCHING_DISTANCE,
-      AttackType.SHOTGUN, MAX_SHOOTING_DISTANCE,
-      AttackType.RAILGUN, MAX_RAILGUN_DISTANCE);
+      AttackType.PUNCH, 1.2,
+      AttackType.SHOTGUN, 5.5,
+      AttackType.RAILGUN, 7.5);
+
+  private static final Map<AttackType, Integer> ATTACK_DELAY_MLS = Map.of(
+      AttackType.PUNCH, 300,
+      AttackType.SHOTGUN, 450,
+      AttackType.RAILGUN, 1_500);
 
   public static final List<AttackInfo> ATTACKS_INFO;
 
@@ -33,10 +33,14 @@ public class AntiCheat {
     if (MAX_ATTACK_DISTANCE.size() != AttackType.values().length) {
       throw new IllegalStateException("Not all attack types have max distance");
     }
+    if (ATTACK_DELAY_MLS.size() != AttackType.values().length) {
+      throw new IllegalStateException("Not all attack types have delay");
+    }
     ATTACKS_INFO = Arrays.stream(AttackType.values()).map(
             attackType -> AttackInfo
                 .builder()
                 .attackType(attackType)
+                .delayMls(ATTACK_DELAY_MLS.get(attackType))
                 .maxDistance(MAX_ATTACK_DISTANCE.get(attackType))
                 .build())
         .collect(Collectors.toList());

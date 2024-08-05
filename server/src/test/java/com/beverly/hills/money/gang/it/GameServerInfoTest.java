@@ -8,9 +8,9 @@ import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import com.beverly.hills.money.gang.state.AttackType;
 import java.io.IOException;
 import java.util.List;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -48,6 +48,9 @@ public class GameServerInfoTest extends AbstractGameServerTest {
       assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, gameInfo.getMaxGamePlayers());
       assertEquals(0, gameInfo.getPlayersOnline(), "Should be no connected players yet");
     }
+    assertEquals(AttackType.values().length,
+        serverResponse.getServerInfo().getWeaponsInfoList().size(),
+        "All attack types/weapons should have info");
     assertEquals(1, gameConnection.getNetworkStats().getReceivedMessages());
     assertTrue(gameConnection.getNetworkStats().getInboundPayloadBytes() > 0);
     assertEquals(1, gameConnection.getNetworkStats().getSentMessages());

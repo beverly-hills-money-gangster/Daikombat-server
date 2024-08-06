@@ -27,7 +27,6 @@ import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
 import com.beverly.hills.money.gang.state.entity.Vector;
 import com.beverly.hills.money.gang.teleport.Teleport;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -140,6 +139,7 @@ public interface ServerResponseFactory {
     serverInfo.setVersion(serverVersion);
     serverInfo.addAllWeaponsInfo(attacksInfo.stream().map(attackInfo -> WeaponInfo.newBuilder()
         .setWeaponType(getWeaponType(attackInfo.getAttackType()))
+        .setDelayMls(attackInfo.getDelayMls())
         .setMaxDistance(attackInfo.getMaxDistance())
         .build()).collect(Collectors.toList()));
     games.forEach(game

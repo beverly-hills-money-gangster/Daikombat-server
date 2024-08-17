@@ -47,7 +47,6 @@ public class Spawner {
   private static final Vector DEFENCE_SPAWN_POSITION
       = Vector.builder().x(-24.609121f - 0.35f).y(11.956983f).build();
 
-  // + -> right
   private static final Vector INVISIBILITY_SPAWN_POSITION
       = Vector.builder().x(8.045f).y(18.5f - 0.5f).build();
 
@@ -102,6 +101,7 @@ public class Spawner {
         .allPlayers()
         .map(PlayerStateChannel::getPlayerState)
         .collect(Collectors.toList());
+    // TODO randomize a little
     // get the least populated spawn
     var playersAroundSpawn = new TreeMap<Integer, PlayerState.PlayerCoordinates>();
     SPAWNS.forEach(spawn -> {

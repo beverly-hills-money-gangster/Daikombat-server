@@ -21,6 +21,7 @@ import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
+@SetEnvironmentVariable(key = "GAME_SERVER_DEFAULT_RAILGUN_DAMAGE", value = "100")
 @SetEnvironmentVariable(key = "GAME_SERVER_POWER_UPS_ENABLED", value = "false")
 @SetEnvironmentVariable(key = "GAME_SERVER_TELEPORTS_ENABLED", value = "false")
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
@@ -753,7 +754,6 @@ public class ShootingEventTest extends AbstractGameServerTest {
         .setAffectedPlayerId(shotPlayerId)
         .build());
     waitUntilQueueNonEmpty(deadConnection.getResponse());
-
 
     waitUntilQueueNonEmpty(deadConnection.getResponse());
     assertTrue(deadConnection.isConnected(), "Dead players should be connected");

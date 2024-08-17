@@ -33,7 +33,7 @@ Game server can be configured using the following environment variables:
 - `GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS` Frequency(in milliseconds) at which server notifies players about other players' positioning on the map. Default - `50`.
 - `GAME_SERVER_MAX_IDLE_TIME_MLS` Maximum idle time(in milliseconds) for a player. "Idle" - no network activity, which includes in-game events + ping responds. For example, if player connects to a game and doesn't move but responds to PING requests, then it's NOT considered idle. This check is mostly needed when a TCP connection was closed abruptly(no FIN). Default - `10_000`.
 - `GAME_SERVER_DEFAULT_SHOTGUN_DAMAGE` Gunshot damage. Default - `20`.
-- `GAME_SERVER_DEFAULT_RAILGUN_DAMAGE` Railgun damage. Default - `100`.
+- `GAME_SERVER_DEFAULT_RAILGUN_DAMAGE` Railgun damage. Default - `75`.
 - `GAME_SERVER_DEFAULT_PUNCH_DAMAGE` Punch damage. Default - `50`.
 - `GAME_SERVER_PIN_CODE` Server access pin code(digits only, no less than 4). Used in HMAC that is appended to every message. Default - `5555`.
 - `GAME_SERVER_FAST_TCP` Enables fast TCP configurations(used mostly for testing, not recommended to be set to `false` in prod). Default - `true`.

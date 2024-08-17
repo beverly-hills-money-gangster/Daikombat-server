@@ -16,16 +16,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class AntiCheat {
 
-
   private static final Map<AttackType, Double> MAX_ATTACK_DISTANCE = Map.of(
       AttackType.PUNCH, 1.2,
-      AttackType.SHOTGUN, 5.5,
-      AttackType.RAILGUN, 7.5);
+      AttackType.SHOTGUN, 7.0,
+      AttackType.RAILGUN, 10.0);
 
   private static final Map<AttackType, Integer> ATTACK_DELAY_MLS = Map.of(
       AttackType.PUNCH, 300,
       AttackType.SHOTGUN, 450,
-      AttackType.RAILGUN, 1_500);
+      AttackType.RAILGUN, 2_000);
 
   public static final List<AttackInfo> ATTACKS_INFO;
 
@@ -67,8 +66,8 @@ public class AntiCheat {
     return Vector.getDistance(playerPosition, teleportPosition) > MAX_TELEPORT_DISTANCE;
   }
 
-  public boolean isTooMuchDistanceTravelled(final double distanceTravelled,
-      final int periodSec) {
+  public boolean isTooMuchDistanceTravelled(
+      final double distanceTravelled, final int periodSec) {
     return distanceTravelled > MAX_DISTANCE_TRAVELLED_IN_ONE_SEC * periodSec;
   }
 

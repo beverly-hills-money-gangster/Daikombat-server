@@ -145,8 +145,10 @@ public class PlayerState implements PlayerStateReader {
     defenceAmplifier.set(ampl);
   }
 
-  public int getDamageAmplifier() {
-    return damageAmplifier.get();
+  public int getDamageAmplifier(PlayerState attackedPlayerState, AttackType attackType) {
+    var distance = Vector.getDistance(
+        attackedPlayerState.getCoordinates().position, getCoordinates().position);
+    return damageAmplifier.get() * attackType.getDistanceDamageAmplifier().apply(distance);
   }
 
   public void respawn(final PlayerCoordinates coordinates) {

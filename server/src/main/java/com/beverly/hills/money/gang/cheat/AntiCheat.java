@@ -24,7 +24,7 @@ public class AntiCheat {
   private static final Map<AttackType, Integer> ATTACK_DELAY_MLS = Map.of(
       AttackType.PUNCH, 300,
       AttackType.SHOTGUN, 450,
-      AttackType.RAILGUN, 2_000);
+      AttackType.RAILGUN, 1_700);
 
   public static final List<AttackInfo> ATTACKS_INFO;
 

@@ -1,18 +1,23 @@
 package com.beverly.hills.money.gang.spawner;
 
 import com.beverly.hills.money.gang.state.Game;
+import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
 import com.beverly.hills.money.gang.state.entity.PlayerState.PlayerCoordinates;
-import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import com.beverly.hills.money.gang.state.entity.Vector;
 import com.beverly.hills.money.gang.teleport.Teleport;
+import java.util.HashMap;
 import java.util.List;
-import java.util.TreeMap;
+import java.util.Random;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.stereotype.Component;
 
+// TODO use tiled map instead of hardcoding it
 @Component
 public class Spawner {
+
+  private static final Random RANDOM = new Random();
 
   private static final double CLOSE_PROXIMITY = 3;
 
@@ -27,7 +32,7 @@ public class Spawner {
           .location(Vector.builder().x(8.045f).y(23.0f).build())
           .teleportCoordinates(
               PlayerCoordinates.builder()
-                  .position(Vector.builder().x(-22.39956f).y(23.152378f+0.2f).build())
+                  .position(Vector.builder().x(-22.39956f).y(23.152378f + 0.2f).build())
                   .direction(Vector.builder().x(0.9999982f).y(-0.0021766382f).build())
                   .build()
           ).build(),
@@ -53,11 +58,6 @@ public class Spawner {
   public static final List<PlayerState.PlayerCoordinates> SPAWNS = List.of(
 
       PlayerState.PlayerCoordinates.builder().position(
-              Vector.builder().x(-24.657965F).y(23.160273F).build())
-          .direction(
-              Vector.builder().x(-0.00313453F).y(-0.9999952F).build()).build(),
-
-      PlayerState.PlayerCoordinates.builder().position(
               Vector.builder().x(-20.251183F).y(28.641932F).build())
           .direction(
               Vector.builder().x(-0.9999984F).y(0.0018975139F).build()).build(),
@@ -80,7 +80,32 @@ public class Spawner {
       PlayerState.PlayerCoordinates.builder().position(
               Vector.builder().x(-30.80954F).y(23.183435F).build())
           .direction(
-              Vector.builder().x(0.9999779F).y(0.0065644206F).build()).build()
+              Vector.builder().x(0.9999779F).y(0.0065644206F).build()).build(),
+
+      PlayerState.PlayerCoordinates.builder().position(
+              Vector.builder().x(-19.638683F).y(9.2295475F).build())
+          .direction(
+              Vector.builder().x(-0.99999154F).y(0.0042496235F).build()).build(),
+
+      PlayerState.PlayerCoordinates.builder().position(
+              Vector.builder().x(-29.331905F).y(9.307028F).build())
+          .direction(
+              Vector.builder().x(0.9999444F).y(-0.010604665F).build()).build(),
+
+      PlayerState.PlayerCoordinates.builder().position(
+              Vector.builder().x(-29.125614F).y(14.255738F).build())
+          .direction(
+              Vector.builder().x(0.99985945F).y(-0.01679205f).build()).build(),
+
+      PlayerState.PlayerCoordinates.builder().position(
+              Vector.builder().x(-20.50718F).y(14.282006F).build())
+          .direction(
+              Vector.builder().x(-0.9999949F).y(-0.0032620127F).build()).build(),
+
+      PlayerState.PlayerCoordinates.builder().position(
+              Vector.builder().x(-13.015404F).y(23.23161F).build())
+          .direction(
+              Vector.builder().x(-0.99998957F).y(-0.004201251F).build()).build()
   );
 
 
@@ -101,16 +126,28 @@ public class Spawner {
         .allPlayers()
         .map(PlayerStateChannel::getPlayerState)
         .collect(Collectors.toList());
-    // TODO randomize a little
-    // get the least populated spawn
-    var playersAroundSpawn = new TreeMap<Integer, PlayerState.PlayerCoordinates>();
-    SPAWNS.forEach(spawn -> {
+
+    // get random spawns
+    var randomSpawns = getRandomSpawns();
+
+    var playersAroundSpawn = new HashMap<Integer, PlayerCoordinates>();
+    // get the least populated among them
+    randomSpawns.forEach(spawn -> {
       var playersAround = (int) players.stream()
           .filter(player -> Vector.getDistance(
               spawn.getPosition(), player.getCoordinates().getPosition()) <= CLOSE_PROXIMITY)
           .count();
       playersAroundSpawn.put(playersAround, spawn);
     });
-    return playersAroundSpawn.firstEntry().getValue();
+    return playersAroundSpawn.values().stream().findFirst().get();
+  }
+
+  public List<PlayerState.PlayerCoordinates> getRandomSpawns() {
+    return Stream.generate(this::getRandomSpawn)
+        .limit(SPAWNS.size() / 2).collect(Collectors.toList());
+  }
+
+  private PlayerState.PlayerCoordinates getRandomSpawn() {
+    return SPAWNS.get(RANDOM.nextInt(SPAWNS.size()));
   }
 }

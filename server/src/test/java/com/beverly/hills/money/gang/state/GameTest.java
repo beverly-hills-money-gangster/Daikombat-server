@@ -176,6 +176,7 @@ public class GameTest {
     }
 
     doCallRealMethod().when(spawner).spawnPlayer(any());
+    doReturn(Spawner.SPAWNS).when(spawner).getRandomSpawns();
     var connectedPlayer = fullyJoin(playerName, channel, PlayerStateColor.GREEN);
     assertEquals(Spawner.SPAWNS.get(Spawner.SPAWNS.size() - 1),
         connectedPlayer.getPlayerStateChannel().getPlayerState().getCoordinates(),
@@ -192,6 +193,7 @@ public class GameTest {
     String playerName = "some player";
     Channel channel = mock(Channel.class);
     Set<Vector> spawns = new HashSet<>();
+    doReturn(Spawner.SPAWNS).when(spawner).getRandomSpawns();
     int playersToJoin = Math.min(ServerConfig.MAX_PLAYERS_PER_GAME, Spawner.SPAWNS.size());
     for (int i = 0; i < playersToJoin; i++) {
       spawns.add(

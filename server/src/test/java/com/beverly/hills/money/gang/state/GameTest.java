@@ -809,11 +809,11 @@ public class GameTest {
 
   /**
    * @given many players in the game
-   * @when all of them shoot each other once concurrently
+   * @when all of them punch each other once concurrently
    * @then nobody gets killed, everybody's health is reduced
    */
   @Test
-  public void testShootConcurrency() throws Throwable {
+  public void testPunchConcurrency() throws Throwable {
 
     CountDownLatch latch = new CountDownLatch(1);
     List<PlayerJoinedGameState> connectedPlayers = new ArrayList<>();
@@ -839,7 +839,7 @@ public class GameTest {
           game.attack(
               me.getPlayerStateChannel().getPlayerState().getCoordinates(),
               me.getPlayerStateChannel().getPlayerState().getPlayerId(),
-              myTarget.getPlayerStateChannel().getPlayerState().getPlayerId(), AttackType.SHOTGUN,
+              myTarget.getPlayerStateChannel().getPlayerState().getPlayerId(), AttackType.PUNCH,
               testSequenceGenerator.getNext(),
               PING_MLS);
         } catch (Exception e) {
@@ -862,7 +862,7 @@ public class GameTest {
     game.getPlayersRegistry().allPlayers().forEach(playerStateChannel -> {
       assertFalse(playerStateChannel.getPlayerState().isDead(), "Nobody is dead");
       assertEquals(0, playerStateChannel.getPlayerState().getKills(), "Nobody got killed");
-      assertEquals(100 - ServerConfig.DEFAULT_SHOTGUN_DAMAGE,
+      assertEquals(100 - ServerConfig.DEFAULT_PUNCH_DAMAGE,
           playerStateChannel.getPlayerState().getHealth(), "Everybody got hit once");
     });
   }
@@ -1438,7 +1438,9 @@ public class GameTest {
         playerState -> playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId()
             == playerGameState.getPlayerStateChannel()
             .getPlayerState().getPlayerId()));
-    assertEquals(4, playerGameState.getPlayerStateChannel().getPlayerState().getDamageAmplifier(),
+    assertEquals(4, playerGameState.getPlayerStateChannel().getPlayerState()
+            .getDamageAmplifier(playerGameState.getPlayerStateChannel().getPlayerState(),
+                AttackType.PUNCH),
         "Damage should amplify after picking up quad damage power-up");
 
     PlayerAttackingGameState playerAttackingGameState = game.attack(
@@ -1625,7 +1627,10 @@ public class GameTest {
         victimGameState.getPlayerStateChannel().getPlayerState().getActivePowerUps().size(),
         "Power-ups should be cleared out after death");
     verify(quadDamagePowerUp).revert(victimGameState.getPlayerStateChannel().getPlayerState());
-    assertEquals(1, victimGameState.getPlayerStateChannel().getPlayerState().getDamageAmplifier(),
+    assertEquals(1, victimGameState.getPlayerStateChannel().getPlayerState()
+            .getDamageAmplifier(
+                playerGameState.getPlayerStateChannel().getPlayerState(),
+                AttackType.PUNCH),
         "Damage amplifier has to default to 1");
 
   }

@@ -182,7 +182,8 @@ public class Game implements Closeable, GameReader {
         LOG.warn("You can't attack a dead player");
         return null;
       }
-      attackedPlayer.getAttacked(attackType, attackingPlayerState.getDamageAmplifier());
+      attackedPlayer.getAttacked(attackType,
+          attackingPlayerState.getDamageAmplifier(attackedPlayer, attackType));
       if (attackedPlayer.isDead()) {
         attackingPlayerState.registerKill();
       }

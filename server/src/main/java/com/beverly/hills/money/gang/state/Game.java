@@ -238,6 +238,7 @@ public class Game implements Closeable, GameReader {
             .kills(playerStateChannel.getPlayerState().getGameStats().getKills())
             .playerName(playerStateChannel.getPlayerState().getPlayerName())
             .deaths(playerStateChannel.getPlayerState().getGameStats().getDeaths())
+            .pingMls(playerStateChannel.getPlayerState().getPingMls())
             .build())
         .collect(Collectors.toList());
   }

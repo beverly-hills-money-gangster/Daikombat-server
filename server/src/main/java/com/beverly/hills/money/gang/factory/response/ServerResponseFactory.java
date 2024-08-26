@@ -48,6 +48,7 @@ public interface ServerResponseFactory {
         .setPlayerName(leaderBoardItem.getPlayerName())
         .setDeaths(leaderBoardItem.getDeaths())
         .setKills(leaderBoardItem.getKills())
+        .setPingMls(leaderBoardItem.getPingMls())
         .build()));
     return leaderBoardResponse.build();
   }
@@ -222,6 +223,7 @@ public interface ServerResponseFactory {
         .setPlayerName(playerReader.getPlayerName())
         .setPosition(createVector(playerReader.getCoordinates().getPosition()))
         .setDirection(createVector(playerReader.getCoordinates().getDirection()))
+        .setPingMls(playerReader.getPingMls())
         .setSkinColor(createPlayerSkinColor(playerReader.getColor()))
         .addAllActivePowerUps(playerReader.getActivePowerUps().stream().map(
             powerUpInEffect -> GamePowerUp.newBuilder()
@@ -263,6 +265,7 @@ public interface ServerResponseFactory {
         .setPosition(createVector(playerReader.getCoordinates().getPosition()))
         .setDirection(createVector(playerReader.getCoordinates().getDirection()))
         .setPlayerId(playerReader.getPlayerId())
+        .setPingMls(playerReader.getPingMls())
         .build();
   }
 

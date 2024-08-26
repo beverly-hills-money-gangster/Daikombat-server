@@ -18,4 +18,7 @@ public class GameLeaderBoardItem {
   private final int kills;
 
   private final int deaths;
+
+  @NonNull
+  private final Integer pingMls;
 }

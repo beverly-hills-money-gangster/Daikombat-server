@@ -121,6 +121,7 @@ message ServerResponse {
     optional int32 kills = 2;
     optional string playerName = 3;
     optional int32 deaths = 4;
+    optional int32 pingMls = 5;
   }
 
   message GameEventPlayerStats {
@@ -132,6 +133,7 @@ message ServerResponse {
     repeated GamePowerUp activePowerUps = 6;
     optional PlayerSkinColor skinColor = 7;
     optional PlayerGameMatchStats gameMatchStats = 8;
+    optional int32 pingMls = 9;
   }
 
   message PlayerGameMatchStats {

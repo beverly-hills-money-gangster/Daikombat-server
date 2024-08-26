@@ -100,6 +100,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         player1MoveEvent.getPlayer().getDirection().getY(),
         0.00001, "Direction should not change");
 
+    assertEquals(PING_MLS, player1MoveEvent.getPlayer().getPingMls());
     assertEquals(newPositionX, player1MoveEvent.getPlayer().getPosition().getX(),
         0.00001);
     assertEquals(newPositionY, player1MoveEvent.getPlayer().getPosition().getY(),

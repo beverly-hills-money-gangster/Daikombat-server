@@ -6,6 +6,7 @@ import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.proto.ServerCommand.CommandCase;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import com.beverly.hills.money.gang.registry.BannedPlayersRegistry;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.entity.PlayerRespawnedGameState;
@@ -23,8 +24,9 @@ public class RespawnCommandHandler extends JoinGameServerCommandHandler {
 
   private static final Logger LOG = LoggerFactory.getLogger(RespawnCommandHandler.class);
 
-  public RespawnCommandHandler(GameRoomRegistry gameRoomRegistry) {
-    super(gameRoomRegistry);
+  public RespawnCommandHandler(GameRoomRegistry gameRoomRegistry,
+      BannedPlayersRegistry bannedPlayersRegistry) {
+    super(gameRoomRegistry, bannedPlayersRegistry);
   }
 
   @Override

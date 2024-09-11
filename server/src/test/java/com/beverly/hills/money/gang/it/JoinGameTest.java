@@ -3,6 +3,8 @@ package com.beverly.hills.money.gang.it;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
@@ -14,6 +16,7 @@ import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType;
 import com.beverly.hills.money.gang.proto.ServerResponse.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.SkinColorSelection;
+import com.beverly.hills.money.gang.registry.BannedPlayersRegistry;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,6 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_POWER_UPS_ENABLED", value = "false")
 @SetEnvironmentVariable(key = "GAME_SERVER_TELEPORTS_ENABLED", value = "false")
@@ -32,6 +36,9 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
 public class JoinGameTest extends AbstractGameServerTest {
+
+  @MockBean
+  private BannedPlayersRegistry bannedPlayersRegistry;
 
   /**
    * @given a running game server
@@ -119,6 +126,48 @@ public class JoinGameTest extends AbstractGameServerTest {
       assertEquals(GameEvent.GameEventType.SPAWN, gameEvent.getEventType());
       assertEquals(PlayerSkinColor.ORANGE, gameEvent.getPlayer().getSkinColor());
     });
+  }
+
+  /**
+   * @given a running game server and one player that got banned
+   * @when the banned player tried to join the game
+   * @then the player is not connected
+   */
+  @Test
+  public void testJoinGameBannedPlayer() throws IOException {
+    // first player is banned, second is not
+    doReturn(true, false).when(bannedPlayersRegistry).isBanned(any());
+    int gameIdToConnectTo = 0;
+    GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
+    gameConnection.write(
+        JoinGameCommand.newBuilder()
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+            .setPlayerName("my player name")
+            .setGameId(gameIdToConnectTo).build());
+    waitUntilQueueNonEmpty(gameConnection.getResponse());
+    assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
+    assertEquals(1, gameConnection.getResponse().size(), "Should be 1 response");
+
+    ServerResponse serverResponse = gameConnection.getResponse().poll().get();
+    ServerResponse.ErrorEvent errorEvent = serverResponse.getErrorEvent();
+    assertEquals(GameErrorCode.COMMON_ERROR.ordinal(), errorEvent.getErrorCode());
+    assertEquals("Player is banned", errorEvent.getMessage());
+
+    // need a new game connection because the previous is closed
+    var newGameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
+    newGameConnection.write(GetServerInfoCommand.newBuilder().build());
+    waitUntilQueueNonEmpty(newGameConnection.getResponse());
+    assertEquals(0, newGameConnection.getErrors().size(), "Should be no error");
+    assertEquals(1, newGameConnection.getResponse().size(), "Should be exactly one response");
+
+    ServerResponse gamesInfoServerResponse = newGameConnection.getResponse().poll().get();
+    List<ServerResponse.GameInfo> games = gamesInfoServerResponse.getServerInfo().getGamesList();
+    assertEquals(ServerConfig.GAMES_TO_CREATE, games.size());
+    for (ServerResponse.GameInfo gameInfo : games) {
+      assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, gameInfo.getMaxGamePlayers());
+      assertEquals(0, gameInfo.getPlayersOnline(), "Should be no connected players yet");
+    }
+    assertTrue(gameConnection.isDisconnected());
   }
 
   /**

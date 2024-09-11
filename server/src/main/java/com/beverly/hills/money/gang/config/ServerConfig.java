@@ -12,6 +12,10 @@ public interface ServerConfig {
   int GAMES_TO_CREATE = NumberUtils.toInt(System.getenv("GAME_SERVER_GAMES_TO_CREATE"), 10);
   int MAX_PLAYERS_PER_GAME = NumberUtils.toInt(System.getenv("GAME_SERVER_MAX_PLAYERS_PER_GAME"),
       25);
+
+  int BAN_TIMEOUT_MLS = NumberUtils.toInt(System.getenv("GAME_SERVER_BAN_TIMEOUT_MLS"),
+      30 * 60 * 1000);
+
   int MOVES_UPDATE_FREQUENCY_MLS = NumberUtils.toInt(
       System.getenv("GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS"), 50);
 

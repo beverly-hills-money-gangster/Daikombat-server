@@ -7,6 +7,7 @@ import static com.beverly.hills.money.gang.factory.response.ServerResponseFactor
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createTeleportSpawn;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
+import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.proto.PlayerClass;
@@ -14,6 +15,7 @@ import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.proto.ServerCommand.CommandCase;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import com.beverly.hills.money.gang.registry.BannedPlayersRegistry;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerStateChannel;
@@ -21,6 +23,7 @@ import com.beverly.hills.money.gang.state.entity.PlayerJoinedGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
 import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
 import com.beverly.hills.money.gang.teleport.Teleport;
+import com.beverly.hills.money.gang.util.NetworkUtil;
 import com.beverly.hills.money.gang.util.VersionUtil;
 import io.netty.channel.Channel;
 import java.util.List;
@@ -43,6 +46,8 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
   @Getter
   private final CommandCase commandCase = CommandCase.JOINGAMECOMMAND;
 
+  private final BannedPlayersRegistry bannedPlayersRegistry;
+
   @Override
   protected boolean isValidCommand(ServerCommand msg, Channel currentChannel) {
     var joinGameCommand = msg.getJoinGameCommand();
@@ -57,6 +62,9 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
 
   @Override
   protected void handleInternal(ServerCommand msg, Channel currentChannel) throws GameLogicError {
+    if (bannedPlayersRegistry.isBanned(NetworkUtil.getChannelAddress(currentChannel))) {
+      throw new GameLogicError("Player is banned", GameErrorCode.COMMON_ERROR);
+    }
     var command = msg.getJoinGameCommand();
     Game game = gameRoomRegistry.getGame(command.getGameId());
     PlayerJoinedGameState playerConnected = game.joinPlayer(

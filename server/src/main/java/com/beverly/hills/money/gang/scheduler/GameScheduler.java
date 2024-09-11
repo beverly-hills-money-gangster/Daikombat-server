@@ -7,8 +7,10 @@ import com.beverly.hills.money.gang.cheat.AntiCheat;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
+import com.beverly.hills.money.gang.registry.BannedPlayersRegistry;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
+import com.beverly.hills.money.gang.util.NetworkUtil;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,6 +33,8 @@ public class GameScheduler {
   private final AntiCheat antiCheat;
 
   private final Scheduler scheduler;
+
+  private final BannedPlayersRegistry bannedPlayersRegistry;
 
   public void init() {
     LOG.info("Init scheduler");
@@ -62,6 +66,7 @@ public class GameScheduler {
                   state.getPlayerName(), state.getLastDistanceTravelled());
               stateChannel.writeFlushPrimaryChannel(cheatingDetected,
                   future -> stateChannel.close());
+              bannedPlayersRegistry.ban(stateChannel.getPrimaryChannelAddress());
             })));
   }
 

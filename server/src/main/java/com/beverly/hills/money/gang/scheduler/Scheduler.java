@@ -25,7 +25,7 @@ public class Scheduler implements Closeable {
     executorService.scheduleAtFixedRate(runnable, afterMls, periodMls, TimeUnit.MILLISECONDS);
   }
 
-  @Override
+
   public void close() {
     LOG.info("Close");
     try {
@@ -34,5 +34,4 @@ public class Scheduler implements Closeable {
       LOG.error("Can't shutdown scheduler", e);
     }
   }
-
 }

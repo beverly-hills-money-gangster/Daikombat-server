@@ -27,9 +27,9 @@ import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.scheduler.Scheduler;
 import com.beverly.hills.money.gang.state.AttackType;
 import com.beverly.hills.money.gang.state.Game;
+import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import com.beverly.hills.money.gang.state.entity.PlayerAttackingGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
-import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import com.beverly.hills.money.gang.state.entity.Vector;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -207,28 +207,26 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
             ServerResponse deadEvent = createKillEvent(game.playersOnline(),
                 attackGameState.getAttackingPlayer(),
                 attackGameState.getPlayerAttacked(), attackType);
-            ServerResponse gameOver;
-            if (attackGameState.isGameOver()) {
-              LOG.info("Game {} is over", game.gameId());
-              gameOver = createGameOverEvent(game.getLeaderBoard());
-            } else {
-              gameOver = null;
-            }
+            ServerResponse gameOverResponse = Optional.ofNullable(
+                    attackGameState.getGameOverState())
+                .map(gameOverGameState -> createGameOverEvent(
+                    gameOverGameState.getLeaderBoardItems()))
+                .orElse(null);
 
-            // send KILL event to all players
+            // send KILL event to all joined players
             game.getPlayersRegistry().allJoinedPlayers().forEach(
                 playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(deadEvent,
-                    future -> {
-                      if (!future.isSuccess()) {
-                        playerStateChannel.close();
-                        return;
-                      }
-                      Optional.ofNullable(gameOver).ifPresent(serverResponse -> {
-                        playerStateChannel.writeFlushPrimaryChannel(serverResponse);
-                        game.getPlayersRegistry()
-                            .removePlayer(playerStateChannel.getPlayerState().getPlayerId());
-                      });
-                    }));
+                    ChannelFutureListener.CLOSE_ON_FAILURE));
+
+            // send "game over" to all players (even partially joined)
+            Optional.ofNullable(gameOverResponse).ifPresent(serverResponse -> {
+              game.getPlayersRegistry().allPlayers().forEach(playerStateChannel -> {
+                playerStateChannel.writeFlushPrimaryChannel(serverResponse,
+                    ChannelFutureListener.CLOSE_ON_FAILURE);
+                game.getPlayersRegistry().removePlayer(
+                    playerStateChannel.getPlayerState().getPlayerId());
+              });
+            });
 
           } else {
             LOG.debug("Player {} got attacked", attackedPlayer.getPlayerId());

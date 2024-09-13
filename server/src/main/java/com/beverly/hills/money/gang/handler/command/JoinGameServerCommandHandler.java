@@ -67,9 +67,9 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
             currentChannel.close();
             return;
           }
-          playerConnected.getPlayerStateChannel().getPlayerState().fullyJoined();
           sendOtherSpawns(game, playerConnected.getPlayerStateChannel(),
               playerConnected.getSpawnedPowerUps(), playerConnected.getTeleports());
+          playerConnected.getPlayerStateChannel().getPlayerState().fullyJoined();
         });
   }
 

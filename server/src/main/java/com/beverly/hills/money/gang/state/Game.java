@@ -13,6 +13,7 @@ import com.beverly.hills.money.gang.registry.PowerUpRegistry;
 import com.beverly.hills.money.gang.registry.TeleportRegistry;
 import com.beverly.hills.money.gang.spawner.Spawner;
 import com.beverly.hills.money.gang.state.entity.GameLeaderBoardItem;
+import com.beverly.hills.money.gang.state.entity.GameOverGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerAttackingGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerJoinedGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerPowerUpGameState;
@@ -26,6 +27,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
@@ -194,14 +197,17 @@ public class Game implements Closeable, GameReader {
       LOG.warn("Can't attack a non-existing player");
       return null;
     }
+    boolean isGameOver = attackingPlayerState.getKills() >= ServerConfig.FRAGS_PER_GAME;
+    var gameOverState =
+        isGameOver ? GameOverGameState.builder().leaderBoardItems(getLeaderBoard()).build() : null;
     return PlayerAttackingGameState.builder()
         .attackingPlayer(attackingPlayerState)
-        .gameOver(attackingPlayerState.getKills() >= ServerConfig.FRAGS_PER_GAME)
         .playerAttacked(attackedPlayerState)
+        .gameOverState(gameOverState)
         .build();
   }
 
-  public List<GameLeaderBoardItem> getLeaderBoard() {
+  private List<GameLeaderBoardItem> getLeaderBoard() {
     return playersRegistry.allPlayers()
         .sorted((player1, player2) -> {
           int killsCompare = -Integer.compare(

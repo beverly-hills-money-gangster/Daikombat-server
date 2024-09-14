@@ -8,6 +8,7 @@ import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
+import com.beverly.hills.money.gang.registry.PlayerStatsRecoveryRegistry;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import com.beverly.hills.money.gang.registry.PowerUpRegistry;
 import com.beverly.hills.money.gang.registry.TeleportRegistry;
@@ -28,7 +29,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
@@ -51,8 +52,10 @@ public class Game implements Closeable, GameReader {
   private final int id;
   private final SequenceGenerator playerSequenceGenerator;
 
+  private final PlayerStatsRecoveryRegistry playerStatsRecoveryRegistry;
+
   @Getter
-  private final PlayersRegistry playersRegistry = new PlayersRegistry();
+  private final PlayersRegistry playersRegistry;
 
   @Getter
   private final PowerUpRegistry powerUpRegistry;
@@ -69,13 +72,16 @@ public class Game implements Closeable, GameReader {
       @Qualifier("playerIdGenerator") final SequenceGenerator playerSequenceGenerator,
       final PowerUpRegistry powerUpRegistry,
       final TeleportRegistry teleportRegistry,
-      final AntiCheat antiCheat) {
+      final AntiCheat antiCheat,
+      final PlayerStatsRecoveryRegistry playerStatsRecoveryRegistry) {
     this.spawner = spawner;
     this.powerUpRegistry = powerUpRegistry;
     this.teleportRegistry = teleportRegistry;
     this.id = gameSequenceGenerator.getNext();
     this.playerSequenceGenerator = playerSequenceGenerator;
     this.antiCheat = antiCheat;
+    this.playerStatsRecoveryRegistry = playerStatsRecoveryRegistry;
+    this.playersRegistry = new PlayersRegistry(playerStatsRecoveryRegistry);
   }
 
   public void mergeConnection(int playerId, Channel channel) throws GameLogicError {
@@ -89,13 +95,19 @@ public class Game implements Closeable, GameReader {
   }
 
   public PlayerJoinedGameState joinPlayer(
-      final String playerName, final Channel playerChannel, PlayerStateColor color)
+      final String playerName, final Channel playerChannel, PlayerStateColor color,
+      Integer recoveryPlayerId)
       throws GameLogicError {
     validateGameNotClosed();
     int playerId = playerSequenceGenerator.getNext();
     PlayerState.PlayerCoordinates spawn = spawner.spawnPlayer(this);
     PlayerState connectedPlayerState = new PlayerState(playerName, spawn, playerId, color);
     var playerStateChannel = playersRegistry.addPlayer(connectedPlayerState, playerChannel);
+    // recover stats if we can
+    Optional.ofNullable(recoveryPlayerId).flatMap(
+        playerStatsRecoveryRegistry::popStats).ifPresent(
+        playerGameStatsReader -> playerStateChannel.getPlayerState()
+            .setStats(playerGameStatsReader));
     return PlayerJoinedGameState.builder()
         .spawnedPowerUps(powerUpRegistry.getAvailable())
         .leaderBoard(getLeaderBoard())
@@ -197,7 +209,8 @@ public class Game implements Closeable, GameReader {
       LOG.warn("Can't attack a non-existing player");
       return null;
     }
-    boolean isGameOver = attackingPlayerState.getKills() >= ServerConfig.FRAGS_PER_GAME;
+    boolean isGameOver =
+        attackingPlayerState.getGameStats().getKills() >= ServerConfig.FRAGS_PER_GAME;
     var gameOverState =
         isGameOver ? GameOverGameState.builder().leaderBoardItems(getLeaderBoard()).build() : null;
     return PlayerAttackingGameState.builder()
@@ -211,18 +224,20 @@ public class Game implements Closeable, GameReader {
     return playersRegistry.allPlayers()
         .sorted((player1, player2) -> {
           int killsCompare = -Integer.compare(
-              player1.getPlayerState().getKills(), player2.getPlayerState().getKills());
+              player1.getPlayerState().getGameStats().getKills(),
+              player2.getPlayerState().getGameStats().getKills());
           if (killsCompare == 0) {
             return Integer.compare(
-                player1.getPlayerState().getDeaths(), player2.getPlayerState().getDeaths());
+                player1.getPlayerState().getGameStats().getDeaths(),
+                player2.getPlayerState().getGameStats().getDeaths());
           } else {
             return killsCompare;
           }
         }).map(playerStateChannel -> GameLeaderBoardItem.builder()
             .playerId(playerStateChannel.getPlayerState().getPlayerId())
-            .kills(playerStateChannel.getPlayerState().getKills())
+            .kills(playerStateChannel.getPlayerState().getGameStats().getKills())
             .playerName(playerStateChannel.getPlayerState().getPlayerName())
-            .deaths(playerStateChannel.getPlayerState().getDeaths())
+            .deaths(playerStateChannel.getPlayerState().getGameStats().getDeaths())
             .build())
         .collect(Collectors.toList());
   }

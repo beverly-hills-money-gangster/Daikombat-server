@@ -15,8 +15,8 @@ import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.SkinColorSelection;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.state.Game;
-import com.beverly.hills.money.gang.state.entity.PlayerJoinedGameState;
 import com.beverly.hills.money.gang.state.PlayerStateChannel;
+import com.beverly.hills.money.gang.state.entity.PlayerJoinedGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
 import com.beverly.hills.money.gang.teleport.Teleport;
 import com.beverly.hills.money.gang.util.VersionUtil;
@@ -55,10 +55,11 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
 
   @Override
   protected void handleInternal(ServerCommand msg, Channel currentChannel) throws GameLogicError {
-    Game game = gameRoomRegistry.getGame(msg.getJoinGameCommand().getGameId());
+    var command = msg.getJoinGameCommand();
+    Game game = gameRoomRegistry.getGame(command.getGameId());
     PlayerJoinedGameState playerConnected = game.joinPlayer(
-        msg.getJoinGameCommand().getPlayerName(), currentChannel,
-        getSkinColor(msg.getJoinGameCommand().getSkin()));
+        command.getPlayerName(), currentChannel, getSkinColor(command.getSkin()),
+        command.hasRecoveryPlayerId() ? command.getRecoveryPlayerId() : null);
     ServerResponse playerSpawnEvent = createJoinSinglePlayer(
         game.playersOnline(), playerConnected);
     playerConnected.getPlayerStateChannel()

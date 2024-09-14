@@ -66,6 +66,10 @@ public interface ServerConfig {
 
   int FRAGS_PER_GAME = NumberUtils.toInt(System.getenv("GAME_SERVER_FRAGS_PER_GAME"), 25);
 
+  // TODO document it
+  int PLAYER_STATS_TIMEOUT_MLS = NumberUtils.toInt(
+      System.getenv("GAME_SERVER_PLAYER_STATS_TIMEOUT_MLS"), 5 * 60 * 1000);
+
   String VERSION = Optional.ofNullable(
       ServerConfig.class.getClassLoader().getResourceAsStream("server-version.properties")).map(
       inputStream -> {

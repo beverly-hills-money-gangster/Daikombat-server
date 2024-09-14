@@ -7,11 +7,11 @@
     <parent>
         <groupId>com.beverly.hills.money.gang</groupId>
         <artifactId>daikombat-server</artifactId>
-        <version>11.0.4</version>
+        <version>11.1.0</version>
     </parent>
 
     <artifactId>server</artifactId>
-    <version>11.0.4</version>
+    <version>11.1.0</version>
 
     <properties>
         <maven.compiler.source>14</maven.compiler.source>
@@ -86,12 +86,12 @@
         <dependency>
             <groupId>com.beverly.hills.money.gang</groupId>
             <artifactId>schema</artifactId>
-            <version>11.0.4</version>
+            <version>11.1.0</version>
         </dependency>
         <dependency>
             <groupId>com.beverly.hills.money.gang</groupId>
             <artifactId>security</artifactId>
-            <version>11.0.4</version>
+            <version>11.1.0</version>
         </dependency>
         <dependency>
             <groupId>eu.rekawek.toxiproxy</groupId>
@@ -137,7 +137,7 @@
         <dependency>
             <groupId>com.beverly.hills.money.gang</groupId>
             <artifactId>net-client</artifactId>
-            <version>11.0.4</version>
+            <version>11.1.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

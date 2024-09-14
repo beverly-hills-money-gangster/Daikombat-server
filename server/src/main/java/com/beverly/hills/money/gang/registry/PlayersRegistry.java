@@ -4,24 +4,29 @@ import static com.beverly.hills.money.gang.config.ServerConfig.MAX_PLAYERS_PER_G
 
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
-import com.beverly.hills.money.gang.state.entity.PlayerState;
 import com.beverly.hills.money.gang.state.PlayerStateChannel;
+import com.beverly.hills.money.gang.state.entity.PlayerState;
 import io.netty.channel.Channel;
 import java.io.Closeable;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequiredArgsConstructor
 public class PlayersRegistry implements Closeable {
 
   private static final Logger LOG = LoggerFactory.getLogger(PlayersRegistry.class);
 
   private final Map<Integer, PlayerStateChannel> players = new ConcurrentHashMap<>();
 
-  public PlayerStateChannel addPlayer(PlayerState playerState, Channel channel) throws GameLogicError {
+  private final PlayerStatsRecoveryRegistry playerStatsRecoveryRegistry;
+
+  public PlayerStateChannel addPlayer(PlayerState playerState, Channel channel)
+      throws GameLogicError {
     LOG.debug("Add player {}", playerState);
     // not thread-safe
     if (players.size() >= MAX_PLAYERS_PER_GAME) {
@@ -69,17 +74,22 @@ public class PlayersRegistry implements Closeable {
 
   public Optional<PlayerState> disconnectPlayer(int playerId) {
     LOG.debug("Disconnect player {}", playerId);
-    PlayerStateChannel playerStateChannel = players.remove(playerId);
-    if (playerStateChannel != null) {
-      playerStateChannel.close();
-      return Optional.of(playerStateChannel.getPlayerState());
+    var removedStateOpt = removePlayer(playerId);
+    if (removedStateOpt.isPresent()) {
+      removedStateOpt.get().close();
+      return Optional.of(removedStateOpt.get().getPlayerState());
     }
     return Optional.empty();
   }
 
   public Optional<PlayerStateChannel> removePlayer(int playerId) {
     LOG.debug("Remove player {}", playerId);
-    return Optional.ofNullable(players.remove(playerId));
+    var result = Optional.ofNullable(players.remove(playerId));
+    // save stats for future recovery if needed
+    result.ifPresent(playerStateChannel
+        -> playerStatsRecoveryRegistry.saveStats(playerId,
+        playerStateChannel.getPlayerState().getGameStats()));
+    return result;
   }
 
   @Override

@@ -5,6 +5,8 @@ import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
 import com.beverly.hills.money.gang.state.AttackType;
+import com.beverly.hills.money.gang.state.PlayerGameStats;
+import com.beverly.hills.money.gang.state.PlayerGameStatsReader;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
 import com.google.common.util.concurrent.AtomicDouble;
 import java.util.ArrayList;
@@ -46,8 +48,7 @@ public class PlayerState implements PlayerStateReader {
   private final AtomicReference<Integer> pingMls = new AtomicReference<>();
   private final AtomicInteger damageAmplifier = new AtomicInteger(1);
   private final AtomicInteger defenceAmplifier = new AtomicInteger(1);
-  private final AtomicInteger kills = new AtomicInteger();
-  private final AtomicInteger deaths = new AtomicInteger();
+  private final PlayerGameStats playerGameStats = new PlayerGameStats();
   private final AtomicInteger health = new AtomicInteger(DEFAULT_HP);
   private final AtomicInteger lastReceivedEventSequence = new AtomicInteger(-1);
 
@@ -72,6 +73,12 @@ public class PlayerState implements PlayerStateReader {
     defaultDamage();
     defaultDefence();
   }
+
+  public void setStats(PlayerGameStatsReader playerGameStats) {
+    this.playerGameStats.setKills(playerGameStats.getKills());
+    this.playerGameStats.setDeaths(playerGameStats.getDeaths());
+  }
+
 
   @Override
   public int getNextEventId() {
@@ -159,12 +166,8 @@ public class PlayerState implements PlayerStateReader {
     lastReceivedEventSequence.set(-1);
   }
 
-  public int getKills() {
-    return kills.get();
-  }
-
-  public int getDeaths() {
-    return deaths.get();
+  public PlayerGameStatsReader getGameStats() {
+    return playerGameStats;
   }
 
   public void getAttacked(AttackType attackType, int damageAmplifier) {
@@ -175,7 +178,7 @@ public class PlayerState implements PlayerStateReader {
   }
 
   private void onDeath() {
-    deaths.incrementAndGet();
+    playerGameStats.incDeaths();
     dead.set(true);
     health.set(0);
     revertAllPowerUps();
@@ -238,7 +241,7 @@ public class PlayerState implements PlayerStateReader {
   }
 
   public void registerKill() {
-    kills.incrementAndGet();
+    playerGameStats.incKills();
     vampireBoost();
   }
 

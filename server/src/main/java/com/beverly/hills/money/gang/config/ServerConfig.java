@@ -68,7 +68,7 @@ public interface ServerConfig {
 
   // TODO document it
   int PLAYER_STATS_TIMEOUT_MLS = NumberUtils.toInt(
-      System.getenv("GAME_SERVER_PLAYER_STATS_TIMEOUT_MLS"), 5 * 60 * 1000);
+      System.getenv("GAME_SERVER_PLAYER_STATS_TIMEOUT_MLS"), 2 * 60 * 1000);
 
   String VERSION = Optional.ofNullable(
       ServerConfig.class.getClassLoader().getResourceAsStream("server-version.properties")).map(

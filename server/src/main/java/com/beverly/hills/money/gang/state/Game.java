@@ -102,12 +102,14 @@ public class Game implements Closeable, GameReader {
     int playerId = playerSequenceGenerator.getNext();
     PlayerState.PlayerCoordinates spawn = spawner.spawnPlayer(this);
     PlayerState connectedPlayerState = new PlayerState(playerName, spawn, playerId, color);
-    var playerStateChannel = playersRegistry.addPlayer(connectedPlayerState, playerChannel);
     // recover stats if we can
     Optional.ofNullable(recoveryPlayerId).flatMap(
-        playerStatsRecoveryRegistry::popStats).ifPresent(
-        playerGameStatsReader -> playerStateChannel.getPlayerState()
-            .setStats(playerGameStatsReader));
+        playerStatsRecoveryRegistry::getStats).ifPresent(
+        connectedPlayerState::setStats);
+    var playerStateChannel = playersRegistry.addPlayer(connectedPlayerState, playerChannel);
+    // remove stats if we can
+    Optional.ofNullable(recoveryPlayerId).ifPresent(
+        playerStatsRecoveryRegistry::removeStats);
     return PlayerJoinedGameState.builder()
         .spawnedPowerUps(powerUpRegistry.getAvailable())
         .leaderBoard(getLeaderBoard())

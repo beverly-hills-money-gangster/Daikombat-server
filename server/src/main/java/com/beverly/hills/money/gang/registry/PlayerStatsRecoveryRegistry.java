@@ -25,9 +25,12 @@ public class PlayerStatsRecoveryRegistry {
     scheduler.schedule(ServerConfig.PLAYER_STATS_TIMEOUT_MLS, () -> stats.remove(playerId));
   }
 
-  public Optional<PlayerGameStatsReader> popStats(int playerId) {
-    return Optional.ofNullable(stats.remove(playerId));
+  public Optional<PlayerGameStatsReader> getStats(int playerId) {
+    return Optional.ofNullable(stats.get(playerId));
   }
 
+  public void removeStats(int playerId) {
+    stats.remove(playerId);
+  }
 
 }

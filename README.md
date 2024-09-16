@@ -47,6 +47,7 @@ Game server can be configured using the following environment variables:
 - `GAME_SERVER_POWER_UPS_ENABLED` Turns power-ups on and off. Default - `true`.
 - `GAME_SERVER_TELEPORTS_ENABLED` Turns teleports on and off. Default - `true`.
 - `GAME_SERVER_PLAYER_SPEED` Player speed. Default - `5`.
+- `GAME_SERVER_PLAYER_STATS_TIMEOUT_MLS` Time (in milliseconds) to store player's stats for connection recovery. Default - `120000`.
 - `GAME_SERVER_PLAYER_SPEED_CHECK_FREQUENCY_MLS` Frequency(in milliseconds) at which server checks all players' speed. Anybody moving faster than `GAME_SERVER_PLAYER_SPEED` will be kicked-out. Default - `10_000`
 - `SENTRY_DSN` Sentry DSN. Not specified by default.
 

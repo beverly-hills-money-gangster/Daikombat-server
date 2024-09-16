@@ -1,6 +1,7 @@
 package com.beverly.hills.money.gang.state.entity;
 
 import com.beverly.hills.money.gang.state.PlayerStateReader;
+import javax.annotation.Nullable;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -12,7 +13,7 @@ public class PlayerAttackingGameState {
 
   private final PlayerStateReader playerAttacked;
 
-  @Builder.Default
-  private final boolean gameOver = false;
+  @Nullable
+  private final GameOverGameState gameOverState;
 
 }

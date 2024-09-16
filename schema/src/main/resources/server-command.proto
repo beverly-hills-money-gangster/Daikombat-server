@@ -34,6 +34,7 @@ message JoinGameCommand {
   optional string version = 2;
   optional string playerName = 3;
   optional SkinColorSelection skin = 4;
+  optional int32 recoveryPlayerId = 5;
 }
 
 message MergeConnectionCommand {

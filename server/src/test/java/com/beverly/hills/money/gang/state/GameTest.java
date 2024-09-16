@@ -33,6 +33,7 @@ import com.beverly.hills.money.gang.powerup.InvisibilityPowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
 import com.beverly.hills.money.gang.powerup.QuadDamagePowerUp;
+import com.beverly.hills.money.gang.registry.PlayerStatsRecoveryRegistry;
 import com.beverly.hills.money.gang.registry.PowerUpRegistry;
 import com.beverly.hills.money.gang.registry.TeleportRegistry;
 import com.beverly.hills.money.gang.spawner.Spawner;
@@ -80,6 +81,8 @@ public class GameTest {
 
   private final SequenceGenerator testSequenceGenerator = new SequenceGenerator();
 
+  private PlayerStatsRecoveryRegistry playerStatsRecoveryRegistry;
+
   private static final int PING_MLS = 60;
 
   @BeforeEach
@@ -90,6 +93,7 @@ public class GameTest {
     defencePowerUp = spy(new DefencePowerUp(spawner));
     invisibilityPowerUp = spy(new InvisibilityPowerUp(spawner));
     teleportRegistry = spy(new TeleportRegistry());
+    playerStatsRecoveryRegistry = mock(PlayerStatsRecoveryRegistry.class);
     powerUpRegistry = spy(
         new PowerUpRegistry(List.of(quadDamagePowerUp, defencePowerUp, invisibilityPowerUp)));
     game = new Game(spawner,
@@ -97,7 +101,8 @@ public class GameTest {
         new SequenceGenerator(),
         powerUpRegistry,
         teleportRegistry,
-        antiCheat);
+        antiCheat,
+        playerStatsRecoveryRegistry);
   }
 
   @AfterEach
@@ -106,7 +111,7 @@ public class GameTest {
       game.getPlayersRegistry().allPlayers().forEach(playerStateChannel -> {
         assertTrue(playerStateChannel.getPlayerState().getHealth() >= 0,
             "Health can't be negative");
-        assertTrue(playerStateChannel.getPlayerState().getKills() >= 0,
+        assertTrue(playerStateChannel.getPlayerState().getGameStats().getKills() >= 0,
             "Kill count can't be negative");
       });
       assertTrue(game.playersOnline() >= 0, "Player count can't be negative");
@@ -138,7 +143,7 @@ public class GameTest {
             "A connected player must have a state!"));
     assertFalse(playerState.hasMoved(), "Nobody moved");
     assertEquals(playerName, playerState.getPlayerName());
-    assertEquals(0, playerState.getKills(), "Nobody got killed yet");
+    assertEquals(0, playerState.getGameStats().getKills(), "Nobody got killed yet");
     assertEquals(playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         playerState.getPlayerId());
     assertEquals(100, playerState.getHealth(), "Full 100% HP must be set by default");
@@ -336,7 +341,7 @@ public class GameTest {
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
-    assertEquals(0, shooterState.getKills(), "Nobody was killed");
+    assertEquals(0, shooterState.getGameStats().getKills(), "Nobody was killed");
     assertEquals(1, game.playersOnline());
   }
 
@@ -379,7 +384,7 @@ public class GameTest {
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
-    assertEquals(0, shooterState.getKills(), "Nobody was killed");
+    assertEquals(0, shooterState.getGameStats().getKills(), "Nobody was killed");
     assertEquals(2, game.playersOnline());
     PlayerState shotState = game.getPlayersRegistry()
         .getPlayerState(
@@ -435,7 +440,7 @@ public class GameTest {
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
-    assertEquals(1, shooterState.getKills(), "One player was killed");
+    assertEquals(1, shooterState.getGameStats().getKills(), "One player was killed");
     assertEquals(2, game.playersOnline(), "After death, all players are still online");
     PlayerState shotState = game.getPlayersRegistry()
         .getPlayerState(
@@ -532,7 +537,7 @@ public class GameTest {
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(100, shooterState.getHealth(), "Shooter must get a vampire boost");
-    assertEquals(1, shooterState.getKills(), "One player was killed");
+    assertEquals(1, shooterState.getGameStats().getKills(), "One player was killed");
     assertEquals(2, game.playersOnline(), "After death, 2 players are still online");
     PlayerState shotState = game.getPlayersRegistry()
         .getPlayerState(
@@ -590,7 +595,7 @@ public class GameTest {
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
-    assertEquals(1, shooterState.getKills(), "One player was killed");
+    assertEquals(1, shooterState.getGameStats().getKills(), "One player was killed");
     assertEquals(2, game.playersOnline(), "After death, all players are online");
     PlayerState shotState = game.getPlayersRegistry()
         .getPlayerState(
@@ -666,7 +671,7 @@ public class GameTest {
             "A connected player must have a state!"));
     assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
     assertEquals(1, game.playersOnline());
-    assertEquals(0, shooterState.getKills(), "You can't kill yourself");
+    assertEquals(0, shooterState.getGameStats().getKills(), "You can't kill yourself");
   }
 
 
@@ -712,7 +717,7 @@ public class GameTest {
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
-    assertEquals(1, shooterState.getKills(), "One player got killed");
+    assertEquals(1, shooterState.getGameStats().getKills(), "One player got killed");
     assertEquals(2, game.playersOnline(), "After death, all players are online");
     PlayerState shotState = game.getPlayersRegistry()
         .getPlayerState(
@@ -749,7 +754,7 @@ public class GameTest {
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
-    assertEquals(0, shooterState.getKills(), "Nobody got killed");
+    assertEquals(0, shooterState.getGameStats().getKills(), "Nobody got killed");
     assertEquals(1, game.playersOnline());
   }
 
@@ -796,7 +801,7 @@ public class GameTest {
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
-    assertEquals(1, shooterState.getKills(), "One player got killed");
+    assertEquals(1, shooterState.getGameStats().getKills(), "One player got killed");
     assertEquals(2, game.playersOnline(), "After death, all players are online");
     PlayerState shotState = game.getPlayersRegistry()
         .getPlayerState(
@@ -861,7 +866,8 @@ public class GameTest {
     assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, game.playersOnline());
     game.getPlayersRegistry().allPlayers().forEach(playerStateChannel -> {
       assertFalse(playerStateChannel.getPlayerState().isDead(), "Nobody is dead");
-      assertEquals(0, playerStateChannel.getPlayerState().getKills(), "Nobody got killed");
+      assertEquals(0, playerStateChannel.getPlayerState().getGameStats().getKills(),
+          "Nobody got killed");
       assertEquals(100 - ServerConfig.DEFAULT_PUNCH_DAMAGE,
           playerStateChannel.getPlayerState().getHealth(), "Everybody got hit once");
     });
@@ -899,7 +905,7 @@ public class GameTest {
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(100, playerState.getHealth());
-    assertEquals(0, playerState.getKills(), "Nobody got killed");
+    assertEquals(0, playerState.getGameStats().getKills(), "Nobody got killed");
     assertEquals(1, game.playersOnline());
     assertEquals(Vector.builder().x(1f).y(0).build(), playerState.getCoordinates().getDirection());
     assertEquals(Vector.builder().x(0f).y(1).build(), playerState.getCoordinates().getPosition());
@@ -945,7 +951,7 @@ public class GameTest {
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(100, playerState.getHealth());
-    assertEquals(0, playerState.getKills(), "Nobody got killed");
+    assertEquals(0, playerState.getGameStats().getKills(), "Nobody got killed");
     assertEquals(1, game.playersOnline());
     assertEquals(Vector.builder().x(1f).y(0).build(), playerState.getCoordinates().getDirection());
     assertEquals(Vector.builder().x(0f).y(1).build(), playerState.getCoordinates().getPosition());
@@ -987,7 +993,7 @@ public class GameTest {
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(100, playerState.getHealth());
-    assertEquals(0, playerState.getKills(), "Nobody got killed");
+    assertEquals(0, playerState.getGameStats().getKills(), "Nobody got killed");
     assertEquals(1, game.playersOnline());
     assertEquals(Vector.builder().x(2f).y(1).build(), playerState.getCoordinates().getDirection());
     assertEquals(Vector.builder().x(1f).y(2).build(), playerState.getCoordinates().getPosition());
@@ -1126,7 +1132,8 @@ public class GameTest {
 
     game.getPlayersRegistry().allPlayers().forEach(playerStateChannel -> {
       assertFalse(playerStateChannel.getPlayerState().isDead(), "Nobody is dead");
-      assertEquals(0, playerStateChannel.getPlayerState().getKills(), "Nobody got killed");
+      assertEquals(0, playerStateChannel.getPlayerState().getGameStats().getKills(),
+          "Nobody got killed");
       assertEquals(100, playerStateChannel.getPlayerState().getHealth(), "Nobody got shot");
       PlayerState.PlayerCoordinates finalCoordinates = PlayerState.PlayerCoordinates
           .builder()
@@ -1245,12 +1252,12 @@ public class GameTest {
     assertEquals(playerRespawnedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         respawned.getPlayerStateChannel().getPlayerState().getPlayerId());
     assertFalse(respawned.getPlayerStateChannel().getPlayerState().isDead());
-    assertEquals(1, respawned.getPlayerStateChannel().getPlayerState().getDeaths(),
+    assertEquals(1, respawned.getPlayerStateChannel().getPlayerState().getGameStats().getDeaths(),
         "Death count should increment after respawn");
     assertEquals(PlayerState.DEFAULT_HP,
         respawned.getPlayerStateChannel().getPlayerState().getHealth(),
         "Health must be restored after respawn");
-    assertEquals(1, respawned.getPlayerStateChannel().getPlayerState().getKills(),
+    assertEquals(1, respawned.getPlayerStateChannel().getPlayerState().getGameStats().getKills(),
         "Number of kills should be the same after respawn");
 
     PlayerJoinedGameState observerPlayerConnectedGameState = fullyJoin("observer",
@@ -1979,7 +1986,7 @@ public class GameTest {
       PlayerStateColor color)
       throws GameLogicError {
     PlayerJoinedGameState player = game.joinPlayer(playerName,
-        playerChannel, color);
+        playerChannel, color, null);
     game.getPlayersRegistry()
         .findPlayer(player.getPlayerStateChannel().getPlayerState().getPlayerId()).ifPresent(
             playerStateChannel -> playerStateChannel.getPlayerState().fullyJoined());

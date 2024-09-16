@@ -29,7 +29,7 @@ public class PlayerStateTest {
 
     playerState.registerKill();
 
-    assertEquals(1, playerState.getKills());
+    assertEquals(1, playerState.getGameStats().getKills());
     assertEquals(PlayerState.DEFAULT_HP, playerState.getHealth(),
         "Even though we killed a player, vampire boost can't give use more than 100 HP");
   }
@@ -49,7 +49,7 @@ public class PlayerStateTest {
 
     playerState.registerKill();
 
-    assertEquals(1, playerState.getKills());
+    assertEquals(1, playerState.getGameStats().getKills());
     assertEquals(
         PlayerState.DEFAULT_HP - (ServerConfig.DEFAULT_SHOTGUN_DAMAGE) * 2
             + PlayerState.VAMPIRE_HP_BOOST,
@@ -91,7 +91,7 @@ public class PlayerStateTest {
         throw new RuntimeException(e);
       }
     });
-    assertEquals(threadsNum, playerState.getKills());
+    assertEquals(threadsNum, playerState.getGameStats().getKills());
     assertEquals(PlayerState.DEFAULT_HP, playerState.getHealth());
   }
 

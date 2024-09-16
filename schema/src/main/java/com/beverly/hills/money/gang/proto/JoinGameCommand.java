@@ -181,6 +181,25 @@ private static final long serialVersionUID = 0L;
     return result == null ? com.beverly.hills.money.gang.proto.SkinColorSelection.UNRECOGNIZED : result;
   }
 
+  public static final int RECOVERYPLAYERID_FIELD_NUMBER = 5;
+  private int recoveryPlayerId_ = 0;
+  /**
+   * <code>optional int32 recoveryPlayerId = 5;</code>
+   * @return Whether the recoveryPlayerId field is set.
+   */
+  @java.lang.Override
+  public boolean hasRecoveryPlayerId() {
+    return ((bitField0_ & 0x00000010) != 0);
+  }
+  /**
+   * <code>optional int32 recoveryPlayerId = 5;</code>
+   * @return The recoveryPlayerId.
+   */
+  @java.lang.Override
+  public int getRecoveryPlayerId() {
+    return recoveryPlayerId_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -207,6 +226,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000008) != 0)) {
       output.writeEnum(4, skin_);
     }
+    if (((bitField0_ & 0x00000010) != 0)) {
+      output.writeInt32(5, recoveryPlayerId_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -229,6 +251,10 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000008) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(4, skin_);
+    }
+    if (((bitField0_ & 0x00000010) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(5, recoveryPlayerId_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -264,6 +290,11 @@ private static final long serialVersionUID = 0L;
     if (hasSkin()) {
       if (skin_ != other.skin_) return false;
     }
+    if (hasRecoveryPlayerId() != other.hasRecoveryPlayerId()) return false;
+    if (hasRecoveryPlayerId()) {
+      if (getRecoveryPlayerId()
+          != other.getRecoveryPlayerId()) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -290,6 +321,10 @@ private static final long serialVersionUID = 0L;
     if (hasSkin()) {
       hash = (37 * hash) + SKIN_FIELD_NUMBER;
       hash = (53 * hash) + skin_;
+    }
+    if (hasRecoveryPlayerId()) {
+      hash = (37 * hash) + RECOVERYPLAYERID_FIELD_NUMBER;
+      hash = (53 * hash) + getRecoveryPlayerId();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -426,6 +461,7 @@ private static final long serialVersionUID = 0L;
       version_ = "";
       playerName_ = "";
       skin_ = 0;
+      recoveryPlayerId_ = 0;
       return this;
     }
 
@@ -475,6 +511,10 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000008) != 0)) {
         result.skin_ = skin_;
         to_bitField0_ |= 0x00000008;
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.recoveryPlayerId_ = recoveryPlayerId_;
+        to_bitField0_ |= 0x00000010;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -539,6 +579,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasSkin()) {
         setSkin(other.getSkin());
       }
+      if (other.hasRecoveryPlayerId()) {
+        setRecoveryPlayerId(other.getRecoveryPlayerId());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -585,6 +628,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000008;
               break;
             } // case 32
+            case 40: {
+              recoveryPlayerId_ = input.readInt32();
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 40
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -856,6 +904,46 @@ private static final long serialVersionUID = 0L;
     public Builder clearSkin() {
       bitField0_ = (bitField0_ & ~0x00000008);
       skin_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private int recoveryPlayerId_ ;
+    /**
+     * <code>optional int32 recoveryPlayerId = 5;</code>
+     * @return Whether the recoveryPlayerId field is set.
+     */
+    @java.lang.Override
+    public boolean hasRecoveryPlayerId() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <code>optional int32 recoveryPlayerId = 5;</code>
+     * @return The recoveryPlayerId.
+     */
+    @java.lang.Override
+    public int getRecoveryPlayerId() {
+      return recoveryPlayerId_;
+    }
+    /**
+     * <code>optional int32 recoveryPlayerId = 5;</code>
+     * @param value The recoveryPlayerId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setRecoveryPlayerId(int value) {
+
+      recoveryPlayerId_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional int32 recoveryPlayerId = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearRecoveryPlayerId() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      recoveryPlayerId_ = 0;
       onChanged();
       return this;
     }

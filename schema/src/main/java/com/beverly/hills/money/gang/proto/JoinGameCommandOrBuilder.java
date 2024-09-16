@@ -68,4 +68,15 @@ public interface JoinGameCommandOrBuilder extends
    * @return The skin.
    */
   com.beverly.hills.money.gang.proto.SkinColorSelection getSkin();
+
+  /**
+   * <code>optional int32 recoveryPlayerId = 5;</code>
+   * @return Whether the recoveryPlayerId field is set.
+   */
+  boolean hasRecoveryPlayerId();
+  /**
+   * <code>optional int32 recoveryPlayerId = 5;</code>
+   * @return The recoveryPlayerId.
+   */
+  int getRecoveryPlayerId();
 }

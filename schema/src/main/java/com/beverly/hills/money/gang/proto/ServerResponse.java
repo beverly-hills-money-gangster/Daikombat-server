@@ -13985,6 +13985,21 @@ private static final long serialVersionUID = 0L;
      * @return The skinColor.
      */
     com.beverly.hills.money.gang.proto.ServerResponse.PlayerSkinColor getSkinColor();
+
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.PlayerGameMatchStats gameMatchStats = 8;</code>
+     * @return Whether the gameMatchStats field is set.
+     */
+    boolean hasGameMatchStats();
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.PlayerGameMatchStats gameMatchStats = 8;</code>
+     * @return The gameMatchStats.
+     */
+    com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats getGameMatchStats();
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.PlayerGameMatchStats gameMatchStats = 8;</code>
+     */
+    com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStatsOrBuilder getGameMatchStatsOrBuilder();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.GameEventPlayerStats}
@@ -14228,6 +14243,32 @@ private static final long serialVersionUID = 0L;
       return result == null ? com.beverly.hills.money.gang.proto.ServerResponse.PlayerSkinColor.UNRECOGNIZED : result;
     }
 
+    public static final int GAMEMATCHSTATS_FIELD_NUMBER = 8;
+    private com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats gameMatchStats_;
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.PlayerGameMatchStats gameMatchStats = 8;</code>
+     * @return Whether the gameMatchStats field is set.
+     */
+    @java.lang.Override
+    public boolean hasGameMatchStats() {
+      return ((bitField0_ & 0x00000040) != 0);
+    }
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.PlayerGameMatchStats gameMatchStats = 8;</code>
+     * @return The gameMatchStats.
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats getGameMatchStats() {
+      return gameMatchStats_ == null ? com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats.getDefaultInstance() : gameMatchStats_;
+    }
+    /**
+     * <code>optional .daikombat.dto.ServerResponse.PlayerGameMatchStats gameMatchStats = 8;</code>
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStatsOrBuilder getGameMatchStatsOrBuilder() {
+      return gameMatchStats_ == null ? com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats.getDefaultInstance() : gameMatchStats_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -14262,6 +14303,9 @@ private static final long serialVersionUID = 0L;
       }
       if (((bitField0_ & 0x00000020) != 0)) {
         output.writeEnum(7, skinColor_);
+      }
+      if (((bitField0_ & 0x00000040) != 0)) {
+        output.writeMessage(8, getGameMatchStats());
       }
       getUnknownFields().writeTo(output);
     }
@@ -14298,6 +14342,10 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000020) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(7, skinColor_);
+      }
+      if (((bitField0_ & 0x00000040) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(8, getGameMatchStats());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -14345,6 +14393,11 @@ private static final long serialVersionUID = 0L;
       if (hasSkinColor()) {
         if (skinColor_ != other.skinColor_) return false;
       }
+      if (hasGameMatchStats() != other.hasGameMatchStats()) return false;
+      if (hasGameMatchStats()) {
+        if (!getGameMatchStats()
+            .equals(other.getGameMatchStats())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -14383,6 +14436,10 @@ private static final long serialVersionUID = 0L;
       if (hasSkinColor()) {
         hash = (37 * hash) + SKINCOLOR_FIELD_NUMBER;
         hash = (53 * hash) + skinColor_;
+      }
+      if (hasGameMatchStats()) {
+        hash = (37 * hash) + GAMEMATCHSTATS_FIELD_NUMBER;
+        hash = (53 * hash) + getGameMatchStats().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -14517,6 +14574,7 @@ private static final long serialVersionUID = 0L;
           getPositionFieldBuilder();
           getDirectionFieldBuilder();
           getActivePowerUpsFieldBuilder();
+          getGameMatchStatsFieldBuilder();
         }
       }
       @java.lang.Override
@@ -14544,6 +14602,11 @@ private static final long serialVersionUID = 0L;
         }
         bitField0_ = (bitField0_ & ~0x00000020);
         skinColor_ = 0;
+        gameMatchStats_ = null;
+        if (gameMatchStatsBuilder_ != null) {
+          gameMatchStatsBuilder_.dispose();
+          gameMatchStatsBuilder_ = null;
+        }
         return this;
       }
 
@@ -14618,6 +14681,12 @@ private static final long serialVersionUID = 0L;
         if (((from_bitField0_ & 0x00000040) != 0)) {
           result.skinColor_ = skinColor_;
           to_bitField0_ |= 0x00000020;
+        }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.gameMatchStats_ = gameMatchStatsBuilder_ == null
+              ? gameMatchStats_
+              : gameMatchStatsBuilder_.build();
+          to_bitField0_ |= 0x00000040;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -14712,6 +14781,9 @@ private static final long serialVersionUID = 0L;
         if (other.hasSkinColor()) {
           setSkinColor(other.getSkinColor());
         }
+        if (other.hasGameMatchStats()) {
+          mergeGameMatchStats(other.getGameMatchStats());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -14785,6 +14857,13 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000040;
                 break;
               } // case 56
+              case 66: {
+                input.readMessage(
+                    getGameMatchStatsFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 66
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -15502,6 +15581,127 @@ private static final long serialVersionUID = 0L;
         onChanged();
         return this;
       }
+
+      private com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats gameMatchStats_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats, com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats.Builder, com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStatsOrBuilder> gameMatchStatsBuilder_;
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.PlayerGameMatchStats gameMatchStats = 8;</code>
+       * @return Whether the gameMatchStats field is set.
+       */
+      public boolean hasGameMatchStats() {
+        return ((bitField0_ & 0x00000080) != 0);
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.PlayerGameMatchStats gameMatchStats = 8;</code>
+       * @return The gameMatchStats.
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats getGameMatchStats() {
+        if (gameMatchStatsBuilder_ == null) {
+          return gameMatchStats_ == null ? com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats.getDefaultInstance() : gameMatchStats_;
+        } else {
+          return gameMatchStatsBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.PlayerGameMatchStats gameMatchStats = 8;</code>
+       */
+      public Builder setGameMatchStats(com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats value) {
+        if (gameMatchStatsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          gameMatchStats_ = value;
+        } else {
+          gameMatchStatsBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.PlayerGameMatchStats gameMatchStats = 8;</code>
+       */
+      public Builder setGameMatchStats(
+          com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats.Builder builderForValue) {
+        if (gameMatchStatsBuilder_ == null) {
+          gameMatchStats_ = builderForValue.build();
+        } else {
+          gameMatchStatsBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.PlayerGameMatchStats gameMatchStats = 8;</code>
+       */
+      public Builder mergeGameMatchStats(com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats value) {
+        if (gameMatchStatsBuilder_ == null) {
+          if (((bitField0_ & 0x00000080) != 0) &&
+            gameMatchStats_ != null &&
+            gameMatchStats_ != com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats.getDefaultInstance()) {
+            getGameMatchStatsBuilder().mergeFrom(value);
+          } else {
+            gameMatchStats_ = value;
+          }
+        } else {
+          gameMatchStatsBuilder_.mergeFrom(value);
+        }
+        if (gameMatchStats_ != null) {
+          bitField0_ |= 0x00000080;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.PlayerGameMatchStats gameMatchStats = 8;</code>
+       */
+      public Builder clearGameMatchStats() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        gameMatchStats_ = null;
+        if (gameMatchStatsBuilder_ != null) {
+          gameMatchStatsBuilder_.dispose();
+          gameMatchStatsBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.PlayerGameMatchStats gameMatchStats = 8;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats.Builder getGameMatchStatsBuilder() {
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return getGameMatchStatsFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.PlayerGameMatchStats gameMatchStats = 8;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStatsOrBuilder getGameMatchStatsOrBuilder() {
+        if (gameMatchStatsBuilder_ != null) {
+          return gameMatchStatsBuilder_.getMessageOrBuilder();
+        } else {
+          return gameMatchStats_ == null ?
+              com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats.getDefaultInstance() : gameMatchStats_;
+        }
+      }
+      /**
+       * <code>optional .daikombat.dto.ServerResponse.PlayerGameMatchStats gameMatchStats = 8;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats, com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats.Builder, com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStatsOrBuilder> 
+          getGameMatchStatsFieldBuilder() {
+        if (gameMatchStatsBuilder_ == null) {
+          gameMatchStatsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats, com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats.Builder, com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStatsOrBuilder>(
+                  getGameMatchStats(),
+                  getParentForChildren(),
+                  isClean());
+          gameMatchStats_ = null;
+        }
+        return gameMatchStatsBuilder_;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -15561,6 +15761,611 @@ private static final long serialVersionUID = 0L;
 
     @java.lang.Override
     public com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStats getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface PlayerGameMatchStatsOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:daikombat.dto.ServerResponse.PlayerGameMatchStats)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional int32 kills = 1;</code>
+     * @return Whether the kills field is set.
+     */
+    boolean hasKills();
+    /**
+     * <code>optional int32 kills = 1;</code>
+     * @return The kills.
+     */
+    int getKills();
+
+    /**
+     * <code>optional int32 deaths = 2;</code>
+     * @return Whether the deaths field is set.
+     */
+    boolean hasDeaths();
+    /**
+     * <code>optional int32 deaths = 2;</code>
+     * @return The deaths.
+     */
+    int getDeaths();
+  }
+  /**
+   * Protobuf type {@code daikombat.dto.ServerResponse.PlayerGameMatchStats}
+   */
+  public static final class PlayerGameMatchStats extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:daikombat.dto.ServerResponse.PlayerGameMatchStats)
+      PlayerGameMatchStatsOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use PlayerGameMatchStats.newBuilder() to construct.
+    private PlayerGameMatchStats(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PlayerGameMatchStats() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new PlayerGameMatchStats();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_PlayerGameMatchStats_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_PlayerGameMatchStats_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats.class, com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int KILLS_FIELD_NUMBER = 1;
+    private int kills_ = 0;
+    /**
+     * <code>optional int32 kills = 1;</code>
+     * @return Whether the kills field is set.
+     */
+    @java.lang.Override
+    public boolean hasKills() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>optional int32 kills = 1;</code>
+     * @return The kills.
+     */
+    @java.lang.Override
+    public int getKills() {
+      return kills_;
+    }
+
+    public static final int DEATHS_FIELD_NUMBER = 2;
+    private int deaths_ = 0;
+    /**
+     * <code>optional int32 deaths = 2;</code>
+     * @return Whether the deaths field is set.
+     */
+    @java.lang.Override
+    public boolean hasDeaths() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>optional int32 deaths = 2;</code>
+     * @return The deaths.
+     */
+    @java.lang.Override
+    public int getDeaths() {
+      return deaths_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeInt32(1, kills_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        output.writeInt32(2, deaths_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, kills_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, deaths_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats)) {
+        return super.equals(obj);
+      }
+      com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats other = (com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats) obj;
+
+      if (hasKills() != other.hasKills()) return false;
+      if (hasKills()) {
+        if (getKills()
+            != other.getKills()) return false;
+      }
+      if (hasDeaths() != other.hasDeaths()) return false;
+      if (hasDeaths()) {
+        if (getDeaths()
+            != other.getDeaths()) return false;
+      }
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasKills()) {
+        hash = (37 * hash) + KILLS_FIELD_NUMBER;
+        hash = (53 * hash) + getKills();
+      }
+      if (hasDeaths()) {
+        hash = (37 * hash) + DEATHS_FIELD_NUMBER;
+        hash = (53 * hash) + getDeaths();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code daikombat.dto.ServerResponse.PlayerGameMatchStats}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:daikombat.dto.ServerResponse.PlayerGameMatchStats)
+        com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStatsOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_PlayerGameMatchStats_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_PlayerGameMatchStats_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats.class, com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats.Builder.class);
+      }
+
+      // Construct using com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        kills_ = 0;
+        deaths_ = 0;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_PlayerGameMatchStats_descriptor;
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats getDefaultInstanceForType() {
+        return com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats build() {
+        com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats buildPartial() {
+        com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats result = new com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats result) {
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.kills_ = kills_;
+          to_bitField0_ |= 0x00000001;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.deaths_ = deaths_;
+          to_bitField0_ |= 0x00000002;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats) {
+          return mergeFrom((com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats other) {
+        if (other == com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats.getDefaultInstance()) return this;
+        if (other.hasKills()) {
+          setKills(other.getKills());
+        }
+        if (other.hasDeaths()) {
+          setDeaths(other.getDeaths());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                kills_ = input.readInt32();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              case 16: {
+                deaths_ = input.readInt32();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private int kills_ ;
+      /**
+       * <code>optional int32 kills = 1;</code>
+       * @return Whether the kills field is set.
+       */
+      @java.lang.Override
+      public boolean hasKills() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <code>optional int32 kills = 1;</code>
+       * @return The kills.
+       */
+      @java.lang.Override
+      public int getKills() {
+        return kills_;
+      }
+      /**
+       * <code>optional int32 kills = 1;</code>
+       * @param value The kills to set.
+       * @return This builder for chaining.
+       */
+      public Builder setKills(int value) {
+
+        kills_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 kills = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearKills() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        kills_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int deaths_ ;
+      /**
+       * <code>optional int32 deaths = 2;</code>
+       * @return Whether the deaths field is set.
+       */
+      @java.lang.Override
+      public boolean hasDeaths() {
+        return ((bitField0_ & 0x00000002) != 0);
+      }
+      /**
+       * <code>optional int32 deaths = 2;</code>
+       * @return The deaths.
+       */
+      @java.lang.Override
+      public int getDeaths() {
+        return deaths_;
+      }
+      /**
+       * <code>optional int32 deaths = 2;</code>
+       * @param value The deaths to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDeaths(int value) {
+
+        deaths_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 deaths = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDeaths() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        deaths_ = 0;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:daikombat.dto.ServerResponse.PlayerGameMatchStats)
+    }
+
+    // @@protoc_insertion_point(class_scope:daikombat.dto.ServerResponse.PlayerGameMatchStats)
+    private static final com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats();
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PlayerGameMatchStats>
+        PARSER = new com.google.protobuf.AbstractParser<PlayerGameMatchStats>() {
+      @java.lang.Override
+      public PlayerGameMatchStats parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<PlayerGameMatchStats> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PlayerGameMatchStats> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 

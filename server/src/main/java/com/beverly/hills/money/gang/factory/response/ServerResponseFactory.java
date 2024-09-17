@@ -9,6 +9,7 @@ import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.WeaponType;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStats;
 import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUp;
 import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType;
+import com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats;
 import com.beverly.hills.money.gang.proto.ServerResponse.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent;
 import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem;
@@ -217,6 +218,9 @@ public interface ServerResponseFactory {
                 .build()).collect(Collectors.toList()))
         .setHealth(playerReader.getHealth())
         .setPlayerId(playerReader.getPlayerId())
+        .setGameMatchStats(PlayerGameMatchStats.newBuilder()
+            .setDeaths(playerReader.getGameStats().getDeaths())
+            .setKills(playerReader.getGameStats().getKills()).build())
         .build();
   }
 

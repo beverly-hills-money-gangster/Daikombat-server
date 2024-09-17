@@ -166,6 +166,7 @@ public class PlayerState implements PlayerStateReader {
     lastReceivedEventSequence.set(-1);
   }
 
+  @Override
   public PlayerGameStatsReader getGameStats() {
     return playerGameStats;
   }

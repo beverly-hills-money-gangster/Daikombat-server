@@ -128,6 +128,12 @@ message ServerResponse {
     optional int32 health = 5;
     repeated GamePowerUp activePowerUps = 6;
     optional PlayerSkinColor skinColor = 7;
+    optional PlayerGameMatchStats gameMatchStats = 8;
+  }
+
+  message PlayerGameMatchStats {
+    optional int32 kills = 1;
+    optional int32 deaths = 2;
   }
 
   enum PlayerSkinColor {

@@ -33,5 +33,6 @@ public interface PlayerStateReader {
 
   boolean hasMoved();
 
+  PlayerGameStatsReader getGameStats();
 
 }

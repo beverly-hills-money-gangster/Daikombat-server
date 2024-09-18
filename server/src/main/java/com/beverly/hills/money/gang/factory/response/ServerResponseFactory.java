@@ -83,7 +83,7 @@ public interface ServerResponseFactory {
   static ServerResponse.GameEvent createPlayerTeleportGameEvent(
       PlayerStateReader playerStateReader) {
     return ServerResponse.GameEvent.newBuilder()
-        .setPlayer(createMinimalPlayerStats(playerStateReader))
+        .setPlayer(createFullPlayerStats(playerStateReader))
         .setEventType(GameEventType.TELEPORT).build();
   }
 
@@ -103,7 +103,7 @@ public interface ServerResponseFactory {
 
   static ServerResponse.GameEvent createExitGameEvent(PlayerStateReader playerStateReader) {
     return ServerResponse.GameEvent.newBuilder()
-        .setPlayer(createMinimalPlayerStats(playerStateReader))
+        .setPlayer(createFullPlayerStats(playerStateReader))
         .setEventType(ServerResponse.GameEvent.GameEventType.EXIT).build();
   }
 

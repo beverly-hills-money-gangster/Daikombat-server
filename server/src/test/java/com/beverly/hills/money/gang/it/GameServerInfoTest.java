@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
-import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
@@ -29,7 +28,7 @@ public class GameServerInfoTest extends AbstractGameServerTest {
    */
   @Test
   public void testGetServerInfo() throws IOException {
-    GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
+    GameConnection gameConnection = createGameConnection("localhost", port);
 
     gameConnection.write(GetServerInfoCommand.newBuilder().build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
@@ -51,31 +50,6 @@ public class GameServerInfoTest extends AbstractGameServerTest {
     assertEquals(AttackType.values().length,
         serverResponse.getServerInfo().getWeaponsInfoList().size(),
         "All attack types/weapons should have info");
-    assertEquals(1, gameConnection.getNetworkStats().getReceivedMessages());
-    assertTrue(gameConnection.getNetworkStats().getInboundPayloadBytes() > 0);
-    assertEquals(1, gameConnection.getNetworkStats().getSentMessages());
-    assertTrue(gameConnection.getNetworkStats().getOutboundPayloadBytes() > 0);
-  }
-
-  /**
-   * @given a running game serve
-   * @when player 1 requests server info with incorrect password
-   * @then player 1 fails to get server info. server disconnects the player
-   */
-  @Test
-  public void testGetServerInfoBadAuth() throws InterruptedException, IOException {
-    GameConnection gameConnection = createGameConnection("wrong password", "localhost", port);
-    gameConnection.write(GetServerInfoCommand.newBuilder().build());
-    waitUntilQueueNonEmpty(gameConnection.getResponse());
-    assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
-    assertEquals(1, gameConnection.getResponse().size(), "Should be exactly one response");
-    ServerResponse serverResponse = gameConnection.getResponse().poll().get();
-    ServerResponse.ErrorEvent errorEvent = serverResponse.getErrorEvent();
-    assertEquals(GameErrorCode.AUTH_ERROR.ordinal(), errorEvent.getErrorCode(),
-        "Should be auth error");
-    assertEquals("Incorrect server pin code", errorEvent.getMessage());
-    Thread.sleep(250);
-    assertTrue(gameConnection.isDisconnected());
     assertEquals(1, gameConnection.getNetworkStats().getReceivedMessages());
     assertTrue(gameConnection.getNetworkStats().getInboundPayloadBytes() > 0);
     assertEquals(1, gameConnection.getNetworkStats().getSentMessages());

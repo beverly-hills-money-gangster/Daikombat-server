@@ -46,7 +46,7 @@ public class ConcurrentKillTest extends AbstractGameServerTest {
       int finalJ = j;
       joinThreads.add(new Thread(() -> {
         try {
-          GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
+          GameConnection gameConnection = createGameConnection( "localhost",
               port);
           gameConnection.write(
               JoinGameCommand.newBuilder()

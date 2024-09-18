@@ -32,7 +32,7 @@ public class MoveEventTest extends AbstractGameServerTest {
   @Test
   public void testMove() throws Exception {
     int gameIdToConnectTo = 2;
-    GameConnection movingPlayerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
+    GameConnection movingPlayerConnection = createGameConnection( "localhost",
         port);
     movingPlayerConnection.write(
         JoinGameCommand.newBuilder()
@@ -44,7 +44,7 @@ public class MoveEventTest extends AbstractGameServerTest {
     ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
     int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
 
-    GameConnection observerPlayerConnection = createGameConnection(ServerConfig.PIN_CODE,
+    GameConnection observerPlayerConnection = createGameConnection(
         "localhost", port);
     observerPlayerConnection.write(
         JoinGameCommand.newBuilder()
@@ -118,7 +118,7 @@ public class MoveEventTest extends AbstractGameServerTest {
   @Test
   public void testMoveAscendingSequence() throws Exception {
     int gameIdToConnectTo = 2;
-    GameConnection movingPlayerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
+    GameConnection movingPlayerConnection = createGameConnection( "localhost",
         port);
     movingPlayerConnection.write(
         JoinGameCommand.newBuilder()
@@ -130,7 +130,7 @@ public class MoveEventTest extends AbstractGameServerTest {
     ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
     int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
 
-    GameConnection observerPlayerConnection = createGameConnection(ServerConfig.PIN_CODE,
+    GameConnection observerPlayerConnection = createGameConnection(
         "localhost", port);
     observerPlayerConnection.write(
         JoinGameCommand.newBuilder()
@@ -188,7 +188,7 @@ public class MoveEventTest extends AbstractGameServerTest {
   @Test
   public void testMoveOutOfOrderSequence() throws Exception {
     int gameIdToConnectTo = 2;
-    GameConnection movingPlayerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
+    GameConnection movingPlayerConnection = createGameConnection( "localhost",
         port);
     movingPlayerConnection.write(
         JoinGameCommand.newBuilder()
@@ -200,7 +200,7 @@ public class MoveEventTest extends AbstractGameServerTest {
     ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
     int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
 
-    GameConnection observerPlayerConnection = createGameConnection(ServerConfig.PIN_CODE,
+    GameConnection observerPlayerConnection = createGameConnection(
         "localhost", port);
     observerPlayerConnection.write(
         JoinGameCommand.newBuilder()
@@ -272,7 +272,7 @@ public class MoveEventTest extends AbstractGameServerTest {
   @Test
   public void testMoveWrongPlayerId() throws Exception {
     int gameIdToConnectTo = 2;
-    GameConnection observerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
+    GameConnection observerConnection = createGameConnection( "localhost",
         port);
     observerConnection.write(
         JoinGameCommand.newBuilder()
@@ -284,7 +284,7 @@ public class MoveEventTest extends AbstractGameServerTest {
     ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
     int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
 
-    GameConnection wrongGameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
+    GameConnection wrongGameConnection = createGameConnection( "localhost",
         port);
     wrongGameConnection.write(
         JoinGameCommand.newBuilder()

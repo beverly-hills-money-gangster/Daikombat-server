@@ -6,7 +6,6 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
-import com.beverly.hills.money.gang.entity.GameServerCreds;
 import com.beverly.hills.money.gang.entity.HostPort;
 import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.network.AbstractGameConnection;
@@ -164,10 +163,10 @@ public abstract class AbstractGameServerTest {
   }
 
 
-  protected GameConnection createGameConnection(
-      final String password, final String host, final int port) throws IOException {
+  protected GameConnection createGameConnection(final String host, final int port)
+      throws IOException {
     GameConnection gameConnection = spy(
-        new GameConnection(createCredentials(password, host, port)));
+        new GameConnection(HostPort.builder().host(host).port(port).build()));
     allGameEvents.put(gameConnection.getId(), new ArrayList<>());
     var responseSpy = spy(gameConnection.getResponse());
     doReturn(responseSpy).when(gameConnection).getResponse();
@@ -195,9 +194,9 @@ public abstract class AbstractGameServerTest {
   }
 
   protected SecondaryGameConnection createSecondaryGameConnection(
-      final String password, final String host, final int port) throws IOException {
+      final String host, final int port) throws IOException {
     SecondaryGameConnection gameConnection = new SecondaryGameConnection(
-        createCredentials(password, host, port));
+        HostPort.builder().host(host).port(port).build());
     secondaryGameConnections.add(gameConnection);
     try {
       gameConnection.waitUntilConnected(5_000);
@@ -207,11 +206,4 @@ public abstract class AbstractGameServerTest {
     return gameConnection;
   }
 
-  protected GameServerCreds createCredentials(
-      final String password, final String host, final int port) {
-    return GameServerCreds.builder()
-        .password(password)
-        .hostPort(HostPort.builder().host(host).port(port).build())
-        .build();
-  }
 }

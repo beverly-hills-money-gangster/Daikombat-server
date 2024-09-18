@@ -35,7 +35,7 @@ public class GameOverTest extends AbstractGameServerTest {
     int gameIdToConnectTo = 0;
     String shooterPlayerName = "killer";
     GameConnection killerConnection = createGameConnection(
-        ServerConfig.PIN_CODE, "localhost", port);
+         "localhost", port);
     killerConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
@@ -47,7 +47,7 @@ public class GameOverTest extends AbstractGameServerTest {
         .getPlayerId();
 
     for (int i = 0; i < deadConnectionsToCreate; i++) {
-      GameConnection deadConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
+      GameConnection deadConnection = createGameConnection( "localhost",
           port);
       deadConnection.write(
           JoinGameCommand.newBuilder()

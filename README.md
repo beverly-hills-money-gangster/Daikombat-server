@@ -35,7 +35,6 @@ Game server can be configured using the following environment variables:
 - `GAME_SERVER_DEFAULT_SHOTGUN_DAMAGE` Gunshot damage. Default - `20`.
 - `GAME_SERVER_DEFAULT_RAILGUN_DAMAGE` Railgun damage. Default - `75`.
 - `GAME_SERVER_DEFAULT_PUNCH_DAMAGE` Punch damage. Default - `50`.
-- `GAME_SERVER_PIN_CODE` Server access pin code(digits only, no less than 4). Used in HMAC that is appended to every message. Default - `5555`.
 - `GAME_SERVER_FAST_TCP` Enables fast TCP configurations(used mostly for testing, not recommended to be set to `false` in prod). Default - `true`.
 - `GAME_SERVER_FRAGS_PER_GAME` Frags to win a game. Default - `25`.
 - `GAME_SERVER_QUAD_DAMAGE_SPAWN_MLS` Time (in millisecond) it takes to spawn a quad damage power-up orb. Default - `45_000`.

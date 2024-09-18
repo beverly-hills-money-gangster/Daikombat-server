@@ -1,8 +1,6 @@
 package com.beverly.hills.money.gang;
 
-import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.generator.SequenceGenerator;
-import com.beverly.hills.money.gang.security.ServerHMACService;
 import com.beverly.hills.money.gang.transport.EpollServerTransport;
 import com.beverly.hills.money.gang.transport.NIOServerTransport;
 import com.beverly.hills.money.gang.transport.ServerTransport;
@@ -18,11 +16,6 @@ import org.springframework.context.annotation.Configuration;
 public class AppConfig {
 
   private static final Logger LOG = LoggerFactory.getLogger(AppConfig.class);
-
-  @Bean
-  public ServerHMACService serverHMACService() {
-    return new ServerHMACService(ServerConfig.PIN_CODE);
-  }
 
   @Bean
   public SequenceGenerator gameIdGenerator() {

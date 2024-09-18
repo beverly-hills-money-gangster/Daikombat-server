@@ -30,7 +30,7 @@ public class IdleServerTest extends AbstractGameServerTest {
   @Test
   public void testClientIsMovingButServerIsIdle() throws IOException, InterruptedException {
     int gameToConnectTo = 1;
-    GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
+    GameConnection gameConnection = createGameConnection( "localhost", port);
     gameConnection.shutdownPingScheduler(); // shutting down to mimic server inactivity
     gameConnection.write(
         JoinGameCommand.newBuilder()

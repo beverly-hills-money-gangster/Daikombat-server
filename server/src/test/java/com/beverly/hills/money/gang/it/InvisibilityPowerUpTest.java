@@ -46,7 +46,7 @@ public class InvisibilityPowerUpTest extends AbstractGameServerTest {
   public void testPickUpPowerUpInvisibility()
       throws IOException, InterruptedException {
     int gameIdToConnectTo = 0;
-    GameConnection playerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
+    GameConnection playerConnection = createGameConnection( "localhost",
         port);
     playerConnection.write(
         JoinGameCommand.newBuilder()
@@ -119,7 +119,7 @@ public class InvisibilityPowerUpTest extends AbstractGameServerTest {
     var quadDamagePowerUpReSpawn = quadDamagePowerUpReSpawnResponse.getPowerUpSpawn();
     assertEquals(GamePowerUpType.INVISIBILITY, quadDamagePowerUpReSpawn.getItems(0).getType());
 
-    GameConnection observerAfterRevert = createGameConnection(ServerConfig.PIN_CODE, "localhost",
+    GameConnection observerAfterRevert = createGameConnection( "localhost",
         port);
     observerAfterRevert.write(
         JoinGameCommand.newBuilder()

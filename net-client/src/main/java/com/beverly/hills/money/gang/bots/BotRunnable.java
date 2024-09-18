@@ -1,7 +1,7 @@
 package com.beverly.hills.money.gang.bots;
 
 import com.beverly.hills.money.gang.config.ClientConfig;
-import com.beverly.hills.money.gang.entity.GameServerCreds;
+import com.beverly.hills.money.gang.entity.HostPort;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PushChatEventCommand;
@@ -31,7 +31,7 @@ public class BotRunnable implements Runnable {
   private static final int GAME_ID_TO_CONNECT = 0;
 
 
-  private final GameServerCreds gameServerCreds;
+  private final HostPort hostPort;
 
   private final Random random = new Random();
 
@@ -41,7 +41,7 @@ public class BotRunnable implements Runnable {
     while (!Thread.currentThread().isInterrupted()) {
       try {
         AtomicInteger sequenceGenerator = new AtomicInteger(-1);
-        GameConnection gameConnection = new GameConnection(gameServerCreds);
+        GameConnection gameConnection = new GameConnection(hostPort);
         gameConnection.waitUntilConnected(10_000);
         gameConnection.write(JoinGameCommand.newBuilder()
             .setPlayerName(Thread.currentThread().getName())

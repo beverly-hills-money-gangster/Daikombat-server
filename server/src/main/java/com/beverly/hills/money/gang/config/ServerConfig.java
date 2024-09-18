@@ -48,13 +48,6 @@ public interface ServerConfig {
   int INVISIBILITY_LASTS_FOR_MLS = NumberUtils.toInt(
       System.getenv("GAME_SERVER_INVISIBILITY_LASTS_FOR_MLS"), 15_000);
 
-  String PIN_CODE = Optional.of(
-          StringUtils.defaultIfBlank(System.getenv("GAME_SERVER_PIN_CODE"), "5555"))
-      .filter(
-          pin -> StringUtils.isNotBlank(pin) && StringUtils.length(pin) >= 4 && pin.matches("\\d+"))
-      .orElseThrow(() -> new IllegalArgumentException(
-          "Pin code should: 1) be not empty 2) be at least 4 symbols 3) consist of digits only"));
-
   boolean FAST_TCP = Boolean.parseBoolean(StringUtils.defaultIfBlank(
       System.getenv("GAME_SERVER_FAST_TCP"), "true"));
 

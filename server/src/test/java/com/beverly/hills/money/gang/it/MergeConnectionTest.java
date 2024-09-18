@@ -36,7 +36,7 @@ public class MergeConnectionTest extends AbstractGameServerTest {
   @Test
   public void testMergeConnection() throws Exception {
     int gameIdToConnectTo = 0;
-    GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
+    GameConnection gameConnection = createGameConnection( "localhost", port);
     gameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
@@ -51,7 +51,7 @@ public class MergeConnectionTest extends AbstractGameServerTest {
     int myPlayerId = mySpawnGameEvent.getPlayer().getPlayerId();
 
     SecondaryGameConnection secondaryGameConnection = createSecondaryGameConnection(
-        ServerConfig.PIN_CODE, "localhost", port);
+         "localhost", port);
     secondaryGameConnection.write(MergeConnectionCommand.newBuilder()
         .setPlayerId(myPlayerId).setGameId(gameIdToConnectTo)
         .build());
@@ -74,7 +74,7 @@ public class MergeConnectionTest extends AbstractGameServerTest {
   public void testMergeConnectionNotExistingPlayerId() throws Exception {
     int gameIdToConnectTo = 0;
     SecondaryGameConnection secondaryGameConnection = createSecondaryGameConnection(
-        ServerConfig.PIN_CODE, "localhost", port);
+         "localhost", port);
     secondaryGameConnection.write(MergeConnectionCommand.newBuilder()
         .setPlayerId(666).setGameId(gameIdToConnectTo)
         .build());
@@ -93,7 +93,7 @@ public class MergeConnectionTest extends AbstractGameServerTest {
   public void testMergeConnectionNotExitingGameId() throws Exception {
     int gameIdToConnectTo = 666;
     SecondaryGameConnection secondaryGameConnection = createSecondaryGameConnection(
-        ServerConfig.PIN_CODE, "localhost", port);
+         "localhost", port);
     secondaryGameConnection.write(MergeConnectionCommand.newBuilder()
         .setPlayerId(0).setGameId(gameIdToConnectTo)
         .build());

@@ -1,6 +1,6 @@
 package com.beverly.hills.money.gang.network;
 
-import com.beverly.hills.money.gang.entity.GameServerCreds;
+import com.beverly.hills.money.gang.entity.HostPort;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PushChatEventCommand;
@@ -9,8 +9,8 @@ import java.io.IOException;
 
 public class GameConnection extends AbstractGameConnection {
 
-  public GameConnection(GameServerCreds gameServerCreds) throws IOException {
-    super(gameServerCreds);
+  public GameConnection(HostPort hostPort) throws IOException {
+    super(hostPort);
   }
 
   public void write(RespawnCommand respawnCommand) {

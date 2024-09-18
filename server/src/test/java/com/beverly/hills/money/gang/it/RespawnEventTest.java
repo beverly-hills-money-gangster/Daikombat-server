@@ -32,7 +32,7 @@ public class RespawnEventTest extends AbstractGameServerTest {
   public void testRespawn() throws Exception {
     int gameIdToConnectTo = 0;
     String shooterPlayerName = "killer";
-    GameConnection killerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
+    GameConnection killerConnection = createGameConnection( "localhost",
         port);
     killerConnection.write(
         JoinGameCommand.newBuilder()
@@ -40,7 +40,7 @@ public class RespawnEventTest extends AbstractGameServerTest {
             .setPlayerName(shooterPlayerName)
             .setGameId(gameIdToConnectTo).build());
 
-    GameConnection deadConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
+    GameConnection deadConnection = createGameConnection( "localhost", port);
     deadConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.PURPLE)

@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +59,7 @@ public class AllPowerUpTest extends AbstractGameServerTest {
   public void testPickUpPowerUpAll()
       throws IOException {
     int gameIdToConnectTo = 0;
-    GameConnection playerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
+    GameConnection playerConnection = createGameConnection("localhost",
         port);
     playerConnection.write(
         JoinGameCommand.newBuilder()

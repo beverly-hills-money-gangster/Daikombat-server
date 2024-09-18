@@ -1,7 +1,7 @@
 package com.beverly.hills.money.gang.network;
 
 import com.beverly.hills.money.gang.config.ClientConfig;
-import com.beverly.hills.money.gang.entity.GameServerCreds;
+import com.beverly.hills.money.gang.entity.HostPort;
 import com.beverly.hills.money.gang.handler.GameConnectionInitializer;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
@@ -14,10 +14,8 @@ import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.queue.QueueAPI;
 import com.beverly.hills.money.gang.queue.QueueReader;
-import com.beverly.hills.money.gang.security.ServerHMACService;
 import com.beverly.hills.money.gang.stats.NetworkStats;
 import com.beverly.hills.money.gang.stats.NetworkStatsReader;
-import com.google.protobuf.ByteString;
 import com.google.protobuf.GeneratedMessageV3;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -70,7 +68,6 @@ public abstract class AbstractGameConnection {
 
   private final QueueAPI<Throwable> warningsQueueAPI = new QueueAPI<>();
 
-  private final ServerHMACService hmacService;
 
   private final AtomicReference<Channel> channelRef = new AtomicReference<>();
 
@@ -81,11 +78,10 @@ public abstract class AbstractGameConnection {
   private final AtomicReference<GameConnectionState> state = new AtomicReference<>();
 
   protected AbstractGameConnection(
-      final GameServerCreds gameServerCreds) throws IOException {
+      final HostPort hostPort) throws IOException {
     LOG.info("Initializing game connection {}", getId());
     state.set(GameConnectionState.CONNECTING);
     long startTime = System.currentTimeMillis();
-    this.hmacService = new ServerHMACService(gameServerCreds.getPassword());
     this.group = new NioEventLoopGroup();
     try {
       Bootstrap bootstrap = new Bootstrap();
@@ -98,8 +94,8 @@ public abstract class AbstractGameConnection {
           pingRequestedTimeMls));
       LOG.info("Start connecting");
       bootstrap.connect(
-          gameServerCreds.getHostPort().getHost(),
-          gameServerCreds.getHostPort().getPort()).addListener((ChannelFutureListener) future -> {
+          hostPort.getHost(),
+          hostPort.getPort()).addListener((ChannelFutureListener) future -> {
         channelRef.set(future.channel());
         if (future.isSuccess()) {
           LOG.info("Connected to server in {} mls. Fast TCP enabled: {}",
@@ -117,7 +113,7 @@ public abstract class AbstractGameConnection {
     } catch (Exception e) {
       LOG.error("Error occurred", e);
       disconnect();
-      throw new IOException("Can't connect to " + gameServerCreds.getHostPort(), e);
+      throw new IOException("Can't connect to " + hostPort, e);
     }
   }
 
@@ -162,9 +158,6 @@ public abstract class AbstractGameConnection {
   void writeLocal(GeneratedMessageV3 command) {
     if (isConnected()) {
       var serverCommand = ServerCommand.newBuilder();
-      byte[] hmac = hmacService.generateHMAC(command.toByteArray());
-      serverCommand.setHmac(ByteString.copyFrom(hmac));
-
       // TODO simplify this
       if (command instanceof PushGameEventCommand) {
         serverCommand.setGameCommand((PushGameEventCommand) command);

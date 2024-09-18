@@ -45,7 +45,7 @@ public class DefencePowerUpTest extends AbstractGameServerTest {
   public void testPickUpPowerUpDefence()
       throws IOException, InterruptedException {
     int gameIdToConnectTo = 0;
-    GameConnection playerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
+    GameConnection playerConnection = createGameConnection( "localhost",
         port);
     playerConnection.write(
         JoinGameCommand.newBuilder()
@@ -117,7 +117,7 @@ public class DefencePowerUpTest extends AbstractGameServerTest {
     var quadDamagePowerUpReSpawn = quadDamagePowerUpReSpawnResponse.getPowerUpSpawn();
     assertEquals(GamePowerUpType.DEFENCE, quadDamagePowerUpReSpawn.getItems(0).getType());
 
-    GameConnection observerAfterRevert = createGameConnection(ServerConfig.PIN_CODE, "localhost",
+    GameConnection observerAfterRevert = createGameConnection( "localhost",
         port);
     observerAfterRevert.write(
         JoinGameCommand.newBuilder()

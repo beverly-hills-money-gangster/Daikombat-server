@@ -30,7 +30,7 @@ public class MoveAntiCheatTest extends AbstractGameServerTest {
   @Test
   public void testMoveTooFast() throws Exception {
     int gameIdToConnectTo = 2;
-    GameConnection cheatingPlayerConnection = createGameConnection(ServerConfig.PIN_CODE,
+    GameConnection cheatingPlayerConnection = createGameConnection(
         "localhost", port);
     cheatingPlayerConnection.write(
         JoinGameCommand.newBuilder()
@@ -42,7 +42,7 @@ public class MoveAntiCheatTest extends AbstractGameServerTest {
     ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
     int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
 
-    GameConnection observerPlayerConnection = createGameConnection(ServerConfig.PIN_CODE,
+    GameConnection observerPlayerConnection = createGameConnection(
         "localhost", port);
     observerPlayerConnection.write(
         JoinGameCommand.newBuilder()

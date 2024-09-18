@@ -67,7 +67,7 @@ public class TeleportTest extends AbstractGameServerTest {
     doReturn(List.of(mockTeleport)).when(teleportRegistry).getAllTeleports();
 
     int gameIdToConnectTo = 0;
-    GameConnection playerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
+    GameConnection playerConnection = createGameConnection( "localhost",
         port);
     playerConnection.write(
         JoinGameCommand.newBuilder()

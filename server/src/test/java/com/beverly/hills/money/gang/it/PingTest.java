@@ -26,7 +26,7 @@ public class PingTest extends AbstractGameServerTest {
    */
   @Test
   public void testPing() throws IOException, InterruptedException {
-    GameConnection gameConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost", port);
+    GameConnection gameConnection = createGameConnection( "localhost", port);
     Thread.sleep(5_500);
     assertTrue(gameConnection.isConnected(), "Connection should still be open");
     assertEquals(0, gameConnection.getResponse().size(),
@@ -44,7 +44,7 @@ public class PingTest extends AbstractGameServerTest {
   @Test
   public void testPingSecondaryConnection() throws IOException, InterruptedException {
     SecondaryGameConnection secondaryGameConnection = createSecondaryGameConnection(
-        ServerConfig.PIN_CODE, "localhost", port);
+         "localhost", port);
     Thread.sleep(5_500);
     assertTrue(secondaryGameConnection.isConnected(), "Connection should still be open");
     assertEquals(0, secondaryGameConnection.getResponse().size(),

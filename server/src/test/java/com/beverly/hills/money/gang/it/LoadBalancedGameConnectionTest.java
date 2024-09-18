@@ -36,7 +36,7 @@ public class LoadBalancedGameConnectionTest extends AbstractGameServerTest {
   @Test
   public void testLoadBalancedGameConnection() throws Exception {
     int gameIdToConnectTo = 2;
-    GameConnection movingPlayerConnection = createGameConnection(ServerConfig.PIN_CODE, "localhost",
+    GameConnection movingPlayerConnection = createGameConnection( "localhost",
         port);
     movingPlayerConnection.write(
         JoinGameCommand.newBuilder()
@@ -48,7 +48,7 @@ public class LoadBalancedGameConnectionTest extends AbstractGameServerTest {
     ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
     int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
 
-    GameConnection observerPlayerConnection = createGameConnection(ServerConfig.PIN_CODE,
+    GameConnection observerPlayerConnection = createGameConnection(
         "localhost", port);
 
     observerPlayerConnection.write(
@@ -62,7 +62,7 @@ public class LoadBalancedGameConnectionTest extends AbstractGameServerTest {
     int lbPlayerId = lbSpawnGameEvent.getPlayer().getPlayerId();
 
     SecondaryGameConnection secondaryGameConnection
-        = createSecondaryGameConnection(ServerConfig.PIN_CODE, "localhost", port);
+        = createSecondaryGameConnection( "localhost", port);
     secondaryGameConnection.write(
         MergeConnectionCommand.newBuilder().setGameId(gameIdToConnectTo).setPlayerId(lbPlayerId)
             .build());

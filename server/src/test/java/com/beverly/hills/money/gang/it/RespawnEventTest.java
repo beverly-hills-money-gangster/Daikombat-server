@@ -11,6 +11,7 @@ import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType;
 import com.beverly.hills.money.gang.proto.RespawnCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
 import com.beverly.hills.money.gang.proto.ServerResponse.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.SkinColorSelection;
 import org.junit.jupiter.api.Test;
@@ -119,7 +120,7 @@ public class RespawnEventTest extends AbstractGameServerTest {
     assertTrue(killerConnection.getResponse().list().stream()
             .anyMatch(serverResponse -> serverResponse.hasGameEvents()
                 && serverResponse.getGameEvents().getEvents(0).getEventType()
-                == ServerResponse.GameEvent.GameEventType.SPAWN
+                == GameEvent.GameEventType.RESPAWN
                 && serverResponse.getGameEvents().getEvents(0).getPlayer().getSkinColor()
                 == PlayerSkinColor.PURPLE
                 && serverResponse.getGameEvents().getEvents(0).getPlayer().getPlayerId()

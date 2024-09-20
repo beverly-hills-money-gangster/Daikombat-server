@@ -105,7 +105,6 @@ public abstract class AbstractGameServerTest {
       }
     }).start();
     serverRunner.waitFullyRunning();
-    LOG.info("Env vars are: {}", System.getenv());
   }
 
   @AfterEach

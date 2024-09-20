@@ -66,6 +66,19 @@ public interface ServerResponseFactory {
     return createSpawnEvent(playerStateReader, List.of());
   }
 
+  static ServerResponse.GameEvent createJoinEvent(PlayerStateReader playerStateReader) {
+    return ServerResponse.GameEvent.newBuilder()
+        .setEventType(GameEventType.JOIN)
+        .setPlayer(createFullPlayerStats(playerStateReader))
+        .build();
+  }
+
+  static ServerResponse.GameEvent createRespawnEvent(PlayerStateReader playerStateReader) {
+    return ServerResponse.GameEvent.newBuilder()
+        .setEventType(GameEventType.RESPAWN)
+        .setPlayer(createFullPlayerStats(playerStateReader))
+        .build();
+  }
 
   static ServerResponse.GameEvent createMoveGameEvent(PlayerStateReader playerStateReader) {
     return ServerResponse.GameEvent.newBuilder()
@@ -337,12 +350,21 @@ public interface ServerResponseFactory {
                 playerRespawned.getLeaderBoard()))).build();
   }
 
-  static ServerResponse createSpawnEventSinglePlayerMinimal(
+  static ServerResponse createJoinEventSinglePlayer(
       int playersOnline, PlayerState playerState) {
     return ServerResponse.newBuilder()
         .setGameEvents(ServerResponse.GameEvents.newBuilder()
             .setPlayersOnline(playersOnline)
-            .addEvents(createSpawnEvent(playerState)))
+            .addEvents(createJoinEvent(playerState)))
+        .build();
+  }
+
+  static ServerResponse createRespawnEventSinglePlayer(
+      int playersOnline, PlayerState playerState) {
+    return ServerResponse.newBuilder()
+        .setGameEvents(ServerResponse.GameEvents.newBuilder()
+            .setPlayersOnline(playersOnline)
+            .addEvents(createRespawnEvent(playerState)))
         .build();
   }
 

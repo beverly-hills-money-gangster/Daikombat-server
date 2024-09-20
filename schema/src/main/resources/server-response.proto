@@ -100,6 +100,8 @@ message ServerResponse {
       SPAWN = 4;
       EXIT = 5;
       TELEPORT = 6;
+      JOIN = 7;
+      RESPAWN = 8;
     }
 
     enum WeaponType {

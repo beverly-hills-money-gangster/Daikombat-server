@@ -1,9 +1,9 @@
 package com.beverly.hills.money.gang.handler.command;
 
+import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createJoinEventSinglePlayer;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createJoinSinglePlayer;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createPowerUpSpawn;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createSpawnEventAllPlayers;
-import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createSpawnEventSinglePlayerMinimal;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createTeleportSpawn;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
@@ -69,7 +69,11 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
             return;
           }
           sendOtherSpawns(game, playerConnected.getPlayerStateChannel(),
-              playerConnected.getSpawnedPowerUps(), playerConnected.getTeleports());
+              playerConnected.getSpawnedPowerUps(), playerConnected.getTeleports(),
+              createJoinEventSinglePlayer(
+                  game.playersOnline(),
+                  playerConnected.getPlayerStateChannel().getPlayerState()));
+
           playerConnected.getPlayerStateChannel().getPlayerState().fullyJoined();
         });
   }
@@ -86,9 +90,11 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
     };
   }
 
-  protected void sendOtherSpawns(Game game, PlayerStateChannel joinedPlayerStateChannel,
+  protected void sendOtherSpawns(
+      Game game, PlayerStateChannel joinedPlayerStateChannel,
       List<PowerUp> spawnedPowerUps,
-      List<Teleport> teleports) {
+      List<Teleport> teleports,
+      ServerResponse playerSpawnEventToSendOtherPlayers) {
     var otherPlayers = game.getPlayersRegistry()
         .allPlayers()
         .filter(playerStateChannel -> !playerStateChannel.isOurChannel(joinedPlayerStateChannel))
@@ -105,12 +111,10 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
       joinedPlayerStateChannel.writeFlushPrimaryChannel(allPlayersSpawnEvent);
     }
     sendMapItems(joinedPlayerStateChannel, spawnedPowerUps, teleports);
-    ServerResponse playerSpawnEventForOthers = createSpawnEventSinglePlayerMinimal(
-        game.playersOnline(), joinedPlayerStateChannel.getPlayerState());
     otherPlayers.stream().filter(
             playerStateChannel -> playerStateChannel.getPlayerState().isFullyJoined())
         .forEach(playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(
-            playerSpawnEventForOthers));
+            playerSpawnEventToSendOtherPlayers));
 
   }
 

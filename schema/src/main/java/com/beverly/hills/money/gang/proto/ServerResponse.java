@@ -10754,6 +10754,14 @@ private static final long serialVersionUID = 0L;
        * <code>TELEPORT = 6;</code>
        */
       TELEPORT(6),
+      /**
+       * <code>JOIN = 7;</code>
+       */
+      JOIN(7),
+      /**
+       * <code>RESPAWN = 8;</code>
+       */
+      RESPAWN(8),
       UNRECOGNIZED(-1),
       ;
 
@@ -10785,6 +10793,14 @@ private static final long serialVersionUID = 0L;
        * <code>TELEPORT = 6;</code>
        */
       public static final int TELEPORT_VALUE = 6;
+      /**
+       * <code>JOIN = 7;</code>
+       */
+      public static final int JOIN_VALUE = 7;
+      /**
+       * <code>RESPAWN = 8;</code>
+       */
+      public static final int RESPAWN_VALUE = 8;
 
 
       public final int getNumber() {
@@ -10818,6 +10834,8 @@ private static final long serialVersionUID = 0L;
           case 4: return SPAWN;
           case 5: return EXIT;
           case 6: return TELEPORT;
+          case 7: return JOIN;
+          case 8: return RESPAWN;
           default: return null;
         }
       }

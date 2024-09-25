@@ -31,7 +31,8 @@ public class PlayerState implements PlayerStateReader {
   private static final Map<AttackType, Integer> ATTACK_DAMAGE = Map.of(
       AttackType.PUNCH, ServerConfig.DEFAULT_PUNCH_DAMAGE,
       AttackType.SHOTGUN, ServerConfig.DEFAULT_SHOTGUN_DAMAGE,
-      AttackType.RAILGUN, ServerConfig.DEFAULT_RAILGUN_DAMAGE);
+      AttackType.RAILGUN, ServerConfig.DEFAULT_RAILGUN_DAMAGE,
+      AttackType.MINIGUN, ServerConfig.DEFAULT_MINIGUN_DAMAGE);
 
   static {
     if (ATTACK_DAMAGE.size() != AttackType.values().length) {

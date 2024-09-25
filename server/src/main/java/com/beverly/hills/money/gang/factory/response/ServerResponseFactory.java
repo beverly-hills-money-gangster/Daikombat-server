@@ -327,6 +327,7 @@ public interface ServerResponseFactory {
       case PUNCH -> WeaponType.PUNCH;
       case SHOTGUN -> WeaponType.SHOTGUN;
       case RAILGUN -> WeaponType.RAILGUN;
+      case MINIGUN -> WeaponType.MINIGUN;
     };
   }
 

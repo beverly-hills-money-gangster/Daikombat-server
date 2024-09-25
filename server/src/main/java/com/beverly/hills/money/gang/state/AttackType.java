@@ -16,7 +16,8 @@ public enum AttackType {
     return 1;
   }),
   PUNCH(distance -> 1),
-  RAILGUN(distance -> 1);
+  RAILGUN(distance -> 1),
+  MINIGUN(distance -> 1);
 
   @Getter
   private final Function<Double, Integer> distanceDamageAmplifier;

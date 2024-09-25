@@ -10909,6 +10909,10 @@ private static final long serialVersionUID = 0L;
        * <code>RAILGUN = 2;</code>
        */
       RAILGUN(2),
+      /**
+       * <code>MINIGUN = 3;</code>
+       */
+      MINIGUN(3),
       UNRECOGNIZED(-1),
       ;
 
@@ -10924,6 +10928,10 @@ private static final long serialVersionUID = 0L;
        * <code>RAILGUN = 2;</code>
        */
       public static final int RAILGUN_VALUE = 2;
+      /**
+       * <code>MINIGUN = 3;</code>
+       */
+      public static final int MINIGUN_VALUE = 3;
 
 
       public final int getNumber() {
@@ -10953,6 +10961,7 @@ private static final long serialVersionUID = 0L;
           case 0: return PUNCH;
           case 1: return SHOTGUN;
           case 2: return RAILGUN;
+          case 3: return MINIGUN;
           default: return null;
         }
       }

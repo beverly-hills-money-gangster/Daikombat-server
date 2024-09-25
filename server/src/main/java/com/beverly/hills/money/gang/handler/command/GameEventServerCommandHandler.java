@@ -277,6 +277,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
       case SHOTGUN -> AttackType.SHOTGUN;
       case PUNCH -> AttackType.PUNCH;
       case RAILGUN -> AttackType.RAILGUN;
+      case MINIGUN -> AttackType.MINIGUN;
       default -> throw new IllegalArgumentException(
           "Not supported attack type " + gameCommand.getEventType());
     };

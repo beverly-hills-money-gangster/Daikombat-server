@@ -97,7 +97,7 @@ public final class ServerCommandOuterClass {
       "\001\001\022\025\n\010playerId\030\002 \001(\005H\001\210\001\001B\t\n\007_gameIdB\013\n\t" +
       "_playerId\"T\n\016RespawnCommand\022\023\n\006gameId\030\001 " +
       "\001(\005H\000\210\001\001\022\025\n\010playerId\030\002 \001(\005H\001\210\001\001B\t\n\007_game" +
-      "IdB\013\n\t_playerId\"\270\006\n\024PushGameEventCommand" +
+      "IdB\013\n\t_playerId\"\305\006\n\024PushGameEventCommand" +
       "\022\023\n\006gameId\030\001 \001(\005H\000\210\001\001\022I\n\teventType\030\002 \001(\016" +
       "21.daikombat.dto.PushGameEventCommand.Ga" +
       "meEventTypeH\001\210\001\001\022A\n\010position\030\003 \001(\0132*.dai" +
@@ -110,18 +110,18 @@ public final class ServerCommandOuterClass {
       "eaponType\030\n \001(\0162..daikombat.dto.PushGame" +
       "EventCommand.WeaponTypeH\t\210\001\001\0324\n\006Vector\022\016" +
       "\n\001x\030\001 \001(\002H\000\210\001\001\022\016\n\001y\030\002 \001(\002H\001\210\001\001B\004\n\002_xB\004\n\002" +
-      "_y\"1\n\nWeaponType\022\t\n\005PUNCH\020\000\022\013\n\007SHOTGUN\020\001" +
-      "\022\013\n\007RAILGUN\020\002\"~\n\rGameEventType\022\010\n\004MOVE\020\000" +
-      "\022\n\n\006ATTACK\020\001\022\030\n\024QUAD_DAMAGE_POWER_UP\020\002\022\031" +
-      "\n\025INVISIBILITY_POWER_UP\020\003\022\024\n\020DEFENCE_POW" +
-      "ER_UP\020\004\022\014\n\010TELEPORT\020\005B\t\n\007_gameIdB\014\n\n_eve" +
-      "ntTypeB\013\n\t_positionB\014\n\n_directionB\013\n\t_pl" +
-      "ayerIdB\023\n\021_affectedPlayerIdB\013\n\t_sequence" +
-      "B\n\n\010_pingMlsB\r\n\013_teleportIdB\r\n\013_weaponTy" +
-      "pe*W\n\022SkinColorSelection\022\t\n\005GREEN\020\000\022\010\n\004P" +
-      "INK\020\001\022\n\n\006PURPLE\020\002\022\010\n\004BLUE\020\003\022\n\n\006YELLOW\020\004\022" +
-      "\n\n\006ORANGE\020\005B&\n\"com.beverly.hills.money.g" +
-      "ang.protoP\001b\006proto3"
+      "_y\">\n\nWeaponType\022\t\n\005PUNCH\020\000\022\013\n\007SHOTGUN\020\001" +
+      "\022\013\n\007RAILGUN\020\002\022\013\n\007MINIGUN\020\003\"~\n\rGameEventT" +
+      "ype\022\010\n\004MOVE\020\000\022\n\n\006ATTACK\020\001\022\030\n\024QUAD_DAMAGE" +
+      "_POWER_UP\020\002\022\031\n\025INVISIBILITY_POWER_UP\020\003\022\024" +
+      "\n\020DEFENCE_POWER_UP\020\004\022\014\n\010TELEPORT\020\005B\t\n\007_g" +
+      "ameIdB\014\n\n_eventTypeB\013\n\t_positionB\014\n\n_dir" +
+      "ectionB\013\n\t_playerIdB\023\n\021_affectedPlayerId" +
+      "B\013\n\t_sequenceB\n\n\010_pingMlsB\r\n\013_teleportId" +
+      "B\r\n\013_weaponType*W\n\022SkinColorSelection\022\t\n" +
+      "\005GREEN\020\000\022\010\n\004PINK\020\001\022\n\n\006PURPLE\020\002\022\010\n\004BLUE\020\003" +
+      "\022\n\n\006YELLOW\020\004\022\n\n\006ORANGE\020\005B&\n\"com.beverly." +
+      "hills.money.gang.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

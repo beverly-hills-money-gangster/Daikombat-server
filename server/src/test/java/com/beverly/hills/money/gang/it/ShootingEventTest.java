@@ -984,6 +984,189 @@ public class ShootingEventTest extends AbstractGameServerTest {
 
   /**
    * @given a running server with 2 connected player
+   * @when player 1 kills player 2 with a minigun
+   * @then player 2 is dead. KILL event is sent to all active players.
+   */
+  @Test
+  public void testShootMinigunKill() throws Exception {
+    int gameIdToConnectTo = 0;
+    String shooterPlayerName = "killer";
+    var shotgunInfo = AntiCheat.ATTACKS_INFO.stream()
+        .filter(attackInfo -> attackInfo.getAttackType() == AttackType.MINIGUN)
+        .findFirst().get();
+    doReturn(PlayerState.PlayerCoordinates.builder().position(
+                Vector.builder().x(0F).y(0F).build())
+            .direction(
+                Vector.builder().x(0F).y(1F).build()).build(),
+        PlayerState.PlayerCoordinates.builder().position(
+                Vector.builder()
+                    .x((float) (shotgunInfo.getMaxDistance()) - 0.5f)
+                    .y(0).build())
+            .direction(
+                Vector.builder().x(0F).y(1F).build()).build()).when(spawner)
+        .spawnPlayer(any());
+
+    GameConnection killerConnection = createGameConnection( "localhost",
+        port);
+    killerConnection.write(
+        JoinGameCommand.newBuilder()
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+            .setPlayerName(shooterPlayerName)
+            .setGameId(gameIdToConnectTo).build());
+
+    GameConnection deadConnection = createGameConnection( "localhost", port);
+    deadConnection.write(
+        JoinGameCommand.newBuilder()
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+            .setPlayerName("my other player name")
+            .setGameId(gameIdToConnectTo).build());
+    waitUntilQueueNonEmpty(killerConnection.getResponse());
+    ServerResponse shooterPlayerSpawn = killerConnection.getResponse().poll().get();
+    int shooterPlayerId = shooterPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
+
+    waitUntilQueueNonEmpty(deadConnection.getResponse());
+    ServerResponse shotPlayerSpawn = killerConnection.getResponse().poll().get();
+    int shotPlayerId = shotPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
+
+    emptyQueue(deadConnection.getResponse());
+    emptyQueue(killerConnection.getResponse());
+
+    var shooterSpawnEvent = shooterPlayerSpawn.getGameEvents().getEvents(0);
+    float newPositionX = shooterSpawnEvent.getPlayer().getPosition().getX() + 0.1f;
+    float newPositionY = shooterSpawnEvent.getPlayer().getPosition().getY() - 0.1f;
+    int shotsToKill = (int) Math.ceil(100D / ServerConfig.DEFAULT_MINIGUN_DAMAGE);
+    for (int i = 0; i < shotsToKill - 1; i++) {
+      killerConnection.write(PushGameEventCommand.newBuilder()
+          .setPlayerId(shooterPlayerId)
+          .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
+          .setGameId(gameIdToConnectTo)
+          .setEventType(GameEventType.ATTACK)
+          .setWeaponType(WeaponType.MINIGUN)
+          .setDirection(
+              PushGameEventCommand.Vector.newBuilder()
+                  .setX(shooterSpawnEvent.getPlayer().getDirection().getX())
+                  .setY(shooterSpawnEvent.getPlayer().getDirection().getY())
+                  .build())
+          .setPosition(
+              PushGameEventCommand.Vector.newBuilder()
+                  .setX(newPositionX)
+                  .setY(newPositionY)
+                  .build())
+          .setAffectedPlayerId(shotPlayerId)
+          .build());
+      waitUntilQueueNonEmpty(deadConnection.getResponse());
+      assertTrue(deadConnection.isConnected(), "Player is shot but still alive");
+      assertTrue(killerConnection.isConnected(), "Killer must be connected");
+      ServerResponse serverResponse = deadConnection.getResponse().poll().get();
+      var shootingEvent = serverResponse.getGameEvents().getEvents(0);
+      assertEquals(GameEvent.GameEventType.GET_ATTACKED, shootingEvent.getEventType());
+      assertEquals(GameEvent.WeaponType.MINIGUN, shootingEvent.getWeaponType());
+      assertEquals(shooterPlayerId, shootingEvent.getPlayer().getPlayerId());
+      assertEquals(100, shootingEvent.getPlayer().getHealth(), "Shooter player health is full");
+      assertTrue(shootingEvent.hasAffectedPlayer(), "One player must be shot");
+      assertEquals(shotPlayerId, shootingEvent.getAffectedPlayer().getPlayerId());
+      assertEquals(100 - ServerConfig.DEFAULT_MINIGUN_DAMAGE * (i + 1),
+          shootingEvent.getAffectedPlayer().getHealth());
+    }
+    // this one kills player 2
+    killerConnection.write(PushGameEventCommand.newBuilder()
+        .setPlayerId(shooterPlayerId)
+        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
+        .setGameId(gameIdToConnectTo)
+        .setEventType(GameEventType.ATTACK)
+        .setWeaponType(WeaponType.MINIGUN)
+        .setDirection(
+            PushGameEventCommand.Vector.newBuilder()
+                .setX(shooterSpawnEvent.getPlayer().getDirection().getX())
+                .setY(shooterSpawnEvent.getPlayer().getDirection().getY())
+                .build())
+        .setPosition(
+            PushGameEventCommand.Vector.newBuilder()
+                .setX(newPositionX)
+                .setY(newPositionY)
+                .build())
+        .setAffectedPlayerId(shotPlayerId)
+        .build());
+    waitUntilQueueNonEmpty(deadConnection.getResponse());
+    assertTrue(deadConnection.isConnected(), "Dead players should be connected");
+    assertTrue(killerConnection.isConnected(), "Killer must be connected");
+
+    ServerResponse deadPlayerServerResponse = deadConnection.getResponse().poll().get();
+    var deadShootingEvent = deadPlayerServerResponse.getGameEvents().getEvents(0);
+    assertEquals(GameEvent.GameEventType.KILL,
+        deadShootingEvent.getEventType(),
+        "Shot player must be dead");
+    assertEquals(GameEvent.WeaponType.MINIGUN, deadShootingEvent.getWeaponType());
+    assertFalse(deadShootingEvent.hasLeaderBoard(), "Leader board are published only on spawns");
+
+    assertEquals(shooterPlayerId, deadShootingEvent.getPlayer().getPlayerId());
+    assertEquals(100, deadShootingEvent.getPlayer().getHealth(), "Shooter player health is full");
+    assertTrue(deadShootingEvent.hasAffectedPlayer(), "One player must be shot");
+    assertEquals(shotPlayerId, deadShootingEvent.getAffectedPlayer().getPlayerId());
+    assertEquals(0, deadShootingEvent.getAffectedPlayer().getHealth());
+
+    ServerResponse killerPlayerServerResponse = killerConnection.getResponse().poll().get();
+    var killerShootingEvent = killerPlayerServerResponse.getGameEvents().getEvents(0);
+    assertEquals(2, killerPlayerServerResponse.getGameEvents().getPlayersOnline(),
+        "All players should be online");
+    assertEquals(GameEvent.GameEventType.KILL,
+        killerShootingEvent.getEventType(),
+        "Shot player must be dead. Actual response is " + killerPlayerServerResponse);
+    assertEquals(GameEvent.WeaponType.MINIGUN, killerShootingEvent.getWeaponType());
+    assertEquals(shooterPlayerId, killerShootingEvent.getPlayer().getPlayerId());
+
+    killerConnection.write(GetServerInfoCommand.newBuilder().build());
+    waitUntilQueueNonEmpty(killerConnection.getResponse());
+    var serverInfoResponse = killerConnection.getResponse().poll().get();
+    List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
+    ServerResponse.GameInfo myGame = games.stream()
+        .filter(gameInfo -> gameInfo.getGameId() == gameIdToConnectTo).findFirst()
+        .orElseThrow((Supplier<Exception>) () -> new IllegalStateException(
+            "Can't find the game we connected to"));
+    assertEquals(2, myGame.getPlayersOnline(), "Must be 2 players");
+
+    String observerPlayerName = "observer";
+    GameConnection observerConnection = createGameConnection( "localhost",
+        port);
+    observerConnection.write(
+        JoinGameCommand.newBuilder()
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+            .setPlayerName(observerPlayerName)
+            .setGameId(gameIdToConnectTo).build());
+    waitUntilQueueNonEmpty(observerConnection.getResponse());
+
+    var observerPlayerSpawn = observerConnection.getResponse().poll().get().getGameEvents()
+        .getEvents(0);
+    int observerPlayerId = observerPlayerSpawn.getPlayer().getPlayerId();
+
+    waitUntilQueueNonEmpty(observerConnection.getResponse());
+    var spawnEvents = observerConnection.getResponse().poll().get().getGameEvents().getEventsList();
+    assertEquals(1, spawnEvents.size(),
+        "Should be killer spawn only. Dead players are not to be spawned before respawning. Actual events "
+            + spawnEvents);
+    assertEquals(ServerResponse.GameEvent.GameEventType.SPAWN, spawnEvents.get(0).getEventType());
+    assertEquals(shooterPlayerId, spawnEvents.get(0).getPlayer().getPlayerId());
+
+    assertTrue(observerPlayerSpawn.hasLeaderBoard(),
+        "Newly connected players must have leader board");
+    assertEquals(3, observerPlayerSpawn.getLeaderBoard().getItemsCount(),
+        "There must be 3 items in the board at this moment: killer, victim, and observer");
+
+    assertEquals(shooterPlayerId, observerPlayerSpawn.getLeaderBoard().getItems(0).getPlayerId());
+    assertEquals(1, observerPlayerSpawn.getLeaderBoard().getItems(0).getKills());
+    assertEquals(0, observerPlayerSpawn.getLeaderBoard().getItems(0).getDeaths());
+
+    assertEquals(observerPlayerId, observerPlayerSpawn.getLeaderBoard().getItems(1).getPlayerId());
+    assertEquals(0, observerPlayerSpawn.getLeaderBoard().getItems(1).getKills());
+    assertEquals(0, observerPlayerSpawn.getLeaderBoard().getItems(1).getDeaths());
+
+    assertEquals(shotPlayerId, observerPlayerSpawn.getLeaderBoard().getItems(2).getPlayerId());
+    assertEquals(0, observerPlayerSpawn.getLeaderBoard().getItems(2).getKills());
+    assertEquals(1, observerPlayerSpawn.getLeaderBoard().getItems(2).getDeaths());
+  }
+
+  /**
+   * @given a running server with 2 connected player
    * @when player 1 kills player 2 and then gets disconnected
    * @then player 2 is dead. KILL event is sent to all active players. player 2 stats are recovered
    * after reconnecting

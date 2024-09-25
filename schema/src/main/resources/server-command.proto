@@ -78,6 +78,7 @@ message PushGameEventCommand {
     PUNCH = 0;
     SHOTGUN = 1;
     RAILGUN = 2;
+    MINIGUN = 3;
   }
 
   enum GameEventType {

@@ -26,7 +26,7 @@ public class AntiCheat {
       AttackType.PUNCH, 300,
       AttackType.SHOTGUN, 450,
       AttackType.RAILGUN, 1_700,
-      AttackType.MINIGUN, 150);
+      AttackType.MINIGUN, 155);
 
   public static final List<AttackInfo> ATTACKS_INFO;
 

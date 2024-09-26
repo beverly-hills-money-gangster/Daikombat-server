@@ -28,7 +28,7 @@ public interface ServerConfig {
       System.getenv("GAME_SERVER_DEFAULT_RAILGUN_DAMAGE"), 75);
 
   int DEFAULT_MINIGUN_DAMAGE = NumberUtils.toInt(
-      System.getenv("GAME_SERVER_DEFAULT_MINIGUN_DAMAGE"), 7);
+      System.getenv("GAME_SERVER_DEFAULT_MINIGUN_DAMAGE"), 5);
 
   int DEFAULT_PUNCH_DAMAGE = NumberUtils.toInt(System.getenv("GAME_SERVER_DEFAULT_PUNCH_DAMAGE"),
       50);

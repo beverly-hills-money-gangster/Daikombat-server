@@ -42,6 +42,9 @@ public interface ServerConfig {
   int DEFENCE_SPAWN_MLS = NumberUtils.toInt(
       System.getenv("GAME_SERVER_DEFENCE_SPAWN_MLS"), 35_000);
 
+  int HEALTH_SPAWN_MLS = NumberUtils.toInt(
+      System.getenv("GAME_SERVER_HEALTH_SPAWN_MLS"), 35_000);
+
   int DEFENCE_LASTS_FOR_MLS = NumberUtils.toInt(
       System.getenv("GAME_SERVER_DEFENCE_LASTS_FOR_MLS"), 10_000);
 

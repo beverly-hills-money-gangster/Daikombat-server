@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.powerup.DefencePowerUp;
+import com.beverly.hills.money.gang.powerup.HealthPowerUp;
 import com.beverly.hills.money.gang.powerup.InvisibilityPowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.QuadDamagePowerUp;
@@ -28,6 +29,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "999999")
 @SetEnvironmentVariable(key = "GAME_SERVER_QUAD_DAMAGE_SPAWN_MLS", value = "5000")
+@SetEnvironmentVariable(key = "GAME_SERVER_HEALTH_SPAWN_MLS", value = "5000")
 @SetEnvironmentVariable(key = "GAME_SERVER_TELEPORTS_ENABLED", value = "false")
 @SetEnvironmentVariable(key = "GAME_SERVER_QUAD_DAMAGE_LASTS_FOR_MLS", value = "2000")
 @SetEnvironmentVariable(key = "GAME_SERVER_INVISIBILITY_SPAWN_MLS", value = "5000")
@@ -46,6 +48,9 @@ public class AllPowerUpTest extends AbstractGameServerTest {
 
   @SpyBean
   private QuadDamagePowerUp quadDamagePowerUp;
+
+  @SpyBean
+  private HealthPowerUp healthPowerUp;
 
   @Autowired
   private List<PowerUp> allPowerUpBeans;
@@ -88,7 +93,7 @@ public class AllPowerUpTest extends AbstractGameServerTest {
         spawns, "All power-ups should be spawned");
 
     var allPowerUps = List.of(GameEventType.INVISIBILITY_POWER_UP, GameEventType.DEFENCE_POWER_UP,
-        GameEventType.QUAD_DAMAGE_POWER_UP);
+        GameEventType.QUAD_DAMAGE_POWER_UP, GameEventType.HEALTH_POWER_UP);
 
     allPowerUps.forEach(gameEventType -> playerConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(playerId)

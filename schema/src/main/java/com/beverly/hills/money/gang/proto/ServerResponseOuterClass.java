@@ -130,7 +130,7 @@ public final class ServerResponseOuterClass {
   static {
     java.lang.String[] descriptorData = {
       "\n/schema/src/main/resources/server-respo" +
-      "nse.proto\022\rdaikombat.dto\"\206\037\n\016ServerRespo" +
+      "nse.proto\022\rdaikombat.dto\"\222\037\n\016ServerRespo" +
       "nse\022>\n\nerrorEvent\030\001 \001(\0132(.daikombat.dto." +
       "ServerResponse.ErrorEventH\000\022=\n\nchatEvent" +
       "s\030\002 \001(\0132\'.daikombat.dto.ServerResponse.C" +
@@ -228,10 +228,10 @@ public final class ServerResponseOuterClass {
       "\001(\002H\000\210\001\001\022\016\n\001y\030\002 \001(\002H\001\210\001\001B\004\n\002_xB\004\n\002_y\"T\n\017" +
       "PlayerSkinColor\022\t\n\005GREEN\020\000\022\010\n\004PINK\020\001\022\n\n\006" +
       "PURPLE\020\002\022\010\n\004BLUE\020\003\022\n\n\006YELLOW\020\004\022\n\n\006ORANGE" +
-      "\020\005\"A\n\017GamePowerUpType\022\017\n\013QUAD_DAMAGE\020\000\022\020" +
-      "\n\014INVISIBILITY\020\001\022\013\n\007DEFENCE\020\002B\n\n\010respons" +
-      "eB&\n\"com.beverly.hills.money.gang.protoP" +
-      "\001b\006proto3"
+      "\020\005\"M\n\017GamePowerUpType\022\017\n\013QUAD_DAMAGE\020\000\022\020" +
+      "\n\014INVISIBILITY\020\001\022\013\n\007DEFENCE\020\002\022\n\n\006HEALTH\020" +
+      "\003B\n\n\010responseB&\n\"com.beverly.hills.money" +
+      ".gang.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

@@ -104,7 +104,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
       PushGameEventCommand.GameEventType gameEventType = gameCommand.getEventType();
       switch (gameEventType) {
         case ATTACK -> handleAttackingEvents(game, gameCommand);
-        case QUAD_DAMAGE_POWER_UP, INVISIBILITY_POWER_UP, DEFENCE_POWER_UP ->
+        case QUAD_DAMAGE_POWER_UP, INVISIBILITY_POWER_UP, DEFENCE_POWER_UP, HEALTH_POWER_UP ->
             handlePowerUpPickUp(game, gameCommand, getPowerUpType(gameEventType));
         case MOVE -> game.bufferMove(gameCommand.getPlayerId(), createCoordinates(gameCommand),
             gameCommand.getSequence(), gameCommand.getPingMls());
@@ -126,6 +126,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
       case QUAD_DAMAGE_POWER_UP -> PowerUpType.QUAD_DAMAGE;
       case DEFENCE_POWER_UP -> PowerUpType.DEFENCE;
       case INVISIBILITY_POWER_UP -> PowerUpType.INVISIBILITY;
+      case HEALTH_POWER_UP -> PowerUpType.HEALTH;
       default -> throw new IllegalArgumentException("Not-supported power-up " + gameEventType);
     };
   }
@@ -151,7 +152,6 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
       LOG.warn("Can't process power-up");
       return;
     }
-
     var serverResponse = createPowerUpPlayerServerResponse(result.getPlayerState());
     game.getPlayersRegistry().allJoinedPlayers()
         .forEach(stateChannel -> stateChannel.writeFlushPrimaryChannel(serverResponse));

@@ -39,6 +39,11 @@ public class TestConfig {
 
 
       @Override
+      public Vector spawnHealth() {
+        return MAIN_LOCATION;
+      }
+
+      @Override
       public PlayerState.PlayerCoordinates spawnPlayer(Game game) {
         return PlayerState.PlayerCoordinates.builder().position(MAIN_LOCATION)
             .direction(

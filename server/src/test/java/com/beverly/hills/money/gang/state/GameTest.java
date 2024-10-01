@@ -29,6 +29,7 @@ import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.powerup.DefencePowerUp;
+import com.beverly.hills.money.gang.powerup.HealthPowerUp;
 import com.beverly.hills.money.gang.powerup.InvisibilityPowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
@@ -73,6 +74,8 @@ public class GameTest {
 
   private QuadDamagePowerUp quadDamagePowerUp;
 
+  private HealthPowerUp healthPowerUp;
+
   private InvisibilityPowerUp invisibilityPowerUp;
 
   private DefencePowerUp defencePowerUp;
@@ -91,11 +94,13 @@ public class GameTest {
     spawner = spy(new Spawner());
     quadDamagePowerUp = spy(new QuadDamagePowerUp(spawner));
     defencePowerUp = spy(new DefencePowerUp(spawner));
+    healthPowerUp = spy(new HealthPowerUp(spawner));
     invisibilityPowerUp = spy(new InvisibilityPowerUp(spawner));
     teleportRegistry = spy(new TeleportRegistry());
     playerStatsRecoveryRegistry = mock(PlayerStatsRecoveryRegistry.class);
     powerUpRegistry = spy(
-        new PowerUpRegistry(List.of(quadDamagePowerUp, defencePowerUp, invisibilityPowerUp)));
+        new PowerUpRegistry(
+            List.of(quadDamagePowerUp, defencePowerUp, invisibilityPowerUp, healthPowerUp)));
     game = new Game(spawner,
         new SequenceGenerator(),
         new SequenceGenerator(),
@@ -156,8 +161,8 @@ public class GameTest {
         0,
         playerConnectedGameState.getLeaderBoard().get(0).getKills());
 
-    assertEquals(3, playerConnectedGameState.getSpawnedPowerUps().size());
-    assertEquals(Stream.of(quadDamagePowerUp, defencePowerUp, invisibilityPowerUp).sorted(
+    assertEquals(4, playerConnectedGameState.getSpawnedPowerUps().size());
+    assertEquals(Stream.of(quadDamagePowerUp, defencePowerUp, invisibilityPowerUp, healthPowerUp).sorted(
             Comparator.comparing(PowerUp::getType)).collect(Collectors.toList()),
         playerConnectedGameState.getSpawnedPowerUps().stream().sorted(
             Comparator.comparing(PowerUp::getType)).collect(Collectors.toList()));
@@ -1278,8 +1283,8 @@ public class GameTest {
     assertEquals(1, respawnedLeaderBoardItem.getDeaths());
     assertEquals(1, respawnedLeaderBoardItem.getKills());
 
-    assertEquals(3, respawned.getSpawnedPowerUps().size());
-    assertEquals(Stream.of(quadDamagePowerUp, defencePowerUp, invisibilityPowerUp).sorted(
+    assertEquals(4, respawned.getSpawnedPowerUps().size());
+    assertEquals(Stream.of(quadDamagePowerUp, defencePowerUp, invisibilityPowerUp, healthPowerUp).sorted(
             Comparator.comparing(PowerUp::getType)).collect(Collectors.toList()),
         respawned.getSpawnedPowerUps().stream().sorted(
             Comparator.comparing(PowerUp::getType)).collect(Collectors.toList()));
@@ -1464,6 +1469,42 @@ public class GameTest {
 
   /**
    * @given 2 players: attacker and victim
+   * @when attacker punches victim and victim picks-up health power-up
+   * @then victim's health is fully restored
+   */
+  @Test
+  public void testPickupHealth() throws GameLogicError {
+    doReturn(false).when(antiCheat).isPowerUpTooFar(any(), any());
+    PlayerJoinedGameState playerGameState = fullyJoin("some player",
+        mock(Channel.class), PlayerStateColor.GREEN);
+
+    PlayerJoinedGameState victimGameState = fullyJoin("victim",
+        mock(Channel.class), PlayerStateColor.GREEN);
+
+    PlayerAttackingGameState playerAttackingGameState = game.attack(
+        playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        AttackType.PUNCH,
+        testSequenceGenerator.getNext(),
+        PING_MLS);
+
+    assertEquals(100 - ServerConfig.DEFAULT_PUNCH_DAMAGE,
+        playerAttackingGameState.getPlayerAttacked().getHealth());
+
+    var result = game.pickupPowerUp(
+        victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        PowerUpType.HEALTH,
+        victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        testSequenceGenerator.getNext(),
+        PING_MLS);
+
+    assertEquals(100, result.getPlayerState().getHealth(),
+        "Attacked player should be dead");
+  }
+
+  /**
+   * @given 2 players: attacker and victim
    * @when victim picks up defence and gets punched twice by attacker
    * @then the victim survives
    */
@@ -1592,9 +1633,9 @@ public class GameTest {
 
     PlayerJoinedGameState otherPlayerGameState = fullyJoin("some other player",
         mock(Channel.class), PlayerStateColor.GREEN);
-    assertEquals(2,
+    assertEquals(3,
         Streams.stream(otherPlayerGameState.getSpawnedPowerUps().iterator()).count(),
-        "2 power-ups are visible onky because the previous player has picked-up quad damage");
+        "3 power-ups are visible only because the previous player has picked-up quad damage");
   }
 
   /**
@@ -1766,9 +1807,9 @@ public class GameTest {
     var result = game.respawnPlayer(
         shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId());
 
-    assertEquals(2,
+    assertEquals(3,
         Streams.stream(result.getSpawnedPowerUps().iterator()).count(),
-        "2 power-ups are visible onky because the previous player has picked-up quad damage");
+        "3 power-ups are visible only because the previous player has picked-up quad damage");
   }
 
 

@@ -200,6 +200,10 @@ private static final long serialVersionUID = 0L;
      * <code>DEFENCE = 2;</code>
      */
     DEFENCE(2),
+    /**
+     * <code>HEALTH = 3;</code>
+     */
+    HEALTH(3),
     UNRECOGNIZED(-1),
     ;
 
@@ -215,6 +219,10 @@ private static final long serialVersionUID = 0L;
      * <code>DEFENCE = 2;</code>
      */
     public static final int DEFENCE_VALUE = 2;
+    /**
+     * <code>HEALTH = 3;</code>
+     */
+    public static final int HEALTH_VALUE = 3;
 
 
     public final int getNumber() {
@@ -244,6 +252,7 @@ private static final long serialVersionUID = 0L;
         case 0: return QUAD_DAMAGE;
         case 1: return INVISIBILITY;
         case 2: return DEFENCE;
+        case 3: return HEALTH;
         default: return null;
       }
     }

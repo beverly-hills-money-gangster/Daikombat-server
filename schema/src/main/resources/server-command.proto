@@ -88,5 +88,6 @@ message PushGameEventCommand {
     INVISIBILITY_POWER_UP = 3;
     DEFENCE_POWER_UP = 4;
     TELEPORT = 5;
+    HEALTH_POWER_UP = 6;
   }
 }

@@ -98,6 +98,8 @@ public class GameOverTest extends AbstractGameServerTest {
       // check killer stats
       assertEquals(shooterPlayerId,
           gameOverResponse.getGameOver().getLeaderBoard().getItems(0).getPlayerId());
+      assertEquals(PING_MLS,
+          gameOverResponse.getGameOver().getLeaderBoard().getItems(0).getPingMls());
       assertEquals(deadConnectionsToCreate,
           gameOverResponse.getGameOver().getLeaderBoard().getItems(0).getKills());
       assertEquals(0, gameOverResponse.getGameOver().getLeaderBoard().getItems(0).getDeaths());

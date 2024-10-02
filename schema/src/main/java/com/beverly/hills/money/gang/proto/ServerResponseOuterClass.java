@@ -130,7 +130,7 @@ public final class ServerResponseOuterClass {
   static {
     java.lang.String[] descriptorData = {
       "\n/schema/src/main/resources/server-respo" +
-      "nse.proto\022\rdaikombat.dto\"\222\037\n\016ServerRespo" +
+      "nse.proto\022\rdaikombat.dto\"\326\037\n\016ServerRespo" +
       "nse\022>\n\nerrorEvent\030\001 \001(\0132(.daikombat.dto." +
       "ServerResponse.ErrorEventH\000\022=\n\nchatEvent" +
       "s\030\002 \001(\0132\'.daikombat.dto.ServerResponse.C" +
@@ -202,36 +202,38 @@ public final class ServerResponseOuterClass {
       "_playerB\021\n\017_affectedPlayerB\016\n\014_leaderBoa" +
       "rdB\013\n\t_sequenceB\r\n\013_weaponType\032K\n\013Leader" +
       "Board\022<\n\005items\030\001 \003(\0132-.daikombat.dto.Ser" +
-      "verResponse.LeaderBoardItem\032\233\001\n\017LeaderBo" +
+      "verResponse.LeaderBoardItem\032\275\001\n\017LeaderBo" +
       "ardItem\022\025\n\010playerId\030\001 \001(\005H\000\210\001\001\022\022\n\005kills\030" +
       "\002 \001(\005H\001\210\001\001\022\027\n\nplayerName\030\003 \001(\tH\002\210\001\001\022\023\n\006d" +
-      "eaths\030\004 \001(\005H\003\210\001\001B\013\n\t_playerIdB\010\n\006_killsB" +
-      "\r\n\013_playerNameB\t\n\007_deaths\032\357\003\n\024GameEventP" +
-      "layerStats\022\025\n\010playerId\030\001 \001(\005H\000\210\001\001\022\027\n\npla" +
-      "yerName\030\002 \001(\tH\001\210\001\001\0226\n\010position\030\003 \001(\0132$.d" +
-      "aikombat.dto.ServerResponse.Vector\0227\n\tdi" +
-      "rection\030\004 \001(\0132$.daikombat.dto.ServerResp" +
-      "onse.Vector\022\023\n\006health\030\005 \001(\005H\002\210\001\001\022A\n\016acti" +
-      "vePowerUps\030\006 \003(\0132).daikombat.dto.ServerR" +
-      "esponse.GamePowerUp\022E\n\tskinColor\030\007 \001(\0162-" +
-      ".daikombat.dto.ServerResponse.PlayerSkin" +
-      "ColorH\003\210\001\001\022O\n\016gameMatchStats\030\010 \001(\01322.dai" +
-      "kombat.dto.ServerResponse.PlayerGameMatc" +
-      "hStatsH\004\210\001\001B\013\n\t_playerIdB\r\n\013_playerNameB" +
-      "\t\n\007_healthB\014\n\n_skinColorB\021\n\017_gameMatchSt" +
-      "ats\032T\n\024PlayerGameMatchStats\022\022\n\005kills\030\001 \001" +
-      "(\005H\000\210\001\001\022\023\n\006deaths\030\002 \001(\005H\001\210\001\001B\010\n\006_killsB\t" +
-      "\n\007_deaths\032\202\001\n\013GamePowerUp\022@\n\004type\030\001 \001(\0162" +
-      "-.daikombat.dto.ServerResponse.GamePower" +
-      "UpTypeH\000\210\001\001\022\030\n\013lastsForMls\030\002 \001(\005H\001\210\001\001B\007\n" +
-      "\005_typeB\016\n\014_lastsForMls\0324\n\006Vector\022\016\n\001x\030\001 " +
-      "\001(\002H\000\210\001\001\022\016\n\001y\030\002 \001(\002H\001\210\001\001B\004\n\002_xB\004\n\002_y\"T\n\017" +
-      "PlayerSkinColor\022\t\n\005GREEN\020\000\022\010\n\004PINK\020\001\022\n\n\006" +
-      "PURPLE\020\002\022\010\n\004BLUE\020\003\022\n\n\006YELLOW\020\004\022\n\n\006ORANGE" +
-      "\020\005\"M\n\017GamePowerUpType\022\017\n\013QUAD_DAMAGE\020\000\022\020" +
-      "\n\014INVISIBILITY\020\001\022\013\n\007DEFENCE\020\002\022\n\n\006HEALTH\020" +
-      "\003B\n\n\010responseB&\n\"com.beverly.hills.money" +
-      ".gang.protoP\001b\006proto3"
+      "eaths\030\004 \001(\005H\003\210\001\001\022\024\n\007pingMls\030\005 \001(\005H\004\210\001\001B\013" +
+      "\n\t_playerIdB\010\n\006_killsB\r\n\013_playerNameB\t\n\007" +
+      "_deathsB\n\n\010_pingMls\032\221\004\n\024GameEventPlayerS" +
+      "tats\022\025\n\010playerId\030\001 \001(\005H\000\210\001\001\022\027\n\nplayerNam" +
+      "e\030\002 \001(\tH\001\210\001\001\0226\n\010position\030\003 \001(\0132$.daikomb" +
+      "at.dto.ServerResponse.Vector\0227\n\tdirectio" +
+      "n\030\004 \001(\0132$.daikombat.dto.ServerResponse.V" +
+      "ector\022\023\n\006health\030\005 \001(\005H\002\210\001\001\022A\n\016activePowe" +
+      "rUps\030\006 \003(\0132).daikombat.dto.ServerRespons" +
+      "e.GamePowerUp\022E\n\tskinColor\030\007 \001(\0162-.daiko" +
+      "mbat.dto.ServerResponse.PlayerSkinColorH" +
+      "\003\210\001\001\022O\n\016gameMatchStats\030\010 \001(\01322.daikombat" +
+      ".dto.ServerResponse.PlayerGameMatchStats" +
+      "H\004\210\001\001\022\024\n\007pingMls\030\t \001(\005H\005\210\001\001B\013\n\t_playerId" +
+      "B\r\n\013_playerNameB\t\n\007_healthB\014\n\n_skinColor" +
+      "B\021\n\017_gameMatchStatsB\n\n\010_pingMls\032T\n\024Playe" +
+      "rGameMatchStats\022\022\n\005kills\030\001 \001(\005H\000\210\001\001\022\023\n\006d" +
+      "eaths\030\002 \001(\005H\001\210\001\001B\010\n\006_killsB\t\n\007_deaths\032\202\001" +
+      "\n\013GamePowerUp\022@\n\004type\030\001 \001(\0162-.daikombat." +
+      "dto.ServerResponse.GamePowerUpTypeH\000\210\001\001\022" +
+      "\030\n\013lastsForMls\030\002 \001(\005H\001\210\001\001B\007\n\005_typeB\016\n\014_l" +
+      "astsForMls\0324\n\006Vector\022\016\n\001x\030\001 \001(\002H\000\210\001\001\022\016\n\001" +
+      "y\030\002 \001(\002H\001\210\001\001B\004\n\002_xB\004\n\002_y\"T\n\017PlayerSkinCo" +
+      "lor\022\t\n\005GREEN\020\000\022\010\n\004PINK\020\001\022\n\n\006PURPLE\020\002\022\010\n\004" +
+      "BLUE\020\003\022\n\n\006YELLOW\020\004\022\n\n\006ORANGE\020\005\"M\n\017GamePo" +
+      "werUpType\022\017\n\013QUAD_DAMAGE\020\000\022\020\n\014INVISIBILI" +
+      "TY\020\001\022\013\n\007DEFENCE\020\002\022\n\n\006HEALTH\020\003B\n\n\010respons" +
+      "eB&\n\"com.beverly.hills.money.gang.protoP" +
+      "\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -338,13 +340,13 @@ public final class ServerResponseOuterClass {
     internal_static_daikombat_dto_ServerResponse_LeaderBoardItem_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_ServerResponse_LeaderBoardItem_descriptor,
-        new java.lang.String[] { "PlayerId", "Kills", "PlayerName", "Deaths", });
+        new java.lang.String[] { "PlayerId", "Kills", "PlayerName", "Deaths", "PingMls", });
     internal_static_daikombat_dto_ServerResponse_GameEventPlayerStats_descriptor =
       internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(16);
     internal_static_daikombat_dto_ServerResponse_GameEventPlayerStats_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_ServerResponse_GameEventPlayerStats_descriptor,
-        new java.lang.String[] { "PlayerId", "PlayerName", "Position", "Direction", "Health", "ActivePowerUps", "SkinColor", "GameMatchStats", });
+        new java.lang.String[] { "PlayerId", "PlayerName", "Position", "Direction", "Health", "ActivePowerUps", "SkinColor", "GameMatchStats", "PingMls", });
     internal_static_daikombat_dto_ServerResponse_PlayerGameMatchStats_descriptor =
       internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(17);
     internal_static_daikombat_dto_ServerResponse_PlayerGameMatchStats_fieldAccessorTable = new

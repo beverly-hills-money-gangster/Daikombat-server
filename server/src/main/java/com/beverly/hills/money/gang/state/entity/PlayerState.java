@@ -46,7 +46,7 @@ public class PlayerState implements PlayerStateReader {
   private final SequenceGenerator eventSequenceGenerator = new SequenceGenerator();
   private final AtomicBoolean dead = new AtomicBoolean();
   public static final int DEFAULT_HP = 100;
-  private final AtomicReference<Integer> pingMls = new AtomicReference<>();
+  private final AtomicInteger pingMls = new AtomicInteger();
   private final AtomicInteger damageAmplifier = new AtomicInteger(1);
   private final AtomicInteger defenceAmplifier = new AtomicInteger(1);
   private final PlayerGameStats playerGameStats = new PlayerGameStats();
@@ -104,7 +104,7 @@ public class PlayerState implements PlayerStateReader {
   }
 
   @Override
-  public Integer getPingMls() {
+  public int getPingMls() {
     return pingMls.get();
   }
 

@@ -13084,6 +13084,17 @@ private static final long serialVersionUID = 0L;
      * @return The deaths.
      */
     int getDeaths();
+
+    /**
+     * <code>optional int32 pingMls = 5;</code>
+     * @return Whether the pingMls field is set.
+     */
+    boolean hasPingMls();
+    /**
+     * <code>optional int32 pingMls = 5;</code>
+     * @return The pingMls.
+     */
+    int getPingMls();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.LeaderBoardItem}
@@ -13226,6 +13237,25 @@ private static final long serialVersionUID = 0L;
       return deaths_;
     }
 
+    public static final int PINGMLS_FIELD_NUMBER = 5;
+    private int pingMls_ = 0;
+    /**
+     * <code>optional int32 pingMls = 5;</code>
+     * @return Whether the pingMls field is set.
+     */
+    @java.lang.Override
+    public boolean hasPingMls() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <code>optional int32 pingMls = 5;</code>
+     * @return The pingMls.
+     */
+    @java.lang.Override
+    public int getPingMls() {
+      return pingMls_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -13252,6 +13282,9 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000008) != 0)) {
         output.writeInt32(4, deaths_);
       }
+      if (((bitField0_ & 0x00000010) != 0)) {
+        output.writeInt32(5, pingMls_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -13275,6 +13308,10 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000008) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(4, deaths_);
+      }
+      if (((bitField0_ & 0x00000010) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(5, pingMls_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -13311,6 +13348,11 @@ private static final long serialVersionUID = 0L;
         if (getDeaths()
             != other.getDeaths()) return false;
       }
+      if (hasPingMls() != other.hasPingMls()) return false;
+      if (hasPingMls()) {
+        if (getPingMls()
+            != other.getPingMls()) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -13337,6 +13379,10 @@ private static final long serialVersionUID = 0L;
       if (hasDeaths()) {
         hash = (37 * hash) + DEATHS_FIELD_NUMBER;
         hash = (53 * hash) + getDeaths();
+      }
+      if (hasPingMls()) {
+        hash = (37 * hash) + PINGMLS_FIELD_NUMBER;
+        hash = (53 * hash) + getPingMls();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -13473,6 +13519,7 @@ private static final long serialVersionUID = 0L;
         kills_ = 0;
         playerName_ = "";
         deaths_ = 0;
+        pingMls_ = 0;
         return this;
       }
 
@@ -13522,6 +13569,10 @@ private static final long serialVersionUID = 0L;
         if (((from_bitField0_ & 0x00000008) != 0)) {
           result.deaths_ = deaths_;
           to_bitField0_ |= 0x00000008;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.pingMls_ = pingMls_;
+          to_bitField0_ |= 0x00000010;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -13584,6 +13635,9 @@ private static final long serialVersionUID = 0L;
         if (other.hasDeaths()) {
           setDeaths(other.getDeaths());
         }
+        if (other.hasPingMls()) {
+          setPingMls(other.getPingMls());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -13630,6 +13684,11 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000008;
                 break;
               } // case 32
+              case 40: {
+                pingMls_ = input.readInt32();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 40
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -13845,6 +13904,46 @@ private static final long serialVersionUID = 0L;
         onChanged();
         return this;
       }
+
+      private int pingMls_ ;
+      /**
+       * <code>optional int32 pingMls = 5;</code>
+       * @return Whether the pingMls field is set.
+       */
+      @java.lang.Override
+      public boolean hasPingMls() {
+        return ((bitField0_ & 0x00000010) != 0);
+      }
+      /**
+       * <code>optional int32 pingMls = 5;</code>
+       * @return The pingMls.
+       */
+      @java.lang.Override
+      public int getPingMls() {
+        return pingMls_;
+      }
+      /**
+       * <code>optional int32 pingMls = 5;</code>
+       * @param value The pingMls to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPingMls(int value) {
+
+        pingMls_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 pingMls = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPingMls() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        pingMls_ = 0;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -14036,6 +14135,17 @@ private static final long serialVersionUID = 0L;
      * <code>optional .daikombat.dto.ServerResponse.PlayerGameMatchStats gameMatchStats = 8;</code>
      */
     com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStatsOrBuilder getGameMatchStatsOrBuilder();
+
+    /**
+     * <code>optional int32 pingMls = 9;</code>
+     * @return Whether the pingMls field is set.
+     */
+    boolean hasPingMls();
+    /**
+     * <code>optional int32 pingMls = 9;</code>
+     * @return The pingMls.
+     */
+    int getPingMls();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.GameEventPlayerStats}
@@ -14305,6 +14415,25 @@ private static final long serialVersionUID = 0L;
       return gameMatchStats_ == null ? com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats.getDefaultInstance() : gameMatchStats_;
     }
 
+    public static final int PINGMLS_FIELD_NUMBER = 9;
+    private int pingMls_ = 0;
+    /**
+     * <code>optional int32 pingMls = 9;</code>
+     * @return Whether the pingMls field is set.
+     */
+    @java.lang.Override
+    public boolean hasPingMls() {
+      return ((bitField0_ & 0x00000080) != 0);
+    }
+    /**
+     * <code>optional int32 pingMls = 9;</code>
+     * @return The pingMls.
+     */
+    @java.lang.Override
+    public int getPingMls() {
+      return pingMls_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -14342,6 +14471,9 @@ private static final long serialVersionUID = 0L;
       }
       if (((bitField0_ & 0x00000040) != 0)) {
         output.writeMessage(8, getGameMatchStats());
+      }
+      if (((bitField0_ & 0x00000080) != 0)) {
+        output.writeInt32(9, pingMls_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -14382,6 +14514,10 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000040) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(8, getGameMatchStats());
+      }
+      if (((bitField0_ & 0x00000080) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(9, pingMls_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -14434,6 +14570,11 @@ private static final long serialVersionUID = 0L;
         if (!getGameMatchStats()
             .equals(other.getGameMatchStats())) return false;
       }
+      if (hasPingMls() != other.hasPingMls()) return false;
+      if (hasPingMls()) {
+        if (getPingMls()
+            != other.getPingMls()) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -14476,6 +14617,10 @@ private static final long serialVersionUID = 0L;
       if (hasGameMatchStats()) {
         hash = (37 * hash) + GAMEMATCHSTATS_FIELD_NUMBER;
         hash = (53 * hash) + getGameMatchStats().hashCode();
+      }
+      if (hasPingMls()) {
+        hash = (37 * hash) + PINGMLS_FIELD_NUMBER;
+        hash = (53 * hash) + getPingMls();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -14643,6 +14788,7 @@ private static final long serialVersionUID = 0L;
           gameMatchStatsBuilder_.dispose();
           gameMatchStatsBuilder_ = null;
         }
+        pingMls_ = 0;
         return this;
       }
 
@@ -14723,6 +14869,10 @@ private static final long serialVersionUID = 0L;
               ? gameMatchStats_
               : gameMatchStatsBuilder_.build();
           to_bitField0_ |= 0x00000040;
+        }
+        if (((from_bitField0_ & 0x00000100) != 0)) {
+          result.pingMls_ = pingMls_;
+          to_bitField0_ |= 0x00000080;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -14820,6 +14970,9 @@ private static final long serialVersionUID = 0L;
         if (other.hasGameMatchStats()) {
           mergeGameMatchStats(other.getGameMatchStats());
         }
+        if (other.hasPingMls()) {
+          setPingMls(other.getPingMls());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -14900,6 +15053,11 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000080;
                 break;
               } // case 66
+              case 72: {
+                pingMls_ = input.readInt32();
+                bitField0_ |= 0x00000100;
+                break;
+              } // case 72
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -15737,6 +15895,46 @@ private static final long serialVersionUID = 0L;
           gameMatchStats_ = null;
         }
         return gameMatchStatsBuilder_;
+      }
+
+      private int pingMls_ ;
+      /**
+       * <code>optional int32 pingMls = 9;</code>
+       * @return Whether the pingMls field is set.
+       */
+      @java.lang.Override
+      public boolean hasPingMls() {
+        return ((bitField0_ & 0x00000100) != 0);
+      }
+      /**
+       * <code>optional int32 pingMls = 9;</code>
+       * @return The pingMls.
+       */
+      @java.lang.Override
+      public int getPingMls() {
+        return pingMls_;
+      }
+      /**
+       * <code>optional int32 pingMls = 9;</code>
+       * @param value The pingMls to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPingMls(int value) {
+
+        pingMls_ = value;
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 pingMls = 9;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPingMls() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        pingMls_ = 0;
+        onChanged();
+        return this;
       }
       @java.lang.Override
       public final Builder setUnknownFields(

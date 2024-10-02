@@ -157,6 +157,7 @@ message ServerResponse {
     QUAD_DAMAGE = 0;
     INVISIBILITY = 1;
     DEFENCE = 2;
+    HEALTH = 3;
   }
 
   message Vector {

@@ -253,6 +253,7 @@ public interface ServerResponseFactory {
       case QUAD_DAMAGE -> GamePowerUpType.QUAD_DAMAGE;
       case DEFENCE -> GamePowerUpType.DEFENCE;
       case INVISIBILITY -> GamePowerUpType.INVISIBILITY;
+      case HEALTH -> GamePowerUpType.HEALTH;
     };
   }
 

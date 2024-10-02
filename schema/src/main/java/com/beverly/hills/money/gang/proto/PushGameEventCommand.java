@@ -200,6 +200,10 @@ private static final long serialVersionUID = 0L;
      * <code>TELEPORT = 5;</code>
      */
     TELEPORT(5),
+    /**
+     * <code>HEALTH_POWER_UP = 6;</code>
+     */
+    HEALTH_POWER_UP(6),
     UNRECOGNIZED(-1),
     ;
 
@@ -227,6 +231,10 @@ private static final long serialVersionUID = 0L;
      * <code>TELEPORT = 5;</code>
      */
     public static final int TELEPORT_VALUE = 5;
+    /**
+     * <code>HEALTH_POWER_UP = 6;</code>
+     */
+    public static final int HEALTH_POWER_UP_VALUE = 6;
 
 
     public final int getNumber() {
@@ -259,6 +267,7 @@ private static final long serialVersionUID = 0L;
         case 3: return INVISIBILITY_POWER_UP;
         case 4: return DEFENCE_POWER_UP;
         case 5: return TELEPORT;
+        case 6: return HEALTH_POWER_UP;
         default: return null;
       }
     }

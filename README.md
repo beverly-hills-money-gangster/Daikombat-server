@@ -43,6 +43,7 @@ Game server can be configured using the following environment variables:
 - `GAME_SERVER_DEFENCE_SPAWN_MLS` Time (in millisecond) it takes to spawn a defence power-up orb. Default - `35_000`.
 - `GAME_SERVER_DEFENCE_LASTS_FOR_MLS` Time (in millisecond) defence lasts for. Default - `10_000`.
 - `GAME_SERVER_INVISIBILITY_SPAWN_MLS` Time (in millisecond) it takes to spawn an invisibility power-up orb. Default - `30_000`.
+- `GAME_SERVER_HEALTH_SPAWN_MLS` Time (in millisecond) it takes to spawn a health power-up orb. Default - `35_000`.
 - `GAME_SERVER_INVISIBILITY_LASTS_FOR_MLS` Time (in millisecond) invisibility lasts for. Default - `15_000`.
 - `GAME_SERVER_POWER_UPS_ENABLED` Turns power-ups on and off. Default - `true`.
 - `GAME_SERVER_TELEPORTS_ENABLED` Turns teleports on and off. Default - `true`.

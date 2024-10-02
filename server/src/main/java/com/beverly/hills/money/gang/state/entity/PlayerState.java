@@ -186,6 +186,10 @@ public class PlayerState implements PlayerStateReader {
     revertAllPowerUps();
   }
 
+  public void restoreHealth() {
+    health.set(DEFAULT_HP);
+  }
+
   public void move(PlayerCoordinates newPlayerCoordinates, final int eventSequence) {
     int localLastEventSequence = lastReceivedEventSequence.get();
     if (localLastEventSequence >= eventSequence) {

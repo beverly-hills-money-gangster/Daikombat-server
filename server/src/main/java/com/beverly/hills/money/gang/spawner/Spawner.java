@@ -56,7 +56,7 @@ public class Spawner {
       = Vector.builder().x(8.045f).y(18.5f - 0.5f).build();
 
   private static final Vector HEALTH_SPAWN_POSITION
-      = Vector.builder().x(-14.810499f).y(27.771694f).build();
+      = Vector.builder().x(-14.810499f-0.2f).y(27.771694f-0.7f).build();
 
   public static final List<PlayerState.PlayerCoordinates> SPAWNS = List.of(
 

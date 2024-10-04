@@ -4,8 +4,12 @@ import com.beverly.hills.money.gang.entity.HostPort;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BotRunner {
+
+  private static final Logger LOG = LoggerFactory.getLogger(BotRunner.class);
 
   public static void main(String[] args) {
     if (args.length != 3) {
@@ -15,10 +19,10 @@ public class BotRunner {
               +
               "For example: java -jar <jar file> 1 localhost 7777");
     }
+    LOG.info("Start running bots");
     int botsToRun = NumberUtils.toInt(args[0]);
     String host = args[1];
     int port = NumberUtils.toInt(args[2]);
-
 
     List<Thread> threads = new ArrayList<>();
     for (int i = 0; i < botsToRun; i++) {

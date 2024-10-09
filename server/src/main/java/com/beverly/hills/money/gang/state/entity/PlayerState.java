@@ -7,6 +7,8 @@ import com.beverly.hills.money.gang.powerup.PowerUpType;
 import com.beverly.hills.money.gang.state.AttackType;
 import com.beverly.hills.money.gang.state.PlayerGameStats;
 import com.beverly.hills.money.gang.state.PlayerGameStatsReader;
+import com.beverly.hills.money.gang.state.PlayerRPGStatType;
+import com.beverly.hills.money.gang.state.PlayerRPGStats;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
 import com.google.common.util.concurrent.AtomicDouble;
 import java.util.ArrayList;
@@ -41,6 +43,8 @@ public class PlayerState implements PlayerStateReader {
   }
 
   private final AtomicBoolean fullyJoined = new AtomicBoolean(false);
+  @Getter
+  private final PlayerRPGStats rpgStats;
   public static final int VAMPIRE_HP_BOOST = 20;
   private final AtomicBoolean moved = new AtomicBoolean(false);
   private final SequenceGenerator eventSequenceGenerator = new SequenceGenerator();
@@ -66,8 +70,11 @@ public class PlayerState implements PlayerStateReader {
   private final String playerName;
   private final AtomicReference<PlayerCoordinates> playerCoordinatesRef;
 
-  public PlayerState(String name, PlayerCoordinates coordinates, int id, PlayerStateColor color) {
+  public PlayerState(
+      String name, PlayerCoordinates coordinates, int id, PlayerStateColor color,
+      PlayerRPGStats playerRPGStats) {
     this.playerName = name;
+    this.rpgStats = playerRPGStats;
     this.color = color;
     this.playerCoordinatesRef = new AtomicReference<>(coordinates);
     this.playerId = id;
@@ -173,8 +180,11 @@ public class PlayerState implements PlayerStateReader {
   }
 
   public void getAttacked(AttackType attackType, int damageAmplifier) {
+    double defence = defenceAmplifier.get()
+        * rpgStats.getNormalized(PlayerRPGStatType.DEFENSE);
+
     if (health.addAndGet(
-        -(ATTACK_DAMAGE.get(attackType) * damageAmplifier) / defenceAmplifier.get()) <= 0) {
+        ((int) -(ATTACK_DAMAGE.get(attackType) * damageAmplifier / defence))) <= 0) {
       onDeath();
     }
   }
@@ -255,7 +265,8 @@ public class PlayerState implements PlayerStateReader {
   private void vampireBoost() {
     int currentHealth = health.get();
     boolean set = health.compareAndSet(currentHealth,
-        Math.min(DEFAULT_HP, currentHealth + VAMPIRE_HP_BOOST));
+        Math.min(DEFAULT_HP, (int) (currentHealth + VAMPIRE_HP_BOOST * rpgStats.getNormalized(
+            PlayerRPGStatType.VAMPIRISM))));
     if (!set) {
       vampireBoost();
     }

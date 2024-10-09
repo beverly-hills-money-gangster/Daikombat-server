@@ -99,7 +99,9 @@ public class Game implements Closeable, GameReader {
     validateGameNotClosed();
     int playerId = playerSequenceGenerator.getNext();
     PlayerState.PlayerCoordinates spawn = spawner.spawnPlayer(this);
-    PlayerState connectedPlayerState = new PlayerState(playerName, spawn, playerId, color);
+    // TODO use real stats
+    PlayerState connectedPlayerState = new PlayerState(
+        playerName, spawn, playerId, color, PlayerRPGStats.defaultStats());
     // recover stats if we can
     Optional.ofNullable(recoveryPlayerId).flatMap(
         playerStatsRecoveryRegistry::getStats).ifPresent(
@@ -198,7 +200,9 @@ public class Game implements Closeable, GameReader {
         return null;
       }
       attackedPlayer.getAttacked(attackType,
-          attackingPlayerState.getDamageAmplifier(attackedPlayer, attackType));
+          (int) (attackingPlayerState.getDamageAmplifier(attackedPlayer, attackType)
+              * attackingPlayerState.getRpgStats()
+              .getNormalized(PlayerRPGStatType.ATTACK)));
       if (attackedPlayer.isDead()) {
         attackingPlayerState.registerKill();
       }

@@ -9,6 +9,7 @@ import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
+import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType;
@@ -34,20 +35,20 @@ public class IdleClientTest extends AbstractGameServerTest {
   @Test
   public void testIdleClientDisconnect() throws IOException, InterruptedException {
     int gameToConnectTo = 1;
-    GameConnection gameConnectionIdle = createGameConnection( "localhost",
+    GameConnection gameConnectionIdle = createGameConnection("localhost",
         port);
-    GameConnection gameConnectionObserver = createGameConnection( "localhost",
+    GameConnection gameConnectionObserver = createGameConnection("localhost",
         port);
     gameConnectionIdle.write(
         JoinGameCommand.newBuilder()
             .setVersion(ClientConfig.VERSION)
-            .setSkin(SkinColorSelection.GREEN)
+            .setSkin(SkinColorSelection.GREEN).setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName("my player name")
             .setGameId(gameToConnectTo).build());
     gameConnectionObserver.write(
         JoinGameCommand.newBuilder()
             .setVersion(ClientConfig.VERSION)
-            .setSkin(SkinColorSelection.GREEN)
+            .setSkin(SkinColorSelection.GREEN).setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName("my player name observer")
             .setGameId(gameToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnectionIdle.getResponse());
@@ -96,7 +97,7 @@ public class IdleClientTest extends AbstractGameServerTest {
       Thread.sleep(200);
     }
 
-    GameConnection newGameConnection = createGameConnection( "localhost",
+    GameConnection newGameConnection = createGameConnection("localhost",
         port);
     newGameConnection.write(GetServerInfoCommand.newBuilder().build());
     waitUntilQueueNonEmpty(newGameConnection.getResponse());
@@ -150,18 +151,20 @@ public class IdleClientTest extends AbstractGameServerTest {
 
     int gameIdToConnectTo = 0;
     String puncherPlayerName = "killer";
-    GameConnection puncherConnection = createGameConnection( "localhost",
+    GameConnection puncherConnection = createGameConnection("localhost",
         port);
     puncherConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+            .setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName(puncherPlayerName)
             .setGameId(gameIdToConnectTo).build());
 
-    GameConnection deadConnection = createGameConnection( "localhost", port);
+    GameConnection deadConnection = createGameConnection("localhost", port);
     deadConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+            .setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(puncherConnection.getResponse());
@@ -259,17 +262,18 @@ public class IdleClientTest extends AbstractGameServerTest {
   @Test
   public void testNotIdleClientMoving() throws IOException, InterruptedException {
     int gameToConnectTo = 1;
-    GameConnection gameConnection = createGameConnection( "localhost", port);
+    GameConnection gameConnection = createGameConnection("localhost", port);
     gameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ClientConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+            .setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName("my player name")
             .setGameId(gameToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
     var mySpawn = gameConnection.getResponse().poll().get().getGameEvents().getEvents(0);
     int playerId = mySpawn.getPlayer().getPlayerId();
 
-    GameConnection observerConnection = createGameConnection( "localhost",
+    GameConnection observerConnection = createGameConnection("localhost",
         port);
     observerConnection.write(GetServerInfoCommand.newBuilder().build());
     waitUntilQueueNonEmpty(observerConnection.getResponse());
@@ -300,7 +304,7 @@ public class IdleClientTest extends AbstractGameServerTest {
     }
     assertTrue(gameConnection.isConnected());
 
-    GameConnection newGameConnection = createGameConnection( "localhost",
+    GameConnection newGameConnection = createGameConnection("localhost",
         port);
     newGameConnection.write(GetServerInfoCommand.newBuilder().build());
     waitUntilQueueNonEmpty(newGameConnection.getResponse());
@@ -324,10 +328,11 @@ public class IdleClientTest extends AbstractGameServerTest {
   @Test
   public void testMoveThenIdleClient() throws IOException, InterruptedException {
     int gameToConnectTo = 1;
-    GameConnection gameConnection = createGameConnection( "localhost", port);
+    GameConnection gameConnection = createGameConnection("localhost", port);
     gameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ClientConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+            .setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName("my player name")
             .setGameId(gameToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
@@ -353,7 +358,7 @@ public class IdleClientTest extends AbstractGameServerTest {
     Thread.sleep(10_000);
 
     assertTrue(gameConnection.isDisconnected());
-    GameConnection newGameConnection = createGameConnection( "localhost",
+    GameConnection newGameConnection = createGameConnection("localhost",
         port);
     newGameConnection.write(GetServerInfoCommand.newBuilder().build());
     waitUntilQueueNonEmpty(newGameConnection.getResponse());

@@ -9,6 +9,7 @@ import static com.beverly.hills.money.gang.factory.response.ServerResponseFactor
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.powerup.PowerUp;
+import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.proto.ServerCommand.CommandCase;
 import com.beverly.hills.money.gang.proto.ServerResponse;
@@ -18,6 +19,7 @@ import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import com.beverly.hills.money.gang.state.entity.PlayerJoinedGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
+import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
 import com.beverly.hills.money.gang.teleport.Teleport;
 import com.beverly.hills.money.gang.util.VersionUtil;
 import io.netty.channel.Channel;
@@ -59,7 +61,8 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
     Game game = gameRoomRegistry.getGame(command.getGameId());
     PlayerJoinedGameState playerConnected = game.joinPlayer(
         command.getPlayerName(), currentChannel, getSkinColor(command.getSkin()),
-        command.hasRecoveryPlayerId() ? command.getRecoveryPlayerId() : null);
+        command.hasRecoveryPlayerId() ? command.getRecoveryPlayerId() : null,
+        getRPGPlayerClass(command.getPlayerClass()));
     ServerResponse playerSpawnEvent = createJoinSinglePlayer(
         game.playersOnline(), playerConnected);
     playerConnected.getPlayerStateChannel()
@@ -87,6 +90,16 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
       case YELLOW -> PlayerStateColor.YELLOW;
       case ORANGE -> PlayerStateColor.ORANGE;
       default -> throw new IllegalArgumentException("Not supported skin color");
+    };
+  }
+
+  private RPGPlayerClass getRPGPlayerClass(PlayerClass playerClass) {
+    return switch (playerClass) {
+      case COMMONER -> RPGPlayerClass.COMMONER;
+      case DRACULA_BERSERK -> RPGPlayerClass.BERSERK;
+      case BEAST_WARRIOR -> RPGPlayerClass.WARRIOR;
+      case DEMON_TANK -> RPGPlayerClass.TANK;
+      default -> throw new IllegalArgumentException("Not supported player class");
     };
   }
 

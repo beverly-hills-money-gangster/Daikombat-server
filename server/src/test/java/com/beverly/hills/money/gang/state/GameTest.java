@@ -4,6 +4,7 @@ import static com.beverly.hills.money.gang.exception.GameErrorCode.CAN_NOT_ATTAC
 import static com.beverly.hills.money.gang.exception.GameErrorCode.CHEATING;
 import static com.beverly.hills.money.gang.exception.GameErrorCode.COMMON_ERROR;
 import static com.beverly.hills.money.gang.exception.GameErrorCode.PLAYER_DOES_NOT_EXIST;
+import static com.beverly.hills.money.gang.state.entity.PlayerState.DEFAULT_HP;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -38,10 +39,12 @@ import com.beverly.hills.money.gang.registry.PlayerStatsRecoveryRegistry;
 import com.beverly.hills.money.gang.registry.PowerUpRegistry;
 import com.beverly.hills.money.gang.registry.TeleportRegistry;
 import com.beverly.hills.money.gang.spawner.Spawner;
+import com.beverly.hills.money.gang.state.entity.AttackStats;
 import com.beverly.hills.money.gang.state.entity.PlayerAttackingGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerJoinedGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
 import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
+import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
 import com.beverly.hills.money.gang.state.entity.Vector;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoop;
@@ -162,7 +165,8 @@ public class GameTest {
         playerConnectedGameState.getLeaderBoard().get(0).getKills());
 
     assertEquals(4, playerConnectedGameState.getSpawnedPowerUps().size());
-    assertEquals(Stream.of(quadDamagePowerUp, defencePowerUp, invisibilityPowerUp, healthPowerUp).sorted(
+    assertEquals(
+        Stream.of(quadDamagePowerUp, defencePowerUp, invisibilityPowerUp, healthPowerUp).sorted(
             Comparator.comparing(PowerUp::getType)).collect(Collectors.toList()),
         playerConnectedGameState.getSpawnedPowerUps().stream().sorted(
             Comparator.comparing(PowerUp::getType)).collect(Collectors.toList()));
@@ -490,13 +494,12 @@ public class GameTest {
 
   /**
    * @given 2 players
-   * @when one player with HP 80 kills the other
-   * @then the shot player dies, the killer gets a vampire boost +20 HP (100 in total)
+   * @when one player with HP 60 kills the other
+   * @then the shot player dies, the killer gets a vampire boost +30 HP (90 in total)
    */
   @Test
   public void testShootDeadVampireBoost() throws Throwable {
     String shooterPlayerName = "shooter player";
-    String observerPlayerName = "observer player";
     String shotPlayerName = "shot player";
     Channel channel = mock(Channel.class);
     PlayerJoinedGameState shooterPlayerConnectedGameState = fullyJoin(shooterPlayerName,
@@ -516,7 +519,75 @@ public class GameTest {
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
-    // after this, shooter HP is 80%
+    // after this, shooter HP is 60%
+    for (int i = 0; i < 2; i++) {
+      game.attack(
+          shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          AttackType.SHOTGUN,
+          testSequenceGenerator.getNext(),
+          PING_MLS);
+    }
+
+    PlayerAttackingGameState playerAttackingGameState = game.attack(
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        AttackType.SHOTGUN,
+        testSequenceGenerator.getNext(),
+        PING_MLS);
+    assertNotNull(playerAttackingGameState.getPlayerAttacked());
+
+    assertTrue(playerAttackingGameState.getPlayerAttacked().isDead());
+    assertEquals(0, playerAttackingGameState.getPlayerAttacked().getHealth());
+    PlayerState shooterState = game.getPlayersRegistry()
+        .getPlayerState(
+            shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
+        .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
+            "A connected player must have a state!"));
+    assertEquals(90, shooterState.getHealth(), "Shooter must get a vampire boost");
+    assertEquals(1, shooterState.getGameStats().getKills(), "One player was killed");
+    assertEquals(2, game.playersOnline(), "After death, 2 players are still online");
+    PlayerState shotState = game.getPlayersRegistry()
+        .getPlayerState(
+            shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
+        .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
+            "A connected player must have a state!"));
+    assertEquals(0, shotState.getHealth());
+    assertTrue(shotState.isDead());
+  }
+
+  /**
+   * @given 2 players(commoner and berserk)
+   * @when berserk player with HP 60 kills the other
+   * @then the shot player dies, the killer gets a vampire boost +45 HP (100 in total)
+   */
+  @Test
+  public void testShootDeadBerserkVampireBoost() throws Throwable {
+    String shooterPlayerName = "shooter player";
+    String shotPlayerName = "shot player";
+    Channel channel = mock(Channel.class);
+    PlayerJoinedGameState shooterPlayerConnectedGameState = fullyJoin(shooterPlayerName,
+        channel, PlayerStateColor.GREEN, RPGPlayerClass.BERSERK);
+    PlayerJoinedGameState shotPlayerConnectedGameState = fullyJoin(shotPlayerName, channel,
+        PlayerStateColor.GREEN);
+
+    int shotsToKill = (int) Math.ceil(
+        100d / (ServerConfig.DEFAULT_SHOTGUN_DAMAGE * RPGStatsFactory.create(RPGPlayerClass.BERSERK)
+            .getNormalized(PlayerRPGStatType.ATTACK)));
+
+    // after this loop, one player is almost dead
+    for (int i = 0; i < shotsToKill - 1; i++) {
+      game.attack(
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          AttackType.SHOTGUN,
+          testSequenceGenerator.getNext(),
+          PING_MLS);
+    }
+    // after this, shooter HP is 60%
     game.attack(
         shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
         shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
@@ -541,7 +612,7 @@ public class GameTest {
             shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
-    assertEquals(100, shooterState.getHealth(), "Shooter must get a vampire boost");
+    assertEquals(90, shooterState.getHealth(), "Shooter must get a vampire boost");
     assertEquals(1, shooterState.getGameStats().getKills(), "One player was killed");
     assertEquals(2, game.playersOnline(), "After death, 2 players are still online");
     PlayerState shotState = game.getPlayersRegistry()
@@ -553,6 +624,49 @@ public class GameTest {
     assertTrue(shotState.isDead());
   }
 
+  @Test
+  public void testAttackAllClasses() throws GameLogicError {
+    for (AttackType attackType : AttackType.values()) {
+      for (RPGPlayerClass attackerClass : RPGPlayerClass.values()) {
+        for (RPGPlayerClass victimClass : RPGPlayerClass.values()) {
+          var attackerStats = RPGStatsFactory.create(attackerClass);
+          var victimStats = RPGStatsFactory.create(victimClass);
+
+          String shooterPlayerName = "A-" + attackerClass + "-" + victimClass;
+          String shotPlayerName = "V-" + victimClass + "-" + attackerClass;
+          Channel channel = mock(Channel.class);
+          PlayerJoinedGameState shooterPlayerConnectedGameState = fullyJoin(shooterPlayerName,
+              channel, PlayerStateColor.GREEN, attackerClass);
+          PlayerJoinedGameState shotPlayerConnectedGameState = fullyJoin(shotPlayerName, channel,
+              PlayerStateColor.GREEN, victimClass);
+
+          PlayerAttackingGameState playerAttackingGameState = game.attack(
+              shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState()
+                  .getCoordinates(),
+              shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState()
+                  .getPlayerId(),
+              shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+              attackType,
+              testSequenceGenerator.getNext(),
+              PING_MLS);
+          int damageCaused = (int) (
+              AttackStats.ATTACK_DAMAGE.get(attackType) * attackerStats.getNormalized(
+                  PlayerRPGStatType.ATTACK) / victimStats.getNormalized(PlayerRPGStatType.DEFENSE));
+
+          assertEquals(Math.max(0, DEFAULT_HP - damageCaused),
+              playerAttackingGameState.getPlayerAttacked().getHealth(),
+              "Wrong damage. Check " + attackerClass + " VS " + victimClass + " stats using weapon "
+                  + attackType);
+
+          game.getPlayersRegistry().removePlayer(
+              shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState()
+                  .getPlayerId());
+          game.getPlayersRegistry().removePlayer(
+              shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId());
+        }
+      }
+    }
+  }
 
   /**
    * @given 3 players(killer, victim, and observer)
@@ -1259,7 +1373,7 @@ public class GameTest {
     assertFalse(respawned.getPlayerStateChannel().getPlayerState().isDead());
     assertEquals(1, respawned.getPlayerStateChannel().getPlayerState().getGameStats().getDeaths(),
         "Death count should increment after respawn");
-    assertEquals(PlayerState.DEFAULT_HP,
+    assertEquals(DEFAULT_HP,
         respawned.getPlayerStateChannel().getPlayerState().getHealth(),
         "Health must be restored after respawn");
     assertEquals(1, respawned.getPlayerStateChannel().getPlayerState().getGameStats().getKills(),
@@ -1284,7 +1398,8 @@ public class GameTest {
     assertEquals(1, respawnedLeaderBoardItem.getKills());
 
     assertEquals(4, respawned.getSpawnedPowerUps().size());
-    assertEquals(Stream.of(quadDamagePowerUp, defencePowerUp, invisibilityPowerUp, healthPowerUp).sorted(
+    assertEquals(
+        Stream.of(quadDamagePowerUp, defencePowerUp, invisibilityPowerUp, healthPowerUp).sorted(
             Comparator.comparing(PowerUp::getType)).collect(Collectors.toList()),
         respawned.getSpawnedPowerUps().stream().sorted(
             Comparator.comparing(PowerUp::getType)).collect(Collectors.toList()));
@@ -1453,6 +1568,7 @@ public class GameTest {
     assertEquals(4, playerGameState.getPlayerStateChannel().getPlayerState()
             .getDamageAmplifier(playerGameState.getPlayerStateChannel().getPlayerState(),
                 AttackType.PUNCH),
+        0.001,
         "Damage should amplify after picking up quad damage power-up");
 
     PlayerAttackingGameState playerAttackingGameState = game.attack(
@@ -1679,6 +1795,7 @@ public class GameTest {
             .getDamageAmplifier(
                 playerGameState.getPlayerStateChannel().getPlayerState(),
                 AttackType.PUNCH),
+        0.001,
         "Damage amplifier has to default to 1");
 
   }
@@ -2024,14 +2141,20 @@ public class GameTest {
   }
 
   private PlayerJoinedGameState fullyJoin(final String playerName, final Channel playerChannel,
-      PlayerStateColor color)
+      PlayerStateColor color, RPGPlayerClass playerClass)
       throws GameLogicError {
     PlayerJoinedGameState player = game.joinPlayer(playerName,
-        playerChannel, color, null);
+        playerChannel, color, null, playerClass);
     game.getPlayersRegistry()
         .findPlayer(player.getPlayerStateChannel().getPlayerState().getPlayerId()).ifPresent(
             playerStateChannel -> playerStateChannel.getPlayerState().fullyJoined());
     return player;
+  }
+
+  private PlayerJoinedGameState fullyJoin(final String playerName, final Channel playerChannel,
+      PlayerStateColor color)
+      throws GameLogicError {
+    return fullyJoin(playerName, playerChannel, color, RPGPlayerClass.COMMONER);
   }
 
 }

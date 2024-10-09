@@ -14,4 +14,6 @@ public class AttackInfo {
 
   private final int delayMls;
 
+  private final int defaultDamage;
+
 }

@@ -7,6 +7,7 @@ import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
+import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.SkinColorSelection;
@@ -34,7 +35,8 @@ public class IdleServerTest extends AbstractGameServerTest {
     gameConnection.shutdownPingScheduler(); // shutting down to mimic server inactivity
     gameConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN).setPlayerClass(
+                PlayerClass.COMMONER)
             .setPlayerName("my player name")
             .setGameId(gameToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());

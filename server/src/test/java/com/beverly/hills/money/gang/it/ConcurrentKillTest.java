@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
+import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType;
@@ -46,11 +47,12 @@ public class ConcurrentKillTest extends AbstractGameServerTest {
       int finalJ = j;
       joinThreads.add(new Thread(() -> {
         try {
-          GameConnection gameConnection = createGameConnection( "localhost",
+          GameConnection gameConnection = createGameConnection("localhost",
               port);
           gameConnection.write(
               JoinGameCommand.newBuilder()
                   .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+                  .setPlayerClass(PlayerClass.COMMONER)
                   .setPlayerName("my player name " + finalJ)
                   .setGameId(0).build());
           waitUntilQueueNonEmpty(gameConnection.getResponse());

@@ -12,11 +12,6 @@ public class PlayerRPGStats {
     if (stats.size() != PlayerRPGStatType.values().length) {
       throw new IllegalArgumentException("Not all RPG stats are specified");
     }
-    int pointsSum = stats.values().stream().mapToInt(PlayerRPGStatValue::getValue).sum();
-    int maxPoints = stats.size() * PlayerRPGStatValue.DEFAULT;
-    if (pointsSum > maxPoints) {
-      throw new IllegalArgumentException("RPG points in total can't be greater than " + maxPoints);
-    }
     this.stats.putAll(stats);
   }
 

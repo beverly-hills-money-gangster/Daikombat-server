@@ -79,4 +79,20 @@ public interface JoinGameCommandOrBuilder extends
    * @return The recoveryPlayerId.
    */
   int getRecoveryPlayerId();
+
+  /**
+   * <code>optional .daikombat.dto.PlayerClass playerClass = 6;</code>
+   * @return Whether the playerClass field is set.
+   */
+  boolean hasPlayerClass();
+  /**
+   * <code>optional .daikombat.dto.PlayerClass playerClass = 6;</code>
+   * @return The enum numeric value on the wire for playerClass.
+   */
+  int getPlayerClassValue();
+  /**
+   * <code>optional .daikombat.dto.PlayerClass playerClass = 6;</code>
+   * @return The playerClass.
+   */
+  com.beverly.hills.money.gang.proto.PlayerClass getPlayerClass();
 }

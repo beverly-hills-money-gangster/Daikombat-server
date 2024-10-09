@@ -1,6 +1,7 @@
 package com.beverly.hills.money.gang.state.entity;
 
-import com.beverly.hills.money.gang.config.ServerConfig;
+import static com.beverly.hills.money.gang.state.entity.AttackStats.ATTACK_DAMAGE;
+
 import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
@@ -30,22 +31,10 @@ public class PlayerState implements PlayerStateReader {
 
   private static final Logger LOG = LoggerFactory.getLogger(PlayerState.class);
 
-  private static final Map<AttackType, Integer> ATTACK_DAMAGE = Map.of(
-      AttackType.PUNCH, ServerConfig.DEFAULT_PUNCH_DAMAGE,
-      AttackType.SHOTGUN, ServerConfig.DEFAULT_SHOTGUN_DAMAGE,
-      AttackType.RAILGUN, ServerConfig.DEFAULT_RAILGUN_DAMAGE,
-      AttackType.MINIGUN, ServerConfig.DEFAULT_MINIGUN_DAMAGE);
-
-  static {
-    if (ATTACK_DAMAGE.size() != AttackType.values().length) {
-      throw new IllegalStateException("Not all attack types have damage configured");
-    }
-  }
-
   private final AtomicBoolean fullyJoined = new AtomicBoolean(false);
   @Getter
   private final PlayerRPGStats rpgStats;
-  public static final int VAMPIRE_HP_BOOST = 20;
+  public static final int VAMPIRE_HP_BOOST = 30;
   private final AtomicBoolean moved = new AtomicBoolean(false);
   private final SequenceGenerator eventSequenceGenerator = new SequenceGenerator();
   private final AtomicBoolean dead = new AtomicBoolean();
@@ -160,10 +149,11 @@ public class PlayerState implements PlayerStateReader {
     defenceAmplifier.set(ampl);
   }
 
-  public int getDamageAmplifier(PlayerState attackedPlayerState, AttackType attackType) {
+  public double getDamageAmplifier(PlayerState attackedPlayerState, AttackType attackType) {
     var distance = Vector.getDistance(
         attackedPlayerState.getCoordinates().position, getCoordinates().position);
-    return damageAmplifier.get() * attackType.getDistanceDamageAmplifier().apply(distance);
+    return damageAmplifier.get() * attackType.getDistanceDamageAmplifier().apply(distance)
+        * rpgStats.getNormalized(PlayerRPGStatType.ATTACK);
   }
 
   public void respawn(final PlayerCoordinates coordinates) {
@@ -179,12 +169,11 @@ public class PlayerState implements PlayerStateReader {
     return playerGameStats;
   }
 
-  public void getAttacked(AttackType attackType, int damageAmplifier) {
+  public void getAttacked(AttackType attackType, double damageAmplifier) {
     double defence = defenceAmplifier.get()
         * rpgStats.getNormalized(PlayerRPGStatType.DEFENSE);
-
-    if (health.addAndGet(
-        ((int) -(ATTACK_DAMAGE.get(attackType) * damageAmplifier / defence))) <= 0) {
+    int damage = ((int) -(ATTACK_DAMAGE.get(attackType) * damageAmplifier / defence));
+    if (health.addAndGet(damage) <= 0) {
       onDeath();
     }
   }

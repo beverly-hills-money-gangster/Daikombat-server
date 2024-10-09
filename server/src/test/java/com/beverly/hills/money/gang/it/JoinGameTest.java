@@ -9,6 +9,7 @@ import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
+import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType;
@@ -24,6 +25,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_POWER_UPS_ENABLED", value = "false")
@@ -38,13 +41,16 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @when a player connects to a server
    * @then the player is connected
    */
-  @Test
-  public void testJoinGame() throws Exception {
+  @ParameterizedTest
+  @ValueSource(ints = {0, 1, 2, 3})
+  public void testJoinGame(int playerClassNumber) throws Exception {
     int gameIdToConnectTo = 0;
+
     GameConnection gameConnection = createGameConnection("localhost", port);
     gameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+            .setPlayerClass(PlayerClass.forNumber(playerClassNumber))
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
@@ -83,6 +89,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     newGameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+            .setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName("new player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(newGameConnection.getResponse());
@@ -116,6 +123,7 @@ public class JoinGameTest extends AbstractGameServerTest {
       gameConnection.write(
           JoinGameCommand.newBuilder()
               .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.ORANGE)
+              .setPlayerClass(PlayerClass.COMMONER)
               .setPlayerName("player name " + i)
               .setGameId(gameIdToConnectTo).build());
       waitUntilQueueNonEmpty(gameConnection.getResponse());
@@ -125,7 +133,8 @@ public class JoinGameTest extends AbstractGameServerTest {
     GameConnection gameConnection = createGameConnection("localhost", port);
     gameConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN).setPlayerClass(
+                PlayerClass.COMMONER)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
@@ -154,6 +163,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     gameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+            .setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
@@ -195,7 +205,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     gameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion("0.1.1-SNAPSHOT")
-            .setSkin(SkinColorSelection.GREEN)
+            .setSkin(SkinColorSelection.GREEN).setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
@@ -237,6 +247,7 @@ public class JoinGameTest extends AbstractGameServerTest {
       gameConnection.write(
           JoinGameCommand.newBuilder()
               .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+              .setPlayerClass(PlayerClass.COMMONER)
               .setPlayerName("my player name " + i)
               .setGameId(0).build());
     }
@@ -246,6 +257,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     gameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+            .setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName("my player name")
             .setGameId(0).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
@@ -273,6 +285,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     gameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+            .setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName("same name")
             .setGameId(0).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
@@ -282,6 +295,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     sameNameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+            .setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName("same name")
             .setGameId(0).build());
     waitUntilQueueNonEmpty(sameNameConnection.getResponse());
@@ -321,6 +335,7 @@ public class JoinGameTest extends AbstractGameServerTest {
           gameConnection.write(
               JoinGameCommand.newBuilder()
                   .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+                  .setPlayerClass(PlayerClass.COMMONER)
                   .setPlayerName("my player name " + finalI)
                   .setGameId(gameIdToConnectTo).build());
           waitUntilQueueNonEmpty(gameConnection.getResponse());
@@ -356,6 +371,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     gameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+            .setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
@@ -436,6 +452,7 @@ public class JoinGameTest extends AbstractGameServerTest {
             gameConnection.write(
                 JoinGameCommand.newBuilder()
                     .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+                    .setPlayerClass(PlayerClass.COMMONER)
                     .setPlayerName("my player name " + finalJ)
                     .setGameId(finalGameId).build());
             waitUntilQueueNonEmpty(gameConnection.getResponse());

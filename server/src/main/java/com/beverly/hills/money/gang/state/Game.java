@@ -22,6 +22,7 @@ import com.beverly.hills.money.gang.state.entity.PlayerRespawnedGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
 import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
 import com.beverly.hills.money.gang.state.entity.PlayerTeleportingGameState;
+import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
 import io.netty.channel.Channel;
 import java.io.Closeable;
 import java.util.List;
@@ -94,13 +95,14 @@ public class Game implements Closeable, GameReader {
 
   public PlayerJoinedGameState joinPlayer(
       final String playerName, final Channel playerChannel, PlayerStateColor color,
-      Integer recoveryPlayerId)
-      throws GameLogicError {
+      Integer recoveryPlayerId,
+      RPGPlayerClass rpgPlayerClass) throws GameLogicError {
     validateGameNotClosed();
     int playerId = playerSequenceGenerator.getNext();
     PlayerState.PlayerCoordinates spawn = spawner.spawnPlayer(this);
-    PlayerState connectedPlayerState = new PlayerState(playerName, spawn, playerId, color);
-    // recover stats if we can
+    PlayerState connectedPlayerState = new PlayerState(
+        playerName, spawn, playerId, color, RPGStatsFactory.create(rpgPlayerClass));
+    // recover game stats if we can
     Optional.ofNullable(recoveryPlayerId).flatMap(
         playerStatsRecoveryRegistry::getStats).ifPresent(
         connectedPlayerState::setStats);

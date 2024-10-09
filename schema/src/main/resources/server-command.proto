@@ -35,6 +35,7 @@ message JoinGameCommand {
   optional string playerName = 3;
   optional SkinColorSelection skin = 4;
   optional int32 recoveryPlayerId = 5;
+  optional PlayerClass playerClass = 6;
 }
 
 message MergeConnectionCommand {
@@ -49,6 +50,13 @@ enum SkinColorSelection{
   BLUE = 3;
   YELLOW = 4;
   ORANGE = 5;
+}
+
+enum PlayerClass{
+  COMMONER = 0;
+  DRACULA_BERSERK = 1;
+  DEMON_TANK = 2;
+  BEAST_WARRIOR = 3;
 }
 
 message RespawnCommand {

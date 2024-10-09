@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
+import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PushChatEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.SkinColorSelection;
@@ -17,7 +18,6 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -38,11 +38,12 @@ public class ChatEventTest extends AbstractGameServerTest {
   public void testChatManyPlayers() throws IOException, InterruptedException {
     int gameIdToConnectTo = 0;
     for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
-      GameConnection gameConnection = createGameConnection( "localhost",
+      GameConnection gameConnection = createGameConnection("localhost",
           port);
       gameConnection.write(
           JoinGameCommand.newBuilder()
               .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+              .setPlayerClass(PlayerClass.COMMONER)
               .setPlayerName("my player name " + i)
               .setGameId(gameIdToConnectTo).build());
       waitUntilGetResponses(gameConnection.getResponse(), 1);
@@ -97,11 +98,12 @@ public class ChatEventTest extends AbstractGameServerTest {
   public void testChatManyPlayersConcurrent() throws IOException, InterruptedException {
     int gameIdToConnectTo = 0;
     for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
-      GameConnection gameConnection = createGameConnection( "localhost",
+      GameConnection gameConnection = createGameConnection("localhost",
           port);
       gameConnection.write(
           JoinGameCommand.newBuilder()
-              .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+              .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN).setPlayerClass(
+                  PlayerClass.COMMONER)
               .setPlayerName("my player name " + i)
               .setGameId(gameIdToConnectTo).build());
       waitUntilGetResponses(gameConnection.getResponse(), 1);

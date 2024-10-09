@@ -25,7 +25,8 @@ public class PlayerStateTest {
   public void tesRegisterKillVampireBoostFullHealth() {
     PlayerState playerState = new PlayerState(
         "test player",
-        PlayerState.PlayerCoordinates.builder().build(), 123, PlayerStateColor.GREEN);
+        PlayerState.PlayerCoordinates.builder().build(), 123, PlayerStateColor.GREEN,
+        PlayerRPGStats.defaultStats());
 
     playerState.registerKill();
 
@@ -43,7 +44,8 @@ public class PlayerStateTest {
   public void tesRegisterKillVampireBoostRestoreHealth() {
     PlayerState playerState = new PlayerState(
         "test player",
-        PlayerState.PlayerCoordinates.builder().build(), 123, PlayerStateColor.GREEN);
+        PlayerState.PlayerCoordinates.builder().build(), 123, PlayerStateColor.GREEN,
+        PlayerRPGStats.defaultStats());
     playerState.getAttacked(AttackType.SHOTGUN, 1);
     playerState.getAttacked(AttackType.SHOTGUN, 1);
 
@@ -61,7 +63,8 @@ public class PlayerStateTest {
     int threadsNum = 16;
     PlayerState playerState = new PlayerState(
         "test player",
-        PlayerState.PlayerCoordinates.builder().build(), 123, PlayerStateColor.GREEN);
+        PlayerState.PlayerCoordinates.builder().build(), 123, PlayerStateColor.GREEN,
+        PlayerRPGStats.defaultStats());
 
     playerState.getAttacked(AttackType.SHOTGUN, 1);
     playerState.getAttacked(AttackType.SHOTGUN, 1);
@@ -111,7 +114,8 @@ public class PlayerStateTest {
         .position(Vector.builder().x(0).y(0).build())
         .build();
     PlayerState playerState = new PlayerState(
-        "test player", playerOldCoordinates, 123, PlayerStateColor.GREEN);
+        "test player", playerOldCoordinates, 123, PlayerStateColor.GREEN,
+        PlayerRPGStats.defaultStats());
     playerState.move(playerNewCoordinates, 0);
 
     assertEquals(playerNewCoordinates, playerState.getCoordinates());
@@ -134,7 +138,8 @@ public class PlayerStateTest {
         .position(Vector.builder().x(0).y(0).build())
         .build();
     PlayerState playerState = new PlayerState(
-        "test player", playerOldCoordinates, 123, PlayerStateColor.GREEN);
+        "test player", playerOldCoordinates, 123, PlayerStateColor.GREEN,
+        PlayerRPGStats.defaultStats());
 
     playerState.move(playerNewCoordinates, 0);
     playerState.move(playerNewCoordinates, 1);
@@ -163,7 +168,8 @@ public class PlayerStateTest {
         .position(Vector.builder().x(0).y(0).build())
         .build();
     PlayerState playerState = new PlayerState(
-        "test player", playerOldCoordinates, 123, PlayerStateColor.GREEN);
+        "test player", playerOldCoordinates, 123, PlayerStateColor.GREEN,
+        PlayerRPGStats.defaultStats());
 
     playerState.move(playerNewCoordinates1, 2);
     playerState.move(playerNewCoordinates2, 1);

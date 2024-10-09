@@ -9,6 +9,7 @@ import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
+import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.SkinColorSelection;
 import java.io.IOException;
@@ -35,7 +36,8 @@ public class GameConnectionTest extends AbstractGameServerTest {
     GameConnection gameConnection1 = createGameConnection( "localhost", port);
     gameConnection1.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN).setPlayerClass(
+                PlayerClass.COMMONER)
             .setPlayerName("my player name")
             .setGameId(gameToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection1.getResponse());
@@ -46,7 +48,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
     GameConnection gameConnection2 = createGameConnection( "localhost", port);
     gameConnection2.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN).setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName("my other player name")
             .setGameId(gameToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection2.getResponse());

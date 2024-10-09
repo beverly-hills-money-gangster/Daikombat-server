@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
+import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
@@ -38,7 +39,8 @@ public class GameOverTest extends AbstractGameServerTest {
          "localhost", port);
     killerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN).setPlayerClass(
+                PlayerClass.COMMONER)
             .setPlayerName(shooterPlayerName)
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(killerConnection.getResponse());
@@ -51,7 +53,7 @@ public class GameOverTest extends AbstractGameServerTest {
           port);
       deadConnection.write(
           JoinGameCommand.newBuilder()
-              .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+              .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN).setPlayerClass(PlayerClass.COMMONER)
               .setPlayerName("my other player name " + i)
               .setGameId(gameIdToConnectTo).build());
       waitUntilQueueNonEmpty(killerConnection.getResponse());

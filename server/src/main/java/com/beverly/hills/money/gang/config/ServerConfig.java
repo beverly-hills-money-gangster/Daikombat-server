@@ -64,6 +64,10 @@ public interface ServerConfig {
       System.getenv("GAME_SERVER_TELEPORTS_ENABLED"), "true"));
 
   int FRAGS_PER_GAME = NumberUtils.toInt(System.getenv("GAME_SERVER_FRAGS_PER_GAME"), 25);
+  int PUNCH_DELAY_MLS = NumberUtils.toInt(System.getenv("GAME_SERVER_PUNCH_DELAY_MLS"), 300);
+  int SHOTGUN_DELAY_MLS = NumberUtils.toInt(System.getenv("GAME_SERVER_SHOTGUN_DELAY_MLS"), 450);
+  int RAILGUN_DELAY_MLS = NumberUtils.toInt(System.getenv("GAME_SERVER_RAILGUN_DELAY_MLS"), 1_700);
+  int MINIGUN_DELAY_MLS = NumberUtils.toInt(System.getenv("GAME_SERVER_MINIGUN_DELAY_MLS"), 155);
 
   int PLAYER_STATS_TIMEOUT_MLS = NumberUtils.toInt(
       System.getenv("GAME_SERVER_PLAYER_STATS_TIMEOUT_MLS"), 2 * 60 * 1000);

@@ -16,10 +16,10 @@ public class AttackStats {
       AttackType.RAILGUN, 10.0);
 
   public static final Map<AttackType, Integer> ATTACK_DELAY_MLS = Map.of(
-      AttackType.PUNCH, 300,
-      AttackType.SHOTGUN, 450,
-      AttackType.RAILGUN, 1_700,
-      AttackType.MINIGUN, 155);
+      AttackType.PUNCH, ServerConfig.PUNCH_DELAY_MLS,
+      AttackType.SHOTGUN, ServerConfig.SHOTGUN_DELAY_MLS,
+      AttackType.RAILGUN, ServerConfig.RAILGUN_DELAY_MLS,
+      AttackType.MINIGUN, ServerConfig.MINIGUN_DELAY_MLS);
 
   public static final Map<AttackType, Integer> ATTACK_DAMAGE = Map.of(
       AttackType.PUNCH, ServerConfig.DEFAULT_PUNCH_DAMAGE,

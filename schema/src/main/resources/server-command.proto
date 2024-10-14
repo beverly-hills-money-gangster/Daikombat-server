@@ -4,6 +4,7 @@ package daikombat.dto;
 
 option java_multiple_files = true;
 option java_package = "com.beverly.hills.money.gang.proto";
+import "schema/src/main/resources/server-common.proto";
 
 message ServerCommand {
 
@@ -33,7 +34,7 @@ message JoinGameCommand {
   optional int32 gameId = 1;
   optional string version = 2;
   optional string playerName = 3;
-  optional SkinColorSelection skin = 4;
+  optional PlayerSkinColor skin = 4;
   optional int32 recoveryPlayerId = 5;
   optional PlayerClass playerClass = 6;
 }
@@ -43,21 +44,6 @@ message MergeConnectionCommand {
   optional int32 playerId = 2;
 }
 
-enum SkinColorSelection{
-  GREEN = 0;
-  PINK = 1;
-  PURPLE = 2;
-  BLUE = 3;
-  YELLOW = 4;
-  ORANGE = 5;
-}
-
-enum PlayerClass{
-  COMMONER = 0;
-  DRACULA_BERSERK = 1;
-  DEMON_TANK = 2;
-  BEAST_WARRIOR = 3;
-}
 
 message RespawnCommand {
   optional int32 gameId = 1;
@@ -77,17 +63,6 @@ message PushGameEventCommand {
   optional int32 teleportId = 9;
   optional WeaponType weaponType = 10;
 
-  message Vector {
-    optional float x = 1;
-    optional float y = 2;
-  }
-
-  enum WeaponType {
-    PUNCH = 0;
-    SHOTGUN = 1;
-    RAILGUN = 2;
-    MINIGUN = 3;
-  }
 
   enum GameEventType {
     MOVE = 0;

@@ -101,7 +101,7 @@ public class Game implements Closeable, GameReader {
     int playerId = playerSequenceGenerator.getNext();
     PlayerState.PlayerCoordinates spawn = spawner.spawnPlayer(this);
     PlayerState connectedPlayerState = new PlayerState(
-        playerName, spawn, playerId, color, RPGStatsFactory.create(rpgPlayerClass));
+        playerName, spawn, playerId, color, rpgPlayerClass);
     // recover game stats if we can
     Optional.ofNullable(recoveryPlayerId).flatMap(
         playerStatsRecoveryRegistry::getStats).ifPresent(

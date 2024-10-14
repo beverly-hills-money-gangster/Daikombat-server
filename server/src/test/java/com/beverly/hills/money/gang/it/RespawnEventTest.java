@@ -7,14 +7,14 @@ import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
+import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
-import com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType;
 import com.beverly.hills.money.gang.proto.RespawnCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
-import com.beverly.hills.money.gang.proto.ServerResponse.PlayerSkinColor;
-import com.beverly.hills.money.gang.proto.SkinColorSelection;
+import com.beverly.hills.money.gang.proto.Vector;
+import com.beverly.hills.money.gang.proto.WeaponType;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -38,7 +38,7 @@ public class RespawnEventTest extends AbstractGameServerTest {
         port);
     killerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.PINK)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.PINK)
             .setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName(shooterPlayerName)
             .setGameId(gameIdToConnectTo).build());
@@ -46,7 +46,7 @@ public class RespawnEventTest extends AbstractGameServerTest {
     GameConnection deadConnection = createGameConnection( "localhost", port);
     deadConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.PURPLE)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.PURPLE)
             .setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
@@ -76,12 +76,12 @@ public class RespawnEventTest extends AbstractGameServerTest {
           .setEventType(GameEventType.ATTACK)
           .setWeaponType(WeaponType.SHOTGUN)
           .setDirection(
-              PushGameEventCommand.Vector.newBuilder()
+              Vector.newBuilder()
                   .setX(shooterSpawnEvent.getPlayer().getDirection().getX())
                   .setY(shooterSpawnEvent.getPlayer().getDirection().getY())
                   .build())
           .setPosition(
-              PushGameEventCommand.Vector.newBuilder()
+              Vector.newBuilder()
                   .setX(newPositionX)
                   .setY(newPositionY)
                   .build())

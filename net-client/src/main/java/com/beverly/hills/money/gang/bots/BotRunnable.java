@@ -4,12 +4,14 @@ import com.beverly.hills.money.gang.config.ClientConfig;
 import com.beverly.hills.money.gang.entity.HostPort;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
+import com.beverly.hills.money.gang.proto.PlayerClass;
+import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.PushChatEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
-import com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
-import com.beverly.hills.money.gang.proto.SkinColorSelection;
+import com.beverly.hills.money.gang.proto.Vector;
+import com.beverly.hills.money.gang.proto.WeaponType;
 import com.beverly.hills.money.gang.queue.QueueReader;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -46,7 +48,8 @@ public class BotRunnable implements Runnable {
         gameConnection.write(JoinGameCommand.newBuilder()
             .setPlayerName(Thread.currentThread().getName())
             .setGameId(GAME_ID_TO_CONNECT)
-            .setSkin(SkinColorSelection.GREEN)
+            .setPlayerClass(PlayerClass.COMMONER)
+            .setSkin(PlayerSkinColor.GREEN)
             .setVersion(ClientConfig.VERSION).build());
         waitUntilQueueNonEmpty(gameConnection.getResponse());
         ServerResponse response = gameConnection.getResponse().poll().get();
@@ -91,10 +94,10 @@ public class BotRunnable implements Runnable {
         .setGameId(GAME_ID_TO_CONNECT)
         .setPingMls(0)
         .setSequence(sequence)
-        .setPosition(PushGameEventCommand.Vector.newBuilder()
+        .setPosition(Vector.newBuilder()
             .setX(myPosition.getX() + MOVE_DELTA * iteration)
             .setY(myPosition.getY() + MOVE_DELTA * iteration).build())
-        .setDirection(PushGameEventCommand.Vector.newBuilder()
+        .setDirection(Vector.newBuilder()
             .setX(myDirection.getX()).setY(myDirection.getY()).build())
         .build());
   }
@@ -112,10 +115,10 @@ public class BotRunnable implements Runnable {
         .setGameId(GAME_ID_TO_CONNECT)
         .setPingMls(0)
         .setSequence(sequence)
-        .setPosition(PushGameEventCommand.Vector.newBuilder()
+        .setPosition(Vector.newBuilder()
             .setX(myPosition.getX() + MOVE_DELTA * iteration)
             .setY(myPosition.getY() + MOVE_DELTA * iteration).build())
-        .setDirection(PushGameEventCommand.Vector.newBuilder()
+        .setDirection(Vector.newBuilder()
             .setX(myDirection.getX()).setY(myDirection.getY()).build())
         .build());
   }

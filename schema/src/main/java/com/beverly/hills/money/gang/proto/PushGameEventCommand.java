@@ -46,132 +46,6 @@ private static final long serialVersionUID = 0L;
   }
 
   /**
-   * Protobuf enum {@code daikombat.dto.PushGameEventCommand.WeaponType}
-   */
-  public enum WeaponType
-      implements com.google.protobuf.ProtocolMessageEnum {
-    /**
-     * <code>PUNCH = 0;</code>
-     */
-    PUNCH(0),
-    /**
-     * <code>SHOTGUN = 1;</code>
-     */
-    SHOTGUN(1),
-    /**
-     * <code>RAILGUN = 2;</code>
-     */
-    RAILGUN(2),
-    /**
-     * <code>MINIGUN = 3;</code>
-     */
-    MINIGUN(3),
-    UNRECOGNIZED(-1),
-    ;
-
-    /**
-     * <code>PUNCH = 0;</code>
-     */
-    public static final int PUNCH_VALUE = 0;
-    /**
-     * <code>SHOTGUN = 1;</code>
-     */
-    public static final int SHOTGUN_VALUE = 1;
-    /**
-     * <code>RAILGUN = 2;</code>
-     */
-    public static final int RAILGUN_VALUE = 2;
-    /**
-     * <code>MINIGUN = 3;</code>
-     */
-    public static final int MINIGUN_VALUE = 3;
-
-
-    public final int getNumber() {
-      if (this == UNRECOGNIZED) {
-        throw new java.lang.IllegalArgumentException(
-            "Can't get the number of an unknown enum value.");
-      }
-      return value;
-    }
-
-    /**
-     * @param value The numeric wire value of the corresponding enum entry.
-     * @return The enum associated with the given numeric wire value.
-     * @deprecated Use {@link #forNumber(int)} instead.
-     */
-    @java.lang.Deprecated
-    public static WeaponType valueOf(int value) {
-      return forNumber(value);
-    }
-
-    /**
-     * @param value The numeric wire value of the corresponding enum entry.
-     * @return The enum associated with the given numeric wire value.
-     */
-    public static WeaponType forNumber(int value) {
-      switch (value) {
-        case 0: return PUNCH;
-        case 1: return SHOTGUN;
-        case 2: return RAILGUN;
-        case 3: return MINIGUN;
-        default: return null;
-      }
-    }
-
-    public static com.google.protobuf.Internal.EnumLiteMap<WeaponType>
-        internalGetValueMap() {
-      return internalValueMap;
-    }
-    private static final com.google.protobuf.Internal.EnumLiteMap<
-        WeaponType> internalValueMap =
-          new com.google.protobuf.Internal.EnumLiteMap<WeaponType>() {
-            public WeaponType findValueByNumber(int number) {
-              return WeaponType.forNumber(number);
-            }
-          };
-
-    public final com.google.protobuf.Descriptors.EnumValueDescriptor
-        getValueDescriptor() {
-      if (this == UNRECOGNIZED) {
-        throw new java.lang.IllegalStateException(
-            "Can't get the descriptor of an unrecognized enum value.");
-      }
-      return getDescriptor().getValues().get(ordinal());
-    }
-    public final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptorForType() {
-      return getDescriptor();
-    }
-    public static final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptor() {
-      return com.beverly.hills.money.gang.proto.PushGameEventCommand.getDescriptor().getEnumTypes().get(0);
-    }
-
-    private static final WeaponType[] VALUES = values();
-
-    public static WeaponType valueOf(
-        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-      if (desc.getType() != getDescriptor()) {
-        throw new java.lang.IllegalArgumentException(
-          "EnumValueDescriptor is not for this type.");
-      }
-      if (desc.getIndex() == -1) {
-        return UNRECOGNIZED;
-      }
-      return VALUES[desc.getIndex()];
-    }
-
-    private final int value;
-
-    private WeaponType(int value) {
-      this.value = value;
-    }
-
-    // @@protoc_insertion_point(enum_scope:daikombat.dto.PushGameEventCommand.WeaponType)
-  }
-
-  /**
    * Protobuf enum {@code daikombat.dto.PushGameEventCommand.GameEventType}
    */
   public enum GameEventType
@@ -298,7 +172,7 @@ private static final long serialVersionUID = 0L;
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return com.beverly.hills.money.gang.proto.PushGameEventCommand.getDescriptor().getEnumTypes().get(1);
+      return com.beverly.hills.money.gang.proto.PushGameEventCommand.getDescriptor().getEnumTypes().get(0);
     }
 
     private static final GameEventType[] VALUES = values();
@@ -322,615 +196,6 @@ private static final long serialVersionUID = 0L;
     }
 
     // @@protoc_insertion_point(enum_scope:daikombat.dto.PushGameEventCommand.GameEventType)
-  }
-
-  public interface VectorOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:daikombat.dto.PushGameEventCommand.Vector)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>optional float x = 1;</code>
-     * @return Whether the x field is set.
-     */
-    boolean hasX();
-    /**
-     * <code>optional float x = 1;</code>
-     * @return The x.
-     */
-    float getX();
-
-    /**
-     * <code>optional float y = 2;</code>
-     * @return Whether the y field is set.
-     */
-    boolean hasY();
-    /**
-     * <code>optional float y = 2;</code>
-     * @return The y.
-     */
-    float getY();
-  }
-  /**
-   * Protobuf type {@code daikombat.dto.PushGameEventCommand.Vector}
-   */
-  public static final class Vector extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:daikombat.dto.PushGameEventCommand.Vector)
-      VectorOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use Vector.newBuilder() to construct.
-    private Vector(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private Vector() {
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new Vector();
-    }
-
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return com.beverly.hills.money.gang.proto.ServerCommandOuterClass.internal_static_daikombat_dto_PushGameEventCommand_Vector_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return com.beverly.hills.money.gang.proto.ServerCommandOuterClass.internal_static_daikombat_dto_PushGameEventCommand_Vector_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.class, com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.Builder.class);
-    }
-
-    private int bitField0_;
-    public static final int X_FIELD_NUMBER = 1;
-    private float x_ = 0F;
-    /**
-     * <code>optional float x = 1;</code>
-     * @return Whether the x field is set.
-     */
-    @java.lang.Override
-    public boolean hasX() {
-      return ((bitField0_ & 0x00000001) != 0);
-    }
-    /**
-     * <code>optional float x = 1;</code>
-     * @return The x.
-     */
-    @java.lang.Override
-    public float getX() {
-      return x_;
-    }
-
-    public static final int Y_FIELD_NUMBER = 2;
-    private float y_ = 0F;
-    /**
-     * <code>optional float y = 2;</code>
-     * @return Whether the y field is set.
-     */
-    @java.lang.Override
-    public boolean hasY() {
-      return ((bitField0_ & 0x00000002) != 0);
-    }
-    /**
-     * <code>optional float y = 2;</code>
-     * @return The y.
-     */
-    @java.lang.Override
-    public float getY() {
-      return y_;
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) != 0)) {
-        output.writeFloat(1, x_);
-      }
-      if (((bitField0_ & 0x00000002) != 0)) {
-        output.writeFloat(2, y_);
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (((bitField0_ & 0x00000001) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeFloatSize(1, x_);
-      }
-      if (((bitField0_ & 0x00000002) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeFloatSize(2, y_);
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector)) {
-        return super.equals(obj);
-      }
-      com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector other = (com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector) obj;
-
-      if (hasX() != other.hasX()) return false;
-      if (hasX()) {
-        if (java.lang.Float.floatToIntBits(getX())
-            != java.lang.Float.floatToIntBits(
-                other.getX())) return false;
-      }
-      if (hasY() != other.hasY()) return false;
-      if (hasY()) {
-        if (java.lang.Float.floatToIntBits(getY())
-            != java.lang.Float.floatToIntBits(
-                other.getY())) return false;
-      }
-      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      if (hasX()) {
-        hash = (37 * hash) + X_FIELD_NUMBER;
-        hash = (53 * hash) + java.lang.Float.floatToIntBits(
-            getX());
-      }
-      if (hasY()) {
-        hash = (37 * hash) + Y_FIELD_NUMBER;
-        hash = (53 * hash) + java.lang.Float.floatToIntBits(
-            getY());
-      }
-      hash = (29 * hash) + getUnknownFields().hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public static com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-
-    public static com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code daikombat.dto.PushGameEventCommand.Vector}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:daikombat.dto.PushGameEventCommand.Vector)
-        com.beverly.hills.money.gang.proto.PushGameEventCommand.VectorOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return com.beverly.hills.money.gang.proto.ServerCommandOuterClass.internal_static_daikombat_dto_PushGameEventCommand_Vector_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return com.beverly.hills.money.gang.proto.ServerCommandOuterClass.internal_static_daikombat_dto_PushGameEventCommand_Vector_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.class, com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.Builder.class);
-      }
-
-      // Construct using com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.newBuilder()
-      private Builder() {
-
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        bitField0_ = 0;
-        x_ = 0F;
-        y_ = 0F;
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return com.beverly.hills.money.gang.proto.ServerCommandOuterClass.internal_static_daikombat_dto_PushGameEventCommand_Vector_descriptor;
-      }
-
-      @java.lang.Override
-      public com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector getDefaultInstanceForType() {
-        return com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector build() {
-        com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector buildPartial() {
-        com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector result = new com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector(this);
-        if (bitField0_ != 0) { buildPartial0(result); }
-        onBuilt();
-        return result;
-      }
-
-      private void buildPartial0(com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector result) {
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.x_ = x_;
-          to_bitField0_ |= 0x00000001;
-        }
-        if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.y_ = y_;
-          to_bitField0_ |= 0x00000002;
-        }
-        result.bitField0_ |= to_bitField0_;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector) {
-          return mergeFrom((com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector other) {
-        if (other == com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.getDefaultInstance()) return this;
-        if (other.hasX()) {
-          setX(other.getX());
-        }
-        if (other.hasY()) {
-          setY(other.getY());
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        if (extensionRegistry == null) {
-          throw new java.lang.NullPointerException();
-        }
-        try {
-          boolean done = false;
-          while (!done) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                done = true;
-                break;
-              case 13: {
-                x_ = input.readFloat();
-                bitField0_ |= 0x00000001;
-                break;
-              } // case 13
-              case 21: {
-                y_ = input.readFloat();
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 21
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
-            } // switch (tag)
-          } // while (!done)
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.unwrapIOException();
-        } finally {
-          onChanged();
-        } // finally
-        return this;
-      }
-      private int bitField0_;
-
-      private float x_ ;
-      /**
-       * <code>optional float x = 1;</code>
-       * @return Whether the x field is set.
-       */
-      @java.lang.Override
-      public boolean hasX() {
-        return ((bitField0_ & 0x00000001) != 0);
-      }
-      /**
-       * <code>optional float x = 1;</code>
-       * @return The x.
-       */
-      @java.lang.Override
-      public float getX() {
-        return x_;
-      }
-      /**
-       * <code>optional float x = 1;</code>
-       * @param value The x to set.
-       * @return This builder for chaining.
-       */
-      public Builder setX(float value) {
-
-        x_ = value;
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional float x = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearX() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        x_ = 0F;
-        onChanged();
-        return this;
-      }
-
-      private float y_ ;
-      /**
-       * <code>optional float y = 2;</code>
-       * @return Whether the y field is set.
-       */
-      @java.lang.Override
-      public boolean hasY() {
-        return ((bitField0_ & 0x00000002) != 0);
-      }
-      /**
-       * <code>optional float y = 2;</code>
-       * @return The y.
-       */
-      @java.lang.Override
-      public float getY() {
-        return y_;
-      }
-      /**
-       * <code>optional float y = 2;</code>
-       * @param value The y to set.
-       * @return This builder for chaining.
-       */
-      public Builder setY(float value) {
-
-        y_ = value;
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional float y = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearY() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        y_ = 0F;
-        onChanged();
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:daikombat.dto.PushGameEventCommand.Vector)
-    }
-
-    // @@protoc_insertion_point(class_scope:daikombat.dto.PushGameEventCommand.Vector)
-    private static final com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector();
-    }
-
-    public static com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<Vector>
-        PARSER = new com.google.protobuf.AbstractParser<Vector>() {
-      @java.lang.Override
-      public Vector parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (com.google.protobuf.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new com.google.protobuf.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
-
-    public static com.google.protobuf.Parser<Vector> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<Vector> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
   }
 
   private int bitField0_;
@@ -979,9 +244,9 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int POSITION_FIELD_NUMBER = 3;
-  private com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector position_;
+  private com.beverly.hills.money.gang.proto.Vector position_;
   /**
-   * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+   * <code>optional .daikombat.dto.Vector position = 3;</code>
    * @return Whether the position field is set.
    */
   @java.lang.Override
@@ -989,25 +254,25 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000004) != 0);
   }
   /**
-   * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+   * <code>optional .daikombat.dto.Vector position = 3;</code>
    * @return The position.
    */
   @java.lang.Override
-  public com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector getPosition() {
-    return position_ == null ? com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.getDefaultInstance() : position_;
+  public com.beverly.hills.money.gang.proto.Vector getPosition() {
+    return position_ == null ? com.beverly.hills.money.gang.proto.Vector.getDefaultInstance() : position_;
   }
   /**
-   * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+   * <code>optional .daikombat.dto.Vector position = 3;</code>
    */
   @java.lang.Override
-  public com.beverly.hills.money.gang.proto.PushGameEventCommand.VectorOrBuilder getPositionOrBuilder() {
-    return position_ == null ? com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.getDefaultInstance() : position_;
+  public com.beverly.hills.money.gang.proto.VectorOrBuilder getPositionOrBuilder() {
+    return position_ == null ? com.beverly.hills.money.gang.proto.Vector.getDefaultInstance() : position_;
   }
 
   public static final int DIRECTION_FIELD_NUMBER = 4;
-  private com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector direction_;
+  private com.beverly.hills.money.gang.proto.Vector direction_;
   /**
-   * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+   * <code>optional .daikombat.dto.Vector direction = 4;</code>
    * @return Whether the direction field is set.
    */
   @java.lang.Override
@@ -1015,19 +280,19 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000008) != 0);
   }
   /**
-   * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+   * <code>optional .daikombat.dto.Vector direction = 4;</code>
    * @return The direction.
    */
   @java.lang.Override
-  public com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector getDirection() {
-    return direction_ == null ? com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.getDefaultInstance() : direction_;
+  public com.beverly.hills.money.gang.proto.Vector getDirection() {
+    return direction_ == null ? com.beverly.hills.money.gang.proto.Vector.getDefaultInstance() : direction_;
   }
   /**
-   * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+   * <code>optional .daikombat.dto.Vector direction = 4;</code>
    */
   @java.lang.Override
-  public com.beverly.hills.money.gang.proto.PushGameEventCommand.VectorOrBuilder getDirectionOrBuilder() {
-    return direction_ == null ? com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.getDefaultInstance() : direction_;
+  public com.beverly.hills.money.gang.proto.VectorOrBuilder getDirectionOrBuilder() {
+    return direction_ == null ? com.beverly.hills.money.gang.proto.Vector.getDefaultInstance() : direction_;
   }
 
   public static final int PLAYERID_FIELD_NUMBER = 5;
@@ -1128,26 +393,26 @@ private static final long serialVersionUID = 0L;
   public static final int WEAPONTYPE_FIELD_NUMBER = 10;
   private int weaponType_ = 0;
   /**
-   * <code>optional .daikombat.dto.PushGameEventCommand.WeaponType weaponType = 10;</code>
+   * <code>optional .daikombat.dto.WeaponType weaponType = 10;</code>
    * @return Whether the weaponType field is set.
    */
   @java.lang.Override public boolean hasWeaponType() {
     return ((bitField0_ & 0x00000200) != 0);
   }
   /**
-   * <code>optional .daikombat.dto.PushGameEventCommand.WeaponType weaponType = 10;</code>
+   * <code>optional .daikombat.dto.WeaponType weaponType = 10;</code>
    * @return The enum numeric value on the wire for weaponType.
    */
   @java.lang.Override public int getWeaponTypeValue() {
     return weaponType_;
   }
   /**
-   * <code>optional .daikombat.dto.PushGameEventCommand.WeaponType weaponType = 10;</code>
+   * <code>optional .daikombat.dto.WeaponType weaponType = 10;</code>
    * @return The weaponType.
    */
-  @java.lang.Override public com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType getWeaponType() {
-    com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType result = com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType.forNumber(weaponType_);
-    return result == null ? com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType.UNRECOGNIZED : result;
+  @java.lang.Override public com.beverly.hills.money.gang.proto.WeaponType getWeaponType() {
+    com.beverly.hills.money.gang.proto.WeaponType result = com.beverly.hills.money.gang.proto.WeaponType.forNumber(weaponType_);
+    return result == null ? com.beverly.hills.money.gang.proto.WeaponType.UNRECOGNIZED : result;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -1869,31 +1134,31 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector position_;
+    private com.beverly.hills.money.gang.proto.Vector position_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector, com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.Builder, com.beverly.hills.money.gang.proto.PushGameEventCommand.VectorOrBuilder> positionBuilder_;
+        com.beverly.hills.money.gang.proto.Vector, com.beverly.hills.money.gang.proto.Vector.Builder, com.beverly.hills.money.gang.proto.VectorOrBuilder> positionBuilder_;
     /**
-     * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+     * <code>optional .daikombat.dto.Vector position = 3;</code>
      * @return Whether the position field is set.
      */
     public boolean hasPosition() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+     * <code>optional .daikombat.dto.Vector position = 3;</code>
      * @return The position.
      */
-    public com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector getPosition() {
+    public com.beverly.hills.money.gang.proto.Vector getPosition() {
       if (positionBuilder_ == null) {
-        return position_ == null ? com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.getDefaultInstance() : position_;
+        return position_ == null ? com.beverly.hills.money.gang.proto.Vector.getDefaultInstance() : position_;
       } else {
         return positionBuilder_.getMessage();
       }
     }
     /**
-     * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+     * <code>optional .daikombat.dto.Vector position = 3;</code>
      */
-    public Builder setPosition(com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector value) {
+    public Builder setPosition(com.beverly.hills.money.gang.proto.Vector value) {
       if (positionBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1907,10 +1172,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+     * <code>optional .daikombat.dto.Vector position = 3;</code>
      */
     public Builder setPosition(
-        com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.Builder builderForValue) {
+        com.beverly.hills.money.gang.proto.Vector.Builder builderForValue) {
       if (positionBuilder_ == null) {
         position_ = builderForValue.build();
       } else {
@@ -1921,13 +1186,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+     * <code>optional .daikombat.dto.Vector position = 3;</code>
      */
-    public Builder mergePosition(com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector value) {
+    public Builder mergePosition(com.beverly.hills.money.gang.proto.Vector value) {
       if (positionBuilder_ == null) {
         if (((bitField0_ & 0x00000004) != 0) &&
           position_ != null &&
-          position_ != com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.getDefaultInstance()) {
+          position_ != com.beverly.hills.money.gang.proto.Vector.getDefaultInstance()) {
           getPositionBuilder().mergeFrom(value);
         } else {
           position_ = value;
@@ -1942,7 +1207,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+     * <code>optional .daikombat.dto.Vector position = 3;</code>
      */
     public Builder clearPosition() {
       bitField0_ = (bitField0_ & ~0x00000004);
@@ -1955,33 +1220,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+     * <code>optional .daikombat.dto.Vector position = 3;</code>
      */
-    public com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.Builder getPositionBuilder() {
+    public com.beverly.hills.money.gang.proto.Vector.Builder getPositionBuilder() {
       bitField0_ |= 0x00000004;
       onChanged();
       return getPositionFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+     * <code>optional .daikombat.dto.Vector position = 3;</code>
      */
-    public com.beverly.hills.money.gang.proto.PushGameEventCommand.VectorOrBuilder getPositionOrBuilder() {
+    public com.beverly.hills.money.gang.proto.VectorOrBuilder getPositionOrBuilder() {
       if (positionBuilder_ != null) {
         return positionBuilder_.getMessageOrBuilder();
       } else {
         return position_ == null ?
-            com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.getDefaultInstance() : position_;
+            com.beverly.hills.money.gang.proto.Vector.getDefaultInstance() : position_;
       }
     }
     /**
-     * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+     * <code>optional .daikombat.dto.Vector position = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector, com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.Builder, com.beverly.hills.money.gang.proto.PushGameEventCommand.VectorOrBuilder> 
+        com.beverly.hills.money.gang.proto.Vector, com.beverly.hills.money.gang.proto.Vector.Builder, com.beverly.hills.money.gang.proto.VectorOrBuilder> 
         getPositionFieldBuilder() {
       if (positionBuilder_ == null) {
         positionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector, com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.Builder, com.beverly.hills.money.gang.proto.PushGameEventCommand.VectorOrBuilder>(
+            com.beverly.hills.money.gang.proto.Vector, com.beverly.hills.money.gang.proto.Vector.Builder, com.beverly.hills.money.gang.proto.VectorOrBuilder>(
                 getPosition(),
                 getParentForChildren(),
                 isClean());
@@ -1990,31 +1255,31 @@ private static final long serialVersionUID = 0L;
       return positionBuilder_;
     }
 
-    private com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector direction_;
+    private com.beverly.hills.money.gang.proto.Vector direction_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector, com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.Builder, com.beverly.hills.money.gang.proto.PushGameEventCommand.VectorOrBuilder> directionBuilder_;
+        com.beverly.hills.money.gang.proto.Vector, com.beverly.hills.money.gang.proto.Vector.Builder, com.beverly.hills.money.gang.proto.VectorOrBuilder> directionBuilder_;
     /**
-     * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+     * <code>optional .daikombat.dto.Vector direction = 4;</code>
      * @return Whether the direction field is set.
      */
     public boolean hasDirection() {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
-     * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+     * <code>optional .daikombat.dto.Vector direction = 4;</code>
      * @return The direction.
      */
-    public com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector getDirection() {
+    public com.beverly.hills.money.gang.proto.Vector getDirection() {
       if (directionBuilder_ == null) {
-        return direction_ == null ? com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.getDefaultInstance() : direction_;
+        return direction_ == null ? com.beverly.hills.money.gang.proto.Vector.getDefaultInstance() : direction_;
       } else {
         return directionBuilder_.getMessage();
       }
     }
     /**
-     * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+     * <code>optional .daikombat.dto.Vector direction = 4;</code>
      */
-    public Builder setDirection(com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector value) {
+    public Builder setDirection(com.beverly.hills.money.gang.proto.Vector value) {
       if (directionBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2028,10 +1293,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+     * <code>optional .daikombat.dto.Vector direction = 4;</code>
      */
     public Builder setDirection(
-        com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.Builder builderForValue) {
+        com.beverly.hills.money.gang.proto.Vector.Builder builderForValue) {
       if (directionBuilder_ == null) {
         direction_ = builderForValue.build();
       } else {
@@ -2042,13 +1307,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+     * <code>optional .daikombat.dto.Vector direction = 4;</code>
      */
-    public Builder mergeDirection(com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector value) {
+    public Builder mergeDirection(com.beverly.hills.money.gang.proto.Vector value) {
       if (directionBuilder_ == null) {
         if (((bitField0_ & 0x00000008) != 0) &&
           direction_ != null &&
-          direction_ != com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.getDefaultInstance()) {
+          direction_ != com.beverly.hills.money.gang.proto.Vector.getDefaultInstance()) {
           getDirectionBuilder().mergeFrom(value);
         } else {
           direction_ = value;
@@ -2063,7 +1328,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+     * <code>optional .daikombat.dto.Vector direction = 4;</code>
      */
     public Builder clearDirection() {
       bitField0_ = (bitField0_ & ~0x00000008);
@@ -2076,33 +1341,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+     * <code>optional .daikombat.dto.Vector direction = 4;</code>
      */
-    public com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.Builder getDirectionBuilder() {
+    public com.beverly.hills.money.gang.proto.Vector.Builder getDirectionBuilder() {
       bitField0_ |= 0x00000008;
       onChanged();
       return getDirectionFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+     * <code>optional .daikombat.dto.Vector direction = 4;</code>
      */
-    public com.beverly.hills.money.gang.proto.PushGameEventCommand.VectorOrBuilder getDirectionOrBuilder() {
+    public com.beverly.hills.money.gang.proto.VectorOrBuilder getDirectionOrBuilder() {
       if (directionBuilder_ != null) {
         return directionBuilder_.getMessageOrBuilder();
       } else {
         return direction_ == null ?
-            com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.getDefaultInstance() : direction_;
+            com.beverly.hills.money.gang.proto.Vector.getDefaultInstance() : direction_;
       }
     }
     /**
-     * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+     * <code>optional .daikombat.dto.Vector direction = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector, com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.Builder, com.beverly.hills.money.gang.proto.PushGameEventCommand.VectorOrBuilder> 
+        com.beverly.hills.money.gang.proto.Vector, com.beverly.hills.money.gang.proto.Vector.Builder, com.beverly.hills.money.gang.proto.VectorOrBuilder> 
         getDirectionFieldBuilder() {
       if (directionBuilder_ == null) {
         directionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector, com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector.Builder, com.beverly.hills.money.gang.proto.PushGameEventCommand.VectorOrBuilder>(
+            com.beverly.hills.money.gang.proto.Vector, com.beverly.hills.money.gang.proto.Vector.Builder, com.beverly.hills.money.gang.proto.VectorOrBuilder>(
                 getDirection(),
                 getParentForChildren(),
                 isClean());
@@ -2313,21 +1578,21 @@ private static final long serialVersionUID = 0L;
 
     private int weaponType_ = 0;
     /**
-     * <code>optional .daikombat.dto.PushGameEventCommand.WeaponType weaponType = 10;</code>
+     * <code>optional .daikombat.dto.WeaponType weaponType = 10;</code>
      * @return Whether the weaponType field is set.
      */
     @java.lang.Override public boolean hasWeaponType() {
       return ((bitField0_ & 0x00000200) != 0);
     }
     /**
-     * <code>optional .daikombat.dto.PushGameEventCommand.WeaponType weaponType = 10;</code>
+     * <code>optional .daikombat.dto.WeaponType weaponType = 10;</code>
      * @return The enum numeric value on the wire for weaponType.
      */
     @java.lang.Override public int getWeaponTypeValue() {
       return weaponType_;
     }
     /**
-     * <code>optional .daikombat.dto.PushGameEventCommand.WeaponType weaponType = 10;</code>
+     * <code>optional .daikombat.dto.WeaponType weaponType = 10;</code>
      * @param value The enum numeric value on the wire for weaponType to set.
      * @return This builder for chaining.
      */
@@ -2338,20 +1603,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .daikombat.dto.PushGameEventCommand.WeaponType weaponType = 10;</code>
+     * <code>optional .daikombat.dto.WeaponType weaponType = 10;</code>
      * @return The weaponType.
      */
     @java.lang.Override
-    public com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType getWeaponType() {
-      com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType result = com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType.forNumber(weaponType_);
-      return result == null ? com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType.UNRECOGNIZED : result;
+    public com.beverly.hills.money.gang.proto.WeaponType getWeaponType() {
+      com.beverly.hills.money.gang.proto.WeaponType result = com.beverly.hills.money.gang.proto.WeaponType.forNumber(weaponType_);
+      return result == null ? com.beverly.hills.money.gang.proto.WeaponType.UNRECOGNIZED : result;
     }
     /**
-     * <code>optional .daikombat.dto.PushGameEventCommand.WeaponType weaponType = 10;</code>
+     * <code>optional .daikombat.dto.WeaponType weaponType = 10;</code>
      * @param value The weaponType to set.
      * @return This builder for chaining.
      */
-    public Builder setWeaponType(com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType value) {
+    public Builder setWeaponType(com.beverly.hills.money.gang.proto.WeaponType value) {
       if (value == null) {
         throw new NullPointerException();
       }
@@ -2361,7 +1626,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .daikombat.dto.PushGameEventCommand.WeaponType weaponType = 10;</code>
+     * <code>optional .daikombat.dto.WeaponType weaponType = 10;</code>
      * @return This builder for chaining.
      */
     public Builder clearWeaponType() {

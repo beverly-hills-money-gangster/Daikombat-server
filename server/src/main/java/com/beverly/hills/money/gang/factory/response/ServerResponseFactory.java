@@ -3,19 +3,21 @@ package com.beverly.hills.money.gang.factory.response;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
+import com.beverly.hills.money.gang.proto.PlayerClass;
+import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType;
-import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.WeaponType;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStats;
 import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUp;
 import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType;
 import com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats;
-import com.beverly.hills.money.gang.proto.ServerResponse.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent;
 import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem;
 import com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent;
 import com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem;
 import com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo;
+import com.beverly.hills.money.gang.proto.Vector;
+import com.beverly.hills.money.gang.proto.WeaponType;
 import com.beverly.hills.money.gang.state.AttackType;
 import com.beverly.hills.money.gang.state.GameReader;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
@@ -25,7 +27,7 @@ import com.beverly.hills.money.gang.state.entity.PlayerJoinedGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerRespawnedGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
 import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
-import com.beverly.hills.money.gang.state.entity.Vector;
+import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
 import com.beverly.hills.money.gang.teleport.Teleport;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,8 +35,9 @@ import java.util.stream.Stream;
 
 public interface ServerResponseFactory {
 
-  static ServerResponse.Vector createVector(Vector vector) {
-    return ServerResponse.Vector.newBuilder()
+  static com.beverly.hills.money.gang.proto.Vector createVector(
+      com.beverly.hills.money.gang.state.entity.Vector vector) {
+    return Vector.newBuilder()
         .setX(vector.getX())
         .setY(vector.getY()).build();
   }
@@ -232,6 +235,7 @@ public interface ServerResponseFactory {
                 .setType(createGamePowerUpType(powerUpInEffect.getPowerUp().getType()))
                 .build()).collect(Collectors.toList()))
         .setHealth(playerReader.getHealth())
+        .setPlayerClass(createPlayerClass(playerReader.getRpgPlayerClass()))
         .setPlayerId(playerReader.getPlayerId())
         .setGameMatchStats(PlayerGameMatchStats.newBuilder()
             .setDeaths(playerReader.getGameStats().getDeaths())
@@ -247,6 +251,16 @@ public interface ServerResponseFactory {
       case PURPLE -> PlayerSkinColor.PURPLE;
       case YELLOW -> PlayerSkinColor.YELLOW;
       case ORANGE -> PlayerSkinColor.ORANGE;
+    };
+  }
+
+  static PlayerClass createPlayerClass(RPGPlayerClass rpgPlayerClass) {
+    return switch (rpgPlayerClass) {
+      case COMMONER -> PlayerClass.COMMONER;
+      case BERSERK -> PlayerClass.DRACULA_BERSERK;
+      case TANK -> PlayerClass.DEMON_TANK;
+      case WARRIOR -> PlayerClass.BEAST_WARRIOR;
+
     };
   }
 

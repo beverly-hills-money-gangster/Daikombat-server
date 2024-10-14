@@ -11,6 +11,7 @@ import com.beverly.hills.money.gang.state.PlayerGameStatsReader;
 import com.beverly.hills.money.gang.state.PlayerRPGStatType;
 import com.beverly.hills.money.gang.state.PlayerRPGStats;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
+import com.beverly.hills.money.gang.state.RPGStatsFactory;
 import com.google.common.util.concurrent.AtomicDouble;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,13 +58,16 @@ public class PlayerState implements PlayerStateReader {
 
   @Getter
   private final String playerName;
+  @Getter
+  private final RPGPlayerClass rpgPlayerClass;
   private final AtomicReference<PlayerCoordinates> playerCoordinatesRef;
 
   public PlayerState(
       String name, PlayerCoordinates coordinates, int id, PlayerStateColor color,
-      PlayerRPGStats playerRPGStats) {
+      RPGPlayerClass rpgPlayerClass) {
     this.playerName = name;
-    this.rpgStats = playerRPGStats;
+    this.rpgPlayerClass = rpgPlayerClass;
+    this.rpgStats = RPGStatsFactory.create(rpgPlayerClass);
     this.color = color;
     this.playerCoordinatesRef = new AtomicReference<>(coordinates);
     this.playerId = id;

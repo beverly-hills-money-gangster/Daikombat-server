@@ -10,7 +10,8 @@ import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
-import com.beverly.hills.money.gang.proto.SkinColorSelection;
+import com.beverly.hills.money.gang.proto.PlayerSkinColor;
+import com.beverly.hills.money.gang.proto.Vector;
 import java.io.IOException;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,7 @@ public class IdleServerTest extends AbstractGameServerTest {
     gameConnection.shutdownPingScheduler(); // shutting down to mimic server inactivity
     gameConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN).setPlayerClass(
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(
                 PlayerClass.COMMONER)
             .setPlayerName("my player name")
             .setGameId(gameToConnectTo).build());
@@ -65,8 +66,8 @@ public class IdleServerTest extends AbstractGameServerTest {
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
           .setGameId(gameToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
-          .setDirection(PushGameEventCommand.Vector.newBuilder().setX(0).setY(1).build())
-          .setPosition(PushGameEventCommand.Vector.newBuilder()
+          .setDirection(Vector.newBuilder().setX(0).setY(1).build())
+          .setPosition(Vector.newBuilder()
               .setX(newPositionX).setY(newPositionY).build())
           .build());
       Thread.sleep(200);

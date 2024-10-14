@@ -36,34 +36,34 @@ public interface PushGameEventCommandOrBuilder extends
   com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType getEventType();
 
   /**
-   * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+   * <code>optional .daikombat.dto.Vector position = 3;</code>
    * @return Whether the position field is set.
    */
   boolean hasPosition();
   /**
-   * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+   * <code>optional .daikombat.dto.Vector position = 3;</code>
    * @return The position.
    */
-  com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector getPosition();
+  com.beverly.hills.money.gang.proto.Vector getPosition();
   /**
-   * <code>optional .daikombat.dto.PushGameEventCommand.Vector position = 3;</code>
+   * <code>optional .daikombat.dto.Vector position = 3;</code>
    */
-  com.beverly.hills.money.gang.proto.PushGameEventCommand.VectorOrBuilder getPositionOrBuilder();
+  com.beverly.hills.money.gang.proto.VectorOrBuilder getPositionOrBuilder();
 
   /**
-   * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+   * <code>optional .daikombat.dto.Vector direction = 4;</code>
    * @return Whether the direction field is set.
    */
   boolean hasDirection();
   /**
-   * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+   * <code>optional .daikombat.dto.Vector direction = 4;</code>
    * @return The direction.
    */
-  com.beverly.hills.money.gang.proto.PushGameEventCommand.Vector getDirection();
+  com.beverly.hills.money.gang.proto.Vector getDirection();
   /**
-   * <code>optional .daikombat.dto.PushGameEventCommand.Vector direction = 4;</code>
+   * <code>optional .daikombat.dto.Vector direction = 4;</code>
    */
-  com.beverly.hills.money.gang.proto.PushGameEventCommand.VectorOrBuilder getDirectionOrBuilder();
+  com.beverly.hills.money.gang.proto.VectorOrBuilder getDirectionOrBuilder();
 
   /**
    * <code>optional int32 playerId = 5;</code>
@@ -121,18 +121,18 @@ public interface PushGameEventCommandOrBuilder extends
   int getTeleportId();
 
   /**
-   * <code>optional .daikombat.dto.PushGameEventCommand.WeaponType weaponType = 10;</code>
+   * <code>optional .daikombat.dto.WeaponType weaponType = 10;</code>
    * @return Whether the weaponType field is set.
    */
   boolean hasWeaponType();
   /**
-   * <code>optional .daikombat.dto.PushGameEventCommand.WeaponType weaponType = 10;</code>
+   * <code>optional .daikombat.dto.WeaponType weaponType = 10;</code>
    * @return The enum numeric value on the wire for weaponType.
    */
   int getWeaponTypeValue();
   /**
-   * <code>optional .daikombat.dto.PushGameEventCommand.WeaponType weaponType = 10;</code>
+   * <code>optional .daikombat.dto.WeaponType weaponType = 10;</code>
    * @return The weaponType.
    */
-  com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType getWeaponType();
+  com.beverly.hills.money.gang.proto.WeaponType getWeaponType();
 }

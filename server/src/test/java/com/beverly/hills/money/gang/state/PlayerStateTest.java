@@ -6,6 +6,7 @@ import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
 import com.beverly.hills.money.gang.state.entity.PlayerState.PlayerCoordinates;
 import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
+import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
 import com.beverly.hills.money.gang.state.entity.Vector;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class PlayerStateTest {
     PlayerState playerState = new PlayerState(
         "test player",
         PlayerState.PlayerCoordinates.builder().build(), 123, PlayerStateColor.GREEN,
-        PlayerRPGStats.defaultStats());
+        RPGPlayerClass.COMMONER);
 
     playerState.registerKill();
 
@@ -45,7 +46,7 @@ public class PlayerStateTest {
     PlayerState playerState = new PlayerState(
         "test player",
         PlayerState.PlayerCoordinates.builder().build(), 123, PlayerStateColor.GREEN,
-        PlayerRPGStats.defaultStats());
+        RPGPlayerClass.COMMONER);
     playerState.getAttacked(AttackType.SHOTGUN, 1);
     playerState.getAttacked(AttackType.SHOTGUN, 1);
 
@@ -64,7 +65,7 @@ public class PlayerStateTest {
     PlayerState playerState = new PlayerState(
         "test player",
         PlayerState.PlayerCoordinates.builder().build(), 123, PlayerStateColor.GREEN,
-        PlayerRPGStats.defaultStats());
+        RPGPlayerClass.COMMONER);
 
     playerState.getAttacked(AttackType.SHOTGUN, 1);
     playerState.getAttacked(AttackType.SHOTGUN, 1);
@@ -115,7 +116,7 @@ public class PlayerStateTest {
         .build();
     PlayerState playerState = new PlayerState(
         "test player", playerOldCoordinates, 123, PlayerStateColor.GREEN,
-        PlayerRPGStats.defaultStats());
+        RPGPlayerClass.COMMONER);
     playerState.move(playerNewCoordinates, 0);
 
     assertEquals(playerNewCoordinates, playerState.getCoordinates());
@@ -139,7 +140,7 @@ public class PlayerStateTest {
         .build();
     PlayerState playerState = new PlayerState(
         "test player", playerOldCoordinates, 123, PlayerStateColor.GREEN,
-        PlayerRPGStats.defaultStats());
+        RPGPlayerClass.COMMONER);
 
     playerState.move(playerNewCoordinates, 0);
     playerState.move(playerNewCoordinates, 1);
@@ -169,7 +170,7 @@ public class PlayerStateTest {
         .build();
     PlayerState playerState = new PlayerState(
         "test player", playerOldCoordinates, 123, PlayerStateColor.GREEN,
-        PlayerRPGStats.defaultStats());
+        RPGPlayerClass.COMMONER);
 
     playerState.move(playerNewCoordinates1, 2);
     playerState.move(playerNewCoordinates2, 1);

@@ -54,20 +54,20 @@ public interface JoinGameCommandOrBuilder extends
       getPlayerNameBytes();
 
   /**
-   * <code>optional .daikombat.dto.SkinColorSelection skin = 4;</code>
+   * <code>optional .daikombat.dto.PlayerSkinColor skin = 4;</code>
    * @return Whether the skin field is set.
    */
   boolean hasSkin();
   /**
-   * <code>optional .daikombat.dto.SkinColorSelection skin = 4;</code>
+   * <code>optional .daikombat.dto.PlayerSkinColor skin = 4;</code>
    * @return The enum numeric value on the wire for skin.
    */
   int getSkinValue();
   /**
-   * <code>optional .daikombat.dto.SkinColorSelection skin = 4;</code>
+   * <code>optional .daikombat.dto.PlayerSkinColor skin = 4;</code>
    * @return The skin.
    */
-  com.beverly.hills.money.gang.proto.SkinColorSelection getSkin();
+  com.beverly.hills.money.gang.proto.PlayerSkinColor getSkin();
 
   /**
    * <code>optional int32 recoveryPlayerId = 5;</code>

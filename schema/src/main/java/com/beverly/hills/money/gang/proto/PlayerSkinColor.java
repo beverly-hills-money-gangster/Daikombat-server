@@ -5,45 +5,61 @@
 package com.beverly.hills.money.gang.proto;
 
 /**
- * Protobuf enum {@code daikombat.dto.PlayerClass}
+ * Protobuf enum {@code daikombat.dto.PlayerSkinColor}
  */
-public enum PlayerClass
+public enum PlayerSkinColor
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
-   * <code>COMMONER = 0;</code>
+   * <code>GREEN = 0;</code>
    */
-  COMMONER(0),
+  GREEN(0),
   /**
-   * <code>DRACULA_BERSERK = 1;</code>
+   * <code>PINK = 1;</code>
    */
-  DRACULA_BERSERK(1),
+  PINK(1),
   /**
-   * <code>DEMON_TANK = 2;</code>
+   * <code>PURPLE = 2;</code>
    */
-  DEMON_TANK(2),
+  PURPLE(2),
   /**
-   * <code>BEAST_WARRIOR = 3;</code>
+   * <code>BLUE = 3;</code>
    */
-  BEAST_WARRIOR(3),
+  BLUE(3),
+  /**
+   * <code>YELLOW = 4;</code>
+   */
+  YELLOW(4),
+  /**
+   * <code>ORANGE = 5;</code>
+   */
+  ORANGE(5),
   UNRECOGNIZED(-1),
   ;
 
   /**
-   * <code>COMMONER = 0;</code>
+   * <code>GREEN = 0;</code>
    */
-  public static final int COMMONER_VALUE = 0;
+  public static final int GREEN_VALUE = 0;
   /**
-   * <code>DRACULA_BERSERK = 1;</code>
+   * <code>PINK = 1;</code>
    */
-  public static final int DRACULA_BERSERK_VALUE = 1;
+  public static final int PINK_VALUE = 1;
   /**
-   * <code>DEMON_TANK = 2;</code>
+   * <code>PURPLE = 2;</code>
    */
-  public static final int DEMON_TANK_VALUE = 2;
+  public static final int PURPLE_VALUE = 2;
   /**
-   * <code>BEAST_WARRIOR = 3;</code>
+   * <code>BLUE = 3;</code>
    */
-  public static final int BEAST_WARRIOR_VALUE = 3;
+  public static final int BLUE_VALUE = 3;
+  /**
+   * <code>YELLOW = 4;</code>
+   */
+  public static final int YELLOW_VALUE = 4;
+  /**
+   * <code>ORANGE = 5;</code>
+   */
+  public static final int ORANGE_VALUE = 5;
 
 
   public final int getNumber() {
@@ -60,7 +76,7 @@ public enum PlayerClass
    * @deprecated Use {@link #forNumber(int)} instead.
    */
   @java.lang.Deprecated
-  public static PlayerClass valueOf(int value) {
+  public static PlayerSkinColor valueOf(int value) {
     return forNumber(value);
   }
 
@@ -68,25 +84,27 @@ public enum PlayerClass
    * @param value The numeric wire value of the corresponding enum entry.
    * @return The enum associated with the given numeric wire value.
    */
-  public static PlayerClass forNumber(int value) {
+  public static PlayerSkinColor forNumber(int value) {
     switch (value) {
-      case 0: return COMMONER;
-      case 1: return DRACULA_BERSERK;
-      case 2: return DEMON_TANK;
-      case 3: return BEAST_WARRIOR;
+      case 0: return GREEN;
+      case 1: return PINK;
+      case 2: return PURPLE;
+      case 3: return BLUE;
+      case 4: return YELLOW;
+      case 5: return ORANGE;
       default: return null;
     }
   }
 
-  public static com.google.protobuf.Internal.EnumLiteMap<PlayerClass>
+  public static com.google.protobuf.Internal.EnumLiteMap<PlayerSkinColor>
       internalGetValueMap() {
     return internalValueMap;
   }
   private static final com.google.protobuf.Internal.EnumLiteMap<
-      PlayerClass> internalValueMap =
-        new com.google.protobuf.Internal.EnumLiteMap<PlayerClass>() {
-          public PlayerClass findValueByNumber(int number) {
-            return PlayerClass.forNumber(number);
+      PlayerSkinColor> internalValueMap =
+        new com.google.protobuf.Internal.EnumLiteMap<PlayerSkinColor>() {
+          public PlayerSkinColor findValueByNumber(int number) {
+            return PlayerSkinColor.forNumber(number);
           }
         };
 
@@ -104,12 +122,12 @@ public enum PlayerClass
   }
   public static final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return com.beverly.hills.money.gang.proto.ServerCommon.getDescriptor().getEnumTypes().get(2);
+    return com.beverly.hills.money.gang.proto.ServerCommon.getDescriptor().getEnumTypes().get(1);
   }
 
-  private static final PlayerClass[] VALUES = values();
+  private static final PlayerSkinColor[] VALUES = values();
 
-  public static PlayerClass valueOf(
+  public static PlayerSkinColor valueOf(
       com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
     if (desc.getType() != getDescriptor()) {
       throw new java.lang.IllegalArgumentException(
@@ -123,10 +141,10 @@ public enum PlayerClass
 
   private final int value;
 
-  private PlayerClass(int value) {
+  private PlayerSkinColor(int value) {
     this.value = value;
   }
 
-  // @@protoc_insertion_point(enum_scope:daikombat.dto.PlayerClass)
+  // @@protoc_insertion_point(enum_scope:daikombat.dto.PlayerSkinColor)
 }
 

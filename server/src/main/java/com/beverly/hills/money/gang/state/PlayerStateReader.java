@@ -3,6 +3,7 @@ package com.beverly.hills.money.gang.state;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
 import com.beverly.hills.money.gang.state.entity.PlayerState.PowerUpInEffect;
 import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
+import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
 import java.util.List;
 
 public interface PlayerStateReader {
@@ -32,5 +33,7 @@ public interface PlayerStateReader {
   boolean hasMoved();
 
   PlayerGameStatsReader getGameStats();
+
+  RPGPlayerClass getRpgPlayerClass();
 
 }

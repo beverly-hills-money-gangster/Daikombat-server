@@ -10,10 +10,10 @@ import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.proto.PlayerClass;
+import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.proto.ServerCommand.CommandCase;
 import com.beverly.hills.money.gang.proto.ServerResponse;
-import com.beverly.hills.money.gang.proto.SkinColorSelection;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerStateChannel;
@@ -81,7 +81,7 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
         });
   }
 
-  private PlayerStateColor getSkinColor(SkinColorSelection skinColorSelection) {
+  private PlayerStateColor getSkinColor(PlayerSkinColor skinColorSelection) {
     return switch (skinColorSelection) {
       case BLUE -> PlayerStateColor.BLUE;
       case GREEN -> PlayerStateColor.GREEN;

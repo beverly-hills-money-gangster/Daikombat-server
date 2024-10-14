@@ -7,10 +7,11 @@ import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
-import com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType;
+import com.beverly.hills.money.gang.proto.Vector;
+import com.beverly.hills.money.gang.proto.WeaponType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType;
-import com.beverly.hills.money.gang.proto.SkinColorSelection;
+import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -39,7 +40,7 @@ public class GameOverTest extends AbstractGameServerTest {
          "localhost", port);
     killerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN).setPlayerClass(
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(
                 PlayerClass.COMMONER)
             .setPlayerName(shooterPlayerName)
             .setGameId(gameIdToConnectTo).build());
@@ -53,7 +54,7 @@ public class GameOverTest extends AbstractGameServerTest {
           port);
       deadConnection.write(
           JoinGameCommand.newBuilder()
-              .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN).setPlayerClass(PlayerClass.COMMONER)
+              .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.COMMONER)
               .setPlayerName("my other player name " + i)
               .setGameId(gameIdToConnectTo).build());
       waitUntilQueueNonEmpty(killerConnection.getResponse());
@@ -77,12 +78,12 @@ public class GameOverTest extends AbstractGameServerTest {
           .setEventType(PushGameEventCommand.GameEventType.ATTACK)
           .setWeaponType(WeaponType.SHOTGUN)
           .setDirection(
-              PushGameEventCommand.Vector.newBuilder()
+              Vector.newBuilder()
                   .setX(shooterSpawnEvent.getPlayer().getDirection().getX())
                   .setY(shooterSpawnEvent.getPlayer().getDirection().getY())
                   .build())
           .setPosition(
-              PushGameEventCommand.Vector.newBuilder()
+              Vector.newBuilder()
                   .setX(newPositionX)
                   .setY(newPositionY)
                   .build())

@@ -12,7 +12,7 @@ import com.beverly.hills.money.gang.proto.MergeConnectionCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
-import com.beverly.hills.money.gang.proto.SkinColorSelection;
+import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ public class MergeConnectionTest extends AbstractGameServerTest {
     GameConnection gameConnection = createGameConnection( "localhost", port);
     gameConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN).setPlayerClass(
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(
                 PlayerClass.COMMONER)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());

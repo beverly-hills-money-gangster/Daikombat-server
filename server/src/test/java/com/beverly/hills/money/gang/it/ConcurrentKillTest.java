@@ -9,9 +9,10 @@ import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
-import com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType;
+import com.beverly.hills.money.gang.proto.Vector;
+import com.beverly.hills.money.gang.proto.WeaponType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
-import com.beverly.hills.money.gang.proto.SkinColorSelection;
+import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public class ConcurrentKillTest extends AbstractGameServerTest {
               port);
           gameConnection.write(
               JoinGameCommand.newBuilder()
-                  .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+                  .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
                   .setPlayerClass(PlayerClass.COMMONER)
                   .setPlayerName("my player name " + finalJ)
                   .setGameId(0).build());
@@ -99,12 +100,12 @@ public class ConcurrentKillTest extends AbstractGameServerTest {
               .setEventType(GameEventType.ATTACK)
               .setWeaponType(WeaponType.SHOTGUN)
               .setDirection(
-                  PushGameEventCommand.Vector.newBuilder()
+                  Vector.newBuilder()
                       .setX(mySpawn.getPlayer().getDirection().getX())
                       .setY(mySpawn.getPlayer().getDirection().getY())
                       .build())
               .setPosition(
-                  PushGameEventCommand.Vector.newBuilder()
+                  Vector.newBuilder()
                       .setX(newPositionX)
                       .setY(newPositionY)
                       .build())

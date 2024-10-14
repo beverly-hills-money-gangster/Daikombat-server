@@ -12,9 +12,10 @@ import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
-import com.beverly.hills.money.gang.proto.PushGameEventCommand.WeaponType;
+import com.beverly.hills.money.gang.proto.Vector;
+import com.beverly.hills.money.gang.proto.WeaponType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
-import com.beverly.hills.money.gang.proto.SkinColorSelection;
+import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import java.io.IOException;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -42,13 +43,13 @@ public class IdleClientTest extends AbstractGameServerTest {
     gameConnectionIdle.write(
         JoinGameCommand.newBuilder()
             .setVersion(ClientConfig.VERSION)
-            .setSkin(SkinColorSelection.GREEN).setPlayerClass(PlayerClass.COMMONER)
+            .setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName("my player name")
             .setGameId(gameToConnectTo).build());
     gameConnectionObserver.write(
         JoinGameCommand.newBuilder()
             .setVersion(ClientConfig.VERSION)
-            .setSkin(SkinColorSelection.GREEN).setPlayerClass(PlayerClass.COMMONER)
+            .setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName("my player name observer")
             .setGameId(gameToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnectionIdle.getResponse());
@@ -90,8 +91,8 @@ public class IdleClientTest extends AbstractGameServerTest {
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
           .setGameId(gameToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
-          .setDirection(PushGameEventCommand.Vector.newBuilder().setX(0).setY(1).build())
-          .setPosition(PushGameEventCommand.Vector.newBuilder()
+          .setDirection(Vector.newBuilder().setX(0).setY(1).build())
+          .setPosition(Vector.newBuilder()
               .setX(newPositionX).setY(newPositionY).build())
           .build());
       Thread.sleep(200);
@@ -155,7 +156,7 @@ public class IdleClientTest extends AbstractGameServerTest {
         port);
     puncherConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
             .setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName(puncherPlayerName)
             .setGameId(gameIdToConnectTo).build());
@@ -163,7 +164,7 @@ public class IdleClientTest extends AbstractGameServerTest {
     GameConnection deadConnection = createGameConnection("localhost", port);
     deadConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
             .setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
@@ -190,12 +191,12 @@ public class IdleClientTest extends AbstractGameServerTest {
           .setEventType(GameEventType.ATTACK)
           .setWeaponType(WeaponType.PUNCH)
           .setDirection(
-              PushGameEventCommand.Vector.newBuilder()
+              Vector.newBuilder()
                   .setX(puncherSpawnEvent.getPlayer().getDirection().getX())
                   .setY(puncherSpawnEvent.getPlayer().getDirection().getY())
                   .build())
           .setPosition(
-              PushGameEventCommand.Vector.newBuilder()
+              Vector.newBuilder()
                   .setX(newPositionX)
                   .setY(newPositionY)
                   .build())
@@ -211,12 +212,12 @@ public class IdleClientTest extends AbstractGameServerTest {
         .setEventType(GameEventType.ATTACK)
         .setWeaponType(WeaponType.PUNCH)
         .setDirection(
-            PushGameEventCommand.Vector.newBuilder()
+            Vector.newBuilder()
                 .setX(puncherSpawnEvent.getPlayer().getDirection().getX())
                 .setY(puncherSpawnEvent.getPlayer().getDirection().getY())
                 .build())
         .setPosition(
-            PushGameEventCommand.Vector.newBuilder()
+            Vector.newBuilder()
                 .setX(newPositionX)
                 .setY(newPositionY)
                 .build())
@@ -237,8 +238,8 @@ public class IdleClientTest extends AbstractGameServerTest {
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
           .setGameId(gameIdToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
-          .setDirection(PushGameEventCommand.Vector.newBuilder().setX(0).setY(1).build())
-          .setPosition(PushGameEventCommand.Vector.newBuilder()
+          .setDirection(Vector.newBuilder().setX(0).setY(1).build())
+          .setPosition(Vector.newBuilder()
               .setX(newPositionX).setY(newPositionY).build())
           .build());
       Thread.sleep(200);
@@ -265,7 +266,7 @@ public class IdleClientTest extends AbstractGameServerTest {
     GameConnection gameConnection = createGameConnection("localhost", port);
     gameConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ClientConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+            .setVersion(ClientConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
             .setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName("my player name")
             .setGameId(gameToConnectTo).build());
@@ -296,8 +297,8 @@ public class IdleClientTest extends AbstractGameServerTest {
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
           .setGameId(gameToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
-          .setDirection(PushGameEventCommand.Vector.newBuilder().setX(0).setY(1).build())
-          .setPosition(PushGameEventCommand.Vector.newBuilder()
+          .setDirection(Vector.newBuilder().setX(0).setY(1).build())
+          .setPosition(Vector.newBuilder()
               .setX(newPositionX).setY(newPositionY).build())
           .build());
       Thread.sleep(200);
@@ -331,7 +332,7 @@ public class IdleClientTest extends AbstractGameServerTest {
     GameConnection gameConnection = createGameConnection("localhost", port);
     gameConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ClientConfig.VERSION).setSkin(SkinColorSelection.GREEN)
+            .setVersion(ClientConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
             .setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName("my player name")
             .setGameId(gameToConnectTo).build());
@@ -349,8 +350,8 @@ public class IdleClientTest extends AbstractGameServerTest {
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
           .setGameId(gameToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
-          .setDirection(PushGameEventCommand.Vector.newBuilder().setX(0).setY(1).build())
-          .setPosition(PushGameEventCommand.Vector.newBuilder().setX(i).setY(i).build())
+          .setDirection(Vector.newBuilder().setX(0).setY(1).build())
+          .setPosition(Vector.newBuilder().setX(i).setY(i).build())
           .build());
       Thread.sleep(200);
     }

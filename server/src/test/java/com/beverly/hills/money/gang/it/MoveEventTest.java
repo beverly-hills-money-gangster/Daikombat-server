@@ -10,7 +10,8 @@ import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
-import com.beverly.hills.money.gang.proto.SkinColorSelection;
+import com.beverly.hills.money.gang.proto.PlayerSkinColor;
+import com.beverly.hills.money.gang.proto.Vector;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,7 +38,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         port);
     movingPlayerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN).setPlayerClass(PlayerClass.COMMONER)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(movingPlayerConnection.getResponse());
@@ -49,7 +50,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         "localhost", port);
     observerPlayerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN).setPlayerClass(PlayerClass.COMMONER)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName("new player")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerPlayerConnection.getResponse());
@@ -67,11 +68,11 @@ public class MoveEventTest extends AbstractGameServerTest {
         .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
         .setEventType(PushGameEventCommand.GameEventType.MOVE)
         .setPlayerId(playerId1)
-        .setPosition(PushGameEventCommand.Vector.newBuilder()
+        .setPosition(Vector.newBuilder()
             .setY(newPositionY)
             .setX(newPositionX)
             .build())
-        .setDirection(PushGameEventCommand.Vector.newBuilder()
+        .setDirection(Vector.newBuilder()
             .setY(mySpawnGameEvent.getPlayer().getDirection().getY())
             .setX(mySpawnGameEvent.getPlayer().getDirection().getX())
             .build())
@@ -124,7 +125,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         port);
     movingPlayerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN).setPlayerClass(PlayerClass.COMMONER)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(movingPlayerConnection.getResponse());
@@ -136,7 +137,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         "localhost", port);
     observerPlayerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN).setPlayerClass(PlayerClass.COMMONER)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName("new player")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerPlayerConnection.getResponse());
@@ -156,11 +157,11 @@ public class MoveEventTest extends AbstractGameServerTest {
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
           .setPlayerId(playerId1)
-          .setPosition(PushGameEventCommand.Vector.newBuilder()
+          .setPosition(Vector.newBuilder()
               .setY(newPositionY)
               .setX(newPositionX)
               .build())
-          .setDirection(PushGameEventCommand.Vector.newBuilder()
+          .setDirection(Vector.newBuilder()
               .setY(mySpawnGameEvent.getPlayer().getDirection().getY())
               .setX(mySpawnGameEvent.getPlayer().getDirection().getX())
               .build())
@@ -194,7 +195,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         port);
     movingPlayerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN).setPlayerClass(PlayerClass.COMMONER)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(movingPlayerConnection.getResponse());
@@ -206,7 +207,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         "localhost", port);
     observerPlayerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN).setPlayerClass(PlayerClass.COMMONER)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName("new player")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerPlayerConnection.getResponse());
@@ -227,11 +228,11 @@ public class MoveEventTest extends AbstractGameServerTest {
           .setPingMls(PING_MLS)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
           .setPlayerId(playerId1)
-          .setPosition(PushGameEventCommand.Vector.newBuilder()
+          .setPosition(Vector.newBuilder()
               .setY(newPositionY)
               .setX(newPositionX)
               .build())
-          .setDirection(PushGameEventCommand.Vector.newBuilder()
+          .setDirection(Vector.newBuilder()
               .setY(mySpawnGameEvent.getPlayer().getDirection().getY())
               .setX(mySpawnGameEvent.getPlayer().getDirection().getX())
               .build())
@@ -245,11 +246,11 @@ public class MoveEventTest extends AbstractGameServerTest {
         .setPingMls(PING_MLS)
         .setEventType(PushGameEventCommand.GameEventType.MOVE)
         .setPlayerId(playerId1)
-        .setPosition(PushGameEventCommand.Vector.newBuilder()
+        .setPosition(Vector.newBuilder()
             .setY(newPositionY)
             .setX(newPositionX)
             .build())
-        .setDirection(PushGameEventCommand.Vector.newBuilder()
+        .setDirection(Vector.newBuilder()
             .setY(mySpawnGameEvent.getPlayer().getDirection().getY())
             .setX(mySpawnGameEvent.getPlayer().getDirection().getX())
             .build())
@@ -278,7 +279,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         port);
     observerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN).setPlayerClass(PlayerClass.COMMONER)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerConnection.getResponse());
@@ -290,7 +291,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         port);
     wrongGameConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN).setPlayerClass(PlayerClass.COMMONER)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.COMMONER)
             .setPlayerName("new player")
             .setGameId(gameIdToConnectTo).build());
 
@@ -312,11 +313,11 @@ public class MoveEventTest extends AbstractGameServerTest {
         .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
         .setEventType(PushGameEventCommand.GameEventType.MOVE)
         .setPlayerId(playerId1)
-        .setPosition(PushGameEventCommand.Vector.newBuilder()
+        .setPosition(Vector.newBuilder()
             .setY(newPositionY)
             .setX(newPositionX)
             .build())
-        .setDirection(PushGameEventCommand.Vector.newBuilder()
+        .setDirection(Vector.newBuilder()
             .setY(mySpawnGameEvent.getPlayer().getDirection().getY())
             .setX(mySpawnGameEvent.getPlayer().getDirection().getX())
             .build())

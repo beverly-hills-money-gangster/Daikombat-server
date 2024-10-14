@@ -160,26 +160,26 @@ private static final long serialVersionUID = 0L;
   public static final int SKIN_FIELD_NUMBER = 4;
   private int skin_ = 0;
   /**
-   * <code>optional .daikombat.dto.SkinColorSelection skin = 4;</code>
+   * <code>optional .daikombat.dto.PlayerSkinColor skin = 4;</code>
    * @return Whether the skin field is set.
    */
   @java.lang.Override public boolean hasSkin() {
     return ((bitField0_ & 0x00000008) != 0);
   }
   /**
-   * <code>optional .daikombat.dto.SkinColorSelection skin = 4;</code>
+   * <code>optional .daikombat.dto.PlayerSkinColor skin = 4;</code>
    * @return The enum numeric value on the wire for skin.
    */
   @java.lang.Override public int getSkinValue() {
     return skin_;
   }
   /**
-   * <code>optional .daikombat.dto.SkinColorSelection skin = 4;</code>
+   * <code>optional .daikombat.dto.PlayerSkinColor skin = 4;</code>
    * @return The skin.
    */
-  @java.lang.Override public com.beverly.hills.money.gang.proto.SkinColorSelection getSkin() {
-    com.beverly.hills.money.gang.proto.SkinColorSelection result = com.beverly.hills.money.gang.proto.SkinColorSelection.forNumber(skin_);
-    return result == null ? com.beverly.hills.money.gang.proto.SkinColorSelection.UNRECOGNIZED : result;
+  @java.lang.Override public com.beverly.hills.money.gang.proto.PlayerSkinColor getSkin() {
+    com.beverly.hills.money.gang.proto.PlayerSkinColor result = com.beverly.hills.money.gang.proto.PlayerSkinColor.forNumber(skin_);
+    return result == null ? com.beverly.hills.money.gang.proto.PlayerSkinColor.UNRECOGNIZED : result;
   }
 
   public static final int RECOVERYPLAYERID_FIELD_NUMBER = 5;
@@ -904,21 +904,21 @@ private static final long serialVersionUID = 0L;
 
     private int skin_ = 0;
     /**
-     * <code>optional .daikombat.dto.SkinColorSelection skin = 4;</code>
+     * <code>optional .daikombat.dto.PlayerSkinColor skin = 4;</code>
      * @return Whether the skin field is set.
      */
     @java.lang.Override public boolean hasSkin() {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
-     * <code>optional .daikombat.dto.SkinColorSelection skin = 4;</code>
+     * <code>optional .daikombat.dto.PlayerSkinColor skin = 4;</code>
      * @return The enum numeric value on the wire for skin.
      */
     @java.lang.Override public int getSkinValue() {
       return skin_;
     }
     /**
-     * <code>optional .daikombat.dto.SkinColorSelection skin = 4;</code>
+     * <code>optional .daikombat.dto.PlayerSkinColor skin = 4;</code>
      * @param value The enum numeric value on the wire for skin to set.
      * @return This builder for chaining.
      */
@@ -929,20 +929,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .daikombat.dto.SkinColorSelection skin = 4;</code>
+     * <code>optional .daikombat.dto.PlayerSkinColor skin = 4;</code>
      * @return The skin.
      */
     @java.lang.Override
-    public com.beverly.hills.money.gang.proto.SkinColorSelection getSkin() {
-      com.beverly.hills.money.gang.proto.SkinColorSelection result = com.beverly.hills.money.gang.proto.SkinColorSelection.forNumber(skin_);
-      return result == null ? com.beverly.hills.money.gang.proto.SkinColorSelection.UNRECOGNIZED : result;
+    public com.beverly.hills.money.gang.proto.PlayerSkinColor getSkin() {
+      com.beverly.hills.money.gang.proto.PlayerSkinColor result = com.beverly.hills.money.gang.proto.PlayerSkinColor.forNumber(skin_);
+      return result == null ? com.beverly.hills.money.gang.proto.PlayerSkinColor.UNRECOGNIZED : result;
     }
     /**
-     * <code>optional .daikombat.dto.SkinColorSelection skin = 4;</code>
+     * <code>optional .daikombat.dto.PlayerSkinColor skin = 4;</code>
      * @param value The skin to set.
      * @return This builder for chaining.
      */
-    public Builder setSkin(com.beverly.hills.money.gang.proto.SkinColorSelection value) {
+    public Builder setSkin(com.beverly.hills.money.gang.proto.PlayerSkinColor value) {
       if (value == null) {
         throw new NullPointerException();
       }
@@ -952,7 +952,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .daikombat.dto.SkinColorSelection skin = 4;</code>
+     * <code>optional .daikombat.dto.PlayerSkinColor skin = 4;</code>
      * @return This builder for chaining.
      */
     public Builder clearSkin() {

@@ -18,7 +18,8 @@ import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType;
 import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem;
-import com.beverly.hills.money.gang.proto.SkinColorSelection;
+import com.beverly.hills.money.gang.proto.PlayerSkinColor;
+import com.beverly.hills.money.gang.proto.Vector;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -69,7 +70,7 @@ public class AllPowerUpTest extends AbstractGameServerTest {
         port);
     playerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN).setPlayerClass(
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(
                 PlayerClass.COMMONER)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
@@ -101,11 +102,11 @@ public class AllPowerUpTest extends AbstractGameServerTest {
         .setPlayerId(playerId)
         .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
         .setGameId(gameIdToConnectTo)
-        .setPosition(PushGameEventCommand.Vector.newBuilder()
+        .setPosition(Vector.newBuilder()
             .setX(playerSpawnEvent.getPlayer().getPosition().getX())
             .setY(playerSpawnEvent.getPlayer().getPosition().getY())
             .build())
-        .setDirection(PushGameEventCommand.Vector.newBuilder().setX(0).setY(1).build())
+        .setDirection(Vector.newBuilder().setX(0).setY(1).build())
         .setEventType(gameEventType)
         .build()));
 

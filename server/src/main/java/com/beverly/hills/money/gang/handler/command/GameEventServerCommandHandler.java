@@ -235,13 +235,8 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
                 attackGameState.getAttackingPlayer(),
                 attackGameState.getPlayerAttacked(),
                 attackType);
-            game.getPlayersRegistry().allJoinedPlayers()
-                .filter(playerStateChannel
-                    // don't send me my own attack back
-                    -> playerStateChannel.getPlayerState().getPlayerId()
-                    != gameCommand.getPlayerId())
-                .forEach(
-                    playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(attackEvent));
+            game.getPlayersRegistry().allJoinedPlayers().forEach(
+                playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(attackEvent));
           }
         }, () -> {
           LOG.debug("Nobody got attacked");

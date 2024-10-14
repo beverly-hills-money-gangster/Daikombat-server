@@ -640,6 +640,13 @@ public class GameTest {
           PlayerJoinedGameState shotPlayerConnectedGameState = fullyJoin(shotPlayerName, channel,
               PlayerStateColor.GREEN, victimClass);
 
+          assertEquals(attackerClass,
+              shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState()
+                  .getRpgPlayerClass());
+          assertEquals(victimClass,
+              shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState()
+                  .getRpgPlayerClass());
+
           PlayerAttackingGameState playerAttackingGameState = game.attack(
               shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState()
                   .getCoordinates(),

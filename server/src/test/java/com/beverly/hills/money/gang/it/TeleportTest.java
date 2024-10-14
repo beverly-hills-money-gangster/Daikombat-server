@@ -12,11 +12,11 @@ import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
-import com.beverly.hills.money.gang.proto.SkinColorSelection;
+import com.beverly.hills.money.gang.proto.PlayerSkinColor;
+import com.beverly.hills.money.gang.proto.Vector;
 import com.beverly.hills.money.gang.registry.TeleportRegistry;
 import com.beverly.hills.money.gang.spawner.Spawner;
 import com.beverly.hills.money.gang.state.entity.PlayerState.PlayerCoordinates;
-import com.beverly.hills.money.gang.state.entity.Vector;
 import com.beverly.hills.money.gang.teleport.Teleport;
 import java.io.IOException;
 import java.util.List;
@@ -56,8 +56,8 @@ public class TeleportTest extends AbstractGameServerTest {
   @Test
   public void testTeleport() throws IOException, InterruptedException {
     var teleportCoordinates = PlayerCoordinates.builder()
-        .direction(Vector.builder().y(1000).x(-1000).build())
-        .position(Vector.builder().x(-1).y(1).build())
+        .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().y(1000).x(-1000).build())
+        .position(com.beverly.hills.money.gang.state.entity.Vector.builder().x(-1).y(1).build())
         .build();
     var mockTeleport = Teleport.builder()
         .id(0).location(TestConfig.MAIN_LOCATION)
@@ -72,7 +72,7 @@ public class TeleportTest extends AbstractGameServerTest {
         port);
     playerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(SkinColorSelection.GREEN).setPlayerClass(
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(
                 PlayerClass.COMMONER)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
@@ -96,11 +96,11 @@ public class TeleportTest extends AbstractGameServerTest {
         .setPlayerId(playerId)
         .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
         .setGameId(gameIdToConnectTo)
-        .setPosition(PushGameEventCommand.Vector.newBuilder()
+        .setPosition(Vector.newBuilder()
             .setX(playerSpawnEvent.getPlayer().getPosition().getX())
             .setY(playerSpawnEvent.getPlayer().getPosition().getY())
             .build())
-        .setDirection(PushGameEventCommand.Vector.newBuilder().setX(0).setY(1).build())
+        .setDirection(Vector.newBuilder().setX(0).setY(1).build())
         .setEventType(GameEventType.TELEPORT)
         .setTeleportId(teleportSpawn.getId())
         .build());

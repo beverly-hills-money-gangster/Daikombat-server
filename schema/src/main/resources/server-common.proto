@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package daikombat.dto;
+
+option java_multiple_files = true;
+option java_package = "com.beverly.hills.money.gang.proto";
+
+enum WeaponType {
+  PUNCH = 0;
+  SHOTGUN = 1;
+  RAILGUN = 2;
+  MINIGUN = 3;
+}
+
+
+enum PlayerSkinColor {
+  GREEN = 0;
+  PINK = 1;
+  PURPLE = 2;
+  BLUE = 3;
+  YELLOW = 4;
+  ORANGE = 5;
+}
+
+enum PlayerClass{
+  COMMONER = 0;
+  DRACULA_BERSERK = 1;
+  DEMON_TANK = 2;
+  BEAST_WARRIOR = 3;
+}
+
+
+message Vector {
+  optional float x = 1;
+  optional float y = 2;
+}

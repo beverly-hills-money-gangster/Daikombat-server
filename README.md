@@ -160,6 +160,7 @@ mvn spotbugs:check
 
 ```
 rm .\schema\src\main\java\com\beverly\hills\money\gang\proto\* 
+protoc --java_out=./schema/src/main/java/ .\schema\src\main\resources\server-common.proto
 protoc --java_out=./schema/src/main/java/ .\schema\src\main\resources\server-response.proto
 protoc --java_out=./schema/src/main/java/ .\schema\src\main\resources\server-command.proto
 ```

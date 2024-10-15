@@ -2,6 +2,7 @@ package com.beverly.hills.money.gang.it;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.verify;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.network.GameConnection;
@@ -11,9 +12,10 @@ import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.Vector;
-import org.junit.jupiter.api.RepeatedTest;
+import com.beverly.hills.money.gang.registry.BannedPlayersRegistry;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_POWER_UPS_ENABLED", value = "false")
 @SetEnvironmentVariable(key = "GAME_SERVER_TELEPORTS_ENABLED", value = "false")
@@ -23,6 +25,8 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 @SetEnvironmentVariable(key = "GAME_SERVER_PLAYER_SPEED_CHECK_FREQUENCY_MLS", value = "1000")
 public class MoveAntiCheatTest extends AbstractGameServerTest {
 
+  @MockBean
+  private BannedPlayersRegistry bannedPlayersRegistry;
 
   /**
    * @given a running server with 2 connected players
@@ -97,6 +101,7 @@ public class MoveAntiCheatTest extends AbstractGameServerTest {
 
     assertEquals(playerId1, playerExitEvent.getPlayer().getPlayerId(), "Should be player 1 id");
     assertEquals(ServerResponse.GameEvent.GameEventType.EXIT, playerExitEvent.getEventType());
+    verify(bannedPlayersRegistry).ban("127.0.0.1");
   }
 
 

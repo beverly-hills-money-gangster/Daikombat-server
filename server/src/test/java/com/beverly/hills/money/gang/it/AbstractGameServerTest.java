@@ -12,6 +12,7 @@ import com.beverly.hills.money.gang.network.AbstractGameConnection;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.network.SecondaryGameConnection;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
+import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
 import com.beverly.hills.money.gang.queue.QueueReader;
@@ -115,7 +116,8 @@ public abstract class AbstractGameServerTest {
     for (int i = 0; i < maxHealthChecks; i++) {
       gameConnection = new GameConnection(HostPort.builder().host("localhost").port(port).build());
       gameConnection.waitUntilConnected(5_000);
-      gameConnection.write(GetServerInfoCommand.newBuilder().build());
+      gameConnection.write(GetServerInfoCommand.newBuilder()
+          .setPlayerClass(PlayerClass.WARRIOR).build());
       try {
         waitUntilGetResponses(gameConnection.getResponse(), 1, 2_000);
         LOG.info("Server is ready on port {}", port);
@@ -130,7 +132,7 @@ public abstract class AbstractGameServerTest {
   }
 
   @AfterEach
-  public void tearDown() {
+  public void tearDown() throws InterruptedException {
     gameConnections.forEach(AbstractGameConnection::disconnect);
     gameConnections.forEach(gameConnection -> {
       gameConnection.getErrors().list().forEach(

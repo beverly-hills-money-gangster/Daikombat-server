@@ -3,12 +3,14 @@ package com.beverly.hills.money.gang.state;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.Getter;
 
 public class PlayerRPGStats {
 
   private final Map<PlayerRPGStatType, PlayerRPGStatValue> stats = new ConcurrentHashMap<>();
 
-  public PlayerRPGStats(Map<PlayerRPGStatType, PlayerRPGStatValue> stats) {
+  public PlayerRPGStats(
+      Map<PlayerRPGStatType, PlayerRPGStatValue> stats) {
     if (stats.size() != PlayerRPGStatType.values().length) {
       throw new IllegalArgumentException("Not all RPG stats are specified");
     }

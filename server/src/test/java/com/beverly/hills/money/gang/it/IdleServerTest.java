@@ -8,12 +8,11 @@ import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
+import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
-import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.Vector;
 import java.io.IOException;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -22,6 +21,7 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "1000")
+
 public class IdleServerTest extends AbstractGameServerTest {
 
   /**
@@ -37,14 +37,15 @@ public class IdleServerTest extends AbstractGameServerTest {
     gameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(
-                PlayerClass.COMMONER)
+                PlayerClass.WARRIOR)
             .setPlayerName("my player name")
             .setGameId(gameToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
     var mySpawn = gameConnection.getResponse().poll().get().getGameEvents().getEvents(0);
     int playerId = mySpawn.getPlayer().getPlayerId();
 
-    gameConnection.write(GetServerInfoCommand.newBuilder().build());
+    gameConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR)
+        .build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
     ServerResponse serverResponse = gameConnection.getResponse().poll().get();
     var myGame = serverResponse.getServerInfo().getGamesList().stream().filter(gameInfo

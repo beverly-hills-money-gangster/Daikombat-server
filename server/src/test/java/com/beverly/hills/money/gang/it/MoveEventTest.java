@@ -24,6 +24,7 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "250")
 @SetEnvironmentVariable(key = "GAME_SERVER_PLAYER_SPEED_CHECK_FREQUENCY_MLS", value = "1000")
+
 public class MoveEventTest extends AbstractGameServerTest {
 
   /**
@@ -38,7 +39,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         port);
     movingPlayerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.COMMONER)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(movingPlayerConnection.getResponse());
@@ -50,7 +51,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         "localhost", port);
     observerPlayerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.COMMONER)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("new player")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerPlayerConnection.getResponse());
@@ -125,7 +126,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         port);
     movingPlayerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.COMMONER)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(movingPlayerConnection.getResponse());
@@ -137,7 +138,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         "localhost", port);
     observerPlayerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.COMMONER)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("new player")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerPlayerConnection.getResponse());
@@ -195,7 +196,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         port);
     movingPlayerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.COMMONER)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(movingPlayerConnection.getResponse());
@@ -207,7 +208,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         "localhost", port);
     observerPlayerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.COMMONER)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("new player")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerPlayerConnection.getResponse());
@@ -279,7 +280,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         port);
     observerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.COMMONER)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerConnection.getResponse());
@@ -291,7 +292,7 @@ public class MoveEventTest extends AbstractGameServerTest {
         port);
     wrongGameConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.COMMONER)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("new player")
             .setGameId(gameIdToConnectTo).build());
 

@@ -10,40 +10,32 @@ package com.beverly.hills.money.gang.proto;
 public enum PlayerClass
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
-   * <code>COMMONER = 0;</code>
+   * <code>WARRIOR = 0;</code>
    */
-  COMMONER(0),
+  WARRIOR(0),
   /**
-   * <code>DRACULA_BERSERK = 1;</code>
+   * <code>ANGRY_SKELETON = 1;</code>
    */
-  DRACULA_BERSERK(1),
+  ANGRY_SKELETON(1),
   /**
    * <code>DEMON_TANK = 2;</code>
    */
   DEMON_TANK(2),
-  /**
-   * <code>BEAST_WARRIOR = 3;</code>
-   */
-  BEAST_WARRIOR(3),
   UNRECOGNIZED(-1),
   ;
 
   /**
-   * <code>COMMONER = 0;</code>
+   * <code>WARRIOR = 0;</code>
    */
-  public static final int COMMONER_VALUE = 0;
+  public static final int WARRIOR_VALUE = 0;
   /**
-   * <code>DRACULA_BERSERK = 1;</code>
+   * <code>ANGRY_SKELETON = 1;</code>
    */
-  public static final int DRACULA_BERSERK_VALUE = 1;
+  public static final int ANGRY_SKELETON_VALUE = 1;
   /**
    * <code>DEMON_TANK = 2;</code>
    */
   public static final int DEMON_TANK_VALUE = 2;
-  /**
-   * <code>BEAST_WARRIOR = 3;</code>
-   */
-  public static final int BEAST_WARRIOR_VALUE = 3;
 
 
   public final int getNumber() {
@@ -70,10 +62,9 @@ public enum PlayerClass
    */
   public static PlayerClass forNumber(int value) {
     switch (value) {
-      case 0: return COMMONER;
-      case 1: return DRACULA_BERSERK;
+      case 0: return WARRIOR;
+      case 1: return ANGRY_SKELETON;
       case 2: return DEMON_TANK;
-      case 3: return BEAST_WARRIOR;
       default: return null;
     }
   }

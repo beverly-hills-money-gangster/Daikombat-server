@@ -1,7 +1,11 @@
-package com.beverly.hills.money.gang.state;
+package com.beverly.hills.money.gang.factory;
 
 import static com.beverly.hills.money.gang.state.entity.PlayerState.VAMPIRE_HP_BOOST;
 
+import com.beverly.hills.money.gang.state.AttackType;
+import com.beverly.hills.money.gang.state.PlayerRPGStatType;
+import com.beverly.hills.money.gang.state.PlayerRPGStatValue;
+import com.beverly.hills.money.gang.state.PlayerRPGStats;
 import com.beverly.hills.money.gang.state.entity.AttackStats;
 import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
 import java.util.Map;
@@ -11,25 +15,25 @@ public class RPGStatsFactory {
 
   public static PlayerRPGStats create(RPGPlayerClass playerClass) {
     return switch (playerClass) {
-      case COMMONER -> createDefault();
-      case TANK -> createTank();
-      case BERSERK -> createBerserk();
-      case WARRIOR -> createWarrior();
+      case WARRIOR -> createDefault();
+      case DEMON_TANK -> createTank();
+      case ANGRY_SKELETON -> createAngrySkeleton();
     };
   }
 
 
-  // COMMONER
+  // WARRIOR
   private static PlayerRPGStats createDefault() {
     return PlayerRPGStats.defaultStats();
   }
 
-  // DRACULA BERSERK
-  private static PlayerRPGStats createBerserk() {
+  // ANGRY SKELETON
+  private static PlayerRPGStats createAngrySkeleton() {
     return new PlayerRPGStats(Map.of(
         PlayerRPGStatType.ATTACK, PlayerRPGStatValue.createMax(),
         PlayerRPGStatType.DEFENSE, PlayerRPGStatValue.createMin(),
-        PlayerRPGStatType.VAMPIRISM, PlayerRPGStatValue.createDefault()));
+        PlayerRPGStatType.VAMPIRISM, PlayerRPGStatValue.createDefault(),
+        PlayerRPGStatType.GUN_SPEED, PlayerRPGStatValue.createMax()));
   }
 
   // DEMON TANK
@@ -37,16 +41,8 @@ public class RPGStatsFactory {
     return new PlayerRPGStats(Map.of(
         PlayerRPGStatType.ATTACK, PlayerRPGStatValue.createDefault(),
         PlayerRPGStatType.DEFENSE, PlayerRPGStatValue.createMax(),
-        PlayerRPGStatType.VAMPIRISM, PlayerRPGStatValue.createMin()));
-  }
-
-
-  // BEAST WARRIOR
-  private static PlayerRPGStats createWarrior() {
-    return new PlayerRPGStats(Map.of(
-        PlayerRPGStatType.ATTACK, PlayerRPGStatValue.createMax(),
-        PlayerRPGStatType.DEFENSE, PlayerRPGStatValue.createDefault(),
-        PlayerRPGStatType.VAMPIRISM, PlayerRPGStatValue.createMin()));
+        PlayerRPGStatType.VAMPIRISM, PlayerRPGStatValue.createMin(),
+        PlayerRPGStatType.GUN_SPEED, PlayerRPGStatValue.createDefault()));
   }
 
   public static void main(String[] args) {

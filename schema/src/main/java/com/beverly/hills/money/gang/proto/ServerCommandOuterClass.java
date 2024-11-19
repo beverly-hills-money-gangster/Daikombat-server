@@ -78,42 +78,44 @@ public final class ServerCommandOuterClass {
       "mandH\000\0227\n\016respawnCommand\030\010 \001(\0132\035.daikomb" +
       "at.dto.RespawnCommandH\000\022G\n\026mergeConnecti" +
       "onCommand\030\t \001(\0132%.daikombat.dto.MergeCon" +
-      "nectionCommandH\000B\t\n\007commandB\007\n\005_hmac\"\026\n\024" +
-      "GetServerInfoCommand\"\r\n\013PingCommand\"|\n\024P" +
-      "ushChatEventCommand\022\023\n\006gameId\030\001 \001(\005H\000\210\001\001" +
-      "\022\024\n\007message\030\002 \001(\tH\001\210\001\001\022\025\n\010playerId\030\003 \001(\005" +
-      "H\002\210\001\001B\t\n\007_gameIdB\n\n\010_messageB\013\n\t_playerI" +
-      "d\"\261\002\n\017JoinGameCommand\022\023\n\006gameId\030\001 \001(\005H\000\210" +
-      "\001\001\022\024\n\007version\030\002 \001(\tH\001\210\001\001\022\027\n\nplayerName\030\003" +
-      " \001(\tH\002\210\001\001\0221\n\004skin\030\004 \001(\0162\036.daikombat.dto." +
-      "PlayerSkinColorH\003\210\001\001\022\035\n\020recoveryPlayerId" +
-      "\030\005 \001(\005H\004\210\001\001\0224\n\013playerClass\030\006 \001(\0162\032.daiko" +
-      "mbat.dto.PlayerClassH\005\210\001\001B\t\n\007_gameIdB\n\n\010" +
-      "_versionB\r\n\013_playerNameB\007\n\005_skinB\023\n\021_rec" +
-      "overyPlayerIdB\016\n\014_playerClass\"\\\n\026MergeCo" +
-      "nnectionCommand\022\023\n\006gameId\030\001 \001(\005H\000\210\001\001\022\025\n\010" +
-      "playerId\030\002 \001(\005H\001\210\001\001B\t\n\007_gameIdB\013\n\t_playe" +
-      "rId\"T\n\016RespawnCommand\022\023\n\006gameId\030\001 \001(\005H\000\210" +
-      "\001\001\022\025\n\010playerId\030\002 \001(\005H\001\210\001\001B\t\n\007_gameIdB\013\n\t" +
-      "_playerId\"\246\005\n\024PushGameEventCommand\022\023\n\006ga" +
-      "meId\030\001 \001(\005H\000\210\001\001\022I\n\teventType\030\002 \001(\01621.dai" +
-      "kombat.dto.PushGameEventCommand.GameEven" +
-      "tTypeH\001\210\001\001\022,\n\010position\030\003 \001(\0132\025.daikombat" +
-      ".dto.VectorH\002\210\001\001\022-\n\tdirection\030\004 \001(\0132\025.da" +
-      "ikombat.dto.VectorH\003\210\001\001\022\025\n\010playerId\030\005 \001(" +
-      "\005H\004\210\001\001\022\035\n\020affectedPlayerId\030\006 \001(\005H\005\210\001\001\022\025\n" +
-      "\010sequence\030\007 \001(\005H\006\210\001\001\022\024\n\007pingMls\030\010 \001(\005H\007\210" +
-      "\001\001\022\027\n\nteleportId\030\t \001(\005H\010\210\001\001\0222\n\nweaponTyp" +
-      "e\030\n \001(\0162\031.daikombat.dto.WeaponTypeH\t\210\001\001\"" +
-      "\223\001\n\rGameEventType\022\010\n\004MOVE\020\000\022\n\n\006ATTACK\020\001\022" +
-      "\030\n\024QUAD_DAMAGE_POWER_UP\020\002\022\031\n\025INVISIBILIT" +
-      "Y_POWER_UP\020\003\022\024\n\020DEFENCE_POWER_UP\020\004\022\014\n\010TE" +
-      "LEPORT\020\005\022\023\n\017HEALTH_POWER_UP\020\006B\t\n\007_gameId" +
-      "B\014\n\n_eventTypeB\013\n\t_positionB\014\n\n_directio" +
-      "nB\013\n\t_playerIdB\023\n\021_affectedPlayerIdB\013\n\t_" +
-      "sequenceB\n\n\010_pingMlsB\r\n\013_teleportIdB\r\n\013_" +
-      "weaponTypeB&\n\"com.beverly.hills.money.ga" +
-      "ng.protoP\001b\006proto3"
+      "nectionCommandH\000B\t\n\007commandB\007\n\005_hmac\"\\\n\024" +
+      "GetServerInfoCommand\0224\n\013playerClass\030\001 \001(" +
+      "\0162\032.daikombat.dto.PlayerClassH\000\210\001\001B\016\n\014_p" +
+      "layerClass\"\r\n\013PingCommand\"|\n\024PushChatEve" +
+      "ntCommand\022\023\n\006gameId\030\001 \001(\005H\000\210\001\001\022\024\n\007messag" +
+      "e\030\002 \001(\tH\001\210\001\001\022\025\n\010playerId\030\003 \001(\005H\002\210\001\001B\t\n\007_" +
+      "gameIdB\n\n\010_messageB\013\n\t_playerId\"\261\002\n\017Join" +
+      "GameCommand\022\023\n\006gameId\030\001 \001(\005H\000\210\001\001\022\024\n\007vers" +
+      "ion\030\002 \001(\tH\001\210\001\001\022\027\n\nplayerName\030\003 \001(\tH\002\210\001\001\022" +
+      "1\n\004skin\030\004 \001(\0162\036.daikombat.dto.PlayerSkin" +
+      "ColorH\003\210\001\001\022\035\n\020recoveryPlayerId\030\005 \001(\005H\004\210\001" +
+      "\001\0224\n\013playerClass\030\006 \001(\0162\032.daikombat.dto.P" +
+      "layerClassH\005\210\001\001B\t\n\007_gameIdB\n\n\010_versionB\r" +
+      "\n\013_playerNameB\007\n\005_skinB\023\n\021_recoveryPlaye" +
+      "rIdB\016\n\014_playerClass\"\\\n\026MergeConnectionCo" +
+      "mmand\022\023\n\006gameId\030\001 \001(\005H\000\210\001\001\022\025\n\010playerId\030\002" +
+      " \001(\005H\001\210\001\001B\t\n\007_gameIdB\013\n\t_playerId\"T\n\016Res" +
+      "pawnCommand\022\023\n\006gameId\030\001 \001(\005H\000\210\001\001\022\025\n\010play" +
+      "erId\030\002 \001(\005H\001\210\001\001B\t\n\007_gameIdB\013\n\t_playerId\"" +
+      "\246\005\n\024PushGameEventCommand\022\023\n\006gameId\030\001 \001(\005" +
+      "H\000\210\001\001\022I\n\teventType\030\002 \001(\01621.daikombat.dto" +
+      ".PushGameEventCommand.GameEventTypeH\001\210\001\001" +
+      "\022,\n\010position\030\003 \001(\0132\025.daikombat.dto.Vecto" +
+      "rH\002\210\001\001\022-\n\tdirection\030\004 \001(\0132\025.daikombat.dt" +
+      "o.VectorH\003\210\001\001\022\025\n\010playerId\030\005 \001(\005H\004\210\001\001\022\035\n\020" +
+      "affectedPlayerId\030\006 \001(\005H\005\210\001\001\022\025\n\010sequence\030" +
+      "\007 \001(\005H\006\210\001\001\022\024\n\007pingMls\030\010 \001(\005H\007\210\001\001\022\027\n\ntele" +
+      "portId\030\t \001(\005H\010\210\001\001\0222\n\nweaponType\030\n \001(\0162\031." +
+      "daikombat.dto.WeaponTypeH\t\210\001\001\"\223\001\n\rGameEv" +
+      "entType\022\010\n\004MOVE\020\000\022\n\n\006ATTACK\020\001\022\030\n\024QUAD_DA" +
+      "MAGE_POWER_UP\020\002\022\031\n\025INVISIBILITY_POWER_UP" +
+      "\020\003\022\024\n\020DEFENCE_POWER_UP\020\004\022\014\n\010TELEPORT\020\005\022\023" +
+      "\n\017HEALTH_POWER_UP\020\006B\t\n\007_gameIdB\014\n\n_event" +
+      "TypeB\013\n\t_positionB\014\n\n_directionB\013\n\t_play" +
+      "erIdB\023\n\021_affectedPlayerIdB\013\n\t_sequenceB\n" +
+      "\n\010_pingMlsB\r\n\013_teleportIdB\r\n\013_weaponType" +
+      "B&\n\"com.beverly.hills.money.gang.protoP\001" +
+      "b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -131,7 +133,7 @@ public final class ServerCommandOuterClass {
     internal_static_daikombat_dto_GetServerInfoCommand_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_GetServerInfoCommand_descriptor,
-        new java.lang.String[] { });
+        new java.lang.String[] { "PlayerClass", });
     internal_static_daikombat_dto_PingCommand_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_daikombat_dto_PingCommand_fieldAccessorTable = new

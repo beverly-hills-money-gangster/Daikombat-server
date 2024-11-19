@@ -23,6 +23,7 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "99999")
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "99999")
+
 public class RespawnEventTest extends AbstractGameServerTest {
 
   /**
@@ -39,7 +40,7 @@ public class RespawnEventTest extends AbstractGameServerTest {
     killerConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.PINK)
-            .setPlayerClass(PlayerClass.COMMONER)
+            .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName(shooterPlayerName)
             .setGameId(gameIdToConnectTo).build());
 
@@ -47,7 +48,7 @@ public class RespawnEventTest extends AbstractGameServerTest {
     deadConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.PURPLE)
-            .setPlayerClass(PlayerClass.COMMONER)
+            .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
 

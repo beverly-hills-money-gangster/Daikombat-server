@@ -1,6 +1,5 @@
 package com.beverly.hills.money.gang.it;
 
-import static com.beverly.hills.money.gang.state.entity.AttackStats.ATTACKS_INFO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -23,7 +22,9 @@ import com.beverly.hills.money.gang.proto.Vector;
 import com.beverly.hills.money.gang.proto.WeaponType;
 import com.beverly.hills.money.gang.spawner.Spawner;
 import com.beverly.hills.money.gang.state.AttackType;
+import com.beverly.hills.money.gang.state.entity.AttackStats;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
+import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Supplier;
@@ -37,6 +38,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "99999")
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "99999")
+
 public class ShootingEventTest extends AbstractGameServerTest {
 
   @SpyBean
@@ -53,12 +55,12 @@ public class ShootingEventTest extends AbstractGameServerTest {
     GameConnection shooterConnection = createGameConnection("localhost", port);
     shooterConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName("my player name")
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     GameConnection observerConnection = createGameConnection("localhost", port);
     observerConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName("my other player name")
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(shooterConnection.getResponse());
     waitUntilQueueNonEmpty(observerConnection.getResponse());
@@ -116,12 +118,12 @@ public class ShootingEventTest extends AbstractGameServerTest {
     GameConnection puncherConnection = createGameConnection("localhost", port);
     puncherConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName("my player name")
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     GameConnection observerConnection = createGameConnection("localhost", port);
     observerConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName("my other player name")
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilGetResponses(puncherConnection.getResponse(), 2);
     waitUntilGetResponses(observerConnection.getResponse(), 2);
@@ -178,7 +180,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
   @Test
   public void testShootHit() throws Exception {
 
-    var shotgunInfo = ATTACKS_INFO.stream()
+    var shotgunInfo = AttackStats.getAttacksInfo(RPGPlayerClass.WARRIOR).stream()
         .filter(attackInfo -> attackInfo.getAttackType() == AttackType.SHOTGUN).findFirst().get();
 
     doReturn(PlayerState.PlayerCoordinates.builder()
@@ -195,12 +197,12 @@ public class ShootingEventTest extends AbstractGameServerTest {
     GameConnection shooterConnection = createGameConnection("localhost", port);
     shooterConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName("my player name")
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     GameConnection getShotConnection = createGameConnection("localhost", port);
     getShotConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName("my other player name")
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(shooterConnection.getResponse());
     ServerResponse shooterPlayerSpawn = shooterConnection.getResponse().poll().get();
@@ -259,7 +261,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(2, shooterConnection.getNetworkStats().getSentMessages(),
         "Only 2 messages must be sent by shooter: join + shoot");
     emptyQueue(shooterConnection.getResponse());
-    shooterConnection.write(GetServerInfoCommand.newBuilder().build());
+    shooterConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR).build());
     waitUntilQueueNonEmpty(shooterConnection.getResponse());
     var serverInfoResponse = shooterConnection.getResponse().poll().get();
     List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
@@ -293,12 +295,12 @@ public class ShootingEventTest extends AbstractGameServerTest {
     GameConnection shooterConnection = createGameConnection("localhost", port);
     shooterConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName("my player name")
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     GameConnection getShotConnection = createGameConnection("localhost", port);
     getShotConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName("my other player name")
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(shooterConnection.getResponse());
     ServerResponse shooterPlayerSpawn = shooterConnection.getResponse().poll().get();
@@ -358,7 +360,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(2, shooterConnection.getNetworkStats().getSentMessages(),
         "Only 2 messages must be sent by shooter: join + shoot");
     emptyQueue(shooterConnection.getResponse());
-    shooterConnection.write(GetServerInfoCommand.newBuilder().build());
+    shooterConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR).build());
     waitUntilQueueNonEmpty(shooterConnection.getResponse());
     var serverInfoResponse = shooterConnection.getResponse().poll().get();
     List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
@@ -393,12 +395,12 @@ public class ShootingEventTest extends AbstractGameServerTest {
     GameConnection shooterConnection = createGameConnection("localhost", port);
     shooterConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName("my player name")
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     GameConnection getShotConnection = createGameConnection("localhost", port);
     getShotConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName("my other player name")
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(shooterConnection.getResponse());
     ServerResponse shooterPlayerSpawn = shooterConnection.getResponse().poll().get();
@@ -458,7 +460,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(2, shooterConnection.getNetworkStats().getSentMessages(),
         "Only 2 messages must be sent by shooter: join + shoot");
     emptyQueue(shooterConnection.getResponse());
-    shooterConnection.write(GetServerInfoCommand.newBuilder().build());
+    shooterConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR).build());
     waitUntilQueueNonEmpty(shooterConnection.getResponse());
     var serverInfoResponse = shooterConnection.getResponse().poll().get();
     List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
@@ -481,12 +483,12 @@ public class ShootingEventTest extends AbstractGameServerTest {
     GameConnection punchingConnection = createGameConnection("localhost", port);
     punchingConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName("my player name")
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     GameConnection getPunchedConnection = createGameConnection("localhost", port);
     getPunchedConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName("my other player name")
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(punchingConnection.getResponse());
     ServerResponse puncherPlayerSpawn = punchingConnection.getResponse().poll().get();
@@ -545,7 +547,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(2, punchingConnection.getNetworkStats().getSentMessages(),
         "Only 2 messages must be sent by puncher: join + punch");
     emptyQueue(punchingConnection.getResponse());
-    punchingConnection.write(GetServerInfoCommand.newBuilder().build());
+    punchingConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR).build());
     waitUntilQueueNonEmpty(punchingConnection.getResponse());
     var serverInfoResponse = punchingConnection.getResponse().poll().get();
     List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
@@ -567,12 +569,12 @@ public class ShootingEventTest extends AbstractGameServerTest {
     GameConnection shooterConnection = createGameConnection("localhost", port);
     shooterConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName("my player name")
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     GameConnection getShotConnection = createGameConnection("localhost", port);
     getShotConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName("my other player name")
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
 
     waitUntilQueueNonEmpty(shooterConnection.getResponse());
@@ -615,12 +617,12 @@ public class ShootingEventTest extends AbstractGameServerTest {
     GameConnection puncherConnection = createGameConnection("localhost", port);
     puncherConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName("my player name")
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     GameConnection getPunchedConnection = createGameConnection("localhost", port);
     getPunchedConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName("my other player name")
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
 
     waitUntilQueueNonEmpty(puncherConnection.getResponse());
@@ -661,7 +663,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
   public void testShootKill() throws Exception {
     int gameIdToConnectTo = 0;
     String shooterPlayerName = "killer";
-    var shotgunInfo = ATTACKS_INFO.stream()
+    var shotgunInfo = AttackStats.getAttacksInfo(RPGPlayerClass.WARRIOR).stream()
         .filter(attackInfo -> attackInfo.getAttackType() == AttackType.SHOTGUN).findFirst().get();
     doReturn(PlayerState.PlayerCoordinates.builder()
         .position(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(0F).build())
@@ -675,13 +677,13 @@ public class ShootingEventTest extends AbstractGameServerTest {
     GameConnection killerConnection = createGameConnection("localhost", port);
     killerConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName(shooterPlayerName)
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName(shooterPlayerName)
             .setGameId(gameIdToConnectTo).build());
 
     GameConnection deadConnection = createGameConnection("localhost", port);
     deadConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName("my other player name")
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(killerConnection.getResponse());
     ServerResponse shooterPlayerSpawn = killerConnection.getResponse().poll().get();
@@ -757,7 +759,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(WeaponType.SHOTGUN, killerShootingEvent.getWeaponType());
     assertEquals(shooterPlayerId, killerShootingEvent.getPlayer().getPlayerId());
 
-    killerConnection.write(GetServerInfoCommand.newBuilder().build());
+    killerConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR).build());
     waitUntilQueueNonEmpty(killerConnection.getResponse());
     var serverInfoResponse = killerConnection.getResponse().poll().get();
     List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
@@ -771,7 +773,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     GameConnection observerConnection = createGameConnection("localhost", port);
     observerConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName(observerPlayerName)
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName(observerPlayerName)
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerConnection.getResponse());
 
@@ -815,7 +817,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
   public void testShootMinigunKill() throws Exception {
     int gameIdToConnectTo = 0;
     String shooterPlayerName = "killer";
-    var shotgunInfo = ATTACKS_INFO.stream()
+    var shotgunInfo = AttackStats.getAttacksInfo(RPGPlayerClass.WARRIOR).stream()
         .filter(attackInfo -> attackInfo.getAttackType() == AttackType.MINIGUN).findFirst().get();
     doReturn(PlayerState.PlayerCoordinates.builder()
         .position(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(0F).build())
@@ -829,13 +831,13 @@ public class ShootingEventTest extends AbstractGameServerTest {
     GameConnection killerConnection = createGameConnection("localhost", port);
     killerConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName(shooterPlayerName)
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName(shooterPlayerName)
             .setGameId(gameIdToConnectTo).build());
 
     GameConnection deadConnection = createGameConnection("localhost", port);
     deadConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName("my other player name")
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(killerConnection.getResponse());
     ServerResponse shooterPlayerSpawn = killerConnection.getResponse().poll().get();
@@ -911,7 +913,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(WeaponType.MINIGUN, killerShootingEvent.getWeaponType());
     assertEquals(shooterPlayerId, killerShootingEvent.getPlayer().getPlayerId());
 
-    killerConnection.write(GetServerInfoCommand.newBuilder().build());
+    killerConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR).build());
     waitUntilQueueNonEmpty(killerConnection.getResponse());
     var serverInfoResponse = killerConnection.getResponse().poll().get();
     List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
@@ -925,7 +927,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     GameConnection observerConnection = createGameConnection("localhost", port);
     observerConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName(observerPlayerName)
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName(observerPlayerName)
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerConnection.getResponse());
 
@@ -972,13 +974,13 @@ public class ShootingEventTest extends AbstractGameServerTest {
     GameConnection killerConnection = createGameConnection("localhost", port);
     killerConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName(shooterPlayerName)
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName(shooterPlayerName)
             .setGameId(gameIdToConnectTo).build());
 
     GameConnection deadConnection = createGameConnection("localhost", port);
     deadConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName("my other player name")
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(killerConnection.getResponse());
     ServerResponse shooterPlayerSpawn = killerConnection.getResponse().poll().get();
@@ -1030,7 +1032,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(WeaponType.RAILGUN, killerShootingEvent.getWeaponType());
     assertEquals(shooterPlayerId, killerShootingEvent.getPlayer().getPlayerId());
 
-    killerConnection.write(GetServerInfoCommand.newBuilder().build());
+    killerConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR).build());
     waitUntilQueueNonEmpty(killerConnection.getResponse());
     var serverInfoResponse = killerConnection.getResponse().poll().get();
     List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
@@ -1047,7 +1049,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     killerConnection = createGameConnection("localhost", port);
     killerConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setRecoveryPlayerId(shooterPlayerId)
+            .setPlayerClass(PlayerClass.WARRIOR).setRecoveryPlayerId(shooterPlayerId)
             .setPlayerName(shooterPlayerName).setGameId(gameIdToConnectTo).build());
     waitUntilGetResponses(killerConnection.getResponse(), 2);
     var newShooterPlayerSpawn = killerConnection.getResponse().poll().get();
@@ -1060,7 +1062,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     GameConnection observerConnection = createGameConnection("localhost", port);
     observerConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName(observerPlayerName)
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName(observerPlayerName)
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerConnection.getResponse());
 
@@ -1107,13 +1109,13 @@ public class ShootingEventTest extends AbstractGameServerTest {
     GameConnection killerConnection = createGameConnection("localhost", port);
     killerConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName(shooterPlayerName)
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName(shooterPlayerName)
             .setGameId(gameIdToConnectTo).build());
 
     GameConnection deadConnection = createGameConnection("localhost", port);
     deadConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName("my other player name")
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(killerConnection.getResponse());
     ServerResponse shooterPlayerSpawn = killerConnection.getResponse().poll().get();
@@ -1165,7 +1167,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(WeaponType.RAILGUN, killerShootingEvent.getWeaponType());
     assertEquals(shooterPlayerId, killerShootingEvent.getPlayer().getPlayerId());
 
-    killerConnection.write(GetServerInfoCommand.newBuilder().build());
+    killerConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR).build());
     waitUntilQueueNonEmpty(killerConnection.getResponse());
     var serverInfoResponse = killerConnection.getResponse().poll().get();
     List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
@@ -1179,7 +1181,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     GameConnection observerConnection = createGameConnection("localhost", port);
     observerConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName(observerPlayerName)
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName(observerPlayerName)
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerConnection.getResponse());
 
@@ -1225,13 +1227,13 @@ public class ShootingEventTest extends AbstractGameServerTest {
     GameConnection puncherConnection = createGameConnection("localhost", port);
     puncherConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName(puncherPlayerName)
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName(puncherPlayerName)
             .setGameId(gameIdToConnectTo).build());
 
     GameConnection deadConnection = createGameConnection("localhost", port);
     deadConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName("my other player name")
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilGetResponses(puncherConnection.getResponse(), 2);
     ServerResponse puncherPlayerSpawn = puncherConnection.getResponse().poll().get();
@@ -1308,7 +1310,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(WeaponType.PUNCH, killerShootingEvent.getWeaponType());
     assertEquals(puncherPlayerId, killerShootingEvent.getPlayer().getPlayerId());
 
-    puncherConnection.write(GetServerInfoCommand.newBuilder().build());
+    puncherConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR).build());
     waitUntilQueueNonEmpty(puncherConnection.getResponse());
     var serverInfoResponse = puncherConnection.getResponse().poll().get();
     List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
@@ -1322,7 +1324,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     GameConnection observerConnection = createGameConnection("localhost", port);
     observerConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName(observerPlayerName)
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName(observerPlayerName)
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerConnection.getResponse());
 
@@ -1365,7 +1367,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
   @Test
   public void testShootDeadPlayer() throws Exception {
     int gameIdToConnectTo = 0;
-    var shotgunInfo = ATTACKS_INFO.stream()
+    var shotgunInfo = AttackStats.getAttacksInfo(RPGPlayerClass.WARRIOR).stream()
         .filter(attackInfo -> attackInfo.getAttackType() == AttackType.SHOTGUN).findFirst().get();
     doReturn(PlayerState.PlayerCoordinates.builder()
         .position(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(0F).build())
@@ -1378,12 +1380,12 @@ public class ShootingEventTest extends AbstractGameServerTest {
     GameConnection shooterConnection = createGameConnection("localhost", port);
     shooterConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName("my player name")
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     GameConnection deadPlayerConnection = createGameConnection("localhost", port);
     deadPlayerConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName("my other player name")
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(shooterConnection.getResponse());
     waitUntilQueueNonEmpty(deadPlayerConnection.getResponse());
@@ -1443,7 +1445,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         "Should be no errors as this situation might happen in a fast paced game");
 
     emptyQueue(shooterConnection.getResponse());
-    shooterConnection.write(GetServerInfoCommand.newBuilder().build());
+    shooterConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR).build());
     waitUntilQueueNonEmpty(shooterConnection.getResponse());
     var serverInfoResponse = shooterConnection.getResponse().poll().get();
     List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
@@ -1465,7 +1467,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     GameConnection selfShootingConnection = createGameConnection("localhost", port);
     selfShootingConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER).setPlayerName("my player name")
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(selfShootingConnection.getResponse());
     ServerResponse shooterPlayerSpawn = selfShootingConnection.getResponse().poll().get();
@@ -1498,7 +1500,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
 
     GameConnection gameConnection = createGameConnection("localhost", port);
 
-    gameConnection.write(GetServerInfoCommand.newBuilder().build());
+    gameConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
     ServerResponse serverResponse = gameConnection.getResponse().poll().get();
     List<ServerResponse.GameInfo> games = serverResponse.getServerInfo().getGamesList();

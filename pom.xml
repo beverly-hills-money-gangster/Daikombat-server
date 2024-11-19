@@ -12,7 +12,7 @@
 
     <groupId>com.beverly.hills.money.gang</groupId>
     <artifactId>daikombat-server</artifactId>
-    <version>16.0.0</version>
+    <version>17.0.0</version>
     <packaging>pom</packaging>
 
     <modules>

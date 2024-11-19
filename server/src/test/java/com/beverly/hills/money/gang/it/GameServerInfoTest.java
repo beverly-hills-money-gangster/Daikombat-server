@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
+import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.state.AttackType;
 import java.io.IOException;
@@ -19,18 +20,20 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_TELEPORTS_ENABLED", value = "false")
+
 public class GameServerInfoTest extends AbstractGameServerTest {
 
   /**
-   * @given a running game serve
+   * @given a running game server
    * @when player 1 requests server info
    * @then player 1 gets server info for all games
    */
   @Test
-  public void testGetServerInfo() throws IOException {
+  public void testGetServerInfoCommoner() throws IOException {
     GameConnection gameConnection = createGameConnection("localhost", port);
 
-    gameConnection.write(GetServerInfoCommand.newBuilder().build());
+    gameConnection.write(GetServerInfoCommand.newBuilder()
+        .setPlayerClass(PlayerClass.WARRIOR).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
     assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
     assertEquals(1, gameConnection.getResponse().size(), "Should be exactly one response");

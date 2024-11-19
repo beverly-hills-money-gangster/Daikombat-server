@@ -23,6 +23,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "9999")
 @SetEnvironmentVariable(key = "GAME_SERVER_PLAYER_SPEED_CHECK_FREQUENCY_MLS", value = "1000")
+
 public class MoveAntiCheatTest extends AbstractGameServerTest {
 
   @MockBean
@@ -41,7 +42,7 @@ public class MoveAntiCheatTest extends AbstractGameServerTest {
     cheatingPlayerConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(
-                PlayerClass.COMMONER)
+                PlayerClass.WARRIOR)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(cheatingPlayerConnection.getResponse());
@@ -53,7 +54,7 @@ public class MoveAntiCheatTest extends AbstractGameServerTest {
         "localhost", port);
     observerPlayerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.COMMONER)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("new player")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerPlayerConnection.getResponse());

@@ -2,6 +2,6 @@ package com.beverly.hills.money.gang.state;
 
 public enum PlayerRPGStatType {
 
-  ATTACK, DEFENSE, VAMPIRISM
+  ATTACK, DEFENSE, VAMPIRISM, GUN_SPEED
 
 }

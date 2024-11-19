@@ -41,7 +41,7 @@ public class ConcurrentKillTest extends AbstractGameServerTest {
    * @then none of them receive an ERROR event
    */
   @RepeatedTest(4)
-  public void testKillConcurrent() throws InterruptedException, IOException {
+  public void testKillConcurrent() throws InterruptedException {
     AtomicBoolean failed = new AtomicBoolean(false);
     List<Thread> joinThreads = new ArrayList<>();
     List<SpawnWithGameConnection> spawnsWithConnections = new CopyOnWriteArrayList<>();
@@ -54,7 +54,7 @@ public class ConcurrentKillTest extends AbstractGameServerTest {
           gameConnection.write(
               JoinGameCommand.newBuilder()
                   .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-                  .setPlayerClass(PlayerClass.COMMONER)
+                  .setPlayerClass(PlayerClass.WARRIOR)
                   .setPlayerName("my player name " + finalJ)
                   .setGameId(0).build());
           waitUntilQueueNonEmpty(gameConnection.getResponse());

@@ -38,6 +38,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "999999")
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "999999")
 @SetEnvironmentVariable(key = "GAME_SERVER_PLAYER_SPEED_CHECK_FREQUENCY_MLS", value = "1000")
+
 public class TeleportTest extends AbstractGameServerTest {
 
 
@@ -73,7 +74,7 @@ public class TeleportTest extends AbstractGameServerTest {
     playerConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(
-                PlayerClass.COMMONER)
+                PlayerClass.WARRIOR)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilGetResponses(playerConnection.getResponse(), 2);

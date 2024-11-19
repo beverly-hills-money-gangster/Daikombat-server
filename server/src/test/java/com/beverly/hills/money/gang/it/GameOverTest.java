@@ -22,6 +22,7 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_FRAGS_PER_GAME", value = "5")
 @SetEnvironmentVariable(key = "GAME_SERVER_TELEPORTS_ENABLED", value = "false")
+
 @SetEnvironmentVariable(key = "GAME_SERVER_DEFAULT_SHOTGUN_DAMAGE", value = "100") // one shot kill
 public class GameOverTest extends AbstractGameServerTest {
 
@@ -41,7 +42,7 @@ public class GameOverTest extends AbstractGameServerTest {
     killerConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(
-                PlayerClass.COMMONER)
+                PlayerClass.WARRIOR)
             .setPlayerName(shooterPlayerName)
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(killerConnection.getResponse());
@@ -54,7 +55,7 @@ public class GameOverTest extends AbstractGameServerTest {
           port);
       deadConnection.write(
           JoinGameCommand.newBuilder()
-              .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.COMMONER)
+              .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.WARRIOR)
               .setPlayerName("my other player name " + i)
               .setGameId(gameIdToConnectTo).build());
       waitUntilQueueNonEmpty(killerConnection.getResponse());

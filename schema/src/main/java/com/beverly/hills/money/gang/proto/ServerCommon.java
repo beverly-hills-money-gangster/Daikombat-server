@@ -35,10 +35,10 @@ public final class ServerCommon {
       "WeaponType\022\t\n\005PUNCH\020\000\022\013\n\007SHOTGUN\020\001\022\013\n\007RA" +
       "ILGUN\020\002\022\013\n\007MINIGUN\020\003*T\n\017PlayerSkinColor\022" +
       "\t\n\005GREEN\020\000\022\010\n\004PINK\020\001\022\n\n\006PURPLE\020\002\022\010\n\004BLUE" +
-      "\020\003\022\n\n\006YELLOW\020\004\022\n\n\006ORANGE\020\005*S\n\013PlayerClas" +
-      "s\022\014\n\010COMMONER\020\000\022\023\n\017DRACULA_BERSERK\020\001\022\016\n\n" +
-      "DEMON_TANK\020\002\022\021\n\rBEAST_WARRIOR\020\003B&\n\"com.b" +
-      "everly.hills.money.gang.protoP\001b\006proto3"
+      "\020\003\022\n\n\006YELLOW\020\004\022\n\n\006ORANGE\020\005*>\n\013PlayerClas" +
+      "s\022\013\n\007WARRIOR\020\000\022\022\n\016ANGRY_SKELETON\020\001\022\016\n\nDE" +
+      "MON_TANK\020\002B&\n\"com.beverly.hills.money.ga" +
+      "ng.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

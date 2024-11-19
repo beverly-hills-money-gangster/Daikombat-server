@@ -60,7 +60,8 @@ public class GameConnectionTest extends AbstractGameServerTest {
     assertTrue(gameConnection1.isDisconnected(), "Player 1 should be disconnected now");
     assertTrue(gameConnection2.isConnected(), "Player 2 should be connected");
 
-    gameConnection1.write(GetServerInfoCommand.newBuilder().build());
+    gameConnection1.write(GetServerInfoCommand.newBuilder()
+        .setPlayerClass(PlayerClass.COMMONER).build());
     Thread.sleep(250);
     assertEquals(0, gameConnection1.getResponse().size(),
         "Should be no response because the connection is closed");
@@ -96,7 +97,8 @@ public class GameConnectionTest extends AbstractGameServerTest {
     gameConnection.disconnect(); // call twice
     assertTrue(gameConnection.isDisconnected(), "Should be disconnected after disconnecting");
     assertFalse(gameConnection.isConnected());
-    gameConnection.write(GetServerInfoCommand.newBuilder().build());
+    gameConnection.write(GetServerInfoCommand.newBuilder()
+        .setPlayerClass(PlayerClass.COMMONER).build());
     Thread.sleep(250);
     assertEquals(0, gameConnection.getResponse().size(),
         "Should be no response because the connection is closed");

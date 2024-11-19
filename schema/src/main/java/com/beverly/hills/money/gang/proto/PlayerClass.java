@@ -25,6 +25,10 @@ public enum PlayerClass
    * <code>BEAST_WARRIOR = 3;</code>
    */
   BEAST_WARRIOR(3),
+  /**
+   * <code>GUNSLINGER = 4;</code>
+   */
+  GUNSLINGER(4),
   UNRECOGNIZED(-1),
   ;
 
@@ -44,6 +48,10 @@ public enum PlayerClass
    * <code>BEAST_WARRIOR = 3;</code>
    */
   public static final int BEAST_WARRIOR_VALUE = 3;
+  /**
+   * <code>GUNSLINGER = 4;</code>
+   */
+  public static final int GUNSLINGER_VALUE = 4;
 
 
   public final int getNumber() {
@@ -74,6 +82,7 @@ public enum PlayerClass
       case 1: return DRACULA_BERSERK;
       case 2: return DEMON_TANK;
       case 3: return BEAST_WARRIOR;
+      case 4: return GUNSLINGER;
       default: return null;
     }
   }

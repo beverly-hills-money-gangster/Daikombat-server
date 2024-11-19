@@ -27,6 +27,7 @@ enum PlayerClass{
   DRACULA_BERSERK = 1;
   DEMON_TANK = 2;
   BEAST_WARRIOR = 3;
+  GUNSLINGER = 4;
 }
 
 

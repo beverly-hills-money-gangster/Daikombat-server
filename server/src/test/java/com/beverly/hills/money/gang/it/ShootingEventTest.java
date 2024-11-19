@@ -1,6 +1,5 @@
 package com.beverly.hills.money.gang.it;
 
-import static com.beverly.hills.money.gang.state.entity.AttackStats.ATTACKS_INFO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -23,7 +22,9 @@ import com.beverly.hills.money.gang.proto.Vector;
 import com.beverly.hills.money.gang.proto.WeaponType;
 import com.beverly.hills.money.gang.spawner.Spawner;
 import com.beverly.hills.money.gang.state.AttackType;
+import com.beverly.hills.money.gang.state.entity.AttackStats;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
+import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Supplier;
@@ -178,7 +179,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
   @Test
   public void testShootHit() throws Exception {
 
-    var shotgunInfo = ATTACKS_INFO.stream()
+    var shotgunInfo = AttackStats.getAttacksInfo(RPGPlayerClass.COMMONER).stream()
         .filter(attackInfo -> attackInfo.getAttackType() == AttackType.SHOTGUN).findFirst().get();
 
     doReturn(PlayerState.PlayerCoordinates.builder()
@@ -259,7 +260,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(2, shooterConnection.getNetworkStats().getSentMessages(),
         "Only 2 messages must be sent by shooter: join + shoot");
     emptyQueue(shooterConnection.getResponse());
-    shooterConnection.write(GetServerInfoCommand.newBuilder().build());
+    shooterConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.COMMONER).build());
     waitUntilQueueNonEmpty(shooterConnection.getResponse());
     var serverInfoResponse = shooterConnection.getResponse().poll().get();
     List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
@@ -358,7 +359,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(2, shooterConnection.getNetworkStats().getSentMessages(),
         "Only 2 messages must be sent by shooter: join + shoot");
     emptyQueue(shooterConnection.getResponse());
-    shooterConnection.write(GetServerInfoCommand.newBuilder().build());
+    shooterConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.COMMONER).build());
     waitUntilQueueNonEmpty(shooterConnection.getResponse());
     var serverInfoResponse = shooterConnection.getResponse().poll().get();
     List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
@@ -458,7 +459,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(2, shooterConnection.getNetworkStats().getSentMessages(),
         "Only 2 messages must be sent by shooter: join + shoot");
     emptyQueue(shooterConnection.getResponse());
-    shooterConnection.write(GetServerInfoCommand.newBuilder().build());
+    shooterConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.COMMONER).build());
     waitUntilQueueNonEmpty(shooterConnection.getResponse());
     var serverInfoResponse = shooterConnection.getResponse().poll().get();
     List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
@@ -545,7 +546,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(2, punchingConnection.getNetworkStats().getSentMessages(),
         "Only 2 messages must be sent by puncher: join + punch");
     emptyQueue(punchingConnection.getResponse());
-    punchingConnection.write(GetServerInfoCommand.newBuilder().build());
+    punchingConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.COMMONER).build());
     waitUntilQueueNonEmpty(punchingConnection.getResponse());
     var serverInfoResponse = punchingConnection.getResponse().poll().get();
     List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
@@ -661,7 +662,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
   public void testShootKill() throws Exception {
     int gameIdToConnectTo = 0;
     String shooterPlayerName = "killer";
-    var shotgunInfo = ATTACKS_INFO.stream()
+    var shotgunInfo = AttackStats.getAttacksInfo(RPGPlayerClass.COMMONER).stream()
         .filter(attackInfo -> attackInfo.getAttackType() == AttackType.SHOTGUN).findFirst().get();
     doReturn(PlayerState.PlayerCoordinates.builder()
         .position(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(0F).build())
@@ -757,7 +758,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(WeaponType.SHOTGUN, killerShootingEvent.getWeaponType());
     assertEquals(shooterPlayerId, killerShootingEvent.getPlayer().getPlayerId());
 
-    killerConnection.write(GetServerInfoCommand.newBuilder().build());
+    killerConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.COMMONER).build());
     waitUntilQueueNonEmpty(killerConnection.getResponse());
     var serverInfoResponse = killerConnection.getResponse().poll().get();
     List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
@@ -815,7 +816,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
   public void testShootMinigunKill() throws Exception {
     int gameIdToConnectTo = 0;
     String shooterPlayerName = "killer";
-    var shotgunInfo = ATTACKS_INFO.stream()
+    var shotgunInfo = AttackStats.getAttacksInfo(RPGPlayerClass.COMMONER).stream()
         .filter(attackInfo -> attackInfo.getAttackType() == AttackType.MINIGUN).findFirst().get();
     doReturn(PlayerState.PlayerCoordinates.builder()
         .position(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(0F).build())
@@ -911,7 +912,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(WeaponType.MINIGUN, killerShootingEvent.getWeaponType());
     assertEquals(shooterPlayerId, killerShootingEvent.getPlayer().getPlayerId());
 
-    killerConnection.write(GetServerInfoCommand.newBuilder().build());
+    killerConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.COMMONER).build());
     waitUntilQueueNonEmpty(killerConnection.getResponse());
     var serverInfoResponse = killerConnection.getResponse().poll().get();
     List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
@@ -1030,7 +1031,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(WeaponType.RAILGUN, killerShootingEvent.getWeaponType());
     assertEquals(shooterPlayerId, killerShootingEvent.getPlayer().getPlayerId());
 
-    killerConnection.write(GetServerInfoCommand.newBuilder().build());
+    killerConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.COMMONER).build());
     waitUntilQueueNonEmpty(killerConnection.getResponse());
     var serverInfoResponse = killerConnection.getResponse().poll().get();
     List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
@@ -1165,7 +1166,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(WeaponType.RAILGUN, killerShootingEvent.getWeaponType());
     assertEquals(shooterPlayerId, killerShootingEvent.getPlayer().getPlayerId());
 
-    killerConnection.write(GetServerInfoCommand.newBuilder().build());
+    killerConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.COMMONER).build());
     waitUntilQueueNonEmpty(killerConnection.getResponse());
     var serverInfoResponse = killerConnection.getResponse().poll().get();
     List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
@@ -1308,7 +1309,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(WeaponType.PUNCH, killerShootingEvent.getWeaponType());
     assertEquals(puncherPlayerId, killerShootingEvent.getPlayer().getPlayerId());
 
-    puncherConnection.write(GetServerInfoCommand.newBuilder().build());
+    puncherConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.COMMONER).build());
     waitUntilQueueNonEmpty(puncherConnection.getResponse());
     var serverInfoResponse = puncherConnection.getResponse().poll().get();
     List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
@@ -1365,7 +1366,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
   @Test
   public void testShootDeadPlayer() throws Exception {
     int gameIdToConnectTo = 0;
-    var shotgunInfo = ATTACKS_INFO.stream()
+    var shotgunInfo = AttackStats.getAttacksInfo(RPGPlayerClass.COMMONER).stream()
         .filter(attackInfo -> attackInfo.getAttackType() == AttackType.SHOTGUN).findFirst().get();
     doReturn(PlayerState.PlayerCoordinates.builder()
         .position(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(0F).build())
@@ -1443,7 +1444,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         "Should be no errors as this situation might happen in a fast paced game");
 
     emptyQueue(shooterConnection.getResponse());
-    shooterConnection.write(GetServerInfoCommand.newBuilder().build());
+    shooterConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.COMMONER).build());
     waitUntilQueueNonEmpty(shooterConnection.getResponse());
     var serverInfoResponse = shooterConnection.getResponse().poll().get();
     List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
@@ -1498,7 +1499,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
 
     GameConnection gameConnection = createGameConnection("localhost", port);
 
-    gameConnection.write(GetServerInfoCommand.newBuilder().build());
+    gameConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.COMMONER).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
     ServerResponse serverResponse = gameConnection.getResponse().poll().get();
     List<ServerResponse.GameInfo> games = serverResponse.getServerInfo().getGamesList();

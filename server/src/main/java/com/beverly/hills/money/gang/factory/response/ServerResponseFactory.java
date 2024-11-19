@@ -260,7 +260,18 @@ public interface ServerResponseFactory {
       case BERSERK -> PlayerClass.DRACULA_BERSERK;
       case TANK -> PlayerClass.DEMON_TANK;
       case WARRIOR -> PlayerClass.BEAST_WARRIOR;
+      case GUNSLINGER -> PlayerClass.GUNSLINGER;
+    };
+  }
 
+  static RPGPlayerClass getRPGPlayerClass(PlayerClass playerClass) {
+    return switch (playerClass) {
+      case COMMONER -> RPGPlayerClass.COMMONER;
+      case DRACULA_BERSERK -> RPGPlayerClass.BERSERK;
+      case BEAST_WARRIOR -> RPGPlayerClass.WARRIOR;
+      case DEMON_TANK -> RPGPlayerClass.TANK;
+      case GUNSLINGER -> RPGPlayerClass.GUNSLINGER;
+      default -> throw new IllegalArgumentException("Not supported player class");
     };
   }
 

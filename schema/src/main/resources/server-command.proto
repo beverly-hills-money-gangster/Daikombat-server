@@ -20,7 +20,9 @@ message ServerCommand {
   }
 }
 
-message GetServerInfoCommand {}
+message GetServerInfoCommand {
+  optional PlayerClass playerClass = 1;
+}
 
 message PingCommand {}
 

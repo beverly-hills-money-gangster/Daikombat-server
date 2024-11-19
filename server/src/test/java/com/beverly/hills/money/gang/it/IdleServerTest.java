@@ -44,7 +44,8 @@ public class IdleServerTest extends AbstractGameServerTest {
     var mySpawn = gameConnection.getResponse().poll().get().getGameEvents().getEvents(0);
     int playerId = mySpawn.getPlayer().getPlayerId();
 
-    gameConnection.write(GetServerInfoCommand.newBuilder().build());
+    gameConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.COMMONER)
+        .build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
     ServerResponse serverResponse = gameConnection.getResponse().poll().get();
     var myGame = serverResponse.getServerInfo().getGamesList().stream().filter(gameInfo

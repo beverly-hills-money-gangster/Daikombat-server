@@ -11,7 +11,7 @@ import com.beverly.hills.money.gang.state.PlayerGameStatsReader;
 import com.beverly.hills.money.gang.state.PlayerRPGStatType;
 import com.beverly.hills.money.gang.state.PlayerRPGStats;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
-import com.beverly.hills.money.gang.state.RPGStatsFactory;
+import com.beverly.hills.money.gang.factory.RPGStatsFactory;
 import com.google.common.util.concurrent.AtomicDouble;
 import java.util.ArrayList;
 import java.util.List;

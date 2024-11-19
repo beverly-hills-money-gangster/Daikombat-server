@@ -1,13 +1,13 @@
 package com.beverly.hills.money.gang.handler.command;
 
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createServerInfo;
-import static com.beverly.hills.money.gang.state.entity.AttackStats.ATTACKS_INFO;
+import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.getRPGPlayerClass;
 
-import com.beverly.hills.money.gang.cheat.AntiCheat;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.proto.ServerCommand.CommandCase;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
+import com.beverly.hills.money.gang.state.entity.AttackStats;
 import io.netty.channel.Channel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class GetServerInfoCommandHandler extends ServerCommandHandler {
 
   @Override
   protected boolean isValidCommand(ServerCommand msg, Channel currentChannel) {
-    return true;
+    return msg.getGetServerInfoCommand().hasPlayerClass();
   }
 
   @Override
@@ -37,7 +37,7 @@ public class GetServerInfoCommandHandler extends ServerCommandHandler {
         ServerConfig.VERSION,
         gameRoomRegistry.getGames().map(game -> game),
         ServerConfig.FRAGS_PER_GAME,
-        ATTACKS_INFO,
+        AttackStats.getAttacksInfo(getRPGPlayerClass(msg.getGetServerInfoCommand().getPlayerClass())),
         ServerConfig.MOVES_UPDATE_FREQUENCY_MLS,
         ServerConfig.PLAYER_SPEED));
   }

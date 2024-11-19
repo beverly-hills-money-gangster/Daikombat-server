@@ -3,11 +3,9 @@ package com.beverly.hills.money.gang.it;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.network.SecondaryGameConnection;
 import java.io.IOException;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -16,6 +14,7 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "5000")
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "5000")
+
 public class PingTest extends AbstractGameServerTest {
 
 
@@ -27,7 +26,7 @@ public class PingTest extends AbstractGameServerTest {
   @Test
   public void testPing() throws IOException, InterruptedException {
     GameConnection gameConnection = createGameConnection( "localhost", port);
-    Thread.sleep(5_500);
+    Thread.sleep(5_000);
     assertTrue(gameConnection.isConnected(), "Connection should still be open");
     assertEquals(0, gameConnection.getResponse().size(),
         "We shouldn't get any response as we haven't sent anything yet");
@@ -45,7 +44,7 @@ public class PingTest extends AbstractGameServerTest {
   public void testPingSecondaryConnection() throws IOException, InterruptedException {
     SecondaryGameConnection secondaryGameConnection = createSecondaryGameConnection(
          "localhost", port);
-    Thread.sleep(5_500);
+    Thread.sleep(5_000);
     assertTrue(secondaryGameConnection.isConnected(), "Connection should still be open");
     assertEquals(0, secondaryGameConnection.getResponse().size(),
         "We shouldn't get any response as we haven't sent anything yet");

@@ -23,6 +23,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "9999")
 @SetEnvironmentVariable(key = "GAME_SERVER_PLAYER_SPEED_CHECK_FREQUENCY_MLS", value = "1000")
+
 public class MoveAntiCheatTest extends AbstractGameServerTest {
 
   @MockBean

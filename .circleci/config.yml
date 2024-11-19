@@ -4,7 +4,7 @@ version: 2.1
 jobs:
   test-java:
     docker:
-      - image: maven:3.6.3-openjdk-14
+      - image: docker.io/library/maven@sha256:aea55d01edac9df38eb17d19f6aabb55263f93cc8b23ac170a792922111ea487
     steps:
       - checkout
       - run:
@@ -14,6 +14,8 @@ jobs:
                     sort | xargs cat > /tmp/CIRCLECI_CACHE_KEY
       - restore_cache:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
+      - run:
+          command: cat /proc/sys/kernel/threads-max
       - run:
           command: mvn verify
       - run:

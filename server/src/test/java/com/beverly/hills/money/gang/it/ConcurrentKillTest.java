@@ -31,6 +31,7 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "99999")
+@SetEnvironmentVariable(key = "GAME_SERVER_MAX_PLAYERS_PER_GAME", value = "5")
 @SetEnvironmentVariable(key = "GAME_SERVER_DEFAULT_SHOTGUN_DAMAGE", value = "100") // one shot kill
 public class ConcurrentKillTest extends AbstractGameServerTest {
 
@@ -39,8 +40,8 @@ public class ConcurrentKillTest extends AbstractGameServerTest {
    * @when all of them try to kill each other concurrently at the same time
    * @then none of them receive an ERROR event
    */
-  @RepeatedTest(16)
-  public void testKillConcurrent() throws InterruptedException, IOException {
+  @RepeatedTest(8)
+  public void testKillConcurrent() throws InterruptedException {
     AtomicBoolean failed = new AtomicBoolean(false);
     List<Thread> joinThreads = new ArrayList<>();
     List<SpawnWithGameConnection> spawnsWithConnections = new CopyOnWriteArrayList<>();

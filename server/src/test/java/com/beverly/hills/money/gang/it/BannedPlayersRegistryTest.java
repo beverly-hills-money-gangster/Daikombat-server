@@ -16,6 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith({SpringExtension.class, OutputCaptureExtension.class})
 @ContextConfiguration(classes = TestConfig.class)
 @SetEnvironmentVariable(key = "GAME_SERVER_BAN_TIMEOUT_MLS", value = "5000")
+
 public class BannedPlayersRegistryTest {
 
   @Autowired

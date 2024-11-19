@@ -50,7 +50,7 @@ public class AttackStats {
               attackType -> AttackInfo
                   .builder()
                   .attackType(attackType)
-                  .delayMls(Math.max((int) (ATTACK_DELAY_MLS.get(attackType) / gunSpeed), 100))
+                  .delayMls(Math.max((int) (ATTACK_DELAY_MLS.get(attackType) / gunSpeed), 150))
                   .maxDistance(MAX_ATTACK_DISTANCE.get(attackType))
                   .defaultDamage(ATTACK_DAMAGE.get(attackType))
                   .build())

@@ -108,7 +108,7 @@ public abstract class AbstractGameServerTest {
   }
 
   @AfterEach
-  public void tearDown() {
+  public void tearDown() throws InterruptedException {
     gameConnections.forEach(AbstractGameConnection::disconnect);
     secondaryGameConnections.forEach(AbstractGameConnection::disconnect);
     serverRunner.stop();

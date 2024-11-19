@@ -43,14 +43,16 @@ public class IdleClientTest extends AbstractGameServerTest {
     gameConnectionIdle.write(
         JoinGameCommand.newBuilder()
             .setVersion(ClientConfig.VERSION)
-            .setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.COMMONER)
-            .setPlayerName("my player name")
+            .setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.COMMONER)
+            .setPlayerName("some player name")
             .setGameId(gameToConnectTo).build());
     gameConnectionObserver.write(
         JoinGameCommand.newBuilder()
             .setVersion(ClientConfig.VERSION)
-            .setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.COMMONER)
-            .setPlayerName("my player name observer")
+            .setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.COMMONER)
+            .setPlayerName("other player name observer")
             .setGameId(gameToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnectionIdle.getResponse());
     waitUntilQueueNonEmpty(gameConnectionObserver.getResponse());

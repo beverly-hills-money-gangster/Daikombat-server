@@ -11,17 +11,16 @@ import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.powerup.InvisibilityPowerUp;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
+import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType;
 import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem;
-import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.Vector;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -32,6 +31,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "999999")
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "999999")
 @SetEnvironmentVariable(key = "GAME_SERVER_TELEPORTS_ENABLED", value = "false")
+
 public class InvisibilityPowerUpTest extends AbstractGameServerTest {
 
 

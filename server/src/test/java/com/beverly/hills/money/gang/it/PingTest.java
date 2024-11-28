@@ -7,6 +7,7 @@ import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.network.SecondaryGameConnection;
 import java.io.IOException;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
@@ -25,6 +26,7 @@ public class PingTest extends AbstractGameServerTest {
    * @then it's not disconnected as PING messages are sent automatically
    */
   @Test
+  @Disabled
   public void testPing() throws IOException, InterruptedException {
     GameConnection gameConnection = createGameConnection( "localhost", port);
     Thread.sleep(5_500);

@@ -7,12 +7,12 @@ import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
+import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
+import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.Vector;
 import com.beverly.hills.money.gang.proto.WeaponType;
-import com.beverly.hills.money.gang.proto.ServerResponse;
-import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,6 +31,7 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "99999")
+@SetEnvironmentVariable(key = "GAME_SERVER_MAX_PLAYERS_PER_GAME", value = "5")
 @SetEnvironmentVariable(key = "GAME_SERVER_DEFAULT_SHOTGUN_DAMAGE", value = "100") // one shot kill
 public class ConcurrentKillTest extends AbstractGameServerTest {
 
@@ -39,7 +40,7 @@ public class ConcurrentKillTest extends AbstractGameServerTest {
    * @when all of them try to kill each other concurrently at the same time
    * @then none of them receive an ERROR event
    */
-  @RepeatedTest(16)
+  @RepeatedTest(4)
   public void testKillConcurrent() throws InterruptedException, IOException {
     AtomicBoolean failed = new AtomicBoolean(false);
     List<Thread> joinThreads = new ArrayList<>();

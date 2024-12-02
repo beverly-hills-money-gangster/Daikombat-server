@@ -11,6 +11,7 @@ import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.network.AbstractGameConnection;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.network.SecondaryGameConnection;
+import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
 import com.beverly.hills.money.gang.queue.QueueReader;
@@ -26,7 +27,6 @@ import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -95,7 +95,7 @@ public abstract class AbstractGameServerTest {
 
 
   @BeforeEach
-  public void setUp() throws InterruptedException {
+  public void setUp() throws InterruptedException, IOException {
     port = createRandomPort();
     serverRunner = applicationContext.getBean(ServerRunner.class);
     new Thread(() -> {
@@ -106,6 +106,27 @@ public abstract class AbstractGameServerTest {
       }
     }).start();
     serverRunner.waitFullyRunning();
+    waitUntilServerIsHealthy();
+  }
+
+  private void waitUntilServerIsHealthy() throws IOException, InterruptedException {
+    int maxHealthChecks = 10;
+    GameConnection gameConnection;
+    for (int i = 0; i < maxHealthChecks; i++) {
+      gameConnection = new GameConnection(HostPort.builder().host("localhost").port(port).build());
+      gameConnection.waitUntilConnected(5_000);
+      gameConnection.write(GetServerInfoCommand.newBuilder().build());
+      try {
+        waitUntilGetResponses(gameConnection.getResponse(), 1, 2_000);
+        LOG.info("Server is ready on port {}", port);
+        return;
+      } catch (Exception e) {
+        LOG.warn("Server is not ready", e);
+      } finally {
+        gameConnection.disconnect();
+      }
+    }
+    throw new IOException("Can't start server");
   }
 
   @AfterEach
@@ -153,7 +174,12 @@ public abstract class AbstractGameServerTest {
   }
 
   protected void waitUntilGetResponses(QueueReader<?> queueReader, int responseCount) {
-    long stopWaitTimeMls = System.currentTimeMillis() + MAX_QUEUE_WAIT_TIME_MLS;
+    waitUntilGetResponses(queueReader, responseCount, MAX_QUEUE_WAIT_TIME_MLS);
+  }
+
+  protected void waitUntilGetResponses(QueueReader<?> queueReader, int responseCount,
+      int maxWaitTimeMls) {
+    long stopWaitTimeMls = System.currentTimeMillis() + maxWaitTimeMls;
     while (System.currentTimeMillis() < stopWaitTimeMls) {
       if (queueReader.size() >= responseCount) {
         return;

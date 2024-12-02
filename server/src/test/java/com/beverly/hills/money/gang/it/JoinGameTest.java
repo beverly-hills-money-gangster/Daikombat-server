@@ -491,7 +491,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @then all players are successfully connected
    */
   @Test
-  @Disabled
+  @Disabled("Circle CI fails to run it for some reason")
   public void testJoinGameMaxPlayersAllGames() throws Exception {
     List<Thread> threads = new ArrayList<>();
     for (int gameId = 0; gameId < ServerConfig.GAMES_TO_CREATE; gameId++) {

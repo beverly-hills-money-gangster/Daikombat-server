@@ -26,6 +26,7 @@ import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -110,6 +111,12 @@ public abstract class AbstractGameServerTest {
   @AfterEach
   public void tearDown() {
     gameConnections.forEach(AbstractGameConnection::disconnect);
+    gameConnections.forEach(gameConnection -> {
+      gameConnection.getErrors().list().forEach(
+          throwable -> LOG.error("Got error while testing", throwable));
+      gameConnection.getWarning().list().forEach(
+          throwable -> LOG.error("Got warning while testing", throwable));
+    });
     secondaryGameConnections.forEach(AbstractGameConnection::disconnect);
     serverRunner.stop();
     gameConnections.clear();

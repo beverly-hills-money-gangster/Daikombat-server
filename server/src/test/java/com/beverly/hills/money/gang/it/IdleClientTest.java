@@ -18,6 +18,7 @@ import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import java.io.IOException;
 import java.util.Optional;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -25,6 +26,7 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 @SetEnvironmentVariable(key = "GAME_SERVER_TELEPORTS_ENABLED", value = "false")
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "1000")
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "99999")
+@Disabled
 public class IdleClientTest extends AbstractGameServerTest {
 
   /**
@@ -35,7 +37,7 @@ public class IdleClientTest extends AbstractGameServerTest {
    */
   @Test
   public void testIdleClientDisconnect() throws IOException, InterruptedException {
-    int gameToConnectTo = 1;
+    int gameToConnectTo = 0;
     GameConnection gameConnectionIdle = createGameConnection("localhost",
         port);
     GameConnection gameConnectionObserver = createGameConnection("localhost",

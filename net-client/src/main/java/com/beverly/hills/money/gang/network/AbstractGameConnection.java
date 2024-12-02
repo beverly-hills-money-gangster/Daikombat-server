@@ -189,7 +189,8 @@ public abstract class AbstractGameConnection {
     Optional.ofNullable(channelRef.get()).ifPresent(channel -> {
       channel.writeAndFlush(serverCommand).addListener((ChannelFutureListener) future -> {
         if (!future.isSuccess()) {
-          errorsQueueAPI.push(new IOException("Failed to write command " + serverCommand));
+          errorsQueueAPI.push(
+              new IOException("Failed to write command " + serverCommand, future.cause()));
         } else {
           networkStats.incSentMessages();
         }

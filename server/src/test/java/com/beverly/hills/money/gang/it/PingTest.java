@@ -17,6 +17,7 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "5000")
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "5000")
+@Disabled("Circle CI fails to run it for some reason")
 public class PingTest extends AbstractGameServerTest {
 
 
@@ -26,7 +27,6 @@ public class PingTest extends AbstractGameServerTest {
    * @then it's not disconnected as PING messages are sent automatically
    */
   @Test
-  @Disabled
   public void testPing() throws IOException, InterruptedException {
     GameConnection gameConnection = createGameConnection( "localhost", port);
     Thread.sleep(5_500);

@@ -75,7 +75,6 @@ public class GameConnectionInitializer extends ChannelInitializer<SocketChannel>
 
       @Override
       public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        LOG.info("Channel is active. Options {}", ctx.channel().config().getOptions());
         super.channelActive(ctx);
       }
 

@@ -256,11 +256,18 @@ public interface ServerResponseFactory {
 
   static PlayerClass createPlayerClass(RPGPlayerClass rpgPlayerClass) {
     return switch (rpgPlayerClass) {
-      case COMMONER -> PlayerClass.COMMONER;
-      case BERSERK -> PlayerClass.DRACULA_BERSERK;
-      case TANK -> PlayerClass.DEMON_TANK;
-      case WARRIOR -> PlayerClass.BEAST_WARRIOR;
+      case ANGRY_SKELETON -> PlayerClass.ANGRY_SKELETON;
+      case DEMON_TANK -> PlayerClass.DEMON_TANK;
+      case WARRIOR -> PlayerClass.WARRIOR;
+    };
+  }
 
+  static RPGPlayerClass getRPGPlayerClass(PlayerClass playerClass) {
+    return switch (playerClass) {
+      case ANGRY_SKELETON -> RPGPlayerClass.ANGRY_SKELETON;
+      case DEMON_TANK -> RPGPlayerClass.DEMON_TANK;
+      case WARRIOR -> RPGPlayerClass.WARRIOR;
+      default -> throw new IllegalArgumentException("Not supported player class");
     };
   }
 

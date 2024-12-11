@@ -27,7 +27,7 @@ public class PlayerStateTest {
     PlayerState playerState = new PlayerState(
         "test player",
         PlayerState.PlayerCoordinates.builder().build(), 123, PlayerStateColor.GREEN,
-        RPGPlayerClass.COMMONER);
+        RPGPlayerClass.WARRIOR);
 
     playerState.registerKill();
 
@@ -46,7 +46,7 @@ public class PlayerStateTest {
     PlayerState playerState = new PlayerState(
         "test player",
         PlayerState.PlayerCoordinates.builder().build(), 123, PlayerStateColor.GREEN,
-        RPGPlayerClass.COMMONER);
+        RPGPlayerClass.WARRIOR);
     playerState.getAttacked(AttackType.SHOTGUN, 1);
     playerState.getAttacked(AttackType.SHOTGUN, 1);
 
@@ -65,7 +65,7 @@ public class PlayerStateTest {
     PlayerState playerState = new PlayerState(
         "test player",
         PlayerState.PlayerCoordinates.builder().build(), 123, PlayerStateColor.GREEN,
-        RPGPlayerClass.COMMONER);
+        RPGPlayerClass.WARRIOR);
 
     playerState.getAttacked(AttackType.SHOTGUN, 1);
     playerState.getAttacked(AttackType.SHOTGUN, 1);
@@ -116,7 +116,7 @@ public class PlayerStateTest {
         .build();
     PlayerState playerState = new PlayerState(
         "test player", playerOldCoordinates, 123, PlayerStateColor.GREEN,
-        RPGPlayerClass.COMMONER);
+        RPGPlayerClass.WARRIOR);
     playerState.move(playerNewCoordinates, 0);
 
     assertEquals(playerNewCoordinates, playerState.getCoordinates());
@@ -140,7 +140,7 @@ public class PlayerStateTest {
         .build();
     PlayerState playerState = new PlayerState(
         "test player", playerOldCoordinates, 123, PlayerStateColor.GREEN,
-        RPGPlayerClass.COMMONER);
+        RPGPlayerClass.WARRIOR);
 
     playerState.move(playerNewCoordinates, 0);
     playerState.move(playerNewCoordinates, 1);
@@ -170,7 +170,7 @@ public class PlayerStateTest {
         .build();
     PlayerState playerState = new PlayerState(
         "test player", playerOldCoordinates, 123, PlayerStateColor.GREEN,
-        RPGPlayerClass.COMMONER);
+        RPGPlayerClass.WARRIOR);
 
     playerState.move(playerNewCoordinates1, 2);
     playerState.move(playerNewCoordinates2, 1);

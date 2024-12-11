@@ -58,7 +58,6 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
   @Override
   public void channelActive(ChannelHandlerContext ctx) throws Exception {
     serverTransport.setExtraTCPOptions(ctx.channel().config());
-    LOG.info("Channel is active. Options {}", ctx.channel().config().getOptions());
     super.channelActive(ctx);
   }
 

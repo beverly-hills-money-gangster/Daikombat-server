@@ -51,7 +51,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @then the player is connected
    */
   @ParameterizedTest
-  @ValueSource(ints = {0, 1, 2, 3})
+  @ValueSource(ints = {0, 1, 2})
   public void testJoinGame(int playerClassNumber) throws Exception {
     int gameIdToConnectTo = 0;
 
@@ -74,7 +74,8 @@ public class JoinGameTest extends AbstractGameServerTest {
     assertEquals("my player name", mySpawnGameEvent.getPlayer().getPlayerName());
     assertEquals(100, mySpawnGameEvent.getPlayer().getHealth());
 
-    gameConnection.write(GetServerInfoCommand.newBuilder().build());
+    gameConnection.write(
+        GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
     assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
     assertEquals(1, gameConnection.getResponse().size(), "Should be exactly one response");
@@ -98,7 +99,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     newGameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.DRACULA_BERSERK)
+            .setPlayerClass(PlayerClass.ANGRY_SKELETON)
             .setPlayerName("new player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(newGameConnection.getResponse());
@@ -114,7 +115,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     assertEquals(1, newJoinedPlayerResponse.getGameEvents().getEventsList().size());
     var newPlayerSpawn = newJoinedPlayerResponse.getGameEvents().getEventsList().get(0);
     assertEquals(newPlayerId, newPlayerSpawn.getPlayer().getPlayerId());
-    assertEquals(PlayerClass.DRACULA_BERSERK, newPlayerSpawn.getPlayer().getPlayerClass());
+    assertEquals(PlayerClass.ANGRY_SKELETON, newPlayerSpawn.getPlayer().getPlayerClass());
     assertEquals(GameEventType.JOIN, newPlayerSpawn.getEventType());
   }
 
@@ -133,7 +134,7 @@ public class JoinGameTest extends AbstractGameServerTest {
       gameConnection.write(
           JoinGameCommand.newBuilder()
               .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.ORANGE)
-              .setPlayerClass(PlayerClass.COMMONER)
+              .setPlayerClass(PlayerClass.WARRIOR)
               .setPlayerName("player name " + i)
               .setGameId(gameIdToConnectTo).build());
       waitUntilQueueNonEmpty(gameConnection.getResponse());
@@ -144,7 +145,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     gameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(
-                PlayerClass.COMMONER)
+                PlayerClass.WARRIOR)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
@@ -188,7 +189,8 @@ public class JoinGameTest extends AbstractGameServerTest {
 
     // need a new game connection because the previous is closed
     var newGameConnection = createGameConnection("localhost", port);
-    newGameConnection.write(GetServerInfoCommand.newBuilder().build());
+    newGameConnection.write(
+        GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR).build());
     waitUntilQueueNonEmpty(newGameConnection.getResponse());
     assertEquals(0, newGameConnection.getErrors().size(), "Should be no error");
     assertEquals(1, newGameConnection.getResponse().size(), "Should be exactly one response");
@@ -215,7 +217,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     gameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER)
+            .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
@@ -230,7 +232,8 @@ public class JoinGameTest extends AbstractGameServerTest {
 
     // need a new game connection because the previous is closed
     var newGameConnection = createGameConnection("localhost", port);
-    newGameConnection.write(GetServerInfoCommand.newBuilder().build());
+    newGameConnection.write(
+        GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR).build());
     waitUntilQueueNonEmpty(newGameConnection.getResponse());
     assertEquals(0, newGameConnection.getErrors().size(), "Should be no error");
     assertEquals(1, newGameConnection.getResponse().size(), "Should be exactly one response");
@@ -257,7 +260,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     gameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion("0.1.1-SNAPSHOT")
-            .setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.COMMONER)
+            .setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
@@ -271,7 +274,8 @@ public class JoinGameTest extends AbstractGameServerTest {
 
     // need a new game connection because the previous is closed
     var newGameConnection = createGameConnection("localhost", port);
-    newGameConnection.write(GetServerInfoCommand.newBuilder().build());
+    newGameConnection.write(
+        GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR).build());
     waitUntilQueueNonEmpty(newGameConnection.getResponse());
     assertEquals(0, newGameConnection.getErrors().size(), "Should be no error");
     assertEquals(1, newGameConnection.getResponse().size(), "Should be exactly one response");
@@ -299,7 +303,7 @@ public class JoinGameTest extends AbstractGameServerTest {
       gameConnection.write(
           JoinGameCommand.newBuilder()
               .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-              .setPlayerClass(PlayerClass.COMMONER)
+              .setPlayerClass(PlayerClass.WARRIOR)
               .setPlayerName("my player name " + i)
               .setGameId(0).build());
     }
@@ -309,7 +313,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     gameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER)
+            .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("my player name")
             .setGameId(0).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
@@ -337,7 +341,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     gameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER)
+            .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("same name")
             .setGameId(0).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
@@ -347,7 +351,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     sameNameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER)
+            .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("same name")
             .setGameId(0).build());
     waitUntilQueueNonEmpty(sameNameConnection.getResponse());
@@ -387,7 +391,7 @@ public class JoinGameTest extends AbstractGameServerTest {
           gameConnection.write(
               JoinGameCommand.newBuilder()
                   .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-                  .setPlayerClass(PlayerClass.COMMONER)
+                  .setPlayerClass(PlayerClass.WARRIOR)
                   .setPlayerName("my player name " + finalI)
                   .setGameId(gameIdToConnectTo).build());
           waitUntilQueueNonEmpty(gameConnection.getResponse());
@@ -423,7 +427,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     gameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER)
+            .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
@@ -462,7 +466,8 @@ public class JoinGameTest extends AbstractGameServerTest {
     assertEquals(connectedPlayersPositions.keySet(), spawnedPlayersIds,
         "All spawned players should be returned in the response");
 
-    gameConnection.write(GetServerInfoCommand.newBuilder().build());
+    gameConnection.write(
+        GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
     assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
     assertEquals(1, gameConnection.getResponse().size(), "Should be exactly one response");
@@ -482,66 +487,6 @@ public class JoinGameTest extends AbstractGameServerTest {
       if (gameInfo.getGameId() != gameIdToConnectTo) {
         assertEquals(0, gameInfo.getPlayersOnline(), "Should be no connected players yet");
       }
-    }
-  }
-
-  /**
-   * @given a running game server
-   * @when max number of player connect to all games
-   * @then all players are successfully connected
-   */
-  @Test
-  @Disabled("Circle CI fails to run it for some reason")
-  public void testJoinGameMaxPlayersAllGames() throws Exception {
-    List<Thread> threads = new ArrayList<>();
-    for (int gameId = 0; gameId < ServerConfig.GAMES_TO_CREATE; gameId++) {
-      for (int j = 0; j < ServerConfig.MAX_PLAYERS_PER_GAME; j++) {
-        int finalGameId = gameId;
-        int finalJ = j;
-        threads.add(new Thread(() -> {
-          try {
-            GameConnection gameConnection = createGameConnection("localhost",
-                port);
-            gameConnection.write(
-                JoinGameCommand.newBuilder()
-                    .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-                    .setPlayerClass(PlayerClass.COMMONER)
-                    .setPlayerName("my player name " + finalJ)
-                    .setGameId(finalGameId).build());
-            waitUntilQueueNonEmpty(gameConnection.getResponse());
-            Thread.sleep(500);
-          } catch (Exception e) {
-            LOG.error("Error while running test", e);
-          }
-        }));
-      }
-    }
-
-    threads.forEach(Thread::start);
-    threads.forEach(thread -> {
-      try {
-        thread.join();
-      } catch (InterruptedException e) {
-        throw new RuntimeException(e);
-      }
-    });
-    assertEquals(ServerConfig.GAMES_TO_CREATE * ServerConfig.MAX_PLAYERS_PER_GAME,
-        gameConnections.size());
-    gameConnections.forEach(gameConnection -> assertTrue(gameConnection.isConnected()));
-
-    GameConnection gameConnection = createGameConnection("localhost", port);
-    gameConnection.write(GetServerInfoCommand.newBuilder().build());
-    waitUntilQueueNonEmpty(gameConnection.getResponse());
-    assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
-    assertEquals(1, gameConnection.getResponse().size(), "Should be exactly one response");
-    ServerResponse serverResponse = gameConnection.getResponse().poll().get();
-    assertTrue(serverResponse.hasServerInfo(), "Must include server info only");
-    List<ServerResponse.GameInfo> games = serverResponse.getServerInfo().getGamesList();
-    assertEquals(ServerConfig.GAMES_TO_CREATE, games.size());
-    for (ServerResponse.GameInfo gameInfo : games) {
-      assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, gameInfo.getMaxGamePlayers());
-      assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, gameInfo.getPlayersOnline(),
-          "All players are connected");
     }
   }
 }

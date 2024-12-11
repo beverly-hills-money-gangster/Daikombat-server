@@ -24,6 +24,7 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 @SetEnvironmentVariable(key = "GAME_SERVER_POWER_UPS_ENABLED", value = "false")
 @SetEnvironmentVariable(key = "GAME_SERVER_TELEPORTS_ENABLED", value = "false")
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "99999")
+@SetEnvironmentVariable(key = "GAME_SERVER_MAX_PLAYERS_PER_GAME", value = "5")
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_PLAYERS_PER_GAME", value = "5")
@@ -43,7 +44,7 @@ public class ChatEventTest extends AbstractGameServerTest {
       gameConnection.write(
           JoinGameCommand.newBuilder()
               .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-              .setPlayerClass(PlayerClass.COMMONER)
+              .setPlayerClass(PlayerClass.WARRIOR)
               .setPlayerName("my player name " + i)
               .setGameId(gameIdToConnectTo).build());
       waitUntilGetResponses(gameConnection.getResponse(), 1);
@@ -103,7 +104,7 @@ public class ChatEventTest extends AbstractGameServerTest {
       gameConnection.write(
           JoinGameCommand.newBuilder()
               .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(
-                  PlayerClass.COMMONER)
+                  PlayerClass.WARRIOR)
               .setPlayerName("my player name " + i)
               .setGameId(gameIdToConnectTo).build());
       waitUntilGetResponses(gameConnection.getResponse(), 1);

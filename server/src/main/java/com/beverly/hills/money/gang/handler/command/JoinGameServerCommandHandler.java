@@ -5,6 +5,7 @@ import static com.beverly.hills.money.gang.factory.response.ServerResponseFactor
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createPowerUpSpawn;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createSpawnEventAllPlayers;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createTeleportSpawn;
+import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.getRPGPlayerClass;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
@@ -101,15 +102,6 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
     };
   }
 
-  private RPGPlayerClass getRPGPlayerClass(PlayerClass playerClass) {
-    return switch (playerClass) {
-      case COMMONER -> RPGPlayerClass.COMMONER;
-      case DRACULA_BERSERK -> RPGPlayerClass.BERSERK;
-      case BEAST_WARRIOR -> RPGPlayerClass.WARRIOR;
-      case DEMON_TANK -> RPGPlayerClass.TANK;
-      default -> throw new IllegalArgumentException("Not supported player class");
-    };
-  }
 
   protected void sendOtherSpawns(
       Game game, PlayerStateChannel joinedPlayerStateChannel,

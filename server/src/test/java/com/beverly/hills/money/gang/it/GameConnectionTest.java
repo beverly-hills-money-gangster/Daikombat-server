@@ -10,12 +10,11 @@ import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
-import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.PlayerSkinColor;
+import com.beverly.hills.money.gang.proto.ServerResponse;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -23,6 +22,7 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 @SetEnvironmentVariable(key = "GAME_SERVER_TELEPORTS_ENABLED", value = "false")
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_TELEPORTS_ENABLED", value = "false")
+
 public class GameConnectionTest extends AbstractGameServerTest {
 
   /**
@@ -37,7 +37,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
     gameConnection1.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(
-                PlayerClass.COMMONER)
+                PlayerClass.WARRIOR)
             .setPlayerName("my player name")
             .setGameId(gameToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection1.getResponse());
@@ -48,7 +48,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
     GameConnection gameConnection2 = createGameConnection( "localhost", port);
     gameConnection2.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.COMMONER)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("my other player name")
             .setGameId(gameToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection2.getResponse());
@@ -60,7 +60,8 @@ public class GameConnectionTest extends AbstractGameServerTest {
     assertTrue(gameConnection1.isDisconnected(), "Player 1 should be disconnected now");
     assertTrue(gameConnection2.isConnected(), "Player 2 should be connected");
 
-    gameConnection1.write(GetServerInfoCommand.newBuilder().build());
+    gameConnection1.write(GetServerInfoCommand.newBuilder()
+        .setPlayerClass(PlayerClass.WARRIOR).build());
     Thread.sleep(250);
     assertEquals(0, gameConnection1.getResponse().size(),
         "Should be no response because the connection is closed");
@@ -96,7 +97,8 @@ public class GameConnectionTest extends AbstractGameServerTest {
     gameConnection.disconnect(); // call twice
     assertTrue(gameConnection.isDisconnected(), "Should be disconnected after disconnecting");
     assertFalse(gameConnection.isConnected());
-    gameConnection.write(GetServerInfoCommand.newBuilder().build());
+    gameConnection.write(GetServerInfoCommand.newBuilder()
+        .setPlayerClass(PlayerClass.WARRIOR).build());
     Thread.sleep(250);
     assertEquals(0, gameConnection.getResponse().size(),
         "Should be no response because the connection is closed");

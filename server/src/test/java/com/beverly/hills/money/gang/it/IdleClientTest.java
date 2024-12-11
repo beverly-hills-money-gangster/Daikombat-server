@@ -45,14 +45,16 @@ public class IdleClientTest extends AbstractGameServerTest {
     gameConnectionIdle.write(
         JoinGameCommand.newBuilder()
             .setVersion(ClientConfig.VERSION)
-            .setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.COMMONER)
-            .setPlayerName("my player name")
+            .setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.WARRIOR)
+            .setPlayerName("some player name")
             .setGameId(gameToConnectTo).build());
     gameConnectionObserver.write(
         JoinGameCommand.newBuilder()
             .setVersion(ClientConfig.VERSION)
-            .setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.COMMONER)
-            .setPlayerName("my player name observer")
+            .setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.WARRIOR)
+            .setPlayerName("other player name observer")
             .setGameId(gameToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnectionIdle.getResponse());
     waitUntilQueueNonEmpty(gameConnectionObserver.getResponse());
@@ -69,7 +71,7 @@ public class IdleClientTest extends AbstractGameServerTest {
     emptyQueue(gameConnectionObserver.getResponse());
     emptyQueue(gameConnectionIdle.getResponse());
 
-    gameConnectionIdle.write(GetServerInfoCommand.newBuilder().build());
+    gameConnectionIdle.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR).build());
     waitUntilQueueNonEmpty(gameConnectionIdle.getResponse());
     ServerResponse gameServerInfoResponse = gameConnectionIdle.getResponse().poll().get();
     var myGame = gameServerInfoResponse.getServerInfo().getGamesList().stream().filter(gameInfo
@@ -102,7 +104,8 @@ public class IdleClientTest extends AbstractGameServerTest {
 
     GameConnection newGameConnection = createGameConnection("localhost",
         port);
-    newGameConnection.write(GetServerInfoCommand.newBuilder().build());
+    newGameConnection.write(GetServerInfoCommand.newBuilder()
+        .setPlayerClass(PlayerClass.WARRIOR).build());
     waitUntilQueueNonEmpty(newGameConnection.getResponse());
     ServerResponse serverResponseAfterIdle = newGameConnection.getResponse().poll().get();
     var myGameAfterIdle = serverResponseAfterIdle.getServerInfo().getGamesList().stream()
@@ -115,7 +118,7 @@ public class IdleClientTest extends AbstractGameServerTest {
         "Idle player should be disconnected because it was idle for too long. Only observer player is online");
 
     emptyQueue(gameConnectionIdle.getWarning());
-    gameConnectionIdle.write(GetServerInfoCommand.newBuilder().build());
+    gameConnectionIdle.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR).build());
     Thread.sleep(250);
     assertEquals(1, gameConnectionIdle.getWarning().size(),
         "Should be one warning as we can't write using disconnected connection");
@@ -159,7 +162,7 @@ public class IdleClientTest extends AbstractGameServerTest {
     puncherConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER)
+            .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName(puncherPlayerName)
             .setGameId(gameIdToConnectTo).build());
 
@@ -167,7 +170,7 @@ public class IdleClientTest extends AbstractGameServerTest {
     deadConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER)
+            .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("my other player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(puncherConnection.getResponse());
@@ -269,7 +272,7 @@ public class IdleClientTest extends AbstractGameServerTest {
     gameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ClientConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER)
+            .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("my player name")
             .setGameId(gameToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
@@ -278,7 +281,7 @@ public class IdleClientTest extends AbstractGameServerTest {
 
     GameConnection observerConnection = createGameConnection("localhost",
         port);
-    observerConnection.write(GetServerInfoCommand.newBuilder().build());
+    observerConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR).build());
     waitUntilQueueNonEmpty(observerConnection.getResponse());
     ServerResponse serverResponse = observerConnection.getResponse().poll().get();
     var myGame = serverResponse.getServerInfo().getGamesList().stream().filter(gameInfo
@@ -309,7 +312,7 @@ public class IdleClientTest extends AbstractGameServerTest {
 
     GameConnection newGameConnection = createGameConnection("localhost",
         port);
-    newGameConnection.write(GetServerInfoCommand.newBuilder().build());
+    newGameConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR).build());
     waitUntilQueueNonEmpty(newGameConnection.getResponse());
     ServerResponse serverResponseAfterMoving = newGameConnection.getResponse().poll().get();
     var myGameAfterMoving = serverResponseAfterMoving.getServerInfo().getGamesList().stream()
@@ -335,7 +338,7 @@ public class IdleClientTest extends AbstractGameServerTest {
     gameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ClientConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.COMMONER)
+            .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("my player name")
             .setGameId(gameToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
@@ -363,7 +366,7 @@ public class IdleClientTest extends AbstractGameServerTest {
     assertTrue(gameConnection.isDisconnected());
     GameConnection newGameConnection = createGameConnection("localhost",
         port);
-    newGameConnection.write(GetServerInfoCommand.newBuilder().build());
+    newGameConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR).build());
     waitUntilQueueNonEmpty(newGameConnection.getResponse());
     ServerResponse serverResponseAfterMoving = newGameConnection.getResponse().poll().get();
     var myGameAfterMoving = serverResponseAfterMoving.getServerInfo().getGamesList().stream()

@@ -7,4 +7,20 @@ package com.beverly.hills.money.gang.proto;
 public interface GetServerInfoCommandOrBuilder extends
     // @@protoc_insertion_point(interface_extends:daikombat.dto.GetServerInfoCommand)
     com.google.protobuf.MessageOrBuilder {
+
+  /**
+   * <code>optional .daikombat.dto.PlayerClass playerClass = 1;</code>
+   * @return Whether the playerClass field is set.
+   */
+  boolean hasPlayerClass();
+  /**
+   * <code>optional .daikombat.dto.PlayerClass playerClass = 1;</code>
+   * @return The enum numeric value on the wire for playerClass.
+   */
+  int getPlayerClassValue();
+  /**
+   * <code>optional .daikombat.dto.PlayerClass playerClass = 1;</code>
+   * @return The playerClass.
+   */
+  com.beverly.hills.money.gang.proto.PlayerClass getPlayerClass();
 }

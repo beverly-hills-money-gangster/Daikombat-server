@@ -48,7 +48,7 @@ public class BotRunnable implements Runnable {
         gameConnection.write(JoinGameCommand.newBuilder()
             .setPlayerName(Thread.currentThread().getName())
             .setGameId(GAME_ID_TO_CONNECT)
-            .setPlayerClass(PlayerClass.COMMONER)
+            .setPlayerClass(PlayerClass.WARRIOR)
             .setSkin(PlayerSkinColor.GREEN)
             .setVersion(ClientConfig.VERSION).build());
         waitUntilQueueNonEmpty(gameConnection.getResponse());

@@ -28,6 +28,7 @@ import com.beverly.hills.money.gang.cheat.AntiCheat;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
+import com.beverly.hills.money.gang.factory.RPGStatsFactory;
 import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.powerup.DefencePowerUp;
 import com.beverly.hills.money.gang.powerup.HealthPowerUp;
@@ -569,12 +570,12 @@ public class GameTest {
     String shotPlayerName = "shot player";
     Channel channel = mock(Channel.class);
     PlayerJoinedGameState shooterPlayerConnectedGameState = fullyJoin(shooterPlayerName,
-        channel, PlayerStateColor.GREEN, RPGPlayerClass.BERSERK);
+        channel, PlayerStateColor.GREEN, RPGPlayerClass.ANGRY_SKELETON);
     PlayerJoinedGameState shotPlayerConnectedGameState = fullyJoin(shotPlayerName, channel,
         PlayerStateColor.GREEN);
 
     int shotsToKill = (int) Math.ceil(
-        100d / (ServerConfig.DEFAULT_SHOTGUN_DAMAGE * RPGStatsFactory.create(RPGPlayerClass.BERSERK)
+        100d / (ServerConfig.DEFAULT_SHOTGUN_DAMAGE * RPGStatsFactory.create(RPGPlayerClass.ANGRY_SKELETON)
             .getNormalized(PlayerRPGStatType.ATTACK)));
 
     // after this loop, one player is almost dead
@@ -2161,7 +2162,7 @@ public class GameTest {
   private PlayerJoinedGameState fullyJoin(final String playerName, final Channel playerChannel,
       PlayerStateColor color)
       throws GameLogicError {
-    return fullyJoin(playerName, playerChannel, color, RPGPlayerClass.COMMONER);
+    return fullyJoin(playerName, playerChannel, color, RPGPlayerClass.WARRIOR);
   }
 
 }

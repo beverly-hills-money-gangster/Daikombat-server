@@ -23,10 +23,9 @@ enum PlayerSkinColor {
 }
 
 enum PlayerClass{
-  COMMONER = 0;
-  DRACULA_BERSERK = 1;
+  WARRIOR = 0;
+  ANGRY_SKELETON = 1;
   DEMON_TANK = 2;
-  BEAST_WARRIOR = 3;
 }
 
 

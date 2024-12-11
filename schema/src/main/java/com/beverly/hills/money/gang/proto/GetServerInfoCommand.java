@@ -17,6 +17,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private GetServerInfoCommand() {
+    playerClass_ = 0;
   }
 
   @java.lang.Override
@@ -39,6 +40,32 @@ private static final long serialVersionUID = 0L;
             com.beverly.hills.money.gang.proto.GetServerInfoCommand.class, com.beverly.hills.money.gang.proto.GetServerInfoCommand.Builder.class);
   }
 
+  private int bitField0_;
+  public static final int PLAYERCLASS_FIELD_NUMBER = 1;
+  private int playerClass_ = 0;
+  /**
+   * <code>optional .daikombat.dto.PlayerClass playerClass = 1;</code>
+   * @return Whether the playerClass field is set.
+   */
+  @java.lang.Override public boolean hasPlayerClass() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <code>optional .daikombat.dto.PlayerClass playerClass = 1;</code>
+   * @return The enum numeric value on the wire for playerClass.
+   */
+  @java.lang.Override public int getPlayerClassValue() {
+    return playerClass_;
+  }
+  /**
+   * <code>optional .daikombat.dto.PlayerClass playerClass = 1;</code>
+   * @return The playerClass.
+   */
+  @java.lang.Override public com.beverly.hills.money.gang.proto.PlayerClass getPlayerClass() {
+    com.beverly.hills.money.gang.proto.PlayerClass result = com.beverly.hills.money.gang.proto.PlayerClass.forNumber(playerClass_);
+    return result == null ? com.beverly.hills.money.gang.proto.PlayerClass.UNRECOGNIZED : result;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -53,6 +80,9 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeEnum(1, playerClass_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -62,6 +92,10 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(1, playerClass_);
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -77,6 +111,10 @@ private static final long serialVersionUID = 0L;
     }
     com.beverly.hills.money.gang.proto.GetServerInfoCommand other = (com.beverly.hills.money.gang.proto.GetServerInfoCommand) obj;
 
+    if (hasPlayerClass() != other.hasPlayerClass()) return false;
+    if (hasPlayerClass()) {
+      if (playerClass_ != other.playerClass_) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -88,6 +126,10 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
+    if (hasPlayerClass()) {
+      hash = (37 * hash) + PLAYERCLASS_FIELD_NUMBER;
+      hash = (53 * hash) + playerClass_;
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -218,6 +260,8 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
+      bitField0_ = 0;
+      playerClass_ = 0;
       return this;
     }
 
@@ -244,8 +288,19 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.beverly.hills.money.gang.proto.GetServerInfoCommand buildPartial() {
       com.beverly.hills.money.gang.proto.GetServerInfoCommand result = new com.beverly.hills.money.gang.proto.GetServerInfoCommand(this);
+      if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
+    }
+
+    private void buildPartial0(com.beverly.hills.money.gang.proto.GetServerInfoCommand result) {
+      int from_bitField0_ = bitField0_;
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000001) != 0)) {
+        result.playerClass_ = playerClass_;
+        to_bitField0_ |= 0x00000001;
+      }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -292,6 +347,9 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(com.beverly.hills.money.gang.proto.GetServerInfoCommand other) {
       if (other == com.beverly.hills.money.gang.proto.GetServerInfoCommand.getDefaultInstance()) return this;
+      if (other.hasPlayerClass()) {
+        setPlayerClass(other.getPlayerClass());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -318,6 +376,11 @@ private static final long serialVersionUID = 0L;
             case 0:
               done = true;
               break;
+            case 8: {
+              playerClass_ = input.readEnum();
+              bitField0_ |= 0x00000001;
+              break;
+            } // case 8
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -331,6 +394,67 @@ private static final long serialVersionUID = 0L;
       } finally {
         onChanged();
       } // finally
+      return this;
+    }
+    private int bitField0_;
+
+    private int playerClass_ = 0;
+    /**
+     * <code>optional .daikombat.dto.PlayerClass playerClass = 1;</code>
+     * @return Whether the playerClass field is set.
+     */
+    @java.lang.Override public boolean hasPlayerClass() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>optional .daikombat.dto.PlayerClass playerClass = 1;</code>
+     * @return The enum numeric value on the wire for playerClass.
+     */
+    @java.lang.Override public int getPlayerClassValue() {
+      return playerClass_;
+    }
+    /**
+     * <code>optional .daikombat.dto.PlayerClass playerClass = 1;</code>
+     * @param value The enum numeric value on the wire for playerClass to set.
+     * @return This builder for chaining.
+     */
+    public Builder setPlayerClassValue(int value) {
+      playerClass_ = value;
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .daikombat.dto.PlayerClass playerClass = 1;</code>
+     * @return The playerClass.
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.PlayerClass getPlayerClass() {
+      com.beverly.hills.money.gang.proto.PlayerClass result = com.beverly.hills.money.gang.proto.PlayerClass.forNumber(playerClass_);
+      return result == null ? com.beverly.hills.money.gang.proto.PlayerClass.UNRECOGNIZED : result;
+    }
+    /**
+     * <code>optional .daikombat.dto.PlayerClass playerClass = 1;</code>
+     * @param value The playerClass to set.
+     * @return This builder for chaining.
+     */
+    public Builder setPlayerClass(com.beverly.hills.money.gang.proto.PlayerClass value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      bitField0_ |= 0x00000001;
+      playerClass_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .daikombat.dto.PlayerClass playerClass = 1;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearPlayerClass() {
+      bitField0_ = (bitField0_ & ~0x00000001);
+      playerClass_ = 0;
+      onChanged();
       return this;
     }
     @java.lang.Override

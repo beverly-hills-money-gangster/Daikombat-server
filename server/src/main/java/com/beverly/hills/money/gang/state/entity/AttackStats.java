@@ -1,8 +1,11 @@
 package com.beverly.hills.money.gang.state.entity;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
+import com.beverly.hills.money.gang.factory.RPGStatsFactory;
 import com.beverly.hills.money.gang.state.AttackType;
+import com.beverly.hills.money.gang.state.PlayerRPGStatType;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,7 +30,7 @@ public class AttackStats {
       AttackType.RAILGUN, ServerConfig.DEFAULT_RAILGUN_DAMAGE,
       AttackType.MINIGUN, ServerConfig.DEFAULT_MINIGUN_DAMAGE);
 
-  public static final List<AttackInfo> ATTACKS_INFO;
+  private static final Map<RPGPlayerClass, List<AttackInfo>> ATTACKS_INFO = new HashMap<>();
 
   static {
     if (MAX_ATTACK_DISTANCE.size() != AttackType.values().length) {
@@ -40,14 +43,23 @@ public class AttackStats {
       throw new IllegalStateException("Not all attack types have damage configured");
     }
 
-    ATTACKS_INFO = Arrays.stream(AttackType.values()).map(
-            attackType -> AttackInfo
-                .builder()
-                .attackType(attackType)
-                .delayMls(ATTACK_DELAY_MLS.get(attackType))
-                .maxDistance(MAX_ATTACK_DISTANCE.get(attackType))
-                .defaultDamage(ATTACK_DAMAGE.get(attackType))
-                .build())
-        .collect(Collectors.toList());
+    Arrays.stream(RPGPlayerClass.values()).forEach(playerClass -> {
+      var gunSpeed = RPGStatsFactory.create(playerClass)
+          .getNormalized(PlayerRPGStatType.GUN_SPEED);
+      var info = Arrays.stream(AttackType.values()).map(
+              attackType -> AttackInfo
+                  .builder()
+                  .attackType(attackType)
+                  .delayMls(Math.max((int) (ATTACK_DELAY_MLS.get(attackType) / gunSpeed), 150))
+                  .maxDistance(MAX_ATTACK_DISTANCE.get(attackType))
+                  .defaultDamage(ATTACK_DAMAGE.get(attackType))
+                  .build())
+          .collect(Collectors.toList());
+      ATTACKS_INFO.put(playerClass, info);
+    });
+  }
+
+  public static List<AttackInfo> getAttacksInfo(RPGPlayerClass playerClass) {
+    return ATTACKS_INFO.get(playerClass);
   }
 }

@@ -30,7 +30,7 @@ import com.beverly.hills.money.gang.state.AttackType;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import com.beverly.hills.money.gang.state.entity.PlayerAttackingGameState;
-import com.beverly.hills.money.gang.state.entity.PlayerState;
+import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.Vector;
 import com.beverly.hills.money.gang.util.NetworkUtil;
 import io.netty.channel.Channel;
@@ -105,7 +105,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
       MDC.put(MDC_PLAYER_ID, String.valueOf(playerState.getPlayerState().getPlayerId()));
       MDC.put(MDC_PLAYER_NAME, playerState.getPlayerState().getPlayerName());
       MDC.put(MDC_IP_ADDRESS, playerState.getPrimaryChannelAddress());
-      MDC.put(MDC_PING_MLS, Optional.ofNullable(playerState.getPlayerState().getPingMls())
+      MDC.put(MDC_PING_MLS, Optional.of(playerState.getPlayerState().getPingMls())
           .map(String::valueOf).orElse(""));
 
       PushGameEventCommand.GameEventType gameEventType = gameCommand.getEventType();
@@ -260,7 +260,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
   }
 
   private boolean isAttackCheating(PushGameEventCommand gameCommand, Game game) {
-    var newPlayerPosition = Vector.builder()
+    var position = Vector.builder()
         .x(gameCommand.getPosition().getX())
         .y(gameCommand.getPosition().getY())
         .build();
@@ -270,7 +270,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
     return game.getPlayersRegistry()
         .getPlayerState(gameCommand.getAffectedPlayerId())
         .map(affectedPlayerState -> antiCheat.isAttackingTooFar(
-            newPlayerPosition, affectedPlayerState.getCoordinates().getPosition(),
+            position, affectedPlayerState.getCoordinates().getPosition(),
             getAttackType(gameCommand))).orElse(false);
   }
 
@@ -280,13 +280,15 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
       case PUNCH -> AttackType.PUNCH;
       case RAILGUN -> AttackType.RAILGUN;
       case MINIGUN -> AttackType.MINIGUN;
+      case ROCKET -> AttackType.ROCKET;
+      case ROCKET_LAUNCHER -> AttackType.ROCKET_LAUNCHER;
       default -> throw new IllegalArgumentException(
           "Not supported attack type " + gameCommand.getEventType());
     };
   }
 
-  private PlayerState.PlayerCoordinates createCoordinates(PushGameEventCommand gameCommand) {
-    return PlayerState.PlayerCoordinates
+  private Coordinates createCoordinates(PushGameEventCommand gameCommand) {
+    return Coordinates
         .builder()
         .direction(Vector.builder()
             .x(gameCommand.getDirection().getX()).y(gameCommand.getDirection().getY()).build())

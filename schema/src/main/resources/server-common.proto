@@ -10,6 +10,8 @@ enum WeaponType {
   SHOTGUN = 1;
   RAILGUN = 2;
   MINIGUN = 3;
+  ROCKET_LAUNCHER = 4;
+  ROCKET = 5;
 }
 
 

@@ -353,6 +353,8 @@ public interface ServerResponseFactory {
       case SHOTGUN -> WeaponType.SHOTGUN;
       case RAILGUN -> WeaponType.RAILGUN;
       case MINIGUN -> WeaponType.MINIGUN;
+      case ROCKET -> WeaponType.ROCKET;
+      case ROCKET_LAUNCHER -> WeaponType.ROCKET_LAUNCHER;
     };
   }
 

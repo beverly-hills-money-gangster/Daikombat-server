@@ -1,6 +1,6 @@
 package com.beverly.hills.money.gang.teleport;
 
-import com.beverly.hills.money.gang.state.entity.PlayerState.PlayerCoordinates;
+import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.Vector;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +13,6 @@ public class Teleport {
 
   private final Vector location;
 
-  private final PlayerCoordinates teleportCoordinates;
+  private final Coordinates teleportCoordinates;
 
 }

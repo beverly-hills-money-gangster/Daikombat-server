@@ -2,6 +2,7 @@ package com.beverly.hills.money.gang.state.entity;
 
 import static com.beverly.hills.money.gang.state.entity.AttackStats.ATTACK_DAMAGE;
 
+import com.beverly.hills.money.gang.factory.RPGStatsFactory;
 import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
@@ -11,7 +12,6 @@ import com.beverly.hills.money.gang.state.PlayerGameStatsReader;
 import com.beverly.hills.money.gang.state.PlayerRPGStatType;
 import com.beverly.hills.money.gang.state.PlayerRPGStats;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
-import com.beverly.hills.money.gang.factory.RPGStatsFactory;
 import com.google.common.util.concurrent.AtomicDouble;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,10 +60,10 @@ public class PlayerState implements PlayerStateReader {
   private final String playerName;
   @Getter
   private final RPGPlayerClass rpgPlayerClass;
-  private final AtomicReference<PlayerCoordinates> playerCoordinatesRef;
+  private final AtomicReference<Coordinates> playerCoordinatesRef;
 
   public PlayerState(
-      String name, PlayerCoordinates coordinates, int id, PlayerStateColor color,
+      String name, Coordinates coordinates, int id, PlayerStateColor color,
       RPGPlayerClass rpgPlayerClass) {
     this.playerName = name;
     this.rpgPlayerClass = rpgPlayerClass;
@@ -153,14 +153,14 @@ public class PlayerState implements PlayerStateReader {
     defenceAmplifier.set(ampl);
   }
 
-  public double getDamageAmplifier(PlayerState attackedPlayerState, AttackType attackType) {
-    var distance = Vector.getDistance(
-        attackedPlayerState.getCoordinates().position, getCoordinates().position);
+  public double getDamageAmplifier(Coordinates attackCoordinates, Coordinates victimCoordinates,
+      AttackType attackType) {
+    var distance = Vector.getDistance(attackCoordinates.position, victimCoordinates.position);
     return damageAmplifier.get() * attackType.getDistanceDamageAmplifier().apply(distance)
         * rpgStats.getNormalized(PlayerRPGStatType.ATTACK);
   }
 
-  public void respawn(final PlayerCoordinates coordinates) {
+  public void respawn(final Coordinates coordinates) {
     clearLastDistanceTravelled();
     this.playerCoordinatesRef.set(coordinates);
     health.set(DEFAULT_HP);
@@ -193,7 +193,7 @@ public class PlayerState implements PlayerStateReader {
     health.set(DEFAULT_HP);
   }
 
-  public void move(PlayerCoordinates newPlayerCoordinates, final int eventSequence) {
+  public void move(Coordinates newCoordinates, final int eventSequence) {
     int localLastEventSequence = lastReceivedEventSequence.get();
     if (localLastEventSequence >= eventSequence) {
       LOG.warn("Out-of-order move for player {}. Current sequence {}, given {}. Skip move.",
@@ -204,14 +204,14 @@ public class PlayerState implements PlayerStateReader {
       return;
     }
     double travelledDistance = Vector.getDistance(
-        newPlayerCoordinates.getPosition(), playerCoordinatesRef.get().position);
+        newCoordinates.getPosition(), playerCoordinatesRef.get().position);
     lastDistanceTravelled.addAndGet(travelledDistance);
-    playerCoordinatesRef.set(newPlayerCoordinates);
+    playerCoordinatesRef.set(newCoordinates);
     moved.set(true);
   }
 
-  public void teleport(PlayerCoordinates newPlayerCoordinates) {
-    playerCoordinatesRef.set(newPlayerCoordinates);
+  public void teleport(Coordinates newCoordinates) {
+    playerCoordinatesRef.set(newCoordinates);
   }
 
 
@@ -229,7 +229,7 @@ public class PlayerState implements PlayerStateReader {
   }
 
   @Override
-  public PlayerCoordinates getCoordinates() {
+  public Coordinates getCoordinates() {
     return playerCoordinatesRef.get();
   }
 
@@ -268,7 +268,7 @@ public class PlayerState implements PlayerStateReader {
   @Builder
   @ToString
   @EqualsAndHashCode
-  public static class PlayerCoordinates {
+  public static class Coordinates {
 
     @Getter
     private final Vector direction;

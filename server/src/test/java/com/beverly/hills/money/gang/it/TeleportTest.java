@@ -16,7 +16,7 @@ import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.Vector;
 import com.beverly.hills.money.gang.registry.TeleportRegistry;
 import com.beverly.hills.money.gang.spawner.Spawner;
-import com.beverly.hills.money.gang.state.entity.PlayerState.PlayerCoordinates;
+import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.teleport.Teleport;
 import java.io.IOException;
 import java.util.List;
@@ -56,7 +56,7 @@ public class TeleportTest extends AbstractGameServerTest {
    */
   @Test
   public void testTeleport() throws IOException, InterruptedException {
-    var teleportCoordinates = PlayerCoordinates.builder()
+    var teleportCoordinates = Coordinates.builder()
         .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().y(1000).x(-1000).build())
         .position(com.beverly.hills.money.gang.state.entity.Vector.builder().x(-1).y(1).build())
         .build();

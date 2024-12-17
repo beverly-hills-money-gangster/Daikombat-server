@@ -25,6 +25,14 @@ public enum WeaponType
    * <code>MINIGUN = 3;</code>
    */
   MINIGUN(3),
+  /**
+   * <code>ROCKET_LAUNCHER = 4;</code>
+   */
+  ROCKET_LAUNCHER(4),
+  /**
+   * <code>ROCKET = 5;</code>
+   */
+  ROCKET(5),
   UNRECOGNIZED(-1),
   ;
 
@@ -44,6 +52,14 @@ public enum WeaponType
    * <code>MINIGUN = 3;</code>
    */
   public static final int MINIGUN_VALUE = 3;
+  /**
+   * <code>ROCKET_LAUNCHER = 4;</code>
+   */
+  public static final int ROCKET_LAUNCHER_VALUE = 4;
+  /**
+   * <code>ROCKET = 5;</code>
+   */
+  public static final int ROCKET_VALUE = 5;
 
 
   public final int getNumber() {
@@ -74,6 +90,8 @@ public enum WeaponType
       case 1: return SHOTGUN;
       case 2: return RAILGUN;
       case 3: return MINIGUN;
+      case 4: return ROCKET_LAUNCHER;
+      case 5: return ROCKET;
       default: return null;
     }
   }

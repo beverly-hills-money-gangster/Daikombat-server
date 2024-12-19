@@ -31,14 +31,15 @@ public final class ServerCommon {
     java.lang.String[] descriptorData = {
       "\n-schema/src/main/resources/server-commo" +
       "n.proto\022\rdaikombat.dto\"4\n\006Vector\022\016\n\001x\030\001 " +
-      "\001(\002H\000\210\001\001\022\016\n\001y\030\002 \001(\002H\001\210\001\001B\004\n\002_xB\004\n\002_y*>\n\n" +
+      "\001(\002H\000\210\001\001\022\016\n\001y\030\002 \001(\002H\001\210\001\001B\004\n\002_xB\004\n\002_y*_\n\n" +
       "WeaponType\022\t\n\005PUNCH\020\000\022\013\n\007SHOTGUN\020\001\022\013\n\007RA" +
-      "ILGUN\020\002\022\013\n\007MINIGUN\020\003*T\n\017PlayerSkinColor\022" +
-      "\t\n\005GREEN\020\000\022\010\n\004PINK\020\001\022\n\n\006PURPLE\020\002\022\010\n\004BLUE" +
-      "\020\003\022\n\n\006YELLOW\020\004\022\n\n\006ORANGE\020\005*>\n\013PlayerClas" +
-      "s\022\013\n\007WARRIOR\020\000\022\022\n\016ANGRY_SKELETON\020\001\022\016\n\nDE" +
-      "MON_TANK\020\002B&\n\"com.beverly.hills.money.ga" +
-      "ng.protoP\001b\006proto3"
+      "ILGUN\020\002\022\013\n\007MINIGUN\020\003\022\023\n\017ROCKET_LAUNCHER\020" +
+      "\004\022\n\n\006ROCKET\020\005*T\n\017PlayerSkinColor\022\t\n\005GREE" +
+      "N\020\000\022\010\n\004PINK\020\001\022\n\n\006PURPLE\020\002\022\010\n\004BLUE\020\003\022\n\n\006Y" +
+      "ELLOW\020\004\022\n\n\006ORANGE\020\005*>\n\013PlayerClass\022\013\n\007WA" +
+      "RRIOR\020\000\022\022\n\016ANGRY_SKELETON\020\001\022\016\n\nDEMON_TAN" +
+      "K\020\002B&\n\"com.beverly.hills.money.gang.prot" +
+      "oP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

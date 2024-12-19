@@ -25,9 +25,9 @@ public class AntiCheat {
   // 20% error
   private static final double MAX_DISTANCE_TRAVELLED_IN_ONE_SEC = ServerConfig.PLAYER_SPEED * 1.2;
 
-  public boolean isAttackingTooFar(final Vector shooterPosition, final Vector victimPosition,
+  public boolean isAttackingTooFar(final Vector position, final Vector victimPosition,
       final AttackType attackType) {
-    return Vector.getDistance(shooterPosition, victimPosition) > MAX_ATTACK_DISTANCE.get(
+    return Vector.getDistance(position, victimPosition) > MAX_ATTACK_DISTANCE.get(
         attackType);
   }
 

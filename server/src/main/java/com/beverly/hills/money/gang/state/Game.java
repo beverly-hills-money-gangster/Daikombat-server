@@ -20,6 +20,7 @@ import com.beverly.hills.money.gang.state.entity.PlayerJoinedGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerPowerUpGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerRespawnedGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
+import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
 import com.beverly.hills.money.gang.state.entity.PlayerTeleportingGameState;
 import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
@@ -99,7 +100,7 @@ public class Game implements Closeable, GameReader {
       RPGPlayerClass rpgPlayerClass) throws GameLogicError {
     validateGameNotClosed();
     int playerId = playerSequenceGenerator.getNext();
-    PlayerState.PlayerCoordinates spawn = spawner.spawnPlayer(this);
+    Coordinates spawn = spawner.spawnPlayer(this);
     PlayerState connectedPlayerState = new PlayerState(
         playerName, spawn, playerId, color, rpgPlayerClass);
     // recover game stats if we can
@@ -134,7 +135,7 @@ public class Game implements Closeable, GameReader {
   }
 
   public PlayerPowerUpGameState pickupPowerUp(
-      final PlayerState.PlayerCoordinates playerCoordinates,
+      final Coordinates coordinates,
       final PowerUpType powerUpType,
       final int playerId,
       final int eventSequence,
@@ -151,12 +152,12 @@ public class Game implements Closeable, GameReader {
     if (powerUp == null) {
       LOG.warn("Power-up missing");
       return null;
-    } else if (antiCheat.isPowerUpTooFar(playerCoordinates.getPosition(),
+    } else if (antiCheat.isPowerUpTooFar(coordinates.getPosition(),
         powerUp.getSpawnPosition())) {
       LOG.warn("Power-up can't be taken due to cheating");
       return null;
     }
-    move(playerId, playerCoordinates, eventSequence, pingMls);
+    move(playerId, coordinates, eventSequence, pingMls);
     return Optional.ofNullable(powerUpRegistry.take(powerUpType))
         .map(power -> {
           LOG.debug("Power-up taken");
@@ -167,7 +168,7 @@ public class Game implements Closeable, GameReader {
   }
 
   public PlayerAttackingGameState attack(
-      final PlayerState.PlayerCoordinates attackingPlayerCoordinates,
+      final Coordinates attackCoordinates,
       final int attackingPlayerId,
       final Integer attackedPlayerId,
       final AttackType attackType,
@@ -185,8 +186,9 @@ public class Game implements Closeable, GameReader {
       LOG.warn("You can't attack yourself");
       throw new GameLogicError("You can't attack yourself", GameErrorCode.CAN_NOT_ATTACK_YOURSELF);
     }
-
-    move(attackingPlayerId, attackingPlayerCoordinates, eventSequence, pingMls);
+    if (!attackType.isProjectile()) {
+      move(attackingPlayerId, attackCoordinates, eventSequence, pingMls);
+    }
     if (attackedPlayerId == null) {
       LOG.debug("Nobody got attacked");
       // if nobody was shot
@@ -200,7 +202,9 @@ public class Game implements Closeable, GameReader {
         return null;
       }
       attackedPlayer.getAttacked(attackType,
-          attackingPlayerState.getDamageAmplifier(attackedPlayer, attackType));
+          attackingPlayerState.getDamageAmplifier(attackCoordinates,
+              attackedPlayer.getCoordinates(),
+              attackType));
       if (attackedPlayer.isDead()) {
         attackingPlayerState.registerKill();
       }
@@ -246,11 +250,11 @@ public class Game implements Closeable, GameReader {
   }
 
   public void bufferMove(final int movingPlayerId,
-      final PlayerState.PlayerCoordinates playerCoordinates,
+      final Coordinates coordinates,
       final int eventSequence,
       final int pingMls) throws GameLogicError {
     validateGameNotClosed();
-    move(movingPlayerId, playerCoordinates, eventSequence, pingMls);
+    move(movingPlayerId, coordinates, eventSequence, pingMls);
   }
 
   public List<PlayerStateReader> getBufferedMoves() {
@@ -307,11 +311,11 @@ public class Game implements Closeable, GameReader {
 
   public PlayerTeleportingGameState teleport(
       final int teleportedPlayerId,
-      final PlayerState.PlayerCoordinates playerCoordinates,
+      final Coordinates coordinates,
       final int teleportId,
       final int eventSequence,
       final int pingMls) throws GameLogicError {
-    move(teleportedPlayerId, playerCoordinates, eventSequence, pingMls);
+    move(teleportedPlayerId, coordinates, eventSequence, pingMls);
 
     var teleport = teleportRegistry.getTeleport(teleportId).orElseThrow(
         () -> new GameLogicError("Can't find teleport", GameErrorCode.COMMON_ERROR));
@@ -326,12 +330,12 @@ public class Game implements Closeable, GameReader {
   }
 
   private void move(final int movingPlayerId,
-      final PlayerState.PlayerCoordinates playerCoordinates,
+      final Coordinates coordinates,
       final int eventSequence,
       final int pingMls) {
     getPlayer(movingPlayerId)
         .ifPresent(playerState -> {
-          playerState.move(playerCoordinates, eventSequence);
+          playerState.move(coordinates, eventSequence);
           playerState.setPingMls(pingMls);
         });
   }

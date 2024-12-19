@@ -44,6 +44,7 @@ import com.beverly.hills.money.gang.state.entity.AttackStats;
 import com.beverly.hills.money.gang.state.entity.PlayerAttackingGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerJoinedGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
+import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
 import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
 import com.beverly.hills.money.gang.state.entity.Vector;
@@ -575,7 +576,8 @@ public class GameTest {
         PlayerStateColor.GREEN);
 
     int shotsToKill = (int) Math.ceil(
-        100d / (ServerConfig.DEFAULT_SHOTGUN_DAMAGE * RPGStatsFactory.create(RPGPlayerClass.ANGRY_SKELETON)
+        100d / (ServerConfig.DEFAULT_SHOTGUN_DAMAGE * RPGStatsFactory.create(
+                RPGPlayerClass.ANGRY_SKELETON)
             .getNormalized(PlayerRPGStatType.ATTACK)));
 
     // after this loop, one player is almost dead
@@ -627,7 +629,8 @@ public class GameTest {
 
   @Test
   public void testAttackAllClasses() throws GameLogicError {
-    for (AttackType attackType : AttackType.values()) {
+    for (AttackType attackType : List.of(AttackType.SHOTGUN, AttackType.MINIGUN, AttackType.RAILGUN,
+        AttackType.PUNCH)) {
       for (RPGPlayerClass attackerClass : RPGPlayerClass.values()) {
         for (RPGPlayerClass victimClass : RPGPlayerClass.values()) {
           var attackerStats = RPGStatsFactory.create(attackerClass);
@@ -1013,12 +1016,12 @@ public class GameTest {
         PlayerStateColor.GREEN);
     assertEquals(0, game.getBufferedMoves().size(), "No moves buffered before you actually move");
     int sequence = 15;
-    PlayerState.PlayerCoordinates playerCoordinates = PlayerState.PlayerCoordinates
+    Coordinates coordinates = Coordinates
         .builder()
         .direction(Vector.builder().x(1f).y(0).build())
         .position(Vector.builder().x(0f).y(1).build()).build();
     game.bufferMove(playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        playerCoordinates,
+        coordinates,
         sequence,
         PING_MLS);
 
@@ -1050,17 +1053,17 @@ public class GameTest {
     PlayerJoinedGameState playerConnectedGameState = fullyJoin(playerName, channel,
         PlayerStateColor.GREEN);
     assertEquals(0, game.getBufferedMoves().size(), "No moves buffered before you actually move");
-    PlayerState.PlayerCoordinates playerCoordinates = PlayerState.PlayerCoordinates
+    Coordinates coordinates = Coordinates
         .builder()
         .direction(Vector.builder().x(1f).y(0).build())
         .position(Vector.builder().x(0f).y(1).build()).build();
 
     game.bufferMove(playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        playerCoordinates,
+        coordinates,
         5,
         PING_MLS);
     game.bufferMove(playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        PlayerState.PlayerCoordinates
+        Coordinates
             .builder()
             .direction(Vector.builder().x(999f).y(999f).build())
             .position(Vector.builder().x(999f).y(999f).build()).build(),
@@ -1096,15 +1099,15 @@ public class GameTest {
     PlayerJoinedGameState playerConnectedGameState = fullyJoin(playerName, channel,
         PlayerStateColor.GREEN);
     assertEquals(0, game.getBufferedMoves().size(), "No moves buffered before you actually move");
-    PlayerState.PlayerCoordinates playerCoordinates = PlayerState.PlayerCoordinates
+    Coordinates coordinates = Coordinates
         .builder()
         .direction(Vector.builder().x(1f).y(0).build())
         .position(Vector.builder().x(0f).y(1).build()).build();
     game.bufferMove(playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        playerCoordinates,
+        coordinates,
         testSequenceGenerator.getNext(),
         PING_MLS);
-    PlayerState.PlayerCoordinates playerNewCoordinates = PlayerState.PlayerCoordinates
+    Coordinates playerNewCoordinates = Coordinates
         .builder()
         .direction(Vector.builder().x(2f).y(1).build())
         .position(Vector.builder().x(1f).y(2).build()).build();
@@ -1135,11 +1138,11 @@ public class GameTest {
   public void testMoveNotExistingPlayer() throws GameLogicError {
 
     assertEquals(0, game.getBufferedMoves().size(), "No moves buffered before you actually move");
-    PlayerState.PlayerCoordinates playerCoordinates = PlayerState.PlayerCoordinates
+    Coordinates coordinates = Coordinates
         .builder()
         .direction(Vector.builder().x(1f).y(0).build())
         .position(Vector.builder().x(0f).y(1).build()).build();
-    game.bufferMove(123, playerCoordinates,
+    game.bufferMove(123, coordinates,
         testSequenceGenerator.getNext(),
         PING_MLS);
     assertEquals(0, game.getBufferedMoves().size(),
@@ -1174,13 +1177,13 @@ public class GameTest {
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
-    PlayerState.PlayerCoordinates playerCoordinates = PlayerState.PlayerCoordinates
+    Coordinates coordinates = Coordinates
         .builder()
         .direction(Vector.builder().x(1f).y(0).build())
         .position(Vector.builder().x(0f).y(1).build()).build();
     game.bufferMove(
         shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        playerCoordinates,
+        coordinates,
         testSequenceGenerator.getNext(),
         PING_MLS);
 
@@ -1229,12 +1232,12 @@ public class GameTest {
           latch.await();
           PlayerJoinedGameState me = connectedPlayers.get(finalI);
           for (int j = 0; j < 10; j++) {
-            PlayerState.PlayerCoordinates playerCoordinates = PlayerState.PlayerCoordinates
+            Coordinates coordinates = Coordinates
                 .builder()
                 .direction(Vector.builder().x(1f + j).y(0).build())
                 .position(Vector.builder().x(0f).y(1 + j).build()).build();
             game.bufferMove(me.getPlayerStateChannel().getPlayerState().getPlayerId(),
-                playerCoordinates,
+                coordinates,
                 testSequenceGenerator.getNext(),
                 PING_MLS);
           }
@@ -1262,7 +1265,7 @@ public class GameTest {
       assertEquals(0, playerStateChannel.getPlayerState().getGameStats().getKills(),
           "Nobody got killed");
       assertEquals(100, playerStateChannel.getPlayerState().getHealth(), "Nobody got shot");
-      PlayerState.PlayerCoordinates finalCoordinates = PlayerState.PlayerCoordinates
+      Coordinates finalCoordinates = Coordinates
           .builder()
           .direction(Vector.builder().x(10f).y(0).build())
           .position(Vector.builder().x(0f).y(10f).build()).build();
@@ -1412,17 +1415,17 @@ public class GameTest {
         respawned.getSpawnedPowerUps().stream().sorted(
             Comparator.comparing(PowerUp::getType)).collect(Collectors.toList()));
 
-    PlayerState.PlayerCoordinates newPlayerCoordinates = PlayerState.PlayerCoordinates
+    Coordinates newCoordinates = Coordinates
         .builder()
         .direction(Vector.builder().x(1f).y(0).build())
         .position(Vector.builder().x(0f).y(1).build()).build();
 
     game.bufferMove(
         playerRespawnedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        newPlayerCoordinates,
+        newCoordinates,
         0, PING_MLS);
 
-    assertEquals(newPlayerCoordinates,
+    assertEquals(newCoordinates,
         playerRespawnedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
         "Respawned player position should be updated after moving");
     assertEquals(0, playerRespawnedGameState.getPlayerStateChannel().getPlayerState()
@@ -1469,7 +1472,7 @@ public class GameTest {
   @Test
   public void testPickupQuadDamageNotExistingPlayer() {
     doReturn(false).when(antiCheat).isPowerUpTooFar(any(), any());
-    PlayerState.PlayerCoordinates coordinates = PlayerState.PlayerCoordinates
+    Coordinates coordinates = Coordinates
         .builder()
         .direction(Vector.builder().x(10f).y(0).build())
         .position(Vector.builder().x(0f).y(10f).build()).build();
@@ -1574,7 +1577,9 @@ public class GameTest {
             == playerGameState.getPlayerStateChannel()
             .getPlayerState().getPlayerId()));
     assertEquals(4, playerGameState.getPlayerStateChannel().getPlayerState()
-            .getDamageAmplifier(playerGameState.getPlayerStateChannel().getPlayerState(),
+            .getDamageAmplifier(
+                playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+                victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
                 AttackType.PUNCH),
         0.001,
         "Damage should amplify after picking up quad damage power-up");
@@ -1801,7 +1806,8 @@ public class GameTest {
     verify(quadDamagePowerUp).revert(victimGameState.getPlayerStateChannel().getPlayerState());
     assertEquals(1, victimGameState.getPlayerStateChannel().getPlayerState()
             .getDamageAmplifier(
-                playerGameState.getPlayerStateChannel().getPlayerState(),
+                playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+                victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
                 AttackType.PUNCH),
         0.001,
         "Damage amplifier has to default to 1");

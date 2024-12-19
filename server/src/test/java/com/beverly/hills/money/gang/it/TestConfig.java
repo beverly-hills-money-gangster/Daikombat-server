@@ -3,7 +3,7 @@ package com.beverly.hills.money.gang.it;
 import com.beverly.hills.money.gang.AppConfig;
 import com.beverly.hills.money.gang.spawner.Spawner;
 import com.beverly.hills.money.gang.state.Game;
-import com.beverly.hills.money.gang.state.entity.PlayerState;
+import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.Vector;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,8 +44,8 @@ public class TestConfig {
       }
 
       @Override
-      public PlayerState.PlayerCoordinates spawnPlayer(Game game) {
-        return PlayerState.PlayerCoordinates.builder().position(MAIN_LOCATION)
+      public Coordinates spawnPlayer(Game game) {
+        return Coordinates.builder().position(MAIN_LOCATION)
             .direction(
                 Vector.builder().x(-0.00313453F).y(-0.9999952F).build()).build();
       }

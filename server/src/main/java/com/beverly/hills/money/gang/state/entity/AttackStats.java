@@ -16,19 +16,25 @@ public class AttackStats {
       AttackType.PUNCH, 1.2,
       AttackType.SHOTGUN, 7.0,
       AttackType.MINIGUN, 7.0,
-      AttackType.RAILGUN, 10.0);
+      AttackType.RAILGUN, 10.0,
+      AttackType.ROCKET_LAUNCHER, 999.0,
+      AttackType.ROCKET, 3.0);
 
   public static final Map<AttackType, Integer> ATTACK_DELAY_MLS = Map.of(
       AttackType.PUNCH, ServerConfig.PUNCH_DELAY_MLS,
       AttackType.SHOTGUN, ServerConfig.SHOTGUN_DELAY_MLS,
       AttackType.RAILGUN, ServerConfig.RAILGUN_DELAY_MLS,
-      AttackType.MINIGUN, ServerConfig.MINIGUN_DELAY_MLS);
+      AttackType.MINIGUN, ServerConfig.MINIGUN_DELAY_MLS,
+      AttackType.ROCKET_LAUNCHER, ServerConfig.ROCKET_LAUNCHER_DELAY_MLS,
+      AttackType.ROCKET, 0); // not applicable
 
   public static final Map<AttackType, Integer> ATTACK_DAMAGE = Map.of(
       AttackType.PUNCH, ServerConfig.DEFAULT_PUNCH_DAMAGE,
       AttackType.SHOTGUN, ServerConfig.DEFAULT_SHOTGUN_DAMAGE,
       AttackType.RAILGUN, ServerConfig.DEFAULT_RAILGUN_DAMAGE,
-      AttackType.MINIGUN, ServerConfig.DEFAULT_MINIGUN_DAMAGE);
+      AttackType.MINIGUN, ServerConfig.DEFAULT_MINIGUN_DAMAGE,
+      AttackType.ROCKET_LAUNCHER, 0, // not applicable
+      AttackType.ROCKET, ServerConfig.DEFAULT_ROCKET_DAMAGE);
 
   private static final Map<RPGPlayerClass, List<AttackInfo>> ATTACKS_INFO = new HashMap<>();
 

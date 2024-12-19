@@ -45,6 +45,7 @@ Game server can be configured using the following environment variables:
 - `GAME_SERVER_DEFAULT_SHOTGUN_DAMAGE` Gunshot damage. Default - `20`.
 - `GAME_SERVER_DEFAULT_RAILGUN_DAMAGE` Railgun damage. Default - `75`.
 - `GAME_SERVER_DEFAULT_PUNCH_DAMAGE` Punch damage. Default - `50`.
+- `GAME_SERVER_DEFAULT_ROCKET_DAMAGE` Rocket damage. Default - `75`.
 - `GAME_SERVER_DEFAULT_MINIGUN_DAMAGE` Minigun damage. Default - `5`.
 - `GAME_SERVER_FAST_TCP` Enables fast TCP configurations(used mostly for testing, not recommended to
   be set to `false` in prod). Default - `true`.
@@ -71,6 +72,7 @@ Game server can be configured using the following environment variables:
   all players' speed. Anybody moving faster than `GAME_SERVER_PLAYER_SPEED` will be kicked-out.
   Default - `10_000`
 - `GAME_SERVER_PUNCH_DELAY_MLS` Punch attack delay(in milliseconds). Default - `300`
+- `GAME_SERVER_ROCKET_LAUNCHER_DELAY_MLS` Rocket launcher delay(in milliseconds). Default - `1_500`.
 - `GAME_SERVER_SHOTGUN_DELAY_MLS` Shotgun attack delay(in milliseconds). Default - `450`
 - `GAME_SERVER_RAILGUN_DELAY_MLS` Railgun attack delay(in milliseconds). Default - `1_700`
 - `GAME_SERVER_MINIGUN_DELAY_MLS` Minigun attack delay(in milliseconds). Default - `155`

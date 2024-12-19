@@ -1,6 +1,6 @@
 package com.beverly.hills.money.gang.state;
 
-import com.beverly.hills.money.gang.state.entity.PlayerState;
+import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.PlayerState.PowerUpInEffect;
 import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
 import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
@@ -10,7 +10,7 @@ public interface PlayerStateReader {
 
   List<PowerUpInEffect> getActivePowerUps();
 
-  PlayerState.PlayerCoordinates getCoordinates();
+  Coordinates getCoordinates();
 
   PlayerStateColor getColor();
 

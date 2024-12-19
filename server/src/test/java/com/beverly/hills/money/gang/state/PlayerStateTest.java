@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
-import com.beverly.hills.money.gang.state.entity.PlayerState.PlayerCoordinates;
+import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
 import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
 import com.beverly.hills.money.gang.state.entity.Vector;
@@ -26,7 +26,7 @@ public class PlayerStateTest {
   public void tesRegisterKillVampireBoostFullHealth() {
     PlayerState playerState = new PlayerState(
         "test player",
-        PlayerState.PlayerCoordinates.builder().build(), 123, PlayerStateColor.GREEN,
+        Coordinates.builder().build(), 123, PlayerStateColor.GREEN,
         RPGPlayerClass.WARRIOR);
 
     playerState.registerKill();
@@ -45,7 +45,7 @@ public class PlayerStateTest {
   public void tesRegisterKillVampireBoostRestoreHealth() {
     PlayerState playerState = new PlayerState(
         "test player",
-        PlayerState.PlayerCoordinates.builder().build(), 123, PlayerStateColor.GREEN,
+        Coordinates.builder().build(), 123, PlayerStateColor.GREEN,
         RPGPlayerClass.WARRIOR);
     playerState.getAttacked(AttackType.SHOTGUN, 1);
     playerState.getAttacked(AttackType.SHOTGUN, 1);
@@ -64,7 +64,7 @@ public class PlayerStateTest {
     int threadsNum = 16;
     PlayerState playerState = new PlayerState(
         "test player",
-        PlayerState.PlayerCoordinates.builder().build(), 123, PlayerStateColor.GREEN,
+        Coordinates.builder().build(), 123, PlayerStateColor.GREEN,
         RPGPlayerClass.WARRIOR);
 
     playerState.getAttacked(AttackType.SHOTGUN, 1);
@@ -106,11 +106,11 @@ public class PlayerStateTest {
    */
   @Test
   public void testMove() {
-    var playerNewCoordinates = PlayerCoordinates.builder()
+    var playerNewCoordinates = Coordinates.builder()
         .direction(Vector.builder().x(5).y(6).build())
         .position(Vector.builder().x(0).y(1).build())
         .build();
-    var playerOldCoordinates = PlayerCoordinates.builder()
+    var playerOldCoordinates = Coordinates.builder()
         .direction(Vector.builder().x(0).y(0).build())
         .position(Vector.builder().x(0).y(0).build())
         .build();
@@ -130,11 +130,11 @@ public class PlayerStateTest {
    */
   @Test
   public void testMoveSameCoordinates() {
-    var playerNewCoordinates = PlayerCoordinates.builder()
+    var playerNewCoordinates = Coordinates.builder()
         .direction(Vector.builder().x(5).y(6).build())
         .position(Vector.builder().x(0).y(1).build())
         .build();
-    var playerOldCoordinates = PlayerCoordinates.builder()
+    var playerOldCoordinates = Coordinates.builder()
         .direction(Vector.builder().x(0).y(0).build())
         .position(Vector.builder().x(0).y(0).build())
         .build();
@@ -156,15 +156,15 @@ public class PlayerStateTest {
    */
   @Test
   public void testMoveOutOfOrder() {
-    var playerNewCoordinates1 = PlayerCoordinates.builder()
+    var playerNewCoordinates1 = Coordinates.builder()
         .direction(Vector.builder().x(5).y(6).build())
         .position(Vector.builder().x(0).y(1).build())
         .build();
-    var playerNewCoordinates2 = PlayerCoordinates.builder()
+    var playerNewCoordinates2 = Coordinates.builder()
         .direction(Vector.builder().x(5).y(6).build())
         .position(Vector.builder().x(0).y(2).build())
         .build();
-    var playerOldCoordinates = PlayerCoordinates.builder()
+    var playerOldCoordinates = Coordinates.builder()
         .direction(Vector.builder().x(0).y(0).build())
         .position(Vector.builder().x(0).y(0).build())
         .build();

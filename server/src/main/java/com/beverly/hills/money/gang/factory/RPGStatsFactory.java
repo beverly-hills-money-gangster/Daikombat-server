@@ -2,11 +2,10 @@ package com.beverly.hills.money.gang.factory;
 
 import static com.beverly.hills.money.gang.state.entity.PlayerState.VAMPIRE_HP_BOOST;
 
-import com.beverly.hills.money.gang.state.AttackType;
+import com.beverly.hills.money.gang.state.GameWeaponType;
 import com.beverly.hills.money.gang.state.PlayerRPGStatType;
 import com.beverly.hills.money.gang.state.PlayerRPGStatValue;
 import com.beverly.hills.money.gang.state.PlayerRPGStats;
-import com.beverly.hills.money.gang.state.entity.AttackStats;
 import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
 import java.util.Map;
 
@@ -48,14 +47,14 @@ public class RPGStatsFactory {
   public static void main(String[] args) {
 
     StringBuilder statsBuilder = new StringBuilder();
-    for (AttackType attackType : AttackType.values()) {
+    for (GameWeaponType gameWeaponType : GameWeaponType.values()) {
       for (RPGPlayerClass attackerClass : RPGPlayerClass.values()) {
         for (RPGPlayerClass victimClass : RPGPlayerClass.values()) {
           var attackerStats = create(attackerClass);
           var victimStats = create(victimClass);
           statsBuilder.append(attackerClass).append(" attacks ").append(victimClass)
-              .append(" with a ").append(attackType).append(": -")
-              .append(AttackStats.ATTACK_DAMAGE.get(attackType) * attackerStats.getNormalized(
+              .append(" with a ").append(gameWeaponType).append(": -")
+              .append(gameWeaponType.getDefaultDamage() * attackerStats.getNormalized(
                   PlayerRPGStatType.ATTACK) / victimStats.getNormalized(PlayerRPGStatType.DEFENSE))
               .append(". Kill gets HP boost ")
               .append(VAMPIRE_HP_BOOST * attackerStats.getNormalized(PlayerRPGStatType.VAMPIRISM))

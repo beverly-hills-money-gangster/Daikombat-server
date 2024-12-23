@@ -3895,6 +3895,30 @@ private static final long serialVersionUID = 0L;
      */
     com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfoOrBuilder getWeaponsInfoOrBuilder(
         int index);
+
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+     */
+    java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo> 
+        getProjectileInfoList();
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+     */
+    com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo getProjectileInfo(int index);
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+     */
+    int getProjectileInfoCount();
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+     */
+    java.util.List<? extends com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfoOrBuilder> 
+        getProjectileInfoOrBuilderList();
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+     */
+    com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfoOrBuilder getProjectileInfoOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.ServerInfo}
@@ -3912,6 +3936,7 @@ private static final long serialVersionUID = 0L;
       games_ = java.util.Collections.emptyList();
       version_ = "";
       weaponsInfo_ = java.util.Collections.emptyList();
+      projectileInfo_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -4121,6 +4146,47 @@ private static final long serialVersionUID = 0L;
       return weaponsInfo_.get(index);
     }
 
+    public static final int PROJECTILEINFO_FIELD_NUMBER = 7;
+    @SuppressWarnings("serial")
+    private java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo> projectileInfo_;
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+     */
+    @java.lang.Override
+    public java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo> getProjectileInfoList() {
+      return projectileInfo_;
+    }
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfoOrBuilder> 
+        getProjectileInfoOrBuilderList() {
+      return projectileInfo_;
+    }
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+     */
+    @java.lang.Override
+    public int getProjectileInfoCount() {
+      return projectileInfo_.size();
+    }
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo getProjectileInfo(int index) {
+      return projectileInfo_.get(index);
+    }
+    /**
+     * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfoOrBuilder getProjectileInfoOrBuilder(
+        int index) {
+      return projectileInfo_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -4153,6 +4219,9 @@ private static final long serialVersionUID = 0L;
       for (int i = 0; i < weaponsInfo_.size(); i++) {
         output.writeMessage(6, weaponsInfo_.get(i));
       }
+      for (int i = 0; i < projectileInfo_.size(); i++) {
+        output.writeMessage(7, projectileInfo_.get(i));
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -4184,6 +4253,10 @@ private static final long serialVersionUID = 0L;
       for (int i = 0; i < weaponsInfo_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(6, weaponsInfo_.get(i));
+      }
+      for (int i = 0; i < projectileInfo_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(7, projectileInfo_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -4224,6 +4297,8 @@ private static final long serialVersionUID = 0L;
       }
       if (!getWeaponsInfoList()
           .equals(other.getWeaponsInfoList())) return false;
+      if (!getProjectileInfoList()
+          .equals(other.getProjectileInfoList())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -4258,6 +4333,10 @@ private static final long serialVersionUID = 0L;
       if (getWeaponsInfoCount() > 0) {
         hash = (37 * hash) + WEAPONSINFO_FIELD_NUMBER;
         hash = (53 * hash) + getWeaponsInfoList().hashCode();
+      }
+      if (getProjectileInfoCount() > 0) {
+        hash = (37 * hash) + PROJECTILEINFO_FIELD_NUMBER;
+        hash = (53 * hash) + getProjectileInfoList().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -4408,6 +4487,13 @@ private static final long serialVersionUID = 0L;
           weaponsInfoBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000020);
+        if (projectileInfoBuilder_ == null) {
+          projectileInfo_ = java.util.Collections.emptyList();
+        } else {
+          projectileInfo_ = null;
+          projectileInfoBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000040);
         return this;
       }
 
@@ -4458,6 +4544,15 @@ private static final long serialVersionUID = 0L;
           result.weaponsInfo_ = weaponsInfo_;
         } else {
           result.weaponsInfo_ = weaponsInfoBuilder_.build();
+        }
+        if (projectileInfoBuilder_ == null) {
+          if (((bitField0_ & 0x00000040) != 0)) {
+            projectileInfo_ = java.util.Collections.unmodifiableList(projectileInfo_);
+            bitField0_ = (bitField0_ & ~0x00000040);
+          }
+          result.projectileInfo_ = projectileInfo_;
+        } else {
+          result.projectileInfo_ = projectileInfoBuilder_.build();
         }
       }
 
@@ -4593,6 +4688,32 @@ private static final long serialVersionUID = 0L;
             }
           }
         }
+        if (projectileInfoBuilder_ == null) {
+          if (!other.projectileInfo_.isEmpty()) {
+            if (projectileInfo_.isEmpty()) {
+              projectileInfo_ = other.projectileInfo_;
+              bitField0_ = (bitField0_ & ~0x00000040);
+            } else {
+              ensureProjectileInfoIsMutable();
+              projectileInfo_.addAll(other.projectileInfo_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.projectileInfo_.isEmpty()) {
+            if (projectileInfoBuilder_.isEmpty()) {
+              projectileInfoBuilder_.dispose();
+              projectileInfoBuilder_ = null;
+              projectileInfo_ = other.projectileInfo_;
+              bitField0_ = (bitField0_ & ~0x00000040);
+              projectileInfoBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getProjectileInfoFieldBuilder() : null;
+            } else {
+              projectileInfoBuilder_.addAllMessages(other.projectileInfo_);
+            }
+          }
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -4665,6 +4786,19 @@ private static final long serialVersionUID = 0L;
                 }
                 break;
               } // case 50
+              case 58: {
+                com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo m =
+                    input.readMessage(
+                        com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo.parser(),
+                        extensionRegistry);
+                if (projectileInfoBuilder_ == null) {
+                  ensureProjectileInfoIsMutable();
+                  projectileInfo_.add(m);
+                } else {
+                  projectileInfoBuilder_.addMessage(m);
+                }
+                break;
+              } // case 58
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -5359,6 +5493,246 @@ private static final long serialVersionUID = 0L;
           weaponsInfo_ = null;
         }
         return weaponsInfoBuilder_;
+      }
+
+      private java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo> projectileInfo_ =
+        java.util.Collections.emptyList();
+      private void ensureProjectileInfoIsMutable() {
+        if (!((bitField0_ & 0x00000040) != 0)) {
+          projectileInfo_ = new java.util.ArrayList<com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo>(projectileInfo_);
+          bitField0_ |= 0x00000040;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo, com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo.Builder, com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfoOrBuilder> projectileInfoBuilder_;
+
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+       */
+      public java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo> getProjectileInfoList() {
+        if (projectileInfoBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(projectileInfo_);
+        } else {
+          return projectileInfoBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+       */
+      public int getProjectileInfoCount() {
+        if (projectileInfoBuilder_ == null) {
+          return projectileInfo_.size();
+        } else {
+          return projectileInfoBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo getProjectileInfo(int index) {
+        if (projectileInfoBuilder_ == null) {
+          return projectileInfo_.get(index);
+        } else {
+          return projectileInfoBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+       */
+      public Builder setProjectileInfo(
+          int index, com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo value) {
+        if (projectileInfoBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureProjectileInfoIsMutable();
+          projectileInfo_.set(index, value);
+          onChanged();
+        } else {
+          projectileInfoBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+       */
+      public Builder setProjectileInfo(
+          int index, com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo.Builder builderForValue) {
+        if (projectileInfoBuilder_ == null) {
+          ensureProjectileInfoIsMutable();
+          projectileInfo_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          projectileInfoBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+       */
+      public Builder addProjectileInfo(com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo value) {
+        if (projectileInfoBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureProjectileInfoIsMutable();
+          projectileInfo_.add(value);
+          onChanged();
+        } else {
+          projectileInfoBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+       */
+      public Builder addProjectileInfo(
+          int index, com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo value) {
+        if (projectileInfoBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureProjectileInfoIsMutable();
+          projectileInfo_.add(index, value);
+          onChanged();
+        } else {
+          projectileInfoBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+       */
+      public Builder addProjectileInfo(
+          com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo.Builder builderForValue) {
+        if (projectileInfoBuilder_ == null) {
+          ensureProjectileInfoIsMutable();
+          projectileInfo_.add(builderForValue.build());
+          onChanged();
+        } else {
+          projectileInfoBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+       */
+      public Builder addProjectileInfo(
+          int index, com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo.Builder builderForValue) {
+        if (projectileInfoBuilder_ == null) {
+          ensureProjectileInfoIsMutable();
+          projectileInfo_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          projectileInfoBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+       */
+      public Builder addAllProjectileInfo(
+          java.lang.Iterable<? extends com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo> values) {
+        if (projectileInfoBuilder_ == null) {
+          ensureProjectileInfoIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, projectileInfo_);
+          onChanged();
+        } else {
+          projectileInfoBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+       */
+      public Builder clearProjectileInfo() {
+        if (projectileInfoBuilder_ == null) {
+          projectileInfo_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000040);
+          onChanged();
+        } else {
+          projectileInfoBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+       */
+      public Builder removeProjectileInfo(int index) {
+        if (projectileInfoBuilder_ == null) {
+          ensureProjectileInfoIsMutable();
+          projectileInfo_.remove(index);
+          onChanged();
+        } else {
+          projectileInfoBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo.Builder getProjectileInfoBuilder(
+          int index) {
+        return getProjectileInfoFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfoOrBuilder getProjectileInfoOrBuilder(
+          int index) {
+        if (projectileInfoBuilder_ == null) {
+          return projectileInfo_.get(index);  } else {
+          return projectileInfoBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+       */
+      public java.util.List<? extends com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfoOrBuilder> 
+           getProjectileInfoOrBuilderList() {
+        if (projectileInfoBuilder_ != null) {
+          return projectileInfoBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(projectileInfo_);
+        }
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo.Builder addProjectileInfoBuilder() {
+        return getProjectileInfoFieldBuilder().addBuilder(
+            com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo.Builder addProjectileInfoBuilder(
+          int index) {
+        return getProjectileInfoFieldBuilder().addBuilder(
+            index, com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .daikombat.dto.ServerResponse.ProjectileInfo projectileInfo = 7;</code>
+       */
+      public java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo.Builder> 
+           getProjectileInfoBuilderList() {
+        return getProjectileInfoFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo, com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo.Builder, com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfoOrBuilder> 
+          getProjectileInfoFieldBuilder() {
+        if (projectileInfoBuilder_ == null) {
+          projectileInfoBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo, com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo.Builder, com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfoOrBuilder>(
+                  projectileInfo_,
+                  ((bitField0_ & 0x00000040) != 0),
+                  getParentForChildren(),
+                  isClean());
+          projectileInfo_ = null;
+        }
+        return projectileInfoBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -6156,6 +6530,644 @@ private static final long serialVersionUID = 0L;
 
     @java.lang.Override
     public com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ProjectileInfoOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:daikombat.dto.ServerResponse.ProjectileInfo)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional .daikombat.dto.ProjectileType projectileType = 1;</code>
+     * @return Whether the projectileType field is set.
+     */
+    boolean hasProjectileType();
+    /**
+     * <code>optional .daikombat.dto.ProjectileType projectileType = 1;</code>
+     * @return The enum numeric value on the wire for projectileType.
+     */
+    int getProjectileTypeValue();
+    /**
+     * <code>optional .daikombat.dto.ProjectileType projectileType = 1;</code>
+     * @return The projectileType.
+     */
+    com.beverly.hills.money.gang.proto.ProjectileType getProjectileType();
+
+    /**
+     * <code>optional double radius = 2;</code>
+     * @return Whether the radius field is set.
+     */
+    boolean hasRadius();
+    /**
+     * <code>optional double radius = 2;</code>
+     * @return The radius.
+     */
+    double getRadius();
+  }
+  /**
+   * Protobuf type {@code daikombat.dto.ServerResponse.ProjectileInfo}
+   */
+  public static final class ProjectileInfo extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:daikombat.dto.ServerResponse.ProjectileInfo)
+      ProjectileInfoOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ProjectileInfo.newBuilder() to construct.
+    private ProjectileInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ProjectileInfo() {
+      projectileType_ = 0;
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new ProjectileInfo();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_ProjectileInfo_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_ProjectileInfo_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo.class, com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int PROJECTILETYPE_FIELD_NUMBER = 1;
+    private int projectileType_ = 0;
+    /**
+     * <code>optional .daikombat.dto.ProjectileType projectileType = 1;</code>
+     * @return Whether the projectileType field is set.
+     */
+    @java.lang.Override public boolean hasProjectileType() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>optional .daikombat.dto.ProjectileType projectileType = 1;</code>
+     * @return The enum numeric value on the wire for projectileType.
+     */
+    @java.lang.Override public int getProjectileTypeValue() {
+      return projectileType_;
+    }
+    /**
+     * <code>optional .daikombat.dto.ProjectileType projectileType = 1;</code>
+     * @return The projectileType.
+     */
+    @java.lang.Override public com.beverly.hills.money.gang.proto.ProjectileType getProjectileType() {
+      com.beverly.hills.money.gang.proto.ProjectileType result = com.beverly.hills.money.gang.proto.ProjectileType.forNumber(projectileType_);
+      return result == null ? com.beverly.hills.money.gang.proto.ProjectileType.UNRECOGNIZED : result;
+    }
+
+    public static final int RADIUS_FIELD_NUMBER = 2;
+    private double radius_ = 0D;
+    /**
+     * <code>optional double radius = 2;</code>
+     * @return Whether the radius field is set.
+     */
+    @java.lang.Override
+    public boolean hasRadius() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>optional double radius = 2;</code>
+     * @return The radius.
+     */
+    @java.lang.Override
+    public double getRadius() {
+      return radius_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeEnum(1, projectileType_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        output.writeDouble(2, radius_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(1, projectileType_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(2, radius_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo)) {
+        return super.equals(obj);
+      }
+      com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo other = (com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo) obj;
+
+      if (hasProjectileType() != other.hasProjectileType()) return false;
+      if (hasProjectileType()) {
+        if (projectileType_ != other.projectileType_) return false;
+      }
+      if (hasRadius() != other.hasRadius()) return false;
+      if (hasRadius()) {
+        if (java.lang.Double.doubleToLongBits(getRadius())
+            != java.lang.Double.doubleToLongBits(
+                other.getRadius())) return false;
+      }
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasProjectileType()) {
+        hash = (37 * hash) + PROJECTILETYPE_FIELD_NUMBER;
+        hash = (53 * hash) + projectileType_;
+      }
+      if (hasRadius()) {
+        hash = (37 * hash) + RADIUS_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            java.lang.Double.doubleToLongBits(getRadius()));
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code daikombat.dto.ServerResponse.ProjectileInfo}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:daikombat.dto.ServerResponse.ProjectileInfo)
+        com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfoOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_ProjectileInfo_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_ProjectileInfo_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo.class, com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo.Builder.class);
+      }
+
+      // Construct using com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        projectileType_ = 0;
+        radius_ = 0D;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.beverly.hills.money.gang.proto.ServerResponseOuterClass.internal_static_daikombat_dto_ServerResponse_ProjectileInfo_descriptor;
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo getDefaultInstanceForType() {
+        return com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo build() {
+        com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo buildPartial() {
+        com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo result = new com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo result) {
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.projectileType_ = projectileType_;
+          to_bitField0_ |= 0x00000001;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.radius_ = radius_;
+          to_bitField0_ |= 0x00000002;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo) {
+          return mergeFrom((com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo other) {
+        if (other == com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo.getDefaultInstance()) return this;
+        if (other.hasProjectileType()) {
+          setProjectileType(other.getProjectileType());
+        }
+        if (other.hasRadius()) {
+          setRadius(other.getRadius());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                projectileType_ = input.readEnum();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              case 17: {
+                radius_ = input.readDouble();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 17
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private int projectileType_ = 0;
+      /**
+       * <code>optional .daikombat.dto.ProjectileType projectileType = 1;</code>
+       * @return Whether the projectileType field is set.
+       */
+      @java.lang.Override public boolean hasProjectileType() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <code>optional .daikombat.dto.ProjectileType projectileType = 1;</code>
+       * @return The enum numeric value on the wire for projectileType.
+       */
+      @java.lang.Override public int getProjectileTypeValue() {
+        return projectileType_;
+      }
+      /**
+       * <code>optional .daikombat.dto.ProjectileType projectileType = 1;</code>
+       * @param value The enum numeric value on the wire for projectileType to set.
+       * @return This builder for chaining.
+       */
+      public Builder setProjectileTypeValue(int value) {
+        projectileType_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ProjectileType projectileType = 1;</code>
+       * @return The projectileType.
+       */
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.ProjectileType getProjectileType() {
+        com.beverly.hills.money.gang.proto.ProjectileType result = com.beverly.hills.money.gang.proto.ProjectileType.forNumber(projectileType_);
+        return result == null ? com.beverly.hills.money.gang.proto.ProjectileType.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>optional .daikombat.dto.ProjectileType projectileType = 1;</code>
+       * @param value The projectileType to set.
+       * @return This builder for chaining.
+       */
+      public Builder setProjectileType(com.beverly.hills.money.gang.proto.ProjectileType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000001;
+        projectileType_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ProjectileType projectileType = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearProjectileType() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        projectileType_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private double radius_ ;
+      /**
+       * <code>optional double radius = 2;</code>
+       * @return Whether the radius field is set.
+       */
+      @java.lang.Override
+      public boolean hasRadius() {
+        return ((bitField0_ & 0x00000002) != 0);
+      }
+      /**
+       * <code>optional double radius = 2;</code>
+       * @return The radius.
+       */
+      @java.lang.Override
+      public double getRadius() {
+        return radius_;
+      }
+      /**
+       * <code>optional double radius = 2;</code>
+       * @param value The radius to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRadius(double value) {
+
+        radius_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional double radius = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRadius() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        radius_ = 0D;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:daikombat.dto.ServerResponse.ProjectileInfo)
+    }
+
+    // @@protoc_insertion_point(class_scope:daikombat.dto.ServerResponse.ProjectileInfo)
+    private static final com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo();
+    }
+
+    public static com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ProjectileInfo>
+        PARSER = new com.google.protobuf.AbstractParser<ProjectileInfo>() {
+      @java.lang.Override
+      public ProjectileInfo parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<ProjectileInfo> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ProjectileInfo> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -10548,6 +11560,21 @@ private static final long serialVersionUID = 0L;
      * @return The weaponType.
      */
     com.beverly.hills.money.gang.proto.WeaponType getWeaponType();
+
+    /**
+     * <code>optional .daikombat.dto.ProjectileStats projectile = 7;</code>
+     * @return Whether the projectile field is set.
+     */
+    boolean hasProjectile();
+    /**
+     * <code>optional .daikombat.dto.ProjectileStats projectile = 7;</code>
+     * @return The projectile.
+     */
+    com.beverly.hills.money.gang.proto.ProjectileStats getProjectile();
+    /**
+     * <code>optional .daikombat.dto.ProjectileStats projectile = 7;</code>
+     */
+    com.beverly.hills.money.gang.proto.ProjectileStatsOrBuilder getProjectileOrBuilder();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.GameEvent}
@@ -10898,6 +11925,32 @@ private static final long serialVersionUID = 0L;
       return result == null ? com.beverly.hills.money.gang.proto.WeaponType.UNRECOGNIZED : result;
     }
 
+    public static final int PROJECTILE_FIELD_NUMBER = 7;
+    private com.beverly.hills.money.gang.proto.ProjectileStats projectile_;
+    /**
+     * <code>optional .daikombat.dto.ProjectileStats projectile = 7;</code>
+     * @return Whether the projectile field is set.
+     */
+    @java.lang.Override
+    public boolean hasProjectile() {
+      return ((bitField0_ & 0x00000020) != 0);
+    }
+    /**
+     * <code>optional .daikombat.dto.ProjectileStats projectile = 7;</code>
+     * @return The projectile.
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ProjectileStats getProjectile() {
+      return projectile_ == null ? com.beverly.hills.money.gang.proto.ProjectileStats.getDefaultInstance() : projectile_;
+    }
+    /**
+     * <code>optional .daikombat.dto.ProjectileStats projectile = 7;</code>
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.ProjectileStatsOrBuilder getProjectileOrBuilder() {
+      return projectile_ == null ? com.beverly.hills.money.gang.proto.ProjectileStats.getDefaultInstance() : projectile_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -10929,6 +11982,9 @@ private static final long serialVersionUID = 0L;
       }
       if (((bitField0_ & 0x00000010) != 0)) {
         output.writeEnum(6, weaponType_);
+      }
+      if (((bitField0_ & 0x00000020) != 0)) {
+        output.writeMessage(7, getProjectile());
       }
       getUnknownFields().writeTo(output);
     }
@@ -10962,6 +12018,10 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000010) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(6, weaponType_);
+      }
+      if (((bitField0_ & 0x00000020) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(7, getProjectile());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -11003,6 +12063,11 @@ private static final long serialVersionUID = 0L;
       if (hasWeaponType()) {
         if (weaponType_ != other.weaponType_) return false;
       }
+      if (hasProjectile() != other.hasProjectile()) return false;
+      if (hasProjectile()) {
+        if (!getProjectile()
+            .equals(other.getProjectile())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -11035,6 +12100,10 @@ private static final long serialVersionUID = 0L;
       if (hasWeaponType()) {
         hash = (37 * hash) + WEAPONTYPE_FIELD_NUMBER;
         hash = (53 * hash) + weaponType_;
+      }
+      if (hasProjectile()) {
+        hash = (37 * hash) + PROJECTILE_FIELD_NUMBER;
+        hash = (53 * hash) + getProjectile().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -11169,6 +12238,7 @@ private static final long serialVersionUID = 0L;
           getPlayerFieldBuilder();
           getAffectedPlayerFieldBuilder();
           getLeaderBoardFieldBuilder();
+          getProjectileFieldBuilder();
         }
       }
       @java.lang.Override
@@ -11193,6 +12263,11 @@ private static final long serialVersionUID = 0L;
         }
         sequence_ = 0;
         weaponType_ = 0;
+        projectile_ = null;
+        if (projectileBuilder_ != null) {
+          projectileBuilder_.dispose();
+          projectileBuilder_ = null;
+        }
         return this;
       }
 
@@ -11255,6 +12330,12 @@ private static final long serialVersionUID = 0L;
         if (((from_bitField0_ & 0x00000020) != 0)) {
           result.weaponType_ = weaponType_;
           to_bitField0_ |= 0x00000010;
+        }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          result.projectile_ = projectileBuilder_ == null
+              ? projectile_
+              : projectileBuilder_.build();
+          to_bitField0_ |= 0x00000020;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -11321,6 +12402,9 @@ private static final long serialVersionUID = 0L;
         if (other.hasWeaponType()) {
           setWeaponType(other.getWeaponType());
         }
+        if (other.hasProjectile()) {
+          mergeProjectile(other.getProjectile());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -11383,6 +12467,13 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000020;
                 break;
               } // case 48
+              case 58: {
+                input.readMessage(
+                    getProjectileFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000040;
+                break;
+              } // case 58
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -11914,6 +13005,127 @@ private static final long serialVersionUID = 0L;
         weaponType_ = 0;
         onChanged();
         return this;
+      }
+
+      private com.beverly.hills.money.gang.proto.ProjectileStats projectile_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.beverly.hills.money.gang.proto.ProjectileStats, com.beverly.hills.money.gang.proto.ProjectileStats.Builder, com.beverly.hills.money.gang.proto.ProjectileStatsOrBuilder> projectileBuilder_;
+      /**
+       * <code>optional .daikombat.dto.ProjectileStats projectile = 7;</code>
+       * @return Whether the projectile field is set.
+       */
+      public boolean hasProjectile() {
+        return ((bitField0_ & 0x00000040) != 0);
+      }
+      /**
+       * <code>optional .daikombat.dto.ProjectileStats projectile = 7;</code>
+       * @return The projectile.
+       */
+      public com.beverly.hills.money.gang.proto.ProjectileStats getProjectile() {
+        if (projectileBuilder_ == null) {
+          return projectile_ == null ? com.beverly.hills.money.gang.proto.ProjectileStats.getDefaultInstance() : projectile_;
+        } else {
+          return projectileBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .daikombat.dto.ProjectileStats projectile = 7;</code>
+       */
+      public Builder setProjectile(com.beverly.hills.money.gang.proto.ProjectileStats value) {
+        if (projectileBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          projectile_ = value;
+        } else {
+          projectileBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ProjectileStats projectile = 7;</code>
+       */
+      public Builder setProjectile(
+          com.beverly.hills.money.gang.proto.ProjectileStats.Builder builderForValue) {
+        if (projectileBuilder_ == null) {
+          projectile_ = builderForValue.build();
+        } else {
+          projectileBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ProjectileStats projectile = 7;</code>
+       */
+      public Builder mergeProjectile(com.beverly.hills.money.gang.proto.ProjectileStats value) {
+        if (projectileBuilder_ == null) {
+          if (((bitField0_ & 0x00000040) != 0) &&
+            projectile_ != null &&
+            projectile_ != com.beverly.hills.money.gang.proto.ProjectileStats.getDefaultInstance()) {
+            getProjectileBuilder().mergeFrom(value);
+          } else {
+            projectile_ = value;
+          }
+        } else {
+          projectileBuilder_.mergeFrom(value);
+        }
+        if (projectile_ != null) {
+          bitField0_ |= 0x00000040;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ProjectileStats projectile = 7;</code>
+       */
+      public Builder clearProjectile() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        projectile_ = null;
+        if (projectileBuilder_ != null) {
+          projectileBuilder_.dispose();
+          projectileBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.ProjectileStats projectile = 7;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ProjectileStats.Builder getProjectileBuilder() {
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return getProjectileFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .daikombat.dto.ProjectileStats projectile = 7;</code>
+       */
+      public com.beverly.hills.money.gang.proto.ProjectileStatsOrBuilder getProjectileOrBuilder() {
+        if (projectileBuilder_ != null) {
+          return projectileBuilder_.getMessageOrBuilder();
+        } else {
+          return projectile_ == null ?
+              com.beverly.hills.money.gang.proto.ProjectileStats.getDefaultInstance() : projectile_;
+        }
+      }
+      /**
+       * <code>optional .daikombat.dto.ProjectileStats projectile = 7;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.beverly.hills.money.gang.proto.ProjectileStats, com.beverly.hills.money.gang.proto.ProjectileStats.Builder, com.beverly.hills.money.gang.proto.ProjectileStatsOrBuilder> 
+          getProjectileFieldBuilder() {
+        if (projectileBuilder_ == null) {
+          projectileBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.beverly.hills.money.gang.proto.ProjectileStats, com.beverly.hills.money.gang.proto.ProjectileStats.Builder, com.beverly.hills.money.gang.proto.ProjectileStatsOrBuilder>(
+                  getProjectile(),
+                  getParentForChildren(),
+                  isClean());
+          projectile_ = null;
+        }
+        return projectileBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(

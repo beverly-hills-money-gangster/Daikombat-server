@@ -5,37 +5,21 @@
 package com.beverly.hills.money.gang.proto;
 
 /**
- * Protobuf enum {@code daikombat.dto.PlayerClass}
+ * Protobuf enum {@code daikombat.dto.ProjectileType}
  */
-public enum PlayerClass
+public enum ProjectileType
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
-   * <code>WARRIOR = 0;</code>
+   * <code>ROCKET = 0;</code>
    */
-  WARRIOR(0),
-  /**
-   * <code>ANGRY_SKELETON = 1;</code>
-   */
-  ANGRY_SKELETON(1),
-  /**
-   * <code>DEMON_TANK = 2;</code>
-   */
-  DEMON_TANK(2),
+  ROCKET(0),
   UNRECOGNIZED(-1),
   ;
 
   /**
-   * <code>WARRIOR = 0;</code>
+   * <code>ROCKET = 0;</code>
    */
-  public static final int WARRIOR_VALUE = 0;
-  /**
-   * <code>ANGRY_SKELETON = 1;</code>
-   */
-  public static final int ANGRY_SKELETON_VALUE = 1;
-  /**
-   * <code>DEMON_TANK = 2;</code>
-   */
-  public static final int DEMON_TANK_VALUE = 2;
+  public static final int ROCKET_VALUE = 0;
 
 
   public final int getNumber() {
@@ -52,7 +36,7 @@ public enum PlayerClass
    * @deprecated Use {@link #forNumber(int)} instead.
    */
   @java.lang.Deprecated
-  public static PlayerClass valueOf(int value) {
+  public static ProjectileType valueOf(int value) {
     return forNumber(value);
   }
 
@@ -60,24 +44,22 @@ public enum PlayerClass
    * @param value The numeric wire value of the corresponding enum entry.
    * @return The enum associated with the given numeric wire value.
    */
-  public static PlayerClass forNumber(int value) {
+  public static ProjectileType forNumber(int value) {
     switch (value) {
-      case 0: return WARRIOR;
-      case 1: return ANGRY_SKELETON;
-      case 2: return DEMON_TANK;
+      case 0: return ROCKET;
       default: return null;
     }
   }
 
-  public static com.google.protobuf.Internal.EnumLiteMap<PlayerClass>
+  public static com.google.protobuf.Internal.EnumLiteMap<ProjectileType>
       internalGetValueMap() {
     return internalValueMap;
   }
   private static final com.google.protobuf.Internal.EnumLiteMap<
-      PlayerClass> internalValueMap =
-        new com.google.protobuf.Internal.EnumLiteMap<PlayerClass>() {
-          public PlayerClass findValueByNumber(int number) {
-            return PlayerClass.forNumber(number);
+      ProjectileType> internalValueMap =
+        new com.google.protobuf.Internal.EnumLiteMap<ProjectileType>() {
+          public ProjectileType findValueByNumber(int number) {
+            return ProjectileType.forNumber(number);
           }
         };
 
@@ -95,12 +77,12 @@ public enum PlayerClass
   }
   public static final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return com.beverly.hills.money.gang.proto.ServerCommon.getDescriptor().getEnumTypes().get(3);
+    return com.beverly.hills.money.gang.proto.ServerCommon.getDescriptor().getEnumTypes().get(1);
   }
 
-  private static final PlayerClass[] VALUES = values();
+  private static final ProjectileType[] VALUES = values();
 
-  public static PlayerClass valueOf(
+  public static ProjectileType valueOf(
       com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
     if (desc.getType() != getDescriptor()) {
       throw new java.lang.IllegalArgumentException(
@@ -114,10 +96,10 @@ public enum PlayerClass
 
   private final int value;
 
-  private PlayerClass(int value) {
+  private ProjectileType(int value) {
     this.value = value;
   }
 
-  // @@protoc_insertion_point(enum_scope:daikombat.dto.PlayerClass)
+  // @@protoc_insertion_point(enum_scope:daikombat.dto.ProjectileType)
 }
 

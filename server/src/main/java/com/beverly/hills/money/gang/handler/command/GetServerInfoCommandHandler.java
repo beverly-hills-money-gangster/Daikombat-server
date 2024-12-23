@@ -7,7 +7,7 @@ import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.proto.ServerCommand.CommandCase;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
-import com.beverly.hills.money.gang.state.entity.AttackStats;
+import com.beverly.hills.money.gang.state.entity.RPGWeaponInfo;
 import io.netty.channel.Channel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,10 @@ public class GetServerInfoCommandHandler extends ServerCommandHandler {
         ServerConfig.VERSION,
         gameRoomRegistry.getGames().map(game -> game),
         ServerConfig.FRAGS_PER_GAME,
-        AttackStats.getAttacksInfo(getRPGPlayerClass(msg.getGetServerInfoCommand().getPlayerClass())),
+        RPGWeaponInfo.getWeaponsInfo(
+            getRPGPlayerClass(msg.getGetServerInfoCommand().getPlayerClass())),
+        RPGWeaponInfo.getProjectilesInfo(
+            getRPGPlayerClass(msg.getGetServerInfoCommand().getPlayerClass())),
         ServerConfig.MOVES_UPDATE_FREQUENCY_MLS,
         ServerConfig.PLAYER_SPEED));
   }

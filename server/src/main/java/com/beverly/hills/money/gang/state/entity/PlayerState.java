@@ -1,12 +1,10 @@
 package com.beverly.hills.money.gang.state.entity;
 
-import static com.beverly.hills.money.gang.state.entity.AttackStats.ATTACK_DAMAGE;
-
 import com.beverly.hills.money.gang.factory.RPGStatsFactory;
 import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
-import com.beverly.hills.money.gang.state.AttackType;
+import com.beverly.hills.money.gang.state.Damage;
 import com.beverly.hills.money.gang.state.PlayerGameStats;
 import com.beverly.hills.money.gang.state.PlayerGameStatsReader;
 import com.beverly.hills.money.gang.state.PlayerRPGStatType;
@@ -20,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -153,10 +152,12 @@ public class PlayerState implements PlayerStateReader {
     defenceAmplifier.set(ampl);
   }
 
-  public double getDamageAmplifier(Coordinates attackCoordinates, Coordinates victimCoordinates,
-      AttackType attackType) {
-    var distance = Vector.getDistance(attackCoordinates.position, victimCoordinates.position);
-    return damageAmplifier.get() * attackType.getDistanceDamageAmplifier().apply(distance)
+  public double getDamageAmplifier(
+      final Vector attackPosition,
+      final Coordinates victimCoordinates,
+      final Damage damage) {
+    var distance = Vector.getDistance(attackPosition, victimCoordinates.position);
+    return damageAmplifier.get() * damage.getDistanceDamageAmplifier().apply(distance)
         * rpgStats.getNormalized(PlayerRPGStatType.ATTACK);
   }
 
@@ -173,10 +174,10 @@ public class PlayerState implements PlayerStateReader {
     return playerGameStats;
   }
 
-  public void getAttacked(AttackType attackType, double damageAmplifier) {
+  public void getAttacked(final Damage attackDamage, final double damageAmplifier) {
     double defence = defenceAmplifier.get()
         * rpgStats.getNormalized(PlayerRPGStatType.DEFENSE);
-    int damage = ((int) -(ATTACK_DAMAGE.get(attackType) * damageAmplifier / defence));
+    int damage = ((int) -(attackDamage.getDefaultDamage() * damageAmplifier / defence));
     if (health.addAndGet(damage) <= 0) {
       onDeath();
     }

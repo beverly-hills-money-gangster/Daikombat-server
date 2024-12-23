@@ -24,10 +24,10 @@ import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
 import com.beverly.hills.money.gang.state.entity.PlayerTeleportingGameState;
 import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
+import com.beverly.hills.money.gang.state.entity.Vector;
 import io.netty.channel.Channel;
 import java.io.Closeable;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -168,10 +168,11 @@ public class Game implements Closeable, GameReader {
   }
 
   public PlayerAttackingGameState attack(
-      final Coordinates attackCoordinates,
+      final Coordinates playerCoordinates,
+      final Vector attackPosition,
       final int attackingPlayerId,
       final Integer attackedPlayerId,
-      final AttackType attackType,
+      final Damage damage,
       final int eventSequence,
       final int pingMls) throws GameLogicError {
     validateGameNotClosed();
@@ -182,13 +183,9 @@ public class Game implements Closeable, GameReader {
     } else if (attackingPlayerState.isDead()) {
       LOG.warn("Dead players can't attack");
       return null;
-    } else if (Objects.equals(attackingPlayerId, attackedPlayerId)) {
-      LOG.warn("You can't attack yourself");
-      throw new GameLogicError("You can't attack yourself", GameErrorCode.CAN_NOT_ATTACK_YOURSELF);
     }
-    if (!attackType.isProjectile()) {
-      move(attackingPlayerId, attackCoordinates, eventSequence, pingMls);
-    }
+
+    move(attackingPlayerId, playerCoordinates, eventSequence, pingMls);
     if (attackedPlayerId == null) {
       LOG.debug("Nobody got attacked");
       // if nobody was shot
@@ -201,11 +198,10 @@ public class Game implements Closeable, GameReader {
         LOG.warn("You can't attack a dead player");
         return null;
       }
-      attackedPlayer.getAttacked(attackType,
-          attackingPlayerState.getDamageAmplifier(attackCoordinates,
-              attackedPlayer.getCoordinates(),
-              attackType));
-      if (attackedPlayer.isDead()) {
+      attackedPlayer.getAttacked(damage,
+          attackingPlayerState.getDamageAmplifier(attackPosition,
+              attackedPlayer.getCoordinates(), damage));
+      if (attackedPlayerId != attackingPlayerId && attackedPlayer.isDead()) {
         attackingPlayerState.registerKill();
       }
       return attackedPlayer;

@@ -26,8 +26,10 @@ import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.registry.BannedPlayersRegistry;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.scheduler.Scheduler;
-import com.beverly.hills.money.gang.state.AttackType;
+import com.beverly.hills.money.gang.state.Damage;
 import com.beverly.hills.money.gang.state.Game;
+import com.beverly.hills.money.gang.state.GameProjectileType;
+import com.beverly.hills.money.gang.state.GameWeaponType;
 import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import com.beverly.hills.money.gang.state.entity.PlayerAttackingGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
@@ -190,17 +192,20 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
     if (isAttackCheating(gameCommand, game)) {
       LOG.warn("Cheating detected");
       return;
-    } else if (!gameCommand.hasWeaponType()) {
-      throw new GameLogicError("No weapon specified while attacking. Try updating client.",
+    } else if (!gameCommand.hasWeaponType() && !gameCommand.hasProjectile()) {
+      throw new GameLogicError("No weapon or projectile specified while attacking. Try updating client.",
           GameErrorCode.COMMAND_NOT_RECOGNIZED);
     }
-    AttackType attackType = getAttackType(gameCommand);
+    Damage damage = getDamage(gameCommand);
 
     PlayerAttackingGameState attackGameState = game.attack(
         createCoordinates(gameCommand),
+        damage instanceof GameProjectileType ? createVector(
+            gameCommand.getProjectile().getPosition())
+            : createVector(gameCommand.getPosition()),
         gameCommand.getPlayerId(),
         gameCommand.hasAffectedPlayerId() ? gameCommand.getAffectedPlayerId() : null,
-        attackType,
+        damage,
         gameCommand.getSequence(),
         gameCommand.getPingMls());
     if (attackGameState == null) {
@@ -213,7 +218,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
             LOG.debug("Player {} is dead", attackedPlayer.getPlayerId());
             ServerResponse deadEvent = createKillEvent(game.playersOnline(),
                 attackGameState.getAttackingPlayer(),
-                attackGameState.getPlayerAttacked(), attackType);
+                attackGameState.getPlayerAttacked(), gameCommand);
             ServerResponse gameOverResponse = Optional.ofNullable(
                     attackGameState.getGameOverState())
                 .map(gameOverGameState -> createGameOverEvent(
@@ -241,7 +246,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
                 game.playersOnline(),
                 attackGameState.getAttackingPlayer(),
                 attackGameState.getPlayerAttacked(),
-                attackType);
+                gameCommand);
             game.getPlayersRegistry().allJoinedPlayers().forEach(
                 playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(attackEvent));
           }
@@ -249,7 +254,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
           LOG.debug("Nobody got attacked");
           ServerResponse attackEvent = createAttackingEvent(
               game.playersOnline(),
-              attackGameState.getAttackingPlayer(), attackType);
+              attackGameState.getAttackingPlayer(), gameCommand);
           game.getPlayersRegistry().allJoinedPlayers()
               .filter(playerStateChannel
                   // don't send me my own attack back
@@ -264,6 +269,9 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
         .x(gameCommand.getPosition().getX())
         .y(gameCommand.getPosition().getY())
         .build();
+    if (!gameCommand.hasWeaponType()) {
+      return false;
+    }
     if (!gameCommand.hasAffectedPlayerId()) {
       return false;
     }
@@ -271,29 +279,49 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
         .getPlayerState(gameCommand.getAffectedPlayerId())
         .map(affectedPlayerState -> antiCheat.isAttackingTooFar(
             position, affectedPlayerState.getCoordinates().getPosition(),
-            getAttackType(gameCommand))).orElse(false);
+            getWeaponType(gameCommand))).orElse(false);
   }
 
-  private AttackType getAttackType(PushGameEventCommand gameCommand) {
+  private Damage getDamage(PushGameEventCommand pushGameEventCommand) {
+    if (pushGameEventCommand.hasWeaponType()) {
+      return getWeaponType(pushGameEventCommand);
+    } else if (pushGameEventCommand.hasProjectile()) {
+      return getProjectileType(pushGameEventCommand);
+    } else {
+      throw new IllegalArgumentException("Either projectile or weapon type should be set");
+    }
+  }
+
+  private GameWeaponType getWeaponType(PushGameEventCommand gameCommand) {
     return switch (gameCommand.getWeaponType()) {
-      case SHOTGUN -> AttackType.SHOTGUN;
-      case PUNCH -> AttackType.PUNCH;
-      case RAILGUN -> AttackType.RAILGUN;
-      case MINIGUN -> AttackType.MINIGUN;
-      case ROCKET -> AttackType.ROCKET;
-      case ROCKET_LAUNCHER -> AttackType.ROCKET_LAUNCHER;
+      case SHOTGUN -> GameWeaponType.SHOTGUN;
+      case PUNCH -> GameWeaponType.PUNCH;
+      case RAILGUN -> GameWeaponType.RAILGUN;
+      case MINIGUN -> GameWeaponType.MINIGUN;
+      case ROCKET_LAUNCHER -> GameWeaponType.ROCKET_LAUNCHER;
       default -> throw new IllegalArgumentException(
-          "Not supported attack type " + gameCommand.getEventType());
+          "Not supported weapon type " + gameCommand.getEventType());
+    };
+  }
+
+  private GameProjectileType getProjectileType(PushGameEventCommand gameCommand) {
+    return switch (gameCommand.getProjectile().getProjectileType()) {
+      case ROCKET -> GameProjectileType.ROCKET;
+      default -> throw new IllegalArgumentException(
+          "Not supported projectile type " + gameCommand.getEventType());
     };
   }
 
   private Coordinates createCoordinates(PushGameEventCommand gameCommand) {
     return Coordinates
         .builder()
-        .direction(Vector.builder()
-            .x(gameCommand.getDirection().getX()).y(gameCommand.getDirection().getY()).build())
-        .position(Vector.builder()
-            .x(gameCommand.getPosition().getX()).y(gameCommand.getPosition().getY()).build())
+        .direction(createVector(gameCommand.getDirection()))
+        .position(createVector(gameCommand.getPosition()))
         .build();
+  }
+
+  private Vector createVector(com.beverly.hills.money.gang.proto.Vector vector) {
+    return Vector.builder()
+        .x(vector.getX()).y(vector.getY()).build();
   }
 }

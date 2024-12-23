@@ -1,6 +1,5 @@
 package com.beverly.hills.money.gang.state;
 
-import static com.beverly.hills.money.gang.exception.GameErrorCode.CAN_NOT_ATTACK_YOURSELF;
 import static com.beverly.hills.money.gang.exception.GameErrorCode.CHEATING;
 import static com.beverly.hills.money.gang.exception.GameErrorCode.COMMON_ERROR;
 import static com.beverly.hills.money.gang.exception.GameErrorCode.PLAYER_DOES_NOT_EXIST;
@@ -40,7 +39,6 @@ import com.beverly.hills.money.gang.registry.PlayerStatsRecoveryRegistry;
 import com.beverly.hills.money.gang.registry.PowerUpRegistry;
 import com.beverly.hills.money.gang.registry.TeleportRegistry;
 import com.beverly.hills.money.gang.spawner.Spawner;
-import com.beverly.hills.money.gang.state.entity.AttackStats;
 import com.beverly.hills.money.gang.state.entity.PlayerAttackingGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerJoinedGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
@@ -341,8 +339,10 @@ public class GameTest {
         PlayerStateColor.GREEN);
     PlayerAttackingGameState playerAttackingGameState = game.attack(
         playerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        playerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+            .getPosition(),
         playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), null,
-        AttackType.SHOTGUN,
+        GameWeaponType.SHOTGUN,
         testSequenceGenerator.getNext(),
         PING_MLS);
     assertNull(playerAttackingGameState.getPlayerAttacked(), "Nobody is shot");
@@ -378,9 +378,11 @@ public class GameTest {
 
     PlayerAttackingGameState playerAttackingGameState = game.attack(
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+            .getPosition(),
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        AttackType.SHOTGUN,
+        GameWeaponType.SHOTGUN,
         testSequenceGenerator.getNext(),
         PING_MLS);
     assertNotNull(playerAttackingGameState.getPlayerAttacked());
@@ -428,17 +430,21 @@ public class GameTest {
     for (int i = 0; i < shotsToKill - 1; i++) {
       game.attack(
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+              .getPosition(),
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          AttackType.SHOTGUN,
+          GameWeaponType.SHOTGUN,
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
     PlayerAttackingGameState playerAttackingGameState = game.attack(
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+            .getPosition(),
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        AttackType.SHOTGUN,
+        GameWeaponType.SHOTGUN,
         testSequenceGenerator.getNext(),
         PING_MLS);
     assertNotNull(playerAttackingGameState.getPlayerAttacked());
@@ -515,9 +521,11 @@ public class GameTest {
     for (int i = 0; i < shotsToKill - 1; i++) {
       game.attack(
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+              .getPosition(),
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          AttackType.SHOTGUN,
+          GameWeaponType.SHOTGUN,
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
@@ -525,18 +533,22 @@ public class GameTest {
     for (int i = 0; i < 2; i++) {
       game.attack(
           shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+              .getPosition(),
           shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          AttackType.SHOTGUN,
+          GameWeaponType.SHOTGUN,
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
 
     PlayerAttackingGameState playerAttackingGameState = game.attack(
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+            .getPosition(),
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        AttackType.SHOTGUN,
+        GameWeaponType.SHOTGUN,
         testSequenceGenerator.getNext(),
         PING_MLS);
     assertNotNull(playerAttackingGameState.getPlayerAttacked());
@@ -584,26 +596,32 @@ public class GameTest {
     for (int i = 0; i < shotsToKill - 1; i++) {
       game.attack(
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+              .getPosition(),
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          AttackType.SHOTGUN,
+          GameWeaponType.SHOTGUN,
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
     // after this, shooter HP is 60%
     game.attack(
         shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+            .getPosition(),
         shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        AttackType.SHOTGUN,
+        GameWeaponType.SHOTGUN,
         testSequenceGenerator.getNext(),
         PING_MLS);
 
     PlayerAttackingGameState playerAttackingGameState = game.attack(
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+            .getPosition(),
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        AttackType.SHOTGUN,
+        GameWeaponType.SHOTGUN,
         testSequenceGenerator.getNext(),
         PING_MLS);
     assertNotNull(playerAttackingGameState.getPlayerAttacked());
@@ -629,8 +647,11 @@ public class GameTest {
 
   @Test
   public void testAttackAllClasses() throws GameLogicError {
-    for (AttackType attackType : List.of(AttackType.SHOTGUN, AttackType.MINIGUN, AttackType.RAILGUN,
-        AttackType.PUNCH)) {
+    for (GameWeaponType gameWeaponType : List.of(
+        GameWeaponType.SHOTGUN,
+        GameWeaponType.MINIGUN,
+        GameWeaponType.RAILGUN,
+        GameWeaponType.PUNCH)) {
       for (RPGPlayerClass attackerClass : RPGPlayerClass.values()) {
         for (RPGPlayerClass victimClass : RPGPlayerClass.values()) {
           var attackerStats = RPGStatsFactory.create(attackerClass);
@@ -655,19 +676,21 @@ public class GameTest {
               shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState()
                   .getCoordinates(),
               shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState()
+                  .getCoordinates().getPosition(),
+              shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState()
                   .getPlayerId(),
               shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-              attackType,
+              gameWeaponType,
               testSequenceGenerator.getNext(),
               PING_MLS);
           int damageCaused = (int) (
-              AttackStats.ATTACK_DAMAGE.get(attackType) * attackerStats.getNormalized(
+              gameWeaponType.getDefaultDamage() * attackerStats.getNormalized(
                   PlayerRPGStatType.ATTACK) / victimStats.getNormalized(PlayerRPGStatType.DEFENSE));
 
           assertEquals(Math.max(0, DEFAULT_HP - damageCaused),
               playerAttackingGameState.getPlayerAttacked().getHealth(),
               "Wrong damage. Check " + attackerClass + " VS " + victimClass + " stats using weapon "
-                  + attackType);
+                  + gameWeaponType);
 
           game.getPlayersRegistry().removePlayer(
               shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState()
@@ -702,17 +725,21 @@ public class GameTest {
     for (int i = 0; i < shotsToKill - 1; i++) {
       game.attack(
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+              .getPosition(),
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          AttackType.SHOTGUN,
+          GameWeaponType.SHOTGUN,
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
     PlayerAttackingGameState playerAttackingGameState = game.attack(
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+            .getPosition(),
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        AttackType.SHOTGUN,
+        GameWeaponType.SHOTGUN,
         testSequenceGenerator.getNext(),
         PING_MLS);
     assertNotNull(playerAttackingGameState.getPlayerAttacked());
@@ -775,8 +802,8 @@ public class GameTest {
 
   /**
    * @given a player
-   * @when the player shoots itself
-   * @then game rejects the action as you can't shoot yourself
+   * @when the player commits suicide
+   * @then the game takes it: death stat is increased by 1, kill stat stays the same
    */
   @Test
   public void testShootYourself() throws Throwable {
@@ -785,23 +812,26 @@ public class GameTest {
     PlayerJoinedGameState shooterPlayerConnectedGameState = fullyJoin(shooterPlayerName,
         channel, PlayerStateColor.GREEN);
 
-    GameLogicError gameLogicError = assertThrows(GameLogicError.class, () -> game.attack(
-            shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
-            shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-            shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-            AttackType.SHOTGUN,
-            testSequenceGenerator.getNext(),
-            PING_MLS),
-        "You can't shoot yourself");
-    assertEquals(gameLogicError.getErrorCode(), CAN_NOT_ATTACK_YOURSELF);
-
+    // two shots should be enough
+    for (int i = 0; i <= 2; i++) {
+      game.attack(
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+              .getPosition(),
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          GameWeaponType.SHOTGUN,
+          testSequenceGenerator.getNext(),
+          PING_MLS);
+    }
     PlayerState shooterState = game.getPlayersRegistry().getPlayerState(
             shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
-    assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
+    assertEquals(0, shooterState.getHealth());
     assertEquals(1, game.playersOnline());
-    assertEquals(0, shooterState.getGameStats().getKills(), "You can't kill yourself");
+    assertEquals(0, shooterState.getGameStats().getKills(), "Suicide is not counted as a kill");
+    assertEquals(1, shooterState.getGameStats().getDeaths());
   }
 
 
@@ -826,17 +856,21 @@ public class GameTest {
     for (int i = 0; i < shotsToKill; i++) {
       game.attack(
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+              .getPosition(),
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          AttackType.SHOTGUN,
+          GameWeaponType.SHOTGUN,
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
     PlayerAttackingGameState playerAttackingGameState = game.attack(
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+            .getPosition(),
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        AttackType.SHOTGUN,
+        GameWeaponType.SHOTGUN,
         testSequenceGenerator.getNext(),
         PING_MLS);
     assertNull(playerAttackingGameState, "You can't shoot a dead player");
@@ -872,8 +906,10 @@ public class GameTest {
 
     PlayerAttackingGameState playerAttackingGameState = game.attack(
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+            .getPosition(),
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        123, AttackType.SHOTGUN,
+        123, GameWeaponType.SHOTGUN,
         testSequenceGenerator.getNext(),
         PING_MLS);
     assertNull(playerAttackingGameState, "You can't shoot a non-existing player");
@@ -909,17 +945,21 @@ public class GameTest {
     for (int i = 0; i < shotsToKill; i++) {
       game.attack(
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+              .getPosition(),
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          AttackType.SHOTGUN,
+          GameWeaponType.SHOTGUN,
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
     PlayerAttackingGameState playerAttackingGameState = game.attack(
         shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+            .getPosition(),
         shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        AttackType.SHOTGUN,
+        GameWeaponType.SHOTGUN,
         testSequenceGenerator.getNext(),
         PING_MLS);
 
@@ -973,8 +1013,9 @@ public class GameTest {
           PlayerJoinedGameState me = connectedPlayers.get(finalI);
           game.attack(
               me.getPlayerStateChannel().getPlayerState().getCoordinates(),
+              me.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
               me.getPlayerStateChannel().getPlayerState().getPlayerId(),
-              myTarget.getPlayerStateChannel().getPlayerState().getPlayerId(), AttackType.PUNCH,
+              myTarget.getPlayerStateChannel().getPlayerState().getPlayerId(), GameWeaponType.PUNCH,
               testSequenceGenerator.getNext(),
               PING_MLS);
         } catch (Exception e) {
@@ -1171,9 +1212,11 @@ public class GameTest {
     for (int i = 0; i < shotsToKill; i++) {
       game.attack(
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+              .getPosition(),
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          AttackType.SHOTGUN,
+          GameWeaponType.SHOTGUN,
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
@@ -1352,9 +1395,11 @@ public class GameTest {
     for (int i = 0; i < shotsToKill; i++) {
       game.attack(
           playerRespawnedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          playerRespawnedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+              .getPosition(),
           playerRespawnedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           playerVictimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          AttackType.SHOTGUN,
+          GameWeaponType.SHOTGUN,
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
@@ -1367,9 +1412,11 @@ public class GameTest {
           testSequenceGenerator.getNext(), PING_MLS);
       game.attack(
           killerPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          killerPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+              .getPosition(),
           killerPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           playerRespawnedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          AttackType.SHOTGUN,
+          GameWeaponType.SHOTGUN,
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
@@ -1578,17 +1625,18 @@ public class GameTest {
             .getPlayerState().getPlayerId()));
     assertEquals(4, playerGameState.getPlayerStateChannel().getPlayerState()
             .getDamageAmplifier(
-                playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+                playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
                 victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
-                AttackType.PUNCH),
+                GameWeaponType.PUNCH),
         0.001,
         "Damage should amplify after picking up quad damage power-up");
 
     PlayerAttackingGameState playerAttackingGameState = game.attack(
         playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
         playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        AttackType.PUNCH,
+        GameWeaponType.PUNCH,
         testSequenceGenerator.getNext(),
         PING_MLS);
 
@@ -1612,9 +1660,10 @@ public class GameTest {
 
     PlayerAttackingGameState playerAttackingGameState = game.attack(
         playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
         playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        AttackType.PUNCH,
+        GameWeaponType.PUNCH,
         testSequenceGenerator.getNext(),
         PING_MLS);
 
@@ -1672,9 +1721,10 @@ public class GameTest {
     for (int i = 0; i < 2; i++) {
       PlayerAttackingGameState playerAttackingGameState = game.attack(
           playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
           playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          AttackType.PUNCH,
+          GameWeaponType.PUNCH,
           testSequenceGenerator.getNext(),
           PING_MLS);
       assertFalse(playerAttackingGameState.getPlayerAttacked().isDead(),
@@ -1723,9 +1773,10 @@ public class GameTest {
     for (int i = 0; i < 3; i++) {
       PlayerAttackingGameState playerAttackingGameState = game.attack(
           playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
           playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          AttackType.PUNCH,
+          GameWeaponType.PUNCH,
           testSequenceGenerator.getNext(),
           PING_MLS);
       assertFalse(playerAttackingGameState.getPlayerAttacked().isDead(),
@@ -1734,9 +1785,10 @@ public class GameTest {
     // this is the punch that kills
     PlayerAttackingGameState playerAttackingGameState = game.attack(
         playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
         playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        AttackType.PUNCH,
+        GameWeaponType.PUNCH,
         testSequenceGenerator.getNext(),
         PING_MLS);
     assertTrue(playerAttackingGameState.getPlayerAttacked().isDead(),
@@ -1791,9 +1843,10 @@ public class GameTest {
     for (int i = 0; i < punchesToKill; i++) {
       game.attack(
           playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
           playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          AttackType.PUNCH,
+          GameWeaponType.PUNCH,
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
@@ -1806,9 +1859,9 @@ public class GameTest {
     verify(quadDamagePowerUp).revert(victimGameState.getPlayerStateChannel().getPlayerState());
     assertEquals(1, victimGameState.getPlayerStateChannel().getPlayerState()
             .getDamageAmplifier(
-                playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+                playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
                 victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
-                AttackType.PUNCH),
+                GameWeaponType.PUNCH),
         0.001,
         "Damage amplifier has to default to 1");
 
@@ -1887,9 +1940,11 @@ public class GameTest {
     for (int i = 0; i < shotsToKill; i++) {
       game.attack(
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+              .getPosition(),
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          AttackType.SHOTGUN,
+          GameWeaponType.SHOTGUN,
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
@@ -1929,9 +1984,11 @@ public class GameTest {
         PING_MLS);
     game.attack(
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+            .getPosition(),
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        AttackType.PUNCH,
+        GameWeaponType.PUNCH,
         testSequenceGenerator.getNext(),
         PING_MLS);
 

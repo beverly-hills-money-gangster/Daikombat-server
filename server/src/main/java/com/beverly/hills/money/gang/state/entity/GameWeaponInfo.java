@@ -1,19 +1,17 @@
 package com.beverly.hills.money.gang.state.entity;
 
-import com.beverly.hills.money.gang.state.AttackType;
+import com.beverly.hills.money.gang.state.GameWeaponType;
 import lombok.Builder;
 import lombok.Getter;
 
 @Builder
 @Getter
-public class AttackInfo {
+public class GameWeaponInfo {
 
-  private final AttackType attackType;
+  private final GameWeaponType gameWeaponType;
 
   private final double maxDistance;
 
   private final int delayMls;
-
-  private final int defaultDamage;
 
 }

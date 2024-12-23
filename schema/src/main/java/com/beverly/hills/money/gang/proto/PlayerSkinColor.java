@@ -122,7 +122,7 @@ public enum PlayerSkinColor
   }
   public static final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return com.beverly.hills.money.gang.proto.ServerCommon.getDescriptor().getEnumTypes().get(1);
+    return com.beverly.hills.money.gang.proto.ServerCommon.getDescriptor().getEnumTypes().get(2);
   }
 
   private static final PlayerSkinColor[] VALUES = values();

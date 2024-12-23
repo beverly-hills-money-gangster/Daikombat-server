@@ -47,8 +47,8 @@ public class PlayerStateTest {
         "test player",
         Coordinates.builder().build(), 123, PlayerStateColor.GREEN,
         RPGPlayerClass.WARRIOR);
-    playerState.getAttacked(AttackType.SHOTGUN, 1);
-    playerState.getAttacked(AttackType.SHOTGUN, 1);
+    playerState.getAttacked(GameWeaponType.SHOTGUN, 1);
+    playerState.getAttacked(GameWeaponType.SHOTGUN, 1);
 
     playerState.registerKill();
 
@@ -67,10 +67,10 @@ public class PlayerStateTest {
         Coordinates.builder().build(), 123, PlayerStateColor.GREEN,
         RPGPlayerClass.WARRIOR);
 
-    playerState.getAttacked(AttackType.SHOTGUN, 1);
-    playerState.getAttacked(AttackType.SHOTGUN, 1);
-    playerState.getAttacked(AttackType.SHOTGUN, 1);
-    playerState.getAttacked(AttackType.SHOTGUN, 1);
+    playerState.getAttacked(GameWeaponType.SHOTGUN, 1);
+    playerState.getAttacked(GameWeaponType.SHOTGUN, 1);
+    playerState.getAttacked(GameWeaponType.SHOTGUN, 1);
+    playerState.getAttacked(GameWeaponType.SHOTGUN, 1);
 
     CountDownLatch latch = new CountDownLatch(1);
     List<Thread> threads = new ArrayList<>();

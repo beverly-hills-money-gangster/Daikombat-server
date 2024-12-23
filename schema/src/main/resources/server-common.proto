@@ -11,9 +11,11 @@ enum WeaponType {
   RAILGUN = 2;
   MINIGUN = 3;
   ROCKET_LAUNCHER = 4;
-  ROCKET = 5;
 }
 
+enum ProjectileType {
+  ROCKET = 0;
+}
 
 enum PlayerSkinColor {
   GREEN = 0;
@@ -34,4 +36,11 @@ enum PlayerClass{
 message Vector {
   optional float x = 1;
   optional float y = 2;
+}
+
+
+message ProjectileStats {
+  optional ProjectileType projectileType = 1;
+  optional Vector position = 2;
+
 }

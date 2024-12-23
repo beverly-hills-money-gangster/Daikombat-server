@@ -97,7 +97,7 @@ public final class ServerCommandOuterClass {
       " \001(\005H\001\210\001\001B\t\n\007_gameIdB\013\n\t_playerId\"T\n\016Res" +
       "pawnCommand\022\023\n\006gameId\030\001 \001(\005H\000\210\001\001\022\025\n\010play" +
       "erId\030\002 \001(\005H\001\210\001\001B\t\n\007_gameIdB\013\n\t_playerId\"" +
-      "\246\005\n\024PushGameEventCommand\022\023\n\006gameId\030\001 \001(\005" +
+      "\356\005\n\024PushGameEventCommand\022\023\n\006gameId\030\001 \001(\005" +
       "H\000\210\001\001\022I\n\teventType\030\002 \001(\01621.daikombat.dto" +
       ".PushGameEventCommand.GameEventTypeH\001\210\001\001" +
       "\022,\n\010position\030\003 \001(\0132\025.daikombat.dto.Vecto" +
@@ -106,16 +106,17 @@ public final class ServerCommandOuterClass {
       "affectedPlayerId\030\006 \001(\005H\005\210\001\001\022\025\n\010sequence\030" +
       "\007 \001(\005H\006\210\001\001\022\024\n\007pingMls\030\010 \001(\005H\007\210\001\001\022\027\n\ntele" +
       "portId\030\t \001(\005H\010\210\001\001\0222\n\nweaponType\030\n \001(\0162\031." +
-      "daikombat.dto.WeaponTypeH\t\210\001\001\"\223\001\n\rGameEv" +
-      "entType\022\010\n\004MOVE\020\000\022\n\n\006ATTACK\020\001\022\030\n\024QUAD_DA" +
-      "MAGE_POWER_UP\020\002\022\031\n\025INVISIBILITY_POWER_UP" +
-      "\020\003\022\024\n\020DEFENCE_POWER_UP\020\004\022\014\n\010TELEPORT\020\005\022\023" +
-      "\n\017HEALTH_POWER_UP\020\006B\t\n\007_gameIdB\014\n\n_event" +
-      "TypeB\013\n\t_positionB\014\n\n_directionB\013\n\t_play" +
-      "erIdB\023\n\021_affectedPlayerIdB\013\n\t_sequenceB\n" +
-      "\n\010_pingMlsB\r\n\013_teleportIdB\r\n\013_weaponType" +
-      "B&\n\"com.beverly.hills.money.gang.protoP\001" +
-      "b\006proto3"
+      "daikombat.dto.WeaponTypeH\t\210\001\001\0227\n\nproject" +
+      "ile\030\013 \001(\0132\036.daikombat.dto.ProjectileStat" +
+      "sH\n\210\001\001\"\223\001\n\rGameEventType\022\010\n\004MOVE\020\000\022\n\n\006AT" +
+      "TACK\020\001\022\030\n\024QUAD_DAMAGE_POWER_UP\020\002\022\031\n\025INVI" +
+      "SIBILITY_POWER_UP\020\003\022\024\n\020DEFENCE_POWER_UP\020" +
+      "\004\022\014\n\010TELEPORT\020\005\022\023\n\017HEALTH_POWER_UP\020\006B\t\n\007" +
+      "_gameIdB\014\n\n_eventTypeB\013\n\t_positionB\014\n\n_d" +
+      "irectionB\013\n\t_playerIdB\023\n\021_affectedPlayer" +
+      "IdB\013\n\t_sequenceB\n\n\010_pingMlsB\r\n\013_teleport" +
+      "IdB\r\n\013_weaponTypeB\r\n\013_projectileB&\n\"com." +
+      "beverly.hills.money.gang.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -169,7 +170,7 @@ public final class ServerCommandOuterClass {
     internal_static_daikombat_dto_PushGameEventCommand_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_PushGameEventCommand_descriptor,
-        new java.lang.String[] { "GameId", "EventType", "Position", "Direction", "PlayerId", "AffectedPlayerId", "Sequence", "PingMls", "TeleportId", "WeaponType", });
+        new java.lang.String[] { "GameId", "EventType", "Position", "Direction", "PlayerId", "AffectedPlayerId", "Sequence", "PingMls", "TeleportId", "WeaponType", "Projectile", });
     com.beverly.hills.money.gang.proto.ServerCommon.getDescriptor();
   }
 

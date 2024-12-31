@@ -22,7 +22,7 @@ public interface ServerConfig {
   int PLAYER_SPEED_CHECK_FREQUENCY_MLS = NumberUtils.toInt(
       System.getenv("GAME_SERVER_PLAYER_SPEED_CHECK_FREQUENCY_MLS"), 10_000);
 
-  int PLAYER_SPEED = NumberUtils.toInt(System.getenv("GAME_SERVER_PLAYER_SPEED"), 6);
+  int PLAYER_SPEED = NumberUtils.toInt(System.getenv("GAME_SERVER_PLAYER_SPEED"), 7);
   int MAX_IDLE_TIME_MLS = NumberUtils.toInt(System.getenv("GAME_SERVER_MAX_IDLE_TIME_MLS"), 10_000);
 
   int DEFAULT_SHOTGUN_DAMAGE = NumberUtils.toInt(

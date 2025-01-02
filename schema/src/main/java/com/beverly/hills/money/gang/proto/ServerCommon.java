@@ -47,8 +47,12 @@ public final class ServerCommon {
       "kinColor\022\t\n\005GREEN\020\000\022\010\n\004PINK\020\001\022\n\n\006PURPLE\020" +
       "\002\022\010\n\004BLUE\020\003\022\n\n\006YELLOW\020\004\022\n\n\006ORANGE\020\005*>\n\013P" +
       "layerClass\022\013\n\007WARRIOR\020\000\022\022\n\016ANGRY_SKELETO" +
-      "N\020\001\022\016\n\nDEMON_TANK\020\002B&\n\"com.beverly.hills" +
-      ".money.gang.protoP\001b\006proto3"
+      "N\020\001\022\016\n\nDEMON_TANK\020\002*\205\001\n\005Taunt\022\n\n\006U_SUCK\020" +
+      "\000\022\t\n\005I_WIN\020\001\022\017\n\013U_NEVER_WIN\020\002\022\020\n\014STILL_T" +
+      "RYING\020\003\022\021\n\rOFFICIAL_SUCK\020\004\022\030\n\024DO_NOT_MAK" +
+      "E_ME_LAUGH\020\005\022\025\n\021THAT_WAS_PATHETIC\020\006B&\n\"c" +
+      "om.beverly.hills.money.gang.protoP\001b\006pro" +
+      "to3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

@@ -90,6 +90,7 @@ message ServerResponse {
     optional int32 playerId = 1;
     optional string message = 2;
     optional string name = 3;
+    optional Taunt taunt = 4;
   }
 
   message GameEvent {

@@ -10668,6 +10668,22 @@ private static final long serialVersionUID = 0L;
      */
     com.google.protobuf.ByteString
         getNameBytes();
+
+    /**
+     * <code>optional .daikombat.dto.Taunt taunt = 4;</code>
+     * @return Whether the taunt field is set.
+     */
+    boolean hasTaunt();
+    /**
+     * <code>optional .daikombat.dto.Taunt taunt = 4;</code>
+     * @return The enum numeric value on the wire for taunt.
+     */
+    int getTauntValue();
+    /**
+     * <code>optional .daikombat.dto.Taunt taunt = 4;</code>
+     * @return The taunt.
+     */
+    com.beverly.hills.money.gang.proto.Taunt getTaunt();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.ChatEvent}
@@ -10684,6 +10700,7 @@ private static final long serialVersionUID = 0L;
     private ChatEvent() {
       message_ = "";
       name_ = "";
+      taunt_ = 0;
     }
 
     @java.lang.Override
@@ -10820,6 +10837,31 @@ private static final long serialVersionUID = 0L;
       }
     }
 
+    public static final int TAUNT_FIELD_NUMBER = 4;
+    private int taunt_ = 0;
+    /**
+     * <code>optional .daikombat.dto.Taunt taunt = 4;</code>
+     * @return Whether the taunt field is set.
+     */
+    @java.lang.Override public boolean hasTaunt() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <code>optional .daikombat.dto.Taunt taunt = 4;</code>
+     * @return The enum numeric value on the wire for taunt.
+     */
+    @java.lang.Override public int getTauntValue() {
+      return taunt_;
+    }
+    /**
+     * <code>optional .daikombat.dto.Taunt taunt = 4;</code>
+     * @return The taunt.
+     */
+    @java.lang.Override public com.beverly.hills.money.gang.proto.Taunt getTaunt() {
+      com.beverly.hills.money.gang.proto.Taunt result = com.beverly.hills.money.gang.proto.Taunt.forNumber(taunt_);
+      return result == null ? com.beverly.hills.money.gang.proto.Taunt.UNRECOGNIZED : result;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -10843,6 +10885,9 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000004) != 0)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 3, name_);
       }
+      if (((bitField0_ & 0x00000008) != 0)) {
+        output.writeEnum(4, taunt_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -10861,6 +10906,10 @@ private static final long serialVersionUID = 0L;
       }
       if (((bitField0_ & 0x00000004) != 0)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, name_);
+      }
+      if (((bitField0_ & 0x00000008) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(4, taunt_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -10892,6 +10941,10 @@ private static final long serialVersionUID = 0L;
         if (!getName()
             .equals(other.getName())) return false;
       }
+      if (hasTaunt() != other.hasTaunt()) return false;
+      if (hasTaunt()) {
+        if (taunt_ != other.taunt_) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -10914,6 +10967,10 @@ private static final long serialVersionUID = 0L;
       if (hasName()) {
         hash = (37 * hash) + NAME_FIELD_NUMBER;
         hash = (53 * hash) + getName().hashCode();
+      }
+      if (hasTaunt()) {
+        hash = (37 * hash) + TAUNT_FIELD_NUMBER;
+        hash = (53 * hash) + taunt_;
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -11049,6 +11106,7 @@ private static final long serialVersionUID = 0L;
         playerId_ = 0;
         message_ = "";
         name_ = "";
+        taunt_ = 0;
         return this;
       }
 
@@ -11094,6 +11152,10 @@ private static final long serialVersionUID = 0L;
         if (((from_bitField0_ & 0x00000004) != 0)) {
           result.name_ = name_;
           to_bitField0_ |= 0x00000004;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.taunt_ = taunt_;
+          to_bitField0_ |= 0x00000008;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -11155,6 +11217,9 @@ private static final long serialVersionUID = 0L;
           bitField0_ |= 0x00000004;
           onChanged();
         }
+        if (other.hasTaunt()) {
+          setTaunt(other.getTaunt());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -11196,6 +11261,11 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000004;
                 break;
               } // case 26
+              case 32: {
+                taunt_ = input.readEnum();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 32
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -11407,6 +11477,66 @@ private static final long serialVersionUID = 0L;
         checkByteStringIsUtf8(value);
         name_ = value;
         bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+
+      private int taunt_ = 0;
+      /**
+       * <code>optional .daikombat.dto.Taunt taunt = 4;</code>
+       * @return Whether the taunt field is set.
+       */
+      @java.lang.Override public boolean hasTaunt() {
+        return ((bitField0_ & 0x00000008) != 0);
+      }
+      /**
+       * <code>optional .daikombat.dto.Taunt taunt = 4;</code>
+       * @return The enum numeric value on the wire for taunt.
+       */
+      @java.lang.Override public int getTauntValue() {
+        return taunt_;
+      }
+      /**
+       * <code>optional .daikombat.dto.Taunt taunt = 4;</code>
+       * @param value The enum numeric value on the wire for taunt to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTauntValue(int value) {
+        taunt_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.Taunt taunt = 4;</code>
+       * @return The taunt.
+       */
+      @java.lang.Override
+      public com.beverly.hills.money.gang.proto.Taunt getTaunt() {
+        com.beverly.hills.money.gang.proto.Taunt result = com.beverly.hills.money.gang.proto.Taunt.forNumber(taunt_);
+        return result == null ? com.beverly.hills.money.gang.proto.Taunt.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>optional .daikombat.dto.Taunt taunt = 4;</code>
+       * @param value The taunt to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTaunt(com.beverly.hills.money.gang.proto.Taunt value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000008;
+        taunt_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .daikombat.dto.Taunt taunt = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTaunt() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        taunt_ = 0;
         onChanged();
         return this;
       }

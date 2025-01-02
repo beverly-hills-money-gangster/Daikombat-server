@@ -1,5 +1,6 @@
 package com.beverly.hills.money.gang.it;
 
+import static com.beverly.hills.money.gang.proto.Taunt.U_SUCK;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -86,6 +87,69 @@ public class ChatEventTest extends AbstractGameServerTest {
         assertNotEquals(playerId, chatEvent.getPlayerId(),
             "You can't see chat messages from yourself");
         assertEquals("Message from player id " + chatEvent.getPlayerId(), chatEvent.getMessage());
+      });
+    });
+  }
+
+  /**
+   * @given a running game server
+   * @when many players connect to server and send messages along with taunts
+   * @then all messages and taunts are correctly received by players
+   */
+  @Test
+  public void testChatManyPlayersTaunt() throws IOException, InterruptedException {
+    int gameIdToConnectTo = 0;
+    for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
+      GameConnection gameConnection = createGameConnection("localhost",
+          port);
+      gameConnection.write(
+          JoinGameCommand.newBuilder()
+              .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+              .setPlayerClass(PlayerClass.WARRIOR)
+              .setPlayerName("my player name " + i)
+              .setGameId(gameIdToConnectTo).build());
+      waitUntilGetResponses(gameConnection.getResponse(), 1);
+    }
+
+    Thread.sleep(2_500);
+
+    Map<Integer, GameConnection> players = new HashMap<>();
+    for (GameConnection gameConnection : gameConnections) {
+      ServerResponse mySpawn = gameConnection.getResponse().poll().get();
+      int myId = mySpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
+      players.put(myId, gameConnection);
+    }
+
+    for (GameConnection gameConnection : gameConnections) {
+      emptyQueue(gameConnection.getResponse());
+    }
+
+    players.forEach(
+        (playerId, gameConnection) -> gameConnection.write(PushChatEventCommand.newBuilder()
+            .setGameId(gameIdToConnectTo)
+            .setTaunt(U_SUCK) // we have a taunt
+            .setPlayerId(playerId)
+            .setMessage("You suck! From player " + playerId).build()));
+
+    Thread.sleep(2_500);
+
+    assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, players.size(), "The server must be full");
+    players.forEach((playerId, gameConnection) -> {
+      List<ServerResponse> chatMessagesResponse = gameConnection.getResponse().list();
+      assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME - 1, chatMessagesResponse.size(),
+          "We must have MAX_PLAYERS-1 messages for every player." +
+              " -1 because you don't send your own message to yourself. Actual responses are:"
+              + chatMessagesResponse);
+      assertEquals(2, gameConnection.getNetworkStats().getSentMessages(),
+          "Every player connected and sent one chat message so it should be 2 sent messages only");
+      chatMessagesResponse.forEach(serverResponse -> {
+        assertTrue(serverResponse.hasChatEvents(), "Must be chat events only");
+        var chatEvent = serverResponse.getChatEvents();
+        assertTrue(StringUtils.isNotEmpty(chatEvent.getName()), "Player names must always be set");
+        assertNotEquals(playerId, chatEvent.getPlayerId(),
+            "You can't see chat messages from yourself");
+        assertEquals(U_SUCK, chatEvent.getTaunt());
+        assertEquals("You suck! From player " + chatEvent.getPlayerId(), chatEvent.getMessage());
       });
     });
   }

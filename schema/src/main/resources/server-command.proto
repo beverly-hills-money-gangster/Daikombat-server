@@ -30,6 +30,7 @@ message PushChatEventCommand {
   optional int32 gameId = 1;
   optional string message = 2;
   optional int32 playerId = 3;
+  optional Taunt taunt = 4;
 }
 
 message JoinGameCommand {

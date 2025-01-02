@@ -19,6 +19,7 @@ import com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo;
 import com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent;
 import com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventItem;
 import com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo;
+import com.beverly.hills.money.gang.proto.Taunt;
 import com.beverly.hills.money.gang.proto.Vector;
 import com.beverly.hills.money.gang.proto.WeaponType;
 import com.beverly.hills.money.gang.state.GameProjectileType;
@@ -35,6 +36,7 @@ import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
 import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
 import com.beverly.hills.money.gang.teleport.Teleport;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -411,11 +413,14 @@ public interface ServerResponseFactory {
         .build();
   }
 
-  static ServerResponse createChatEvent(String message, int fromPlayerId, String playerName) {
+  static ServerResponse createChatEvent(String message, int fromPlayerId, String playerName,
+      Taunt taunt) {
+    var chatMessageBuilder = ServerResponse.ChatEvent.newBuilder()
+        .setPlayerId(fromPlayerId)
+        .setMessage(message).setName(playerName);
+    Optional.ofNullable(taunt).ifPresent(chatMessageBuilder::setTaunt);
     return ServerResponse.newBuilder()
-        .setChatEvents(ServerResponse.ChatEvent.newBuilder()
-            .setPlayerId(fromPlayerId).setMessage(message).setName(playerName)
-            .build())
+        .setChatEvents(chatMessageBuilder.build())
         .build();
   }
 

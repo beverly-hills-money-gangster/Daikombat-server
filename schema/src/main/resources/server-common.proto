@@ -44,3 +44,13 @@ message ProjectileStats {
   optional Vector position = 2;
 
 }
+
+enum Taunt {
+  U_SUCK = 0;
+  I_WIN = 1;
+  U_NEVER_WIN = 2;
+  STILL_TRYING = 3;
+  OFFICIAL_SUCK = 4;
+  DO_NOT_MAKE_ME_LAUGH = 5;
+  THAT_WAS_PATHETIC = 6;
+}

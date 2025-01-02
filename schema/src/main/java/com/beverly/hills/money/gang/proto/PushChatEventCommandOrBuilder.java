@@ -46,4 +46,20 @@ public interface PushChatEventCommandOrBuilder extends
    * @return The playerId.
    */
   int getPlayerId();
+
+  /**
+   * <code>optional .daikombat.dto.Taunt taunt = 4;</code>
+   * @return Whether the taunt field is set.
+   */
+  boolean hasTaunt();
+  /**
+   * <code>optional .daikombat.dto.Taunt taunt = 4;</code>
+   * @return The enum numeric value on the wire for taunt.
+   */
+  int getTauntValue();
+  /**
+   * <code>optional .daikombat.dto.Taunt taunt = 4;</code>
+   * @return The taunt.
+   */
+  com.beverly.hills.money.gang.proto.Taunt getTaunt();
 }

@@ -37,6 +37,22 @@ public enum Taunt
    * <code>THAT_WAS_PATHETIC = 6;</code>
    */
   THAT_WAS_PATHETIC(6),
+  /**
+   * <code>IS_THAT_YOUR_BEST = 7;</code>
+   */
+  IS_THAT_YOUR_BEST(7),
+  /**
+   * <code>PREPARE_TO_DIE = 8;</code>
+   */
+  PREPARE_TO_DIE(8),
+  /**
+   * <code>U_R_NOTHING = 9;</code>
+   */
+  U_R_NOTHING(9),
+  /**
+   * <code>U_R_WEAK_PATHETIC_FOOL = 10;</code>
+   */
+  U_R_WEAK_PATHETIC_FOOL(10),
   UNRECOGNIZED(-1),
   ;
 
@@ -68,6 +84,22 @@ public enum Taunt
    * <code>THAT_WAS_PATHETIC = 6;</code>
    */
   public static final int THAT_WAS_PATHETIC_VALUE = 6;
+  /**
+   * <code>IS_THAT_YOUR_BEST = 7;</code>
+   */
+  public static final int IS_THAT_YOUR_BEST_VALUE = 7;
+  /**
+   * <code>PREPARE_TO_DIE = 8;</code>
+   */
+  public static final int PREPARE_TO_DIE_VALUE = 8;
+  /**
+   * <code>U_R_NOTHING = 9;</code>
+   */
+  public static final int U_R_NOTHING_VALUE = 9;
+  /**
+   * <code>U_R_WEAK_PATHETIC_FOOL = 10;</code>
+   */
+  public static final int U_R_WEAK_PATHETIC_FOOL_VALUE = 10;
 
 
   public final int getNumber() {
@@ -101,6 +133,10 @@ public enum Taunt
       case 4: return OFFICIAL_SUCK;
       case 5: return DO_NOT_MAKE_ME_LAUGH;
       case 6: return THAT_WAS_PATHETIC;
+      case 7: return IS_THAT_YOUR_BEST;
+      case 8: return PREPARE_TO_DIE;
+      case 9: return U_R_NOTHING;
+      case 10: return U_R_WEAK_PATHETIC_FOOL;
       default: return null;
     }
   }

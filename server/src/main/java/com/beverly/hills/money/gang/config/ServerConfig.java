@@ -34,6 +34,8 @@ public interface ServerConfig {
   int DEFAULT_MINIGUN_DAMAGE = NumberUtils.toInt(
       System.getenv("GAME_SERVER_DEFAULT_MINIGUN_DAMAGE"), 5);
 
+  int DEFAULT_PLASMA_DAMAGE = NumberUtils.toInt(
+      System.getenv("GAME_SERVER_DEFAULT_PLASMA_DAMAGE"), 10);
 
   int DEFAULT_ROCKET_DAMAGE = NumberUtils.toInt(
       System.getenv("GAME_SERVER_DEFAULT_ROCKET_DAMAGE"), 75);
@@ -77,6 +79,8 @@ public interface ServerConfig {
   int RAILGUN_DELAY_MLS = NumberUtils.toInt(System.getenv("GAME_SERVER_RAILGUN_DELAY_MLS"), 1_700);
   int ROCKET_LAUNCHER_DELAY_MLS = NumberUtils.toInt(
       System.getenv("GAME_SERVER_ROCKET_LAUNCHER_DELAY_MLS"), 1_500);
+  int PLASMAGUN_DELAY_MLS = NumberUtils.toInt(
+      System.getenv("GAME_SERVER_PLASMAGUN_DELAY_MLS"), 175);
   int MINIGUN_DELAY_MLS = NumberUtils.toInt(System.getenv("GAME_SERVER_MINIGUN_DELAY_MLS"), 155);
 
   int PLAYER_STATS_TIMEOUT_MLS = NumberUtils.toInt(

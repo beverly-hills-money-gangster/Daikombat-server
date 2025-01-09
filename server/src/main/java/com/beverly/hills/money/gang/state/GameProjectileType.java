@@ -13,7 +13,8 @@ public enum GameProjectileType implements Damage {
           return 1.0;
         }
         return 1.0 / distance;
-      });
+      }),
+  PLASMA(ServerConfig.DEFAULT_PLASMA_DAMAGE, 0.5f, 0, distance -> 1.0);
 
   @Getter
   private final int defaultDamage;

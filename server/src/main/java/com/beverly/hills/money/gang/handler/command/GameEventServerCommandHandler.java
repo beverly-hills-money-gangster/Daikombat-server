@@ -193,7 +193,8 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
       LOG.warn("Cheating detected");
       return;
     } else if (!gameCommand.hasWeaponType() && !gameCommand.hasProjectile()) {
-      throw new GameLogicError("No weapon or projectile specified while attacking. Try updating client.",
+      throw new GameLogicError(
+          "No weapon or projectile specified while attacking. Try updating client.",
           GameErrorCode.COMMAND_NOT_RECOGNIZED);
     }
     Damage damage = getDamage(gameCommand);
@@ -299,6 +300,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
       case RAILGUN -> GameWeaponType.RAILGUN;
       case MINIGUN -> GameWeaponType.MINIGUN;
       case ROCKET_LAUNCHER -> GameWeaponType.ROCKET_LAUNCHER;
+      case PLASMAGUN -> GameWeaponType.PLASMAGUN;
       default -> throw new IllegalArgumentException(
           "Not supported weapon type " + gameCommand.getEventType());
     };
@@ -307,6 +309,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
   private GameProjectileType getProjectileType(PushGameEventCommand gameCommand) {
     return switch (gameCommand.getProjectile().getProjectileType()) {
       case ROCKET -> GameProjectileType.ROCKET;
+      case PLASMA -> GameProjectileType.PLASMA;
       default -> throw new IllegalArgumentException(
           "Not supported projectile type " + gameCommand.getEventType());
     };

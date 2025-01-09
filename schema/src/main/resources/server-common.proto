@@ -11,10 +11,12 @@ enum WeaponType {
   RAILGUN = 2;
   MINIGUN = 3;
   ROCKET_LAUNCHER = 4;
+  PLASMAGUN = 5 ;
 }
 
 enum ProjectileType {
   ROCKET = 0;
+  PLASMA = 1;
 }
 
 enum PlayerSkinColor {

@@ -431,12 +431,14 @@ public interface ServerResponseFactory {
       case RAILGUN -> WeaponType.RAILGUN;
       case MINIGUN -> WeaponType.MINIGUN;
       case ROCKET_LAUNCHER -> WeaponType.ROCKET_LAUNCHER;
+      case PLASMAGUN -> WeaponType.PLASMAGUN;
     };
   }
 
   static ProjectileType getProjectileType(GameProjectileType gameProjectileType) {
     return switch (gameProjectileType) {
       case ROCKET -> ProjectileType.ROCKET;
+      case PLASMA -> ProjectileType.PLASMA;
     };
   }
 }

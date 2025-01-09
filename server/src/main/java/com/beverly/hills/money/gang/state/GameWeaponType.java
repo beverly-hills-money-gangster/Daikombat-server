@@ -24,7 +24,9 @@ public enum GameWeaponType implements Damage {
       distance -> 1.0),
 
   // rocket launcher itself doesn't do any damage
-  ROCKET_LAUNCHER(0, 999, ServerConfig.ROCKET_LAUNCHER_DELAY_MLS, istance -> 0.0);
+  ROCKET_LAUNCHER(0, 999, ServerConfig.ROCKET_LAUNCHER_DELAY_MLS, distance -> 0.0),
+  // plasmagun itself doesn't do any damage
+  PLASMAGUN(0, 999, ServerConfig.PLASMAGUN_DELAY_MLS, distance -> 0.0);
 
   @Getter
   private final int defaultDamage;

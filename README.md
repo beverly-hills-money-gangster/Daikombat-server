@@ -74,7 +74,7 @@ Game server can be configured using the following environment variables:
   Default - `10_000`
 - `GAME_SERVER_PUNCH_DELAY_MLS` Punch attack delay(in milliseconds). Default - `300`
 - `GAME_SERVER_ROCKET_LAUNCHER_DELAY_MLS` Rocket launcher delay(in milliseconds). Default - `1_500`.
-- `GAME_SERVER_PLASMAGUN_DELAY_MLS` Plasma gun delay(in milliseconds). Default - `175`.
+- `GAME_SERVER_PLASMAGUN_DELAY_MLS` Plasma gun delay(in milliseconds). Default - `155`.
 - `GAME_SERVER_SHOTGUN_DELAY_MLS` Shotgun attack delay(in milliseconds). Default - `450`
 - `GAME_SERVER_RAILGUN_DELAY_MLS` Railgun attack delay(in milliseconds). Default - `1_700`
 - `GAME_SERVER_MINIGUN_DELAY_MLS` Minigun attack delay(in milliseconds). Default - `155`

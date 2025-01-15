@@ -7,14 +7,14 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum GameProjectileType implements Damage {
-  ROCKET(ServerConfig.DEFAULT_ROCKET_DAMAGE, 1.5f, 0,
+  ROCKET(ServerConfig.DEFAULT_ROCKET_DAMAGE, 1.75f, 0,
       distance -> {
         if (distance <= 1) {
           return 1.0;
         }
         return 1.0 / distance;
       }),
-  PLASMA(ServerConfig.DEFAULT_PLASMA_DAMAGE, 0.5f, 0, distance -> 1.0);
+  PLASMA(ServerConfig.DEFAULT_PLASMA_DAMAGE, 1f, 0, distance -> 1.0);
 
   @Getter
   private final int defaultDamage;

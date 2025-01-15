@@ -80,7 +80,7 @@ public interface ServerConfig {
   int ROCKET_LAUNCHER_DELAY_MLS = NumberUtils.toInt(
       System.getenv("GAME_SERVER_ROCKET_LAUNCHER_DELAY_MLS"), 1_500);
   int PLASMAGUN_DELAY_MLS = NumberUtils.toInt(
-      System.getenv("GAME_SERVER_PLASMAGUN_DELAY_MLS"), 175);
+      System.getenv("GAME_SERVER_PLASMAGUN_DELAY_MLS"), 155);
   int MINIGUN_DELAY_MLS = NumberUtils.toInt(System.getenv("GAME_SERVER_MINIGUN_DELAY_MLS"), 155);
 
   int PLAYER_STATS_TIMEOUT_MLS = NumberUtils.toInt(

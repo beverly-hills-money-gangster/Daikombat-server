@@ -2,6 +2,7 @@ package com.beverly.hills.money.gang.it;
 
 import static com.beverly.hills.money.gang.proto.Taunt.U_SUCK;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -83,6 +84,7 @@ public class ChatEventTest extends AbstractGameServerTest {
       chatMessagesResponse.forEach(serverResponse -> {
         assertTrue(serverResponse.hasChatEvents(), "Must be chat events only");
         var chatEvent = serverResponse.getChatEvents();
+        assertFalse(chatEvent.hasTaunt());
         assertTrue(StringUtils.isNotEmpty(chatEvent.getName()), "Player names must always be set");
         assertNotEquals(playerId, chatEvent.getPlayerId(),
             "You can't see chat messages from yourself");

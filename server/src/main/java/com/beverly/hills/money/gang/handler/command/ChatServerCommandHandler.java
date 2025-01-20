@@ -44,7 +44,7 @@ public class ChatServerCommandHandler extends ServerCommandHandler {
               msg.getChatCommand().getMessage(),
               playerStateReader.getPlayerState().getPlayerId(),
               playerStateReader.getPlayerState().getPlayerName(),
-              chatCommand.getTaunt());
+              chatCommand.hasTaunt() ? chatCommand.getTaunt() : null);
           game.getPlayersRegistry().allJoinedPlayers()
               .filter(
                   playerStateChannel -> !playerStateChannel.isOurChannel(currentChannel))

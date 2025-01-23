@@ -42,7 +42,8 @@ public class GetServerInfoCommandHandler extends ServerCommandHandler {
         RPGWeaponInfo.getProjectilesInfo(
             getRPGPlayerClass(msg.getGetServerInfoCommand().getPlayerClass())),
         ServerConfig.MOVES_UPDATE_FREQUENCY_MLS,
-        ServerConfig.PLAYER_SPEED));
+        ServerConfig.PLAYER_SPEED,
+        ServerConfig.MAX_VISIBILITY));
   }
 
 }

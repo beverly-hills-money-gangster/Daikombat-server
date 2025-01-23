@@ -16,6 +16,8 @@ public interface ServerConfig {
   int BAN_TIMEOUT_MLS = NumberUtils.toInt(System.getenv("GAME_SERVER_BAN_TIMEOUT_MLS"),
       30 * 60 * 1000);
 
+  int MAX_VISIBILITY = NumberUtils.toInt(System.getenv("GAME_SERVER_MAX_VISIBILITY"), 15);
+
   int MOVES_UPDATE_FREQUENCY_MLS = NumberUtils.toInt(
       System.getenv("GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS"), 50);
 

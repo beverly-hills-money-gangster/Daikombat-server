@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -205,7 +206,7 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
             gameCommand.getProjectile().getPosition())
             : createVector(gameCommand.getPosition()),
         gameCommand.getPlayerId(),
-        gameCommand.hasAffectedPlayerId() ? gameCommand.getAffectedPlayerId() : null,
+        getAffectedPlayerId(gameCommand, damage, game),
         damage,
         gameCommand.getSequence(),
         gameCommand.getPingMls());
@@ -263,6 +264,28 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
               .forEach(playerStateChannel
                   -> playerStateChannel.writeFlushPrimaryChannel(attackEvent));
         });
+  }
+
+  private Integer getAffectedPlayerId(PushGameEventCommand gameCommand, Damage damage, Game game) {
+    if (gameCommand.hasAffectedPlayerId()) {
+      return gameCommand.getAffectedPlayerId();
+    } else if (gameCommand.hasProjectile()) {
+      return getPlayerInDistance(
+          createVector(gameCommand.getProjectile().getPosition()), damage.getMaxDistance(), game);
+    }
+    return null;
+  }
+
+  private Integer getPlayerInDistance(Vector projectileBoomPosition, double radius, Game game) {
+    return game.getPlayersRegistry().allJoinedPlayers()
+        .map(player -> Pair.of(
+            Vector.getDistance(player.getPlayerState().getCoordinates().getPosition(),
+                projectileBoomPosition), player))
+        .min(java.util.Map.Entry.comparingByKey())
+        .filter(distancePlayerMap -> distancePlayerMap.getKey() < radius).stream()
+        .findFirst()
+        .map(distancePlayerMap -> distancePlayerMap.getValue().getPlayerState().getPlayerId())
+        .orElse(null);
   }
 
   private boolean isAttackCheating(PushGameEventCommand gameCommand, Game game) {

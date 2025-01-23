@@ -3,20 +3,25 @@ package com.beverly.hills.money.gang.it;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
+import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
-import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.Vector;
+import com.beverly.hills.money.gang.spawner.Spawner;
+import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_POWER_UPS_ENABLED", value = "false")
 @SetEnvironmentVariable(key = "GAME_SERVER_TELEPORTS_ENABLED", value = "false")
@@ -27,6 +32,10 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
 public class MoveEventTest extends AbstractGameServerTest {
 
+
+  @SpyBean
+  private Spawner spawner;
+
   /**
    * @given a running server with 2 connected players
    * @when player 1 moves, player 2 observes
@@ -35,11 +44,21 @@ public class MoveEventTest extends AbstractGameServerTest {
   @Test
   public void testMove() throws Exception {
     int gameIdToConnectTo = 2;
-    GameConnection movingPlayerConnection = createGameConnection( "localhost",
+    doReturn(
+        Coordinates.builder()
+            .direction(createGameVector(0, 0))
+            .position(createGameVector(0, 0)).build(),
+        Coordinates.builder()
+            .direction(createGameVector(0, 0))
+            .position(createGameVector(ServerConfig.MAX_VISIBILITY * 0.5f, 0))
+            .build())
+        .when(spawner).spawnPlayer(any());
+    GameConnection movingPlayerConnection = createGameConnection("localhost",
         port);
     movingPlayerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.WARRIOR)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(movingPlayerConnection.getResponse());
@@ -51,7 +70,8 @@ public class MoveEventTest extends AbstractGameServerTest {
         "localhost", port);
     observerPlayerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.WARRIOR)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("new player")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerPlayerConnection.getResponse());
@@ -115,18 +135,29 @@ public class MoveEventTest extends AbstractGameServerTest {
   }
 
   /**
-   * @given a running server with 2 connected players
-   * @when player 1 moves 3 times, player 2 observes
-   * @then player 2 observers player 1 moves and get MOVE events with the ascending sequence
+   * @given a running server with 2 connected players standing far away from each other
+   * @when player 1 moves, player 2 observes
+   * @then player 2 doesn't see player 1 moves because it's too far away
    */
   @Test
-  public void testMoveAscendingSequence() throws Exception {
+  public void testMoveFarAway() throws Exception {
     int gameIdToConnectTo = 2;
-    GameConnection movingPlayerConnection = createGameConnection( "localhost",
+    doReturn(
+        Coordinates.builder()
+            .direction(createGameVector(0, 0))
+            .position(createGameVector(0, 0)).build(),
+        Coordinates.builder()
+            .direction(createGameVector(0, 0))
+            .position(createGameVector(ServerConfig.MAX_VISIBILITY * 1.2f, 0))
+            .build())
+        .when(spawner).spawnPlayer(any());
+
+    GameConnection movingPlayerConnection = createGameConnection("localhost",
         port);
     movingPlayerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.WARRIOR)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(movingPlayerConnection.getResponse());
@@ -138,7 +169,66 @@ public class MoveEventTest extends AbstractGameServerTest {
         "localhost", port);
     observerPlayerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.WARRIOR)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.WARRIOR)
+            .setPlayerName("new player")
+            .setGameId(gameIdToConnectTo).build());
+    waitUntilQueueNonEmpty(observerPlayerConnection.getResponse());
+    emptyQueue(observerPlayerConnection.getResponse());
+    Thread.sleep(1_000);
+    assertEquals(0, observerPlayerConnection.getResponse().size(),
+        "No activity happened in the game so no response yet. Actual response is "
+            + observerPlayerConnection.getResponse().list());
+
+    float newPositionY = mySpawnGameEvent.getPlayer().getPosition().getY() + 0.01f;
+    float newPositionX = mySpawnGameEvent.getPlayer().getPosition().getX() + 0.01f;
+    emptyQueue(movingPlayerConnection.getResponse());
+    movingPlayerConnection.write(PushGameEventCommand.newBuilder()
+        .setGameId(gameIdToConnectTo)
+        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
+        .setEventType(PushGameEventCommand.GameEventType.MOVE)
+        .setPlayerId(playerId1)
+        .setPosition(Vector.newBuilder()
+            .setY(newPositionY)
+            .setX(newPositionX)
+            .build())
+        .setDirection(Vector.newBuilder()
+            .setY(mySpawnGameEvent.getPlayer().getDirection().getY())
+            .setX(mySpawnGameEvent.getPlayer().getDirection().getX())
+            .build())
+        .build());
+    Thread.sleep(1_000);
+    assertEquals(0, observerPlayerConnection.getResponse().size(),
+        "No response is expected because the players are too far away");
+  }
+
+  /**
+   * @given a running server with 2 connected players
+   * @when player 1 moves 3 times, player 2 observes
+   * @then player 2 observers player 1 moves and get MOVE events with the ascending sequence
+   */
+  @Test
+  public void testMoveAscendingSequence() throws Exception {
+    int gameIdToConnectTo = 2;
+    GameConnection movingPlayerConnection = createGameConnection("localhost",
+        port);
+    movingPlayerConnection.write(
+        JoinGameCommand.newBuilder()
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.WARRIOR)
+            .setPlayerName("my player name")
+            .setGameId(gameIdToConnectTo).build());
+    waitUntilQueueNonEmpty(movingPlayerConnection.getResponse());
+    ServerResponse mySpawn = movingPlayerConnection.getResponse().poll().get();
+    ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
+    int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
+
+    GameConnection observerPlayerConnection = createGameConnection(
+        "localhost", port);
+    observerPlayerConnection.write(
+        JoinGameCommand.newBuilder()
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("new player")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerPlayerConnection.getResponse());
@@ -192,11 +282,12 @@ public class MoveEventTest extends AbstractGameServerTest {
   @Test
   public void testMoveOutOfOrderSequence() throws Exception {
     int gameIdToConnectTo = 2;
-    GameConnection movingPlayerConnection = createGameConnection( "localhost",
+    GameConnection movingPlayerConnection = createGameConnection("localhost",
         port);
     movingPlayerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.WARRIOR)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(movingPlayerConnection.getResponse());
@@ -208,7 +299,8 @@ public class MoveEventTest extends AbstractGameServerTest {
         "localhost", port);
     observerPlayerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.WARRIOR)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("new player")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerPlayerConnection.getResponse());
@@ -276,11 +368,12 @@ public class MoveEventTest extends AbstractGameServerTest {
   @Test
   public void testMoveWrongPlayerId() throws Exception {
     int gameIdToConnectTo = 2;
-    GameConnection observerConnection = createGameConnection( "localhost",
+    GameConnection observerConnection = createGameConnection("localhost",
         port);
     observerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.WARRIOR)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerConnection.getResponse());
@@ -288,11 +381,12 @@ public class MoveEventTest extends AbstractGameServerTest {
     ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
     int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
 
-    GameConnection wrongGameConnection = createGameConnection( "localhost",
+    GameConnection wrongGameConnection = createGameConnection("localhost",
         port);
     wrongGameConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.WARRIOR)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("new player")
             .setGameId(gameIdToConnectTo).build());
 
@@ -333,6 +427,11 @@ public class MoveEventTest extends AbstractGameServerTest {
     assertEquals(0, wrongGameConnection.getResponse().size(),
         "No movements should be published. Actual:" + wrongGameConnection.getResponse().list());
 
+  }
+
+  private com.beverly.hills.money.gang.state.entity.Vector createGameVector(float x, float y) {
+    return com.beverly.hills.money.gang.state.entity.Vector
+        .builder().x(x).y(y).build();
   }
 
 }

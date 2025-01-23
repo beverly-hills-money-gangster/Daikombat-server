@@ -157,9 +157,11 @@ public interface ServerResponseFactory {
       List<GameWeaponInfo> weaponsInfo,
       List<GameProjectileInfo> projectilesInfo,
       int movesUpdateFreqMls,
-      int playerSpeed) {
+      int playerSpeed,
+      int maxVisibility) {
     var serverInfo = ServerResponse.ServerInfo.newBuilder();
     serverInfo.setFragsToWin(fragsToWin);
+    serverInfo.setMaxVisibility(maxVisibility);
     serverInfo.setPlayerSpeed(playerSpeed);
     serverInfo.setMovesUpdateFreqMls(movesUpdateFreqMls);
     serverInfo.setVersion(serverVersion);

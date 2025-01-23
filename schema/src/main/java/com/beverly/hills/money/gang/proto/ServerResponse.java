@@ -3919,6 +3919,17 @@ private static final long serialVersionUID = 0L;
      */
     com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfoOrBuilder getProjectileInfoOrBuilder(
         int index);
+
+    /**
+     * <code>optional int32 maxVisibility = 8;</code>
+     * @return Whether the maxVisibility field is set.
+     */
+    boolean hasMaxVisibility();
+    /**
+     * <code>optional int32 maxVisibility = 8;</code>
+     * @return The maxVisibility.
+     */
+    int getMaxVisibility();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.ServerInfo}
@@ -4187,6 +4198,25 @@ private static final long serialVersionUID = 0L;
       return projectileInfo_.get(index);
     }
 
+    public static final int MAXVISIBILITY_FIELD_NUMBER = 8;
+    private int maxVisibility_ = 0;
+    /**
+     * <code>optional int32 maxVisibility = 8;</code>
+     * @return Whether the maxVisibility field is set.
+     */
+    @java.lang.Override
+    public boolean hasMaxVisibility() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <code>optional int32 maxVisibility = 8;</code>
+     * @return The maxVisibility.
+     */
+    @java.lang.Override
+    public int getMaxVisibility() {
+      return maxVisibility_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -4221,6 +4251,9 @@ private static final long serialVersionUID = 0L;
       }
       for (int i = 0; i < projectileInfo_.size(); i++) {
         output.writeMessage(7, projectileInfo_.get(i));
+      }
+      if (((bitField0_ & 0x00000010) != 0)) {
+        output.writeInt32(8, maxVisibility_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -4257,6 +4290,10 @@ private static final long serialVersionUID = 0L;
       for (int i = 0; i < projectileInfo_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(7, projectileInfo_.get(i));
+      }
+      if (((bitField0_ & 0x00000010) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(8, maxVisibility_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -4299,6 +4336,11 @@ private static final long serialVersionUID = 0L;
           .equals(other.getWeaponsInfoList())) return false;
       if (!getProjectileInfoList()
           .equals(other.getProjectileInfoList())) return false;
+      if (hasMaxVisibility() != other.hasMaxVisibility()) return false;
+      if (hasMaxVisibility()) {
+        if (getMaxVisibility()
+            != other.getMaxVisibility()) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -4337,6 +4379,10 @@ private static final long serialVersionUID = 0L;
       if (getProjectileInfoCount() > 0) {
         hash = (37 * hash) + PROJECTILEINFO_FIELD_NUMBER;
         hash = (53 * hash) + getProjectileInfoList().hashCode();
+      }
+      if (hasMaxVisibility()) {
+        hash = (37 * hash) + MAXVISIBILITY_FIELD_NUMBER;
+        hash = (53 * hash) + getMaxVisibility();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -4494,6 +4540,7 @@ private static final long serialVersionUID = 0L;
           projectileInfoBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000040);
+        maxVisibility_ = 0;
         return this;
       }
 
@@ -4574,6 +4621,10 @@ private static final long serialVersionUID = 0L;
         if (((from_bitField0_ & 0x00000010) != 0)) {
           result.playerSpeed_ = playerSpeed_;
           to_bitField0_ |= 0x00000008;
+        }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.maxVisibility_ = maxVisibility_;
+          to_bitField0_ |= 0x00000010;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -4714,6 +4765,9 @@ private static final long serialVersionUID = 0L;
             }
           }
         }
+        if (other.hasMaxVisibility()) {
+          setMaxVisibility(other.getMaxVisibility());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -4799,6 +4853,11 @@ private static final long serialVersionUID = 0L;
                 }
                 break;
               } // case 58
+              case 64: {
+                maxVisibility_ = input.readInt32();
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 64
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -5733,6 +5792,46 @@ private static final long serialVersionUID = 0L;
           projectileInfo_ = null;
         }
         return projectileInfoBuilder_;
+      }
+
+      private int maxVisibility_ ;
+      /**
+       * <code>optional int32 maxVisibility = 8;</code>
+       * @return Whether the maxVisibility field is set.
+       */
+      @java.lang.Override
+      public boolean hasMaxVisibility() {
+        return ((bitField0_ & 0x00000080) != 0);
+      }
+      /**
+       * <code>optional int32 maxVisibility = 8;</code>
+       * @return The maxVisibility.
+       */
+      @java.lang.Override
+      public int getMaxVisibility() {
+        return maxVisibility_;
+      }
+      /**
+       * <code>optional int32 maxVisibility = 8;</code>
+       * @param value The maxVisibility to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxVisibility(int value) {
+
+        maxVisibility_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 maxVisibility = 8;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxVisibility() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        maxVisibility_ = 0;
+        onChanged();
+        return this;
       }
       @java.lang.Override
       public final Builder setUnknownFields(

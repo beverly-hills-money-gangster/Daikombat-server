@@ -10,7 +10,7 @@ import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.registry.BannedPlayersRegistry;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
-import com.beverly.hills.money.gang.util.NetworkUtil;
+import com.beverly.hills.money.gang.state.entity.Vector;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -81,19 +81,13 @@ public class GameScheduler {
             if (bufferedMoves.isEmpty()) {
               return;
             }
-            game.getPlayersRegistry().allJoinedPlayers()
-                .forEach(playerStateChannel -> {
-                  // don't send me MY own moves
-                  Optional.of(getAllBufferedPlayerMovesExceptMine(
-                          bufferedMoves, playerStateChannel.getPlayerState().getPlayerId()))
-                      .filter(playerSpecificBufferedMoves -> !playerSpecificBufferedMoves.isEmpty())
-                      .ifPresent(playerSpecificBufferedMoves ->
-                          playerStateChannel.executeInPrimaryEventLoop(
-                              () -> playerStateChannel.writeFlushBalanced(createMovesEventAllPlayers
-                                  (game.getPlayersRegistry().playersOnline(),
-                                      playerSpecificBufferedMoves))));
-
-                });
+            game.getPlayersRegistry().allJoinedPlayers().forEach(
+                player -> Optional.of(
+                        getPlayerBufferedMoves(bufferedMoves, player.getPlayerState()))
+                    .filter(moves -> !moves.isEmpty())
+                    .ifPresent(moves -> player.executeInPrimaryEventLoop(
+                        () -> player.writeFlushBalanced(createMovesEventAllPlayers
+                            (game.getPlayersRegistry().playersOnline(), moves)))));
 
           } finally {
             game.flushBufferedMoves();
@@ -101,10 +95,16 @@ public class GameScheduler {
         }));
   }
 
-  private List<PlayerStateReader> getAllBufferedPlayerMovesExceptMine(
-      List<PlayerStateReader> bufferedPlayerMoves, int myPlayerId) {
-    return bufferedPlayerMoves.stream()
-        .filter(bufferedPlayerMove -> bufferedPlayerMove.getPlayerId() != myPlayerId)
+  private List<PlayerStateReader> getPlayerBufferedMoves(
+      List<PlayerStateReader> bufferedPlayerMoves, PlayerStateReader playerStateReader) {
+    return bufferedPlayerMoves
+        .stream()
+        .filter(bufferedPlayerMove ->
+            bufferedPlayerMove.getPlayerId() != playerStateReader.getPlayerId())
+        .filter(bufferedPlayerMove ->
+            Vector.getDistance(
+                playerStateReader.getCoordinates().getPosition(),
+                bufferedPlayerMove.getCoordinates().getPosition()) < ServerConfig.MAX_VISIBILITY)
         .collect(Collectors.toList());
   }
 

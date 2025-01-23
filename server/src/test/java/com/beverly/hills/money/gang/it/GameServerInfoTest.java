@@ -21,7 +21,6 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_TELEPORTS_ENABLED", value = "false")
-
 public class GameServerInfoTest extends AbstractGameServerTest {
 
   /**
@@ -47,6 +46,7 @@ public class GameServerInfoTest extends AbstractGameServerTest {
         serverResponse.getServerInfo().getMovesUpdateFreqMls());
     assertEquals(ServerConfig.FRAGS_PER_GAME, serverResponse.getServerInfo().getFragsToWin());
     assertEquals(ServerConfig.PLAYER_SPEED, serverResponse.getServerInfo().getPlayerSpeed());
+    assertEquals(ServerConfig.MAX_VISIBILITY, serverResponse.getServerInfo().getMaxVisibility());
     for (ServerResponse.GameInfo gameInfo : games) {
       assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, gameInfo.getMaxGamePlayers());
       assertEquals(0, gameInfo.getPlayersOnline(), "Should be no connected players yet");

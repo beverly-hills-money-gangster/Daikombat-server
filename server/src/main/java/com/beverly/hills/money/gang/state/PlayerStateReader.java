@@ -36,4 +36,6 @@ public interface PlayerStateReader {
 
   RPGPlayerClass getRpgPlayerClass();
 
+  float getSpeed();
+
 }

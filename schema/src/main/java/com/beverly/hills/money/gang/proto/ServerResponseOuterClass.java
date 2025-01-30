@@ -131,7 +131,7 @@ public final class ServerResponseOuterClass {
     java.lang.String[] descriptorData = {
       "\n/schema/src/main/resources/server-respo" +
       "nse.proto\022\rdaikombat.dto\032-schema/src/mai" +
-      "n/resources/server-common.proto\"\305 \n\016Serv" +
+      "n/resources/server-common.proto\"\343 \n\016Serv" +
       "erResponse\022>\n\nerrorEvent\030\001 \001(\0132(.daikomb" +
       "at.dto.ServerResponse.ErrorEventH\000\022=\n\nch" +
       "atEvents\030\002 \001(\0132\'.daikombat.dto.ServerRes" +
@@ -163,7 +163,7 @@ public final class ServerResponseOuterClass {
       "rverResponse.GameInfo\022\024\n\007version\030\002 \001(\tH\000" +
       "\210\001\001\022\027\n\nfragsToWin\030\003 \001(\005H\001\210\001\001\022\037\n\022movesUpd" +
       "ateFreqMls\030\004 \001(\005H\002\210\001\001\022\030\n\013playerSpeed\030\005 \001" +
-      "(\005H\003\210\001\001\022=\n\013weaponsInfo\030\006 \003(\0132(.daikombat" +
+      "(\002H\003\210\001\001\022=\n\013weaponsInfo\030\006 \003(\0132(.daikombat" +
       ".dto.ServerResponse.WeaponInfo\022D\n\016projec" +
       "tileInfo\030\007 \003(\0132,.daikombat.dto.ServerRes" +
       "ponse.ProjectileInfo\022\032\n\rmaxVisibility\030\010 " +
@@ -214,7 +214,7 @@ public final class ServerResponseOuterClass {
       "\210\001\001\022\027\n\nplayerName\030\003 \001(\tH\002\210\001\001\022\023\n\006deaths\030\004" +
       " \001(\005H\003\210\001\001\022\024\n\007pingMls\030\005 \001(\005H\004\210\001\001B\013\n\t_play" +
       "erIdB\010\n\006_killsB\r\n\013_playerNameB\t\n\007_deaths" +
-      "B\n\n\010_pingMls\032\252\004\n\024GameEventPlayerStats\022\025\n" +
+      "B\n\n\010_pingMls\032\310\004\n\024GameEventPlayerStats\022\025\n" +
       "\010playerId\030\001 \001(\005H\000\210\001\001\022\027\n\nplayerName\030\002 \001(\t" +
       "H\001\210\001\001\022\'\n\010position\030\003 \001(\0132\025.daikombat.dto." +
       "Vector\022(\n\tdirection\030\004 \001(\0132\025.daikombat.dt" +
@@ -225,19 +225,19 @@ public final class ServerResponseOuterClass {
       "MatchStats\030\010 \001(\01322.daikombat.dto.ServerR" +
       "esponse.PlayerGameMatchStatsH\004\210\001\001\022\024\n\007pin" +
       "gMls\030\t \001(\005H\005\210\001\001\0224\n\013playerClass\030\n \001(\0162\032.d" +
-      "aikombat.dto.PlayerClassH\006\210\001\001B\013\n\t_player" +
-      "IdB\r\n\013_playerNameB\t\n\007_healthB\014\n\n_skinCol" +
-      "orB\021\n\017_gameMatchStatsB\n\n\010_pingMlsB\016\n\014_pl" +
-      "ayerClass\032T\n\024PlayerGameMatchStats\022\022\n\005kil" +
-      "ls\030\001 \001(\005H\000\210\001\001\022\023\n\006deaths\030\002 \001(\005H\001\210\001\001B\010\n\006_k" +
-      "illsB\t\n\007_deaths\032\202\001\n\013GamePowerUp\022@\n\004type\030" +
-      "\001 \001(\0162-.daikombat.dto.ServerResponse.Gam" +
-      "ePowerUpTypeH\000\210\001\001\022\030\n\013lastsForMls\030\002 \001(\005H\001" +
-      "\210\001\001B\007\n\005_typeB\016\n\014_lastsForMls\"M\n\017GamePowe" +
-      "rUpType\022\017\n\013QUAD_DAMAGE\020\000\022\020\n\014INVISIBILITY" +
-      "\020\001\022\013\n\007DEFENCE\020\002\022\n\n\006HEALTH\020\003B\n\n\010responseB" +
-      "&\n\"com.beverly.hills.money.gang.protoP\001b" +
-      "\006proto3"
+      "aikombat.dto.PlayerClassH\006\210\001\001\022\022\n\005speed\030\013" +
+      " \001(\002H\007\210\001\001B\013\n\t_playerIdB\r\n\013_playerNameB\t\n" +
+      "\007_healthB\014\n\n_skinColorB\021\n\017_gameMatchStat" +
+      "sB\n\n\010_pingMlsB\016\n\014_playerClassB\010\n\006_speed\032" +
+      "T\n\024PlayerGameMatchStats\022\022\n\005kills\030\001 \001(\005H\000" +
+      "\210\001\001\022\023\n\006deaths\030\002 \001(\005H\001\210\001\001B\010\n\006_killsB\t\n\007_d" +
+      "eaths\032\202\001\n\013GamePowerUp\022@\n\004type\030\001 \001(\0162-.da" +
+      "ikombat.dto.ServerResponse.GamePowerUpTy" +
+      "peH\000\210\001\001\022\030\n\013lastsForMls\030\002 \001(\005H\001\210\001\001B\007\n\005_ty" +
+      "peB\016\n\014_lastsForMls\"M\n\017GamePowerUpType\022\017\n" +
+      "\013QUAD_DAMAGE\020\000\022\020\n\014INVISIBILITY\020\001\022\013\n\007DEFE" +
+      "NCE\020\002\022\n\n\006HEALTH\020\003B\n\n\010responseB&\n\"com.bev" +
+      "erly.hills.money.gang.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -357,7 +357,7 @@ public final class ServerResponseOuterClass {
     internal_static_daikombat_dto_ServerResponse_GameEventPlayerStats_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_ServerResponse_GameEventPlayerStats_descriptor,
-        new java.lang.String[] { "PlayerId", "PlayerName", "Position", "Direction", "Health", "ActivePowerUps", "SkinColor", "GameMatchStats", "PingMls", "PlayerClass", });
+        new java.lang.String[] { "PlayerId", "PlayerName", "Position", "Direction", "Health", "ActivePowerUps", "SkinColor", "GameMatchStats", "PingMls", "PlayerClass", "Speed", });
     internal_static_daikombat_dto_ServerResponse_PlayerGameMatchStats_descriptor =
       internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(18);
     internal_static_daikombat_dto_ServerResponse_PlayerGameMatchStats_fieldAccessorTable = new

@@ -17,14 +17,6 @@ public class PlayerRPGStats {
     this.stats.putAll(stats);
   }
 
-  public static PlayerRPGStats defaultStats() {
-    Map<PlayerRPGStatType, PlayerRPGStatValue> stats = new HashMap<>();
-    for (var statType : PlayerRPGStatType.values()) {
-      stats.put(statType, PlayerRPGStatValue.createDefault());
-    }
-    return new PlayerRPGStats(stats);
-  }
-
 
   public double getNormalized(final PlayerRPGStatType playerRPGStatType) {
     return stats.get(playerRPGStatType).getValue() / 100.0;

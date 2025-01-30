@@ -157,7 +157,7 @@ public interface ServerResponseFactory {
       List<GameWeaponInfo> weaponsInfo,
       List<GameProjectileInfo> projectilesInfo,
       int movesUpdateFreqMls,
-      int playerSpeed,
+      float playerSpeed,
       int maxVisibility) {
     var serverInfo = ServerResponse.ServerInfo.newBuilder();
     serverInfo.setFragsToWin(fragsToWin);
@@ -252,6 +252,7 @@ public interface ServerResponseFactory {
         .setHealth(playerReader.getHealth())
         .setPlayerClass(createPlayerClass(playerReader.getRpgPlayerClass()))
         .setPlayerId(playerReader.getPlayerId())
+        .setSpeed(playerReader.getSpeed())
         .setGameMatchStats(PlayerGameMatchStats.newBuilder()
             .setDeaths(playerReader.getGameStats().getDeaths())
             .setKills(playerReader.getGameStats().getKills()).build())

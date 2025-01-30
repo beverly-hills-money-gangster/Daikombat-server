@@ -7,23 +7,42 @@ import com.beverly.hills.money.gang.state.PlayerRPGStatType;
 import com.beverly.hills.money.gang.state.PlayerRPGStatValue;
 import com.beverly.hills.money.gang.state.PlayerRPGStats;
 import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
+import java.util.HashMap;
 import java.util.Map;
 
 public class RPGStatsFactory {
 
 
-  public static PlayerRPGStats create(RPGPlayerClass playerClass) {
-    return switch (playerClass) {
-      case WARRIOR -> createDefault();
-      case DEMON_TANK -> createTank();
-      case ANGRY_SKELETON -> createAngrySkeleton();
-    };
+  private static final Map<RPGPlayerClass, PlayerRPGStats> STATS = new HashMap<>();
+
+  static {
+    for (RPGPlayerClass playerClass : RPGPlayerClass.values()) {
+      var stats = switch (playerClass) {
+        case WARRIOR -> createDefault();
+        case DEMON_TANK -> createTank();
+        case ANGRY_SKELETON -> createAngrySkeleton();
+      };
+      STATS.put(playerClass, stats);
+    }
+
   }
 
+  public static PlayerRPGStats create(final RPGPlayerClass playerClass) {
+    return STATS.get(playerClass);
+  }
 
   // WARRIOR
   private static PlayerRPGStats createDefault() {
-    return PlayerRPGStats.defaultStats();
+    return defaultStats();
+  }
+
+  // default stats
+  private static PlayerRPGStats defaultStats() {
+    Map<PlayerRPGStatType, PlayerRPGStatValue> stats = new HashMap<>();
+    for (var statType : PlayerRPGStatType.values()) {
+      stats.put(statType, PlayerRPGStatValue.createDefault());
+    }
+    return new PlayerRPGStats(stats);
   }
 
   // ANGRY SKELETON
@@ -32,7 +51,8 @@ public class RPGStatsFactory {
         PlayerRPGStatType.ATTACK, PlayerRPGStatValue.createMax(),
         PlayerRPGStatType.DEFENSE, PlayerRPGStatValue.createMin(),
         PlayerRPGStatType.VAMPIRISM, PlayerRPGStatValue.createDefault(),
-        PlayerRPGStatType.GUN_SPEED, PlayerRPGStatValue.createMax()));
+        PlayerRPGStatType.GUN_SPEED, PlayerRPGStatValue.createMax(),
+        PlayerRPGStatType.RUN_SPEED, PlayerRPGStatValue.create(130)));
   }
 
   // DEMON TANK
@@ -41,7 +61,8 @@ public class RPGStatsFactory {
         PlayerRPGStatType.ATTACK, PlayerRPGStatValue.createDefault(),
         PlayerRPGStatType.DEFENSE, PlayerRPGStatValue.createMax(),
         PlayerRPGStatType.VAMPIRISM, PlayerRPGStatValue.createMin(),
-        PlayerRPGStatType.GUN_SPEED, PlayerRPGStatValue.createDefault()));
+        PlayerRPGStatType.GUN_SPEED, PlayerRPGStatValue.createDefault(),
+        PlayerRPGStatType.RUN_SPEED, PlayerRPGStatValue.create(90)));
   }
 
   public static void main(String[] args) {
@@ -49,8 +70,8 @@ public class RPGStatsFactory {
     StringBuilder statsBuilder = new StringBuilder();
     for (GameWeaponType gameWeaponType : GameWeaponType.values()) {
       for (RPGPlayerClass attackerClass : RPGPlayerClass.values()) {
+        var attackerStats = create(attackerClass);
         for (RPGPlayerClass victimClass : RPGPlayerClass.values()) {
-          var attackerStats = create(attackerClass);
           var victimStats = create(victimClass);
           statsBuilder.append(attackerClass).append(" attacks ").append(victimClass)
               .append(" with a ").append(gameWeaponType).append(": -")

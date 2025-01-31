@@ -57,7 +57,7 @@ public class GameScheduler {
             .allJoinedPlayers().forEach(stateChannel -> {
               var state = stateChannel.getPlayerState();
               if (!antiCheat.isTooMuchDistanceTravelled(state.getLastDistanceTravelled(),
-                  checkFrequencySec)) {
+                  checkFrequencySec, state.getSpeed())) {
                 state.clearLastDistanceTravelled();
                 return;
               }

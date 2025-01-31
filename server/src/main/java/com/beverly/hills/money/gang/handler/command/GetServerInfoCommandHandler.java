@@ -3,6 +3,7 @@ package com.beverly.hills.money.gang.handler.command;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createServerInfo;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.getRPGPlayerClass;
 
+import com.beverly.hills.money.gang.cheat.AntiCheat;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.proto.ServerCommand.CommandCase;
@@ -23,6 +24,7 @@ public class GetServerInfoCommandHandler extends ServerCommandHandler {
 
   private final GameRoomRegistry gameRoomRegistry;
 
+
   @Getter
   private final CommandCase commandCase = CommandCase.GETSERVERINFOCOMMAND;
 
@@ -33,16 +35,15 @@ public class GetServerInfoCommandHandler extends ServerCommandHandler {
 
   @Override
   protected void handleInternal(ServerCommand msg, Channel currentChannel) {
+    var playerClass = getRPGPlayerClass(msg.getGetServerInfoCommand().getPlayerClass());
     currentChannel.writeAndFlush(createServerInfo(
         ServerConfig.VERSION,
         gameRoomRegistry.getGames().map(game -> game),
         ServerConfig.FRAGS_PER_GAME,
-        RPGWeaponInfo.getWeaponsInfo(
-            getRPGPlayerClass(msg.getGetServerInfoCommand().getPlayerClass())),
-        RPGWeaponInfo.getProjectilesInfo(
-            getRPGPlayerClass(msg.getGetServerInfoCommand().getPlayerClass())),
+        RPGWeaponInfo.getWeaponsInfo(playerClass),
+        RPGWeaponInfo.getProjectilesInfo(playerClass),
         ServerConfig.MOVES_UPDATE_FREQUENCY_MLS,
-        ServerConfig.PLAYER_SPEED,
+        AntiCheat.getMaxSpeed(playerClass),
         ServerConfig.MAX_VISIBILITY));
   }
 

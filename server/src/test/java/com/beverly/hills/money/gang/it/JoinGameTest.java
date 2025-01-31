@@ -8,6 +8,7 @@ import static org.mockito.Mockito.doReturn;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
+import com.beverly.hills.money.gang.factory.RPGStatsFactory;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
@@ -18,6 +19,8 @@ import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType;
 import com.beverly.hills.money.gang.proto.Vector;
 import com.beverly.hills.money.gang.registry.BannedPlayersRegistry;
+import com.beverly.hills.money.gang.state.PlayerRPGStatType;
+import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -27,7 +30,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -54,7 +56,9 @@ public class JoinGameTest extends AbstractGameServerTest {
   @ValueSource(ints = {0, 1, 2})
   public void testJoinGame(int playerClassNumber) throws Exception {
     int gameIdToConnectTo = 0;
-
+    var expectedPlayerSpeed =
+        RPGStatsFactory.create(RPGPlayerClass.values()[playerClassNumber]).getNormalized(
+            PlayerRPGStatType.RUN_SPEED) * ServerConfig.PLAYER_SPEED;
     GameConnection gameConnection = createGameConnection("localhost", port);
     gameConnection.write(
         JoinGameCommand.newBuilder()
@@ -73,6 +77,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
     assertEquals("my player name", mySpawnGameEvent.getPlayer().getPlayerName());
     assertEquals(100, mySpawnGameEvent.getPlayer().getHealth());
+    assertEquals(expectedPlayerSpeed, mySpawnGameEvent.getPlayer().getSpeed(), 0.0001);
 
     gameConnection.write(
         GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR).build());

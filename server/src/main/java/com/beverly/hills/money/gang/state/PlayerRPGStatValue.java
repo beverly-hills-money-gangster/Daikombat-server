@@ -28,6 +28,10 @@ public class PlayerRPGStatValue {
     return new PlayerRPGStatValue(MAX);
   }
 
+  public static PlayerRPGStatValue create(int percentage) {
+    return new PlayerRPGStatValue(percentage);
+  }
+
   public static PlayerRPGStatValue createMin() {
     return new PlayerRPGStatValue(MIN);
   }

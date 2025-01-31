@@ -68,7 +68,7 @@ Game server can be configured using the following environment variables:
   Default - `15_000`.
 - `GAME_SERVER_POWER_UPS_ENABLED` Turns power-ups on and off. Default - `true`.
 - `GAME_SERVER_TELEPORTS_ENABLED` Turns teleports on and off. Default - `true`.
-- `GAME_SERVER_PLAYER_SPEED` Player speed. Default - `7`.
+- `GAME_SERVER_PLAYER_SPEED` Base player speed. Changes depending on class. Default - `7`.
 - `GAME_SERVER_PLAYER_STATS_TIMEOUT_MLS` Time (in milliseconds) to store player's stats for
   connection recovery. Default - `120000`.
 - `GAME_SERVER_PLAYER_SPEED_CHECK_FREQUENCY_MLS` Frequency(in milliseconds) at which server checks

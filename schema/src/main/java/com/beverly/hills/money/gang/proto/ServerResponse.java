@@ -3862,15 +3862,15 @@ private static final long serialVersionUID = 0L;
     int getMovesUpdateFreqMls();
 
     /**
-     * <code>optional int32 playerSpeed = 5;</code>
+     * <code>optional float playerSpeed = 5;</code>
      * @return Whether the playerSpeed field is set.
      */
     boolean hasPlayerSpeed();
     /**
-     * <code>optional int32 playerSpeed = 5;</code>
+     * <code>optional float playerSpeed = 5;</code>
      * @return The playerSpeed.
      */
-    int getPlayerSpeed();
+    float getPlayerSpeed();
 
     /**
      * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 6;</code>
@@ -4098,9 +4098,9 @@ private static final long serialVersionUID = 0L;
     }
 
     public static final int PLAYERSPEED_FIELD_NUMBER = 5;
-    private int playerSpeed_ = 0;
+    private float playerSpeed_ = 0F;
     /**
-     * <code>optional int32 playerSpeed = 5;</code>
+     * <code>optional float playerSpeed = 5;</code>
      * @return Whether the playerSpeed field is set.
      */
     @java.lang.Override
@@ -4108,11 +4108,11 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
-     * <code>optional int32 playerSpeed = 5;</code>
+     * <code>optional float playerSpeed = 5;</code>
      * @return The playerSpeed.
      */
     @java.lang.Override
-    public int getPlayerSpeed() {
+    public float getPlayerSpeed() {
       return playerSpeed_;
     }
 
@@ -4244,7 +4244,7 @@ private static final long serialVersionUID = 0L;
         output.writeInt32(4, movesUpdateFreqMls_);
       }
       if (((bitField0_ & 0x00000008) != 0)) {
-        output.writeInt32(5, playerSpeed_);
+        output.writeFloat(5, playerSpeed_);
       }
       for (int i = 0; i < weaponsInfo_.size(); i++) {
         output.writeMessage(6, weaponsInfo_.get(i));
@@ -4281,7 +4281,7 @@ private static final long serialVersionUID = 0L;
       }
       if (((bitField0_ & 0x00000008) != 0)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(5, playerSpeed_);
+          .computeFloatSize(5, playerSpeed_);
       }
       for (int i = 0; i < weaponsInfo_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
@@ -4329,8 +4329,9 @@ private static final long serialVersionUID = 0L;
       }
       if (hasPlayerSpeed() != other.hasPlayerSpeed()) return false;
       if (hasPlayerSpeed()) {
-        if (getPlayerSpeed()
-            != other.getPlayerSpeed()) return false;
+        if (java.lang.Float.floatToIntBits(getPlayerSpeed())
+            != java.lang.Float.floatToIntBits(
+                other.getPlayerSpeed())) return false;
       }
       if (!getWeaponsInfoList()
           .equals(other.getWeaponsInfoList())) return false;
@@ -4370,7 +4371,8 @@ private static final long serialVersionUID = 0L;
       }
       if (hasPlayerSpeed()) {
         hash = (37 * hash) + PLAYERSPEED_FIELD_NUMBER;
-        hash = (53 * hash) + getPlayerSpeed();
+        hash = (53 * hash) + java.lang.Float.floatToIntBits(
+            getPlayerSpeed());
       }
       if (getWeaponsInfoCount() > 0) {
         hash = (37 * hash) + WEAPONSINFO_FIELD_NUMBER;
@@ -4525,7 +4527,7 @@ private static final long serialVersionUID = 0L;
         version_ = "";
         fragsToWin_ = 0;
         movesUpdateFreqMls_ = 0;
-        playerSpeed_ = 0;
+        playerSpeed_ = 0F;
         if (weaponsInfoBuilder_ == null) {
           weaponsInfo_ = java.util.Collections.emptyList();
         } else {
@@ -4822,11 +4824,11 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000008;
                 break;
               } // case 32
-              case 40: {
-                playerSpeed_ = input.readInt32();
+              case 45: {
+                playerSpeed_ = input.readFloat();
                 bitField0_ |= 0x00000010;
                 break;
-              } // case 40
+              } // case 45
               case 50: {
                 com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo m =
                     input.readMessage(
@@ -5274,9 +5276,9 @@ private static final long serialVersionUID = 0L;
         return this;
       }
 
-      private int playerSpeed_ ;
+      private float playerSpeed_ ;
       /**
-       * <code>optional int32 playerSpeed = 5;</code>
+       * <code>optional float playerSpeed = 5;</code>
        * @return Whether the playerSpeed field is set.
        */
       @java.lang.Override
@@ -5284,19 +5286,19 @@ private static final long serialVersionUID = 0L;
         return ((bitField0_ & 0x00000010) != 0);
       }
       /**
-       * <code>optional int32 playerSpeed = 5;</code>
+       * <code>optional float playerSpeed = 5;</code>
        * @return The playerSpeed.
        */
       @java.lang.Override
-      public int getPlayerSpeed() {
+      public float getPlayerSpeed() {
         return playerSpeed_;
       }
       /**
-       * <code>optional int32 playerSpeed = 5;</code>
+       * <code>optional float playerSpeed = 5;</code>
        * @param value The playerSpeed to set.
        * @return This builder for chaining.
        */
-      public Builder setPlayerSpeed(int value) {
+      public Builder setPlayerSpeed(float value) {
 
         playerSpeed_ = value;
         bitField0_ |= 0x00000010;
@@ -5304,12 +5306,12 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>optional int32 playerSpeed = 5;</code>
+       * <code>optional float playerSpeed = 5;</code>
        * @return This builder for chaining.
        */
       public Builder clearPlayerSpeed() {
         bitField0_ = (bitField0_ & ~0x00000010);
-        playerSpeed_ = 0;
+        playerSpeed_ = 0F;
         onChanged();
         return this;
       }
@@ -15333,6 +15335,17 @@ private static final long serialVersionUID = 0L;
      * @return The playerClass.
      */
     com.beverly.hills.money.gang.proto.PlayerClass getPlayerClass();
+
+    /**
+     * <code>optional float speed = 11;</code>
+     * @return Whether the speed field is set.
+     */
+    boolean hasSpeed();
+    /**
+     * <code>optional float speed = 11;</code>
+     * @return The speed.
+     */
+    float getSpeed();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.GameEventPlayerStats}
@@ -15647,6 +15660,25 @@ private static final long serialVersionUID = 0L;
       return result == null ? com.beverly.hills.money.gang.proto.PlayerClass.UNRECOGNIZED : result;
     }
 
+    public static final int SPEED_FIELD_NUMBER = 11;
+    private float speed_ = 0F;
+    /**
+     * <code>optional float speed = 11;</code>
+     * @return Whether the speed field is set.
+     */
+    @java.lang.Override
+    public boolean hasSpeed() {
+      return ((bitField0_ & 0x00000200) != 0);
+    }
+    /**
+     * <code>optional float speed = 11;</code>
+     * @return The speed.
+     */
+    @java.lang.Override
+    public float getSpeed() {
+      return speed_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -15690,6 +15722,9 @@ private static final long serialVersionUID = 0L;
       }
       if (((bitField0_ & 0x00000100) != 0)) {
         output.writeEnum(10, playerClass_);
+      }
+      if (((bitField0_ & 0x00000200) != 0)) {
+        output.writeFloat(11, speed_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -15738,6 +15773,10 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000100) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(10, playerClass_);
+      }
+      if (((bitField0_ & 0x00000200) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(11, speed_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -15799,6 +15838,12 @@ private static final long serialVersionUID = 0L;
       if (hasPlayerClass()) {
         if (playerClass_ != other.playerClass_) return false;
       }
+      if (hasSpeed() != other.hasSpeed()) return false;
+      if (hasSpeed()) {
+        if (java.lang.Float.floatToIntBits(getSpeed())
+            != java.lang.Float.floatToIntBits(
+                other.getSpeed())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -15849,6 +15894,11 @@ private static final long serialVersionUID = 0L;
       if (hasPlayerClass()) {
         hash = (37 * hash) + PLAYERCLASS_FIELD_NUMBER;
         hash = (53 * hash) + playerClass_;
+      }
+      if (hasSpeed()) {
+        hash = (37 * hash) + SPEED_FIELD_NUMBER;
+        hash = (53 * hash) + java.lang.Float.floatToIntBits(
+            getSpeed());
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -16018,6 +16068,7 @@ private static final long serialVersionUID = 0L;
         }
         pingMls_ = 0;
         playerClass_ = 0;
+        speed_ = 0F;
         return this;
       }
 
@@ -16106,6 +16157,10 @@ private static final long serialVersionUID = 0L;
         if (((from_bitField0_ & 0x00000200) != 0)) {
           result.playerClass_ = playerClass_;
           to_bitField0_ |= 0x00000100;
+        }
+        if (((from_bitField0_ & 0x00000400) != 0)) {
+          result.speed_ = speed_;
+          to_bitField0_ |= 0x00000200;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -16209,6 +16264,9 @@ private static final long serialVersionUID = 0L;
         if (other.hasPlayerClass()) {
           setPlayerClass(other.getPlayerClass());
         }
+        if (other.hasSpeed()) {
+          setSpeed(other.getSpeed());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -16299,6 +16357,11 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000200;
                 break;
               } // case 80
+              case 93: {
+                speed_ = input.readFloat();
+                bitField0_ |= 0x00000400;
+                break;
+              } // case 93
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -17234,6 +17297,46 @@ private static final long serialVersionUID = 0L;
       public Builder clearPlayerClass() {
         bitField0_ = (bitField0_ & ~0x00000200);
         playerClass_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private float speed_ ;
+      /**
+       * <code>optional float speed = 11;</code>
+       * @return Whether the speed field is set.
+       */
+      @java.lang.Override
+      public boolean hasSpeed() {
+        return ((bitField0_ & 0x00000400) != 0);
+      }
+      /**
+       * <code>optional float speed = 11;</code>
+       * @return The speed.
+       */
+      @java.lang.Override
+      public float getSpeed() {
+        return speed_;
+      }
+      /**
+       * <code>optional float speed = 11;</code>
+       * @param value The speed to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSpeed(float value) {
+
+        speed_ = value;
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional float speed = 11;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSpeed() {
+        bitField0_ = (bitField0_ & ~0x00000400);
+        speed_ = 0F;
         onChanged();
         return this;
       }

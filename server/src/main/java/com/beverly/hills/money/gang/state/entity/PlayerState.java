@@ -1,5 +1,6 @@
 package com.beverly.hills.money.gang.state.entity;
 
+import com.beverly.hills.money.gang.cheat.AntiCheat;
 import com.beverly.hills.money.gang.factory.RPGStatsFactory;
 import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.powerup.PowerUp;
@@ -18,7 +19,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -56,6 +56,9 @@ public class PlayerState implements PlayerStateReader {
   private final int playerId;
 
   @Getter
+  private final float speed;
+
+  @Getter
   private final String playerName;
   @Getter
   private final RPGPlayerClass rpgPlayerClass;
@@ -72,6 +75,7 @@ public class PlayerState implements PlayerStateReader {
     this.playerId = id;
     defaultDamage();
     defaultDefence();
+    speed = AntiCheat.getMaxSpeed(rpgPlayerClass);
   }
 
   public void setStats(PlayerGameStatsReader playerGameStats) {

@@ -707,7 +707,7 @@ public class GameTest {
             shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
-    assertEquals(90, shooterState.getHealth(), "Shooter must get a vampire boost");
+    assertEquals(100, shooterState.getHealth(), "Shooter must get a vampire boost");
     assertEquals(1, shooterState.getGameStats().getKills(), "One player was killed");
     assertEquals(2, game.playersOnline(), "After death, 2 players are still online");
     PlayerState shotState = game.getPlayersRegistry()

@@ -48,11 +48,11 @@ public class RPGStatsFactory {
   // ANGRY SKELETON
   private static PlayerRPGStats createAngrySkeleton() {
     return new PlayerRPGStats(Map.of(
-        PlayerRPGStatType.ATTACK, PlayerRPGStatValue.createMax(),
+        PlayerRPGStatType.ATTACK, PlayerRPGStatValue.create(200),
         PlayerRPGStatType.DEFENSE, PlayerRPGStatValue.createMin(),
-        PlayerRPGStatType.VAMPIRISM, PlayerRPGStatValue.createDefault(),
-        PlayerRPGStatType.GUN_SPEED, PlayerRPGStatValue.createMax(),
-        PlayerRPGStatType.RUN_SPEED, PlayerRPGStatValue.create(130)));
+        PlayerRPGStatType.VAMPIRISM, PlayerRPGStatValue.createMax(),
+        PlayerRPGStatType.GUN_SPEED, PlayerRPGStatValue.create(150),
+        PlayerRPGStatType.RUN_SPEED, PlayerRPGStatValue.create(120)));
   }
 
   // DEMON TANK

@@ -216,7 +216,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @then the player is not connected
    */
   @Test
-  public void testJoinGameNotExistingGame() throws IOException {
+  public void testJoinGameNotExistingGame() throws IOException, InterruptedException {
     int gameIdToConnectTo = 666;
     GameConnection gameConnection = createGameConnection("localhost", port);
     gameConnection.write(
@@ -250,6 +250,7 @@ public class JoinGameTest extends AbstractGameServerTest {
       assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, gameInfo.getMaxGamePlayers());
       assertEquals(0, gameInfo.getPlayersOnline(), "Should be no connected players yet");
     }
+    Thread.sleep(1_000);
     assertTrue(gameConnection.isDisconnected());
   }
 
@@ -259,7 +260,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @then the player is not connected
    */
   @Test
-  public void testJoinGameWrongVersion() throws IOException {
+  public void testJoinGameWrongVersion() throws IOException, InterruptedException {
     int gameIdToConnectTo = 0;
     GameConnection gameConnection = createGameConnection("localhost", port);
     gameConnection.write(
@@ -292,6 +293,7 @@ public class JoinGameTest extends AbstractGameServerTest {
       assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, gameInfo.getMaxGamePlayers());
       assertEquals(0, gameInfo.getPlayersOnline(), "Should be no connected players yet");
     }
+    Thread.sleep(1_000);
     assertTrue(gameConnection.isDisconnected());
   }
 
@@ -330,7 +332,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     assertEquals(GameErrorCode.SERVER_FULL.ordinal(), errorEvent.getErrorCode(),
         "Should be a server full error");
     assertEquals("Can't connect player. Server is full.", errorEvent.getMessage());
-    Thread.sleep(500);
+    Thread.sleep(1_000);
     assertTrue(gameConnection.isDisconnected());
   }
 

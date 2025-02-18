@@ -33,7 +33,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
   @Test
   public void testExit() throws IOException, InterruptedException {
     int gameToConnectTo = 1;
-    GameConnection gameConnection1 = createGameConnection( "localhost", port);
+    GameConnection gameConnection1 = createGameConnection("localhost", port);
     gameConnection1.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(
@@ -45,10 +45,11 @@ public class GameConnectionTest extends AbstractGameServerTest {
     ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
     int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
 
-    GameConnection gameConnection2 = createGameConnection( "localhost", port);
+    GameConnection gameConnection2 = createGameConnection("localhost", port);
     gameConnection2.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.WARRIOR)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("my other player name")
             .setGameId(gameToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection2.getResponse());
@@ -90,18 +91,20 @@ public class GameConnectionTest extends AbstractGameServerTest {
    */
   @Test
   public void testDisconnectTwice() throws IOException, InterruptedException {
-    GameConnection gameConnection = createGameConnection( "localhost", port);
+    GameConnection gameConnection = createGameConnection("localhost", port);
     assertTrue(gameConnection.isConnected(), "Should be connected by default");
     assertFalse(gameConnection.isDisconnected());
     gameConnection.disconnect();
     gameConnection.disconnect(); // call twice
+    Thread.sleep(250);
     assertTrue(gameConnection.isDisconnected(), "Should be disconnected after disconnecting");
     assertFalse(gameConnection.isConnected());
     gameConnection.write(GetServerInfoCommand.newBuilder()
         .setPlayerClass(PlayerClass.WARRIOR).build());
     Thread.sleep(250);
     assertEquals(0, gameConnection.getResponse().size(),
-        "Should be no response because the connection is closed");
+        "Should be no response because the connection is closed. Actual "
+            + gameConnection.getResponse());
     assertEquals(1, gameConnection.getWarning().size(),
         "Should be one warning because the connection is closed");
     Throwable error = gameConnection.getWarning().poll().get();
@@ -116,7 +119,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
    */
   @Test
   public void testGetServerInfoNotExistingServer() throws IOException {
-    var connection = createGameConnection( "666.666.666.666", port);
+    var connection = createGameConnection("666.666.666.666", port);
     assertInstanceOf(UnknownHostException.class, connection.getErrors().poll().get());
   }
 
@@ -127,7 +130,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
    */
   @Test
   public void testGetServerInfoWrongPort() throws IOException {
-    var connection = createGameConnection( "localhost", 666);
+    var connection = createGameConnection("localhost", 666);
     assertInstanceOf(ConnectException.class, connection.getErrors().poll().get());
   }
 }

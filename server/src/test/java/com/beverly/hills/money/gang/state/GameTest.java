@@ -64,7 +64,10 @@ import org.assertj.core.util.Streams;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
+@SetEnvironmentVariable(key = "GAME_SERVER_MAX_PLAYERS_PER_GAME", value = "25")
+@SetEnvironmentVariable(key = "GAME_SERVER_FRAGS_PER_GAME", value = "10")
 public class GameTest {
 
   private Game game;
@@ -498,6 +501,71 @@ public class GameTest {
 
     assertEquals(3, game.getPlayersRegistry().allPlayers().count(),
         "We have 3 live players now: killer, observer, and dead player.");
+
+  }
+
+  /**
+   * @given 1 killer and FRAGS_PER_GAME victims
+   * @when killer kills FRAGS_PER_GAME players
+   * @then the game is over. killer is top player with FRAGS_PER_GAME kills. leaderboard is
+   * flushed.
+   */
+  @Test
+  public void testShootGameOver() throws Throwable {
+    String shooterPlayerName = "shooter player";
+    String shotPlayerName = "shot player";
+    Channel channel = mock(Channel.class);
+    PlayerJoinedGameState shooterPlayerConnectedGameState = fullyJoin(shooterPlayerName,
+        channel, PlayerStateColor.GREEN);
+
+    int playersToKill = ServerConfig.FRAGS_PER_GAME;
+
+    for (int j = 0; j < playersToKill; j++) {
+      PlayerJoinedGameState shotPlayerConnectedGameState = fullyJoin(shotPlayerName + j, channel,
+          PlayerStateColor.GREEN);
+
+      int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_RAILGUN_DAMAGE);
+
+      PlayerAttackingGameState lastShot = null;
+      // after this loop, the player is dead
+      for (int i = 0; i < shotsToKill; i++) {
+        lastShot = game.attack(
+            shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState()
+                .getCoordinates(),
+            shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState()
+                .getCoordinates()
+                .getPosition(),
+            shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+            shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+            GameWeaponType.RAILGUN,
+            testSequenceGenerator.getNext(),
+            PING_MLS);
+      }
+
+      if (j != playersToKill - 1) {
+        // if not last player
+        assertNull(lastShot.getGameOverState(), "Game is not over yet");
+      } else {
+        // if last player killed
+        assertNotNull(lastShot.getGameOverState(), "Game should be over now");
+        var firstPlaceLeaderBoard = lastShot.getGameOverState().getLeaderBoardItems().get(0);
+        assertEquals(
+            shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+            firstPlaceLeaderBoard.getPlayerId());
+        assertEquals(0, firstPlaceLeaderBoard.getDeaths());
+        assertEquals(playersToKill, firstPlaceLeaderBoard.getKills());
+      }
+    }
+
+    assertEquals(playersToKill + 1, game.getLeaderBoard().size(), "Should be victims+killer");
+    game.getLeaderBoard().forEach(gameLeaderBoardItem -> {
+      assertEquals(0, gameLeaderBoardItem.getKills(),
+          "Kills should be cleared because the game is over now");
+      assertEquals(0, gameLeaderBoardItem.getDeaths(),
+          "Deaths should be cleared because the game is over now");
+    });
+
+    verify(playerStatsRecoveryRegistry).clearAllStats();
   }
 
   /**

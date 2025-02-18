@@ -83,6 +83,9 @@ public class PlayerState implements PlayerStateReader {
     this.playerGameStats.setDeaths(playerGameStats.getDeaths());
   }
 
+  public void clearStats() {
+    setStats(new PlayerGameStats());
+  }
 
   @Override
   public int getNextEventId() {

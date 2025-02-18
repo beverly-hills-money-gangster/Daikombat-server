@@ -213,8 +213,14 @@ public class Game implements Closeable, GameReader {
     }
     boolean isGameOver =
         attackingPlayerState.getGameStats().getKills() >= ServerConfig.FRAGS_PER_GAME;
-    var gameOverState =
-        isGameOver ? GameOverGameState.builder().leaderBoardItems(getLeaderBoard()).build() : null;
+    GameOverGameState gameOverState = null;
+    if (isGameOver) {
+      gameOverState = GameOverGameState.builder().leaderBoardItems(getLeaderBoard()).build();
+      // clearing all stats because the game is over
+      playerStatsRecoveryRegistry.clearAllStats();
+      playersRegistry.allJoinedPlayers().forEach(
+          playerStateChannel -> playerStateChannel.getPlayerState().clearStats());
+    }
     return PlayerAttackingGameState.builder()
         .attackingPlayer(attackingPlayerState)
         .playerAttacked(attackedPlayerState)
@@ -222,7 +228,7 @@ public class Game implements Closeable, GameReader {
         .build();
   }
 
-  private List<GameLeaderBoardItem> getLeaderBoard() {
+  protected List<GameLeaderBoardItem> getLeaderBoard() {
     return playersRegistry.allPlayers()
         .sorted((player1, player2) -> {
           int killsCompare = -Integer.compare(

@@ -33,4 +33,8 @@ public class PlayerStatsRecoveryRegistry {
     stats.remove(playerId);
   }
 
+  public void clearAllStats() {
+    stats.clear();
+  }
+
 }

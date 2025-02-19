@@ -48,7 +48,7 @@ public class ServerRunner implements Closeable {
     // Create event loop groups. One for incoming connections handling and
     // second for handling actual event by workers
     EventLoopGroup serverGroup = serverTransport.createEventLoopGroup(1);
-    EventLoopGroup workerGroup = serverTransport.createEventLoopGroup();
+    EventLoopGroup workerGroup = serverTransport.createEventLoopGroup(1);
     try {
       ServerBootstrap bootStrap = new ServerBootstrap();
       bootStrap.group(serverGroup, workerGroup)

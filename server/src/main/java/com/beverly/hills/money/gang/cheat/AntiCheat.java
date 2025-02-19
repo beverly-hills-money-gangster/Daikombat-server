@@ -14,9 +14,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class AntiCheat {
 
-  private static final double MAX_POWER_UP_DISTANCE = 1.5;
+  private static final double MAX_POWER_UP_DISTANCE = 2;
 
-  private static final double MAX_TELEPORT_DISTANCE = 1.5;
+  private static final double MAX_TELEPORT_DISTANCE = 2;
 
   public static float getMaxSpeed(final RPGPlayerClass playerClass) {
     return (float) (ServerConfig.PLAYER_SPEED * RPGStatsFactory.create(playerClass).getNormalized(
@@ -34,13 +34,6 @@ public class AntiCheat {
 
   public boolean isTeleportTooFar(final Vector playerPosition, final Vector teleportPosition) {
     return Vector.getDistance(playerPosition, teleportPosition) > MAX_TELEPORT_DISTANCE;
-  }
-
-  public boolean isTooMuchDistanceTravelled(
-      final double distanceTravelled, final int periodSec, final float maxPlayerSpeed) {
-    // 20% error
-    double maxDistanceTravelledInOneSec = maxPlayerSpeed * 1.2;
-    return distanceTravelled > maxDistanceTravelledInOneSec * periodSec;
   }
 
 }

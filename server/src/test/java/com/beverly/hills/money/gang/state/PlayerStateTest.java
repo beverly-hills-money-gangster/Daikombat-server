@@ -120,7 +120,6 @@ public class PlayerStateTest {
     playerState.move(playerNewCoordinates, 0);
 
     assertEquals(playerNewCoordinates, playerState.getCoordinates());
-    assertEquals(1, playerState.getLastDistanceTravelled());
   }
 
   /**
@@ -146,7 +145,6 @@ public class PlayerStateTest {
     playerState.move(playerNewCoordinates, 1);
 
     assertEquals(playerNewCoordinates, playerState.getCoordinates());
-    assertEquals(1, playerState.getLastDistanceTravelled());
   }
 
   /**
@@ -176,7 +174,6 @@ public class PlayerStateTest {
     playerState.move(playerNewCoordinates2, 1);
 
     assertEquals(playerNewCoordinates1, playerState.getCoordinates());
-    assertEquals(1, playerState.getLastDistanceTravelled());
   }
 
 }

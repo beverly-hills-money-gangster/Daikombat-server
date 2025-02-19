@@ -1,13 +1,8 @@
 package com.beverly.hills.money.gang.scheduler;
 
-import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createErrorEvent;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createMovesEventAllPlayers;
 
-import com.beverly.hills.money.gang.cheat.AntiCheat;
 import com.beverly.hills.money.gang.config.ServerConfig;
-import com.beverly.hills.money.gang.exception.GameErrorCode;
-import com.beverly.hills.money.gang.exception.GameLogicError;
-import com.beverly.hills.money.gang.registry.BannedPlayersRegistry;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
 import com.beverly.hills.money.gang.state.entity.Vector;
@@ -30,44 +25,12 @@ public class GameScheduler {
 
   private final GameRoomRegistry gameRoomRegistry;
 
-  private final AntiCheat antiCheat;
 
   private final Scheduler scheduler;
-
-  private final BannedPlayersRegistry bannedPlayersRegistry;
 
   public void init() {
     LOG.info("Init scheduler");
     scheduleSendBufferedMoves();
-    schedulePlayerSpeedCheck();
-  }
-
-  /**
-   * Periodically checks the distance travelled by all players. If too much distance was travelled
-   * then a player is most likely cheating.
-   */
-  private void schedulePlayerSpeedCheck() {
-    int checkFrequencyMls = ServerConfig.PLAYER_SPEED_CHECK_FREQUENCY_MLS;
-    int checkFrequencySec = checkFrequencyMls / 1000;
-    var cheatingDetected = createErrorEvent(
-        new GameLogicError("Cheating detected", GameErrorCode.CHEATING));
-    LOG.info("Speed checking frequency {} mls", checkFrequencyMls);
-    scheduler.scheduleAtFixedRate(checkFrequencyMls, checkFrequencyMls,
-        () -> gameRoomRegistry.getGames().forEach(game -> game.getPlayersRegistry()
-            .allJoinedPlayers().forEach(stateChannel -> {
-              var state = stateChannel.getPlayerState();
-              if (!antiCheat.isTooMuchDistanceTravelled(state.getLastDistanceTravelled(),
-                  checkFrequencySec, state.getSpeed())) {
-                state.clearLastDistanceTravelled();
-                return;
-              }
-              LOG.warn("Speed cheating detected for player id {} named {}. Travelled distance {}",
-                  state.getPlayerId(),
-                  state.getPlayerName(), state.getLastDistanceTravelled());
-              stateChannel.writeFlushPrimaryChannel(cheatingDetected,
-                  future -> stateChannel.close());
-              bannedPlayersRegistry.ban(stateChannel.getPrimaryChannelAddress());
-            })));
   }
 
   private void scheduleSendBufferedMoves() {

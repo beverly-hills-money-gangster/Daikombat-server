@@ -28,7 +28,6 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "99999")
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "250")
-@SetEnvironmentVariable(key = "GAME_SERVER_PLAYER_SPEED_CHECK_FREQUENCY_MLS", value = "1000")
 
 public class MoveEventTest extends AbstractGameServerTest {
 
@@ -99,7 +98,7 @@ public class MoveEventTest extends AbstractGameServerTest {
             .build())
         .build());
 
-    Thread.sleep(ServerConfig.PLAYER_SPEED_CHECK_FREQUENCY_MLS * 3L);
+    Thread.sleep(3_000L);
     assertEquals(0, movingPlayerConnection.getResponse().size(),
         "Moving player is not expected to get any events. Moving player doesn't receive his own moves.");
     assertEquals(1, observerPlayerConnection.getResponse().size(),
@@ -257,7 +256,7 @@ public class MoveEventTest extends AbstractGameServerTest {
               .setX(mySpawnGameEvent.getPlayer().getDirection().getX())
               .build())
           .build());
-      Thread.sleep(ServerConfig.PLAYER_SPEED_CHECK_FREQUENCY_MLS);
+      Thread.sleep(3_000L);
     }
 
     assertEquals(movements, observerPlayerConnection.getResponse().list().size(),
@@ -330,7 +329,7 @@ public class MoveEventTest extends AbstractGameServerTest {
               .setX(mySpawnGameEvent.getPlayer().getDirection().getX())
               .build())
           .build());
-      Thread.sleep(ServerConfig.PLAYER_SPEED_CHECK_FREQUENCY_MLS);
+      Thread.sleep(3_000L);
     }
 
     movingPlayerConnection.write(PushGameEventCommand.newBuilder()
@@ -348,7 +347,7 @@ public class MoveEventTest extends AbstractGameServerTest {
             .setX(mySpawnGameEvent.getPlayer().getDirection().getX())
             .build())
         .build());
-    Thread.sleep(ServerConfig.PLAYER_SPEED_CHECK_FREQUENCY_MLS);
+    Thread.sleep(3_000L);
 
     assertEquals(2, observerPlayerConnection.getResponse().list().size(),
         "We should have 2 MOVE events by now");

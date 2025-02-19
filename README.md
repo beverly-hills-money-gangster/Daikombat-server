@@ -71,16 +71,12 @@ Game server can be configured using the following environment variables:
 - `GAME_SERVER_PLAYER_SPEED` Base player speed. Changes depending on class. Default - `7`.
 - `GAME_SERVER_PLAYER_STATS_TIMEOUT_MLS` Time (in milliseconds) to store player's stats for
   connection recovery. Default - `120000`.
-- `GAME_SERVER_PLAYER_SPEED_CHECK_FREQUENCY_MLS` Frequency(in milliseconds) at which server checks
-  all players' speed. Anybody moving faster than `GAME_SERVER_PLAYER_SPEED` will be kicked-out.
-  Default - `10_000`
 - `GAME_SERVER_PUNCH_DELAY_MLS` Punch attack delay(in milliseconds). Default - `300`
 - `GAME_SERVER_ROCKET_LAUNCHER_DELAY_MLS` Rocket launcher delay(in milliseconds). Default - `1_500`.
 - `GAME_SERVER_PLASMAGUN_DELAY_MLS` Plasma gun delay(in milliseconds). Default - `155`.
 - `GAME_SERVER_SHOTGUN_DELAY_MLS` Shotgun attack delay(in milliseconds). Default - `450`
 - `GAME_SERVER_RAILGUN_DELAY_MLS` Railgun attack delay(in milliseconds). Default - `1_700`
 - `GAME_SERVER_MINIGUN_DELAY_MLS` Minigun attack delay(in milliseconds). Default - `155`
-- `GAME_SERVER_BAN_TIMEOUT_MLS` Ban timeout(in millisecond). Default - `1800000`(30 min).
 - `SENTRY_DSN` Sentry DSN. Not specified by default.
 
 Game client is also configurable through environments variables:

@@ -27,6 +27,9 @@ public interface ServerConfig {
   int DEFAULT_RAILGUN_DAMAGE = NumberUtils.toInt(
       System.getenv("GAME_SERVER_DEFAULT_RAILGUN_DAMAGE"), 75);
 
+  int SPAWN_IMMORTAL_MLS = NumberUtils.toInt(
+      System.getenv("GAME_SERVER_SPAWN_IMMORTAL_MLS"), 2_000);
+
   int DEFAULT_MINIGUN_DAMAGE = NumberUtils.toInt(
       System.getenv("GAME_SERVER_DEFAULT_MINIGUN_DAMAGE"), 5);
 

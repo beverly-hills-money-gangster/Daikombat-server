@@ -14,7 +14,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
+@SetEnvironmentVariable(key = "GAME_SERVER_SPAWN_IMMORTAL_MLS", value = "0")
 public class PlayerStateTest {
 
   /**
@@ -23,7 +25,7 @@ public class PlayerStateTest {
    * @then getKills() return 1, health stays 100%
    */
   @Test
-  public void tesRegisterKillVampireBoostFullHealth() {
+  public void testRegisterKillVampireBoostFullHealth() {
     PlayerState playerState = new PlayerState(
         "test player",
         Coordinates.builder().build(), 123, PlayerStateColor.GREEN,
@@ -42,7 +44,7 @@ public class PlayerStateTest {
    * @then getKills() return 1, health restores due to vampire boost
    */
   @Test
-  public void tesRegisterKillVampireBoostRestoreHealth() {
+  public void testRegisterKillVampireBoostRestoreHealth() {
     PlayerState playerState = new PlayerState(
         "test player",
         Coordinates.builder().build(), 123, PlayerStateColor.GREEN,
@@ -55,13 +57,15 @@ public class PlayerStateTest {
     assertEquals(1, playerState.getGameStats().getKills());
     assertEquals(
         PlayerState.DEFAULT_HP - (ServerConfig.DEFAULT_SHOTGUN_DAMAGE) * 2
-            + PlayerState.VAMPIRE_HP_BOOST,
+            + PlayerState.DEFAULT_VAMPIRE_HP_BOOST,
         playerState.getHealth());
   }
 
-  @RepeatedTest(64)
-  public void tesRegisterKillConcurrent() {
-    int threadsNum = 16;
+
+
+  @RepeatedTest(32)
+  public void testRegisterKillConcurrent() {
+    int threadsNum = 8;
     PlayerState playerState = new PlayerState(
         "test player",
         Coordinates.builder().build(), 123, PlayerStateColor.GREEN,

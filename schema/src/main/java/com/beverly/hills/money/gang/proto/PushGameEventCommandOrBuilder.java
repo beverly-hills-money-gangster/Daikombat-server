@@ -150,4 +150,15 @@ public interface PushGameEventCommandOrBuilder extends
    * <code>optional .daikombat.dto.ProjectileStats projectile = 11;</code>
    */
   com.beverly.hills.money.gang.proto.ProjectileStatsOrBuilder getProjectileOrBuilder();
+
+  /**
+   * <code>optional int32 matchId = 12;</code>
+   * @return Whether the matchId field is set.
+   */
+  boolean hasMatchId();
+  /**
+   * <code>optional int32 matchId = 12;</code>
+   * @return The matchId.
+   */
+  int getMatchId();
 }

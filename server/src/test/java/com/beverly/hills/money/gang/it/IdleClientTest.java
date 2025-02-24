@@ -93,7 +93,7 @@ public class IdleClientTest extends AbstractGameServerTest {
       gameConnectionObserver.write(PushGameEventCommand.newBuilder()
           .setPlayerId(observerPlayerId)
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-          .setGameId(gameToConnectTo)
+          .setMatchId(0).setGameId(gameToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
           .setDirection(Vector.newBuilder().setX(0).setY(1).build())
           .setPosition(Vector.newBuilder()
@@ -164,7 +164,7 @@ public class IdleClientTest extends AbstractGameServerTest {
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
             .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName(puncherPlayerName)
-            .setGameId(gameIdToConnectTo).build());
+           .setGameId(gameIdToConnectTo).build());
 
     GameConnection deadConnection = createGameConnection("localhost", port);
     deadConnection.write(
@@ -192,7 +192,7 @@ public class IdleClientTest extends AbstractGameServerTest {
       puncherConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(puncherPlayerId)
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-          .setGameId(gameIdToConnectTo)
+          .setMatchId(0).setGameId(gameIdToConnectTo)
           .setEventType(GameEventType.ATTACK)
           .setWeaponType(WeaponType.PUNCH)
           .setDirection(
@@ -213,7 +213,7 @@ public class IdleClientTest extends AbstractGameServerTest {
     puncherConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(puncherPlayerId)
         .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-        .setGameId(gameIdToConnectTo)
+        .setMatchId(0).setGameId(gameIdToConnectTo)
         .setEventType(GameEventType.ATTACK)
         .setWeaponType(WeaponType.PUNCH)
         .setDirection(
@@ -241,7 +241,7 @@ public class IdleClientTest extends AbstractGameServerTest {
       puncherConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(puncherPlayerId)
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-          .setGameId(gameIdToConnectTo)
+          .setMatchId(0).setGameId(gameIdToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
           .setDirection(Vector.newBuilder().setX(0).setY(1).build())
           .setPosition(Vector.newBuilder()
@@ -300,7 +300,7 @@ public class IdleClientTest extends AbstractGameServerTest {
       gameConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(playerId)
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-          .setGameId(gameToConnectTo)
+          .setMatchId(0).setGameId(gameToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
           .setDirection(Vector.newBuilder().setX(0).setY(1).build())
           .setPosition(Vector.newBuilder()
@@ -353,7 +353,7 @@ public class IdleClientTest extends AbstractGameServerTest {
       gameConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(playerId)
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-          .setGameId(gameToConnectTo)
+          .setMatchId(0).setGameId(gameToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
           .setDirection(Vector.newBuilder().setX(0).setY(1).build())
           .setPosition(Vector.newBuilder().setX(i).setY(i).build())

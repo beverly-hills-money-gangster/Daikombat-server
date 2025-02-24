@@ -4,6 +4,8 @@ public interface GameReader {
 
   int gameId();
 
+  int matchId();
+
   int playersOnline();
 
   int maxPlayersAvailable();

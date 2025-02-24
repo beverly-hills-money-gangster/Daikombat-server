@@ -29,7 +29,7 @@ import io.netty.channel.Channel;
 import java.io.Closeable;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
@@ -64,7 +64,7 @@ public class Game implements Closeable, GameReader {
 
   private final AntiCheat antiCheat;
 
-  private final AtomicBoolean gameClosed = new AtomicBoolean();
+  private final AtomicInteger matchId = new AtomicInteger();
 
   public Game(
       final Spawner spawner,
@@ -98,7 +98,6 @@ public class Game implements Closeable, GameReader {
       final String playerName, final Channel playerChannel, PlayerStateColor color,
       Integer recoveryPlayerId,
       RPGPlayerClass rpgPlayerClass) throws GameLogicError {
-    validateGameNotClosed();
     int playerId = playerSequenceGenerator.getNext();
     Coordinates spawn = spawner.spawnPlayer(this);
     PlayerState connectedPlayerState = new PlayerState(
@@ -119,7 +118,6 @@ public class Game implements Closeable, GameReader {
   }
 
   public PlayerRespawnedGameState respawnPlayer(final int playerId) throws GameLogicError {
-    validateGameNotClosed();
     var player = playersRegistry.findPlayer(playerId)
         .orElseThrow(
             () -> new GameLogicError("Player doesn't exist", GameErrorCode.PLAYER_DOES_NOT_EXIST));
@@ -175,7 +173,6 @@ public class Game implements Closeable, GameReader {
       final Damage damage,
       final int eventSequence,
       final int pingMls) throws GameLogicError {
-    validateGameNotClosed();
     PlayerState attackingPlayerState = getPlayer(attackingPlayerId).orElse(null);
     if (attackingPlayerState == null) {
       LOG.warn("Non-existing player can't attack");
@@ -220,6 +217,7 @@ public class Game implements Closeable, GameReader {
       playerStatsRecoveryRegistry.clearAllStats();
       playersRegistry.allJoinedPlayers().forEach(
           playerStateChannel -> playerStateChannel.getPlayerState().clearStats());
+      matchId.incrementAndGet();
     }
     return PlayerAttackingGameState.builder()
         .attackingPlayer(attackingPlayerState)
@@ -247,6 +245,8 @@ public class Game implements Closeable, GameReader {
             .playerName(playerStateChannel.getPlayerState().getPlayerName())
             .deaths(playerStateChannel.getPlayerState().getGameStats().getDeaths())
             .pingMls(playerStateChannel.getPlayerState().getPingMls())
+            .color(playerStateChannel.getPlayerState().getColor())
+            .playerClass(playerStateChannel.getPlayerState().getRpgPlayerClass())
             .build())
         .collect(Collectors.toList());
   }
@@ -254,8 +254,7 @@ public class Game implements Closeable, GameReader {
   public void bufferMove(final int movingPlayerId,
       final Coordinates coordinates,
       final int eventSequence,
-      final int pingMls) throws GameLogicError {
-    validateGameNotClosed();
+      final int pingMls) {
     move(movingPlayerId, coordinates, eventSequence, pingMls);
   }
 
@@ -291,20 +290,8 @@ public class Game implements Closeable, GameReader {
 
   @Override
   public void close() {
-    if (!gameClosed.compareAndSet(false, true)) {
-      LOG.warn("Game already closed");
-      return;
-    }
     LOG.info("Close game {}", getId());
     playersRegistry.close();
-    gameClosed.set(true);
-  }
-
-
-  private void validateGameNotClosed() throws GameLogicError {
-    if (gameClosed.get()) {
-      throw new GameLogicError("Game is closed", GameErrorCode.GAME_CLOSED);
-    }
   }
 
   private Optional<PlayerState> getPlayer(int playerId) {
@@ -340,5 +327,14 @@ public class Game implements Closeable, GameReader {
           playerState.move(coordinates, eventSequence);
           playerState.setPingMls(pingMls);
         });
+  }
+
+  public boolean isCurrentMatch(int clientSideMatchId) {
+    return matchId.get() == clientSideMatchId;
+  }
+
+  @Override
+  public int matchId() {
+    return matchId.get();
   }
 }

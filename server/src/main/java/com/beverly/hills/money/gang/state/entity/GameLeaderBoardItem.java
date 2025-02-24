@@ -1,5 +1,6 @@
 package com.beverly.hills.money.gang.state.entity;
 
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -21,4 +22,10 @@ public class GameLeaderBoardItem {
 
   @NonNull
   private final Integer pingMls;
+
+  @NonNull
+  private final RPGPlayerClass playerClass;
+
+  @NonNull
+  private final PlayerStateColor color;
 }

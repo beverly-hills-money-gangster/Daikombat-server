@@ -17,7 +17,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private ServerCommand() {
-    hmac_ = com.google.protobuf.ByteString.EMPTY;
   }
 
   @java.lang.Override
@@ -40,7 +39,6 @@ private static final long serialVersionUID = 0L;
             com.beverly.hills.money.gang.proto.ServerCommand.class, com.beverly.hills.money.gang.proto.ServerCommand.Builder.class);
   }
 
-  private int bitField0_;
   private int commandCase_ = 0;
   @SuppressWarnings("serial")
   private java.lang.Object command_;
@@ -91,25 +89,6 @@ private static final long serialVersionUID = 0L;
   getCommandCase() {
     return CommandCase.forNumber(
         commandCase_);
-  }
-
-  public static final int HMAC_FIELD_NUMBER = 2;
-  private com.google.protobuf.ByteString hmac_ = com.google.protobuf.ByteString.EMPTY;
-  /**
-   * <code>optional bytes hmac = 2;</code>
-   * @return Whether the hmac field is set.
-   */
-  @java.lang.Override
-  public boolean hasHmac() {
-    return ((bitField0_ & 0x00000001) != 0);
-  }
-  /**
-   * <code>optional bytes hmac = 2;</code>
-   * @return The hmac.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString getHmac() {
-    return hmac_;
   }
 
   public static final int CHATCOMMAND_FIELD_NUMBER = 3;
@@ -343,9 +322,6 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeBytes(2, hmac_);
-    }
     if (commandCase_ == 3) {
       output.writeMessage(3, (com.beverly.hills.money.gang.proto.PushChatEventCommand) command_);
     }
@@ -376,10 +352,6 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (((bitField0_ & 0x00000001) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(2, hmac_);
-    }
     if (commandCase_ == 3) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, (com.beverly.hills.money.gang.proto.PushChatEventCommand) command_);
@@ -423,11 +395,6 @@ private static final long serialVersionUID = 0L;
     }
     com.beverly.hills.money.gang.proto.ServerCommand other = (com.beverly.hills.money.gang.proto.ServerCommand) obj;
 
-    if (hasHmac() != other.hasHmac()) return false;
-    if (hasHmac()) {
-      if (!getHmac()
-          .equals(other.getHmac())) return false;
-    }
     if (!getCommandCase().equals(other.getCommandCase())) return false;
     switch (commandCase_) {
       case 3:
@@ -472,10 +439,6 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasHmac()) {
-      hash = (37 * hash) + HMAC_FIELD_NUMBER;
-      hash = (53 * hash) + getHmac().hashCode();
-    }
     switch (commandCase_) {
       case 3:
         hash = (37 * hash) + CHATCOMMAND_FIELD_NUMBER;
@@ -639,7 +602,6 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      hmac_ = com.google.protobuf.ByteString.EMPTY;
       if (chatCommandBuilder_ != null) {
         chatCommandBuilder_.clear();
       }
@@ -697,12 +659,6 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(com.beverly.hills.money.gang.proto.ServerCommand result) {
       int from_bitField0_ = bitField0_;
-      int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.hmac_ = hmac_;
-        to_bitField0_ |= 0x00000001;
-      }
-      result.bitField0_ |= to_bitField0_;
     }
 
     private void buildPartialOneofs(com.beverly.hills.money.gang.proto.ServerCommand result) {
@@ -782,9 +738,6 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(com.beverly.hills.money.gang.proto.ServerCommand other) {
       if (other == com.beverly.hills.money.gang.proto.ServerCommand.getDefaultInstance()) return this;
-      if (other.hasHmac()) {
-        setHmac(other.getHmac());
-      }
       switch (other.getCommandCase()) {
         case CHATCOMMAND: {
           mergeChatCommand(other.getChatCommand());
@@ -844,11 +797,6 @@ private static final long serialVersionUID = 0L;
             case 0:
               done = true;
               break;
-            case 18: {
-              hmac_ = input.readBytes();
-              bitField0_ |= 0x00000001;
-              break;
-            } // case 18
             case 26: {
               input.readMessage(
                   getChatCommandFieldBuilder().getBuilder(),
@@ -929,46 +877,6 @@ private static final long serialVersionUID = 0L;
     }
 
     private int bitField0_;
-
-    private com.google.protobuf.ByteString hmac_ = com.google.protobuf.ByteString.EMPTY;
-    /**
-     * <code>optional bytes hmac = 2;</code>
-     * @return Whether the hmac field is set.
-     */
-    @java.lang.Override
-    public boolean hasHmac() {
-      return ((bitField0_ & 0x00000001) != 0);
-    }
-    /**
-     * <code>optional bytes hmac = 2;</code>
-     * @return The hmac.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString getHmac() {
-      return hmac_;
-    }
-    /**
-     * <code>optional bytes hmac = 2;</code>
-     * @param value The hmac to set.
-     * @return This builder for chaining.
-     */
-    public Builder setHmac(com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      hmac_ = value;
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional bytes hmac = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearHmac() {
-      bitField0_ = (bitField0_ & ~0x00000001);
-      hmac_ = getDefaultInstance().getHmac();
-      onChanged();
-      return this;
-    }
 
     private com.google.protobuf.SingleFieldBuilderV3<
         com.beverly.hills.money.gang.proto.PushChatEventCommand, com.beverly.hills.money.gang.proto.PushChatEventCommand.Builder, com.beverly.hills.money.gang.proto.PushChatEventCommandOrBuilder> chatCommandBuilder_;

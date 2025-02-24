@@ -50,6 +50,7 @@ public class GameServerInfoTest extends AbstractGameServerTest {
     for (ServerResponse.GameInfo gameInfo : games) {
       assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, gameInfo.getMaxGamePlayers());
       assertEquals(0, gameInfo.getPlayersOnline(), "Should be no connected players yet");
+      assertEquals(0, gameInfo.getMatchId());
     }
     assertEquals(GameWeaponType.values().length,
         serverResponse.getServerInfo().getWeaponsInfoList().size(),

@@ -9,17 +9,6 @@ public interface ServerCommandOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>optional bytes hmac = 2;</code>
-   * @return Whether the hmac field is set.
-   */
-  boolean hasHmac();
-  /**
-   * <code>optional bytes hmac = 2;</code>
-   * @return The hmac.
-   */
-  com.google.protobuf.ByteString getHmac();
-
-  /**
    * <code>.daikombat.dto.PushChatEventCommand chatCommand = 3;</code>
    * @return Whether the chatCommand field is set.
    */

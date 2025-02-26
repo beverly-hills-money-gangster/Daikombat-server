@@ -1,6 +1,7 @@
 package com.beverly.hills.money.gang.state.entity;
 
 import com.beverly.hills.money.gang.cheat.AntiCheat;
+import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.factory.RPGStatsFactory;
 import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.powerup.PowerUp;
@@ -11,13 +12,13 @@ import com.beverly.hills.money.gang.state.PlayerGameStatsReader;
 import com.beverly.hills.money.gang.state.PlayerRPGStatType;
 import com.beverly.hills.money.gang.state.PlayerRPGStats;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
-import com.google.common.util.concurrent.AtomicDouble;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -34,7 +35,7 @@ public class PlayerState implements PlayerStateReader {
   private final AtomicBoolean fullyJoined = new AtomicBoolean(false);
   @Getter
   private final PlayerRPGStats rpgStats;
-  public static final int VAMPIRE_HP_BOOST = 30;
+  public static final int DEFAULT_VAMPIRE_HP_BOOST = 30;
   private final AtomicBoolean moved = new AtomicBoolean(false);
   private final SequenceGenerator eventSequenceGenerator = new SequenceGenerator();
   private final AtomicBoolean dead = new AtomicBoolean();
@@ -44,6 +45,7 @@ public class PlayerState implements PlayerStateReader {
   private final AtomicInteger defenceAmplifier = new AtomicInteger(1);
   private final PlayerGameStats playerGameStats = new PlayerGameStats();
   private final AtomicInteger health = new AtomicInteger(DEFAULT_HP);
+  private final AtomicLong immortalUntilMls = new AtomicLong();
   private final AtomicInteger lastReceivedEventSequence = new AtomicInteger(-1);
 
   @Getter
@@ -74,6 +76,11 @@ public class PlayerState implements PlayerStateReader {
     defaultDamage();
     defaultDefence();
     speed = AntiCheat.getMaxSpeed(rpgPlayerClass);
+    initImmortality();
+  }
+
+  private void initImmortality(){
+    immortalUntilMls.set(System.currentTimeMillis() + ServerConfig.SPAWN_IMMORTAL_MLS);
   }
 
   public void setStats(PlayerGameStatsReader playerGameStats) {
@@ -167,6 +174,7 @@ public class PlayerState implements PlayerStateReader {
     health.set(DEFAULT_HP);
     dead.set(false);
     lastReceivedEventSequence.set(-1);
+    initImmortality();
   }
 
   @Override
@@ -175,6 +183,10 @@ public class PlayerState implements PlayerStateReader {
   }
 
   public void getAttacked(final Damage attackDamage, final double damageAmplifier) {
+    if (System.currentTimeMillis() < immortalUntilMls.get()) {
+      // not getting any damage if immortal
+      return;
+    }
     double defence = defenceAmplifier.get()
         * rpgStats.getNormalized(PlayerRPGStatType.DEFENSE);
     int damage = ((int) -(attackDamage.getDefaultDamage() * damageAmplifier / defence));
@@ -253,8 +265,9 @@ public class PlayerState implements PlayerStateReader {
   private void vampireBoost() {
     int currentHealth = health.get();
     boolean set = health.compareAndSet(currentHealth,
-        Math.min(DEFAULT_HP, (int) (currentHealth + VAMPIRE_HP_BOOST * rpgStats.getNormalized(
-            PlayerRPGStatType.VAMPIRISM))));
+        Math.min(DEFAULT_HP,
+            (int) (currentHealth + DEFAULT_VAMPIRE_HP_BOOST * rpgStats.getNormalized(
+                PlayerRPGStatType.VAMPIRISM))));
     if (!set) {
       vampireBoost();
     }

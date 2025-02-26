@@ -53,6 +53,8 @@ Game server can be configured using the following environment variables:
 - `GAME_SERVER_FAST_TCP` Enables fast TCP configurations(used mostly for testing, not recommended to
   be set to `false` in prod). Default - `true`.
 - `GAME_SERVER_FRAGS_PER_GAME` Frags to win a game. Default - `25`.
+- `GAME_SERVER_SPAWN_IMMORTAL_MLS` Time (in millisecond) players are immortal after spawn/respawn.
+  Default - `2000`
 - `GAME_SERVER_QUAD_DAMAGE_SPAWN_MLS` Time (in millisecond) it takes to spawn a quad damage power-up
   orb. Default - `45_000`.
 - `GAME_SERVER_QUAD_DAMAGE_LASTS_FOR_MLS` Time (in millisecond) quad damage lasts for.

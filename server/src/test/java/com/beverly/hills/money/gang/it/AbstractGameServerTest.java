@@ -41,11 +41,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-/*
-  TODO:
-  - Stabilize tests
-*/
-
 @ExtendWith({SpringExtension.class, OutputCaptureExtension.class})
 @ContextConfiguration(classes = TestConfig.class)
 public abstract class AbstractGameServerTest {

@@ -68,6 +68,7 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_PLAYERS_PER_GAME", value = "25")
 @SetEnvironmentVariable(key = "GAME_SERVER_FRAGS_PER_GAME", value = "10")
+@SetEnvironmentVariable(key = "GAME_SERVER_SPAWN_IMMORTAL_MLS", value = "0")
 public class GameTest {
 
   private Game game;

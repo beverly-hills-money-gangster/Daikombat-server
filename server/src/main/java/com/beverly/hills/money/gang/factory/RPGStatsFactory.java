@@ -1,6 +1,6 @@
 package com.beverly.hills.money.gang.factory;
 
-import static com.beverly.hills.money.gang.state.entity.PlayerState.VAMPIRE_HP_BOOST;
+import static com.beverly.hills.money.gang.state.entity.PlayerState.DEFAULT_VAMPIRE_HP_BOOST;
 
 import com.beverly.hills.money.gang.state.GameWeaponType;
 import com.beverly.hills.money.gang.state.PlayerRPGStatType;
@@ -78,7 +78,7 @@ public class RPGStatsFactory {
               .append(gameWeaponType.getDefaultDamage() * attackerStats.getNormalized(
                   PlayerRPGStatType.ATTACK) / victimStats.getNormalized(PlayerRPGStatType.DEFENSE))
               .append(". Kill gets HP boost ")
-              .append(VAMPIRE_HP_BOOST * attackerStats.getNormalized(PlayerRPGStatType.VAMPIRISM))
+              .append(DEFAULT_VAMPIRE_HP_BOOST * attackerStats.getNormalized(PlayerRPGStatType.VAMPIRISM))
               .append("\n");
         }
       }

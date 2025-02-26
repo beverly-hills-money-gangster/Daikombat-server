@@ -77,7 +77,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
     float newPositionY = mySpawnEvent.getPlayer().getPosition().getY() - 0.1f;
     emptyQueue(shooterConnection.getResponse());
     shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(playerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setGameId(gameIdToConnectTo)
+        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setMatchId(0)
+        .setGameId(gameIdToConnectTo)
         .setEventType(GameEventType.ATTACK).setWeaponType(getWeaponType(gameWeaponType))
         .setDirection(
             Vector.newBuilder().setX(mySpawnEvent.getPlayer().getDirection().getX())
@@ -113,6 +114,49 @@ public class ShootingEventTest extends AbstractGameServerTest {
         "Shooter shouldn't receive any new messages");
   }
 
+
+  /**
+   * @given a running server with 1 connected player
+   * @when player 1 shoots and misses using wrong match id
+   * @then nobody got shot and nobody get the shooting event either
+   */
+  @Test
+  public void testShootMissWrongMatchId() throws IOException, InterruptedException {
+    int gameIdToConnectTo = 0;
+    GameConnection shooterConnection = createGameConnection("localhost", port);
+    shooterConnection.write(
+        JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my player name")
+            .setGameId(gameIdToConnectTo).build());
+    GameConnection observerConnection = createGameConnection("localhost", port);
+    observerConnection.write(
+        JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my other player name")
+            .setGameId(gameIdToConnectTo).build());
+    waitUntilGetResponses(shooterConnection.getResponse(), 2);
+    waitUntilGetResponses(observerConnection.getResponse(), 2);
+    emptyQueue(observerConnection.getResponse());
+    ServerResponse mySpawn = shooterConnection.getResponse().poll().get();
+    int playerId = mySpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
+    var mySpawnEvent = mySpawn.getGameEvents().getEvents(0);
+    float newPositionX = mySpawnEvent.getPlayer().getPosition().getX() + 0.1f;
+    float newPositionY = mySpawnEvent.getPlayer().getPosition().getY() - 0.1f;
+    emptyQueue(shooterConnection.getResponse());
+    shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(playerId)
+        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
+        .setMatchId(123) // wrong match id
+        .setGameId(gameIdToConnectTo)
+        .setEventType(GameEventType.ATTACK).setWeaponType(getWeaponType(GameWeaponType.SHOTGUN))
+        .setDirection(
+            Vector.newBuilder().setX(mySpawnEvent.getPlayer().getDirection().getX())
+                .setY(mySpawnEvent.getPlayer().getDirection().getY()).build())
+        .setPosition(Vector.newBuilder().setX(newPositionX).setY(newPositionY).build()).build());
+    Thread.sleep(5_000);
+    assertTrue(observerConnection.getResponse().list().isEmpty(),
+        "Nobody should see the event because match id is wrong. Actual response "
+            + observerConnection.getResponse().list());
+
+  }
 
   /**
    * @given a running server with 2 connected player
@@ -162,7 +206,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
     float newPositionY = shooterSpawnEvent.getPlayer().getPosition().getY() - 0.1f;
     emptyQueue(shooterConnection.getResponse());
     shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setGameId(gameIdToConnectTo)
+        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setMatchId(0)
+        .setGameId(gameIdToConnectTo)
         .setEventType(GameEventType.ATTACK).setWeaponType(WeaponType.SHOTGUN).setDirection(
             Vector.newBuilder().setX(shooterSpawnEvent.getPlayer().getDirection().getX())
                 .setY(shooterSpawnEvent.getPlayer().getDirection().getY()).build())
@@ -268,7 +313,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
 
     // launch a rocket
     shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setGameId(gameIdToConnectTo)
+        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setMatchId(0)
+        .setGameId(gameIdToConnectTo)
         .setEventType(GameEventType.ATTACK).setWeaponType(WeaponType.ROCKET_LAUNCHER).setDirection(
             Vector.newBuilder().setX(shooterSpawnEvent.getPlayer().getDirection().getX())
                 .setY(shooterSpawnEvent.getPlayer().getDirection().getY()).build())
@@ -277,7 +323,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
 
     // blow up the rocket
     shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setGameId(gameIdToConnectTo)
+        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setMatchId(0)
+        .setGameId(gameIdToConnectTo)
         .setEventType(GameEventType.ATTACK)
         .setProjectile(ProjectileStats.newBuilder()
             .setPosition(Vector.newBuilder().setX(shotPositionX).setY(shotPositionY).build())
@@ -397,7 +444,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
 
     // launch plasma
     shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setGameId(gameIdToConnectTo)
+        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setMatchId(0)
+        .setGameId(gameIdToConnectTo)
         .setEventType(GameEventType.ATTACK).setWeaponType(WeaponType.PLASMAGUN).setDirection(
             Vector.newBuilder().setX(shooterSpawnEvent.getPlayer().getDirection().getX())
                 .setY(shooterSpawnEvent.getPlayer().getDirection().getY()).build())
@@ -406,7 +454,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
 
     // blow up plasma
     shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setGameId(gameIdToConnectTo)
+        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setMatchId(0)
+        .setGameId(gameIdToConnectTo)
         .setEventType(GameEventType.ATTACK)
         .setProjectile(ProjectileStats.newBuilder()
             .setPosition(Vector.newBuilder().setX(shotPositionX).setY(shotPositionY).build())
@@ -520,7 +569,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
     float newPositionY = shooterSpawnEvent.getPlayer().getPosition().getY() - 0.1f;
     emptyQueue(shooterConnection.getResponse());
     shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setGameId(gameIdToConnectTo)
+        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setMatchId(0)
+        .setGameId(gameIdToConnectTo)
         .setEventType(GameEventType.ATTACK).setWeaponType(WeaponType.SHOTGUN).setDirection(
             Vector.newBuilder().setX(shooterSpawnEvent.getPlayer().getDirection().getX())
                 .setY(shooterSpawnEvent.getPlayer().getDirection().getY()).build())
@@ -621,7 +671,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
     float newPositionY = shooterSpawnEvent.getPlayer().getPosition().getY() - 0.1f;
     emptyQueue(shooterConnection.getResponse());
     shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setGameId(gameIdToConnectTo)
+        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setMatchId(0)
+        .setGameId(gameIdToConnectTo)
         .setEventType(GameEventType.ATTACK).setWeaponType(WeaponType.SHOTGUN).setDirection(
             Vector.newBuilder().setX(shooterSpawnEvent.getPlayer().getDirection().getX())
                 .setY(shooterSpawnEvent.getPlayer().getDirection().getY()).build())
@@ -710,7 +761,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
     float newPositionY = puncherSpawnEvent.getPlayer().getPosition().getY() - 0.1f;
     emptyQueue(punchingConnection.getResponse());
     punchingConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setGameId(gameIdToConnectTo)
+        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setMatchId(0)
+        .setGameId(gameIdToConnectTo)
         .setEventType(GameEventType.ATTACK).setWeaponType(WeaponType.PUNCH).setDirection(
             Vector.newBuilder().setX(puncherSpawnEvent.getPlayer().getDirection().getX())
                 .setY(puncherSpawnEvent.getPlayer().getDirection().getY()).build())
@@ -798,7 +850,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
     emptyQueue(shooterConnection.getResponse());
 
     shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setGameId(gameIdToConnectTo)
+        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setMatchId(0)
+        .setGameId(gameIdToConnectTo)
         .setEventType(GameEventType.ATTACK).setWeaponType(getWeaponType(weaponType)).setDirection(
             Vector.newBuilder().setX(shooterSpawnEvent.getPlayer().getDirection().getX())
                 .setY(shooterSpawnEvent.getPlayer().getDirection().getY()).build())
@@ -874,7 +927,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     for (int i = 0; i < shotsToKill - 1; i++) {
       killerConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-          .setGameId(gameIdToConnectTo).setEventType(GameEventType.ATTACK)
+          .setMatchId(0).setGameId(gameIdToConnectTo).setEventType(GameEventType.ATTACK)
           .setWeaponType(getWeaponType(weaponType)).setDirection(
               Vector.newBuilder().setX(shooterSpawnEvent.getPlayer().getDirection().getX())
                   .setY(shooterSpawnEvent.getPlayer().getDirection().getY()).build())
@@ -899,7 +952,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     // this one kills player 2
     killerConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
         .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-        .setGameId(gameIdToConnectTo)
+        .setMatchId(0).setGameId(gameIdToConnectTo)
         .setEventType(GameEventType.ATTACK).setWeaponType(getWeaponType(weaponType)).setDirection(
             Vector.newBuilder().setX(shooterSpawnEvent.getPlayer().getDirection().getX())
                 .setY(shooterSpawnEvent.getPlayer().getDirection().getY()).build())
@@ -1021,7 +1074,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
     float newPositionY = shooterSpawnEvent.getPlayer().getPosition().getY() - 0.1f;
 
     killerConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setGameId(gameIdToConnectTo)
+        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setMatchId(0)
+        .setGameId(gameIdToConnectTo)
         .setEventType(GameEventType.ATTACK).setWeaponType(WeaponType.RAILGUN).setDirection(
             Vector.newBuilder().setX(shooterSpawnEvent.getPlayer().getDirection().getX())
                 .setY(shooterSpawnEvent.getPlayer().getDirection().getY()).build())
@@ -1167,7 +1221,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     for (int i = 0; i < shotsToKill; i++) {
       shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-          .setGameId(gameIdToConnectTo).setEventType(GameEventType.ATTACK)
+          .setMatchId(0).setGameId(gameIdToConnectTo).setEventType(GameEventType.ATTACK)
           .setWeaponType(WeaponType.SHOTGUN).setDirection(
               Vector.newBuilder().setX(shooterSpawnEvent.getPlayer().getDirection().getX())
                   .setY(shooterSpawnEvent.getPlayer().getDirection().getY()).build())
@@ -1194,7 +1248,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
     emptyQueue(shooterConnection.getResponse());
     // shoot dead player
     shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setGameId(gameIdToConnectTo)
+        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setMatchId(0)
+        .setGameId(gameIdToConnectTo)
         .setEventType(GameEventType.ATTACK).setWeaponType(WeaponType.SHOTGUN).setDirection(
             Vector.newBuilder().setX(shooterSpawnEvent.getPlayer().getDirection().getX())
                 .setY(shooterSpawnEvent.getPlayer().getDirection().getY()).build())
@@ -1251,7 +1306,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
 
     // shoot yourself
     shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setGameId(gameIdToConnectTo)
+        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setMatchId(0)
+        .setGameId(gameIdToConnectTo)
         .setEventType(GameEventType.ATTACK).setWeaponType(WeaponType.SHOTGUN).setDirection(
             Vector.newBuilder().setX(shooterSpawnEvent.getPlayer().getDirection().getX())
                 .setY(shooterSpawnEvent.getPlayer().getDirection().getY()).build())

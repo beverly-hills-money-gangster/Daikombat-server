@@ -8,7 +8,6 @@ import "schema/src/main/resources/server-common.proto";
 
 message ServerCommand {
 
-  optional bytes hmac = 2;
   oneof command {
     PushChatEventCommand chatCommand = 3;
     PushGameEventCommand gameCommand = 4;
@@ -51,9 +50,9 @@ message MergeConnectionCommand {
 message RespawnCommand {
   optional int32 gameId = 1;
   optional int32 playerId = 2;
+  optional int32 matchId = 3;
 }
 
-// TODO refactor
 message PushGameEventCommand {
   optional int32 gameId = 1;
   optional GameEventType eventType = 2;
@@ -66,6 +65,7 @@ message PushGameEventCommand {
   optional int32 teleportId = 9;
   optional WeaponType weaponType = 10;
   optional ProjectileStats projectile = 11;
+  optional int32 matchId = 12;
 
   enum GameEventType {
     MOVE = 0;

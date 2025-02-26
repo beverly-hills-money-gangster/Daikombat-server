@@ -84,7 +84,7 @@ public class MoveEventTest extends AbstractGameServerTest {
     float newPositionX = mySpawnGameEvent.getPlayer().getPosition().getX() + 0.01f;
     emptyQueue(movingPlayerConnection.getResponse());
     movingPlayerConnection.write(PushGameEventCommand.newBuilder()
-        .setGameId(gameIdToConnectTo)
+        .setMatchId(0).setGameId(gameIdToConnectTo)
         .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
         .setEventType(PushGameEventCommand.GameEventType.MOVE)
         .setPlayerId(playerId1)
@@ -158,7 +158,7 @@ public class MoveEventTest extends AbstractGameServerTest {
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
             .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("my player name")
-            .setGameId(gameIdToConnectTo).build());
+           .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(movingPlayerConnection.getResponse());
     ServerResponse mySpawn = movingPlayerConnection.getResponse().poll().get();
     ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
@@ -183,7 +183,7 @@ public class MoveEventTest extends AbstractGameServerTest {
     float newPositionX = mySpawnGameEvent.getPlayer().getPosition().getX() + 0.01f;
     emptyQueue(movingPlayerConnection.getResponse());
     movingPlayerConnection.write(PushGameEventCommand.newBuilder()
-        .setGameId(gameIdToConnectTo)
+        .setMatchId(0).setGameId(gameIdToConnectTo)
         .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
         .setEventType(PushGameEventCommand.GameEventType.MOVE)
         .setPlayerId(playerId1)
@@ -243,7 +243,7 @@ public class MoveEventTest extends AbstractGameServerTest {
     int movements = 3;
     for (int i = 0; i < movements; i++) {
       movingPlayerConnection.write(PushGameEventCommand.newBuilder()
-          .setGameId(gameIdToConnectTo)
+          .setMatchId(0).setGameId(gameIdToConnectTo)
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
           .setPlayerId(playerId1)
@@ -288,7 +288,7 @@ public class MoveEventTest extends AbstractGameServerTest {
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
             .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("my player name")
-            .setGameId(gameIdToConnectTo).build());
+           .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(movingPlayerConnection.getResponse());
     ServerResponse mySpawn = movingPlayerConnection.getResponse().poll().get();
     ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
@@ -315,7 +315,7 @@ public class MoveEventTest extends AbstractGameServerTest {
     for (int i = 0; i < 2; i++) {
       int sequence = sequenceGenerator.getNext();
       movingPlayerConnection.write(PushGameEventCommand.newBuilder()
-          .setGameId(gameIdToConnectTo)
+          .setMatchId(0).setGameId(gameIdToConnectTo)
           .setSequence(sequence)
           .setPingMls(PING_MLS)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
@@ -333,7 +333,7 @@ public class MoveEventTest extends AbstractGameServerTest {
     }
 
     movingPlayerConnection.write(PushGameEventCommand.newBuilder()
-        .setGameId(gameIdToConnectTo)
+        .setMatchId(0).setGameId(gameIdToConnectTo)
         .setSequence(-1) // out-of-order
         .setPingMls(PING_MLS)
         .setEventType(PushGameEventCommand.GameEventType.MOVE)
@@ -403,7 +403,7 @@ public class MoveEventTest extends AbstractGameServerTest {
 
     // wrong game connection
     wrongGameConnection.write(PushGameEventCommand.newBuilder()
-        .setGameId(gameIdToConnectTo)
+        .setMatchId(0).setGameId(gameIdToConnectTo)
         .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
         .setEventType(PushGameEventCommand.GameEventType.MOVE)
         .setPlayerId(playerId1)

@@ -67,13 +67,18 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
     return gameCommand.hasGameId()
         && gameCommand.hasPlayerId()
         && (gameCommand.hasPosition() && gameCommand.hasDirection() && gameCommand.hasEventType())
-        && gameCommand.hasSequence() && gameCommand.hasPingMls();
+        && gameCommand.hasSequence() && gameCommand.hasPingMls()
+        && gameCommand.hasMatchId();
   }
 
   @Override
   protected void handleInternal(ServerCommand msg, Channel currentChannel) throws GameLogicError {
     Game game = gameRoomRegistry.getGame(msg.getGameCommand().getGameId());
     PushGameEventCommand gameCommand = msg.getGameCommand();
+    if (!game.isCurrentMatch(gameCommand.getMatchId())) {
+      LOG.warn("Wrong match id {}. Ignore command", gameCommand.getMatchId());
+      return;
+    }
     gameRoomRegistry.getJoinedPlayer(
         gameCommand.getGameId(),
         currentChannel, gameCommand.getPlayerId()).ifPresent(

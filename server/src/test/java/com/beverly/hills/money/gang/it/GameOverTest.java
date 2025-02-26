@@ -6,12 +6,12 @@ import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
+import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
-import com.beverly.hills.money.gang.proto.Vector;
-import com.beverly.hills.money.gang.proto.WeaponType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType;
-import com.beverly.hills.money.gang.proto.PlayerSkinColor;
+import com.beverly.hills.money.gang.proto.Vector;
+import com.beverly.hills.money.gang.proto.WeaponType;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -38,10 +38,10 @@ public class GameOverTest extends AbstractGameServerTest {
     int gameIdToConnectTo = 0;
     String shooterPlayerName = "killer";
     GameConnection killerConnection = createGameConnection(
-         "localhost", port);
+        "localhost", port);
     killerConnection.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.YELLOW).setPlayerClass(
                 PlayerClass.WARRIOR)
             .setPlayerName(shooterPlayerName)
             .setGameId(gameIdToConnectTo).build());
@@ -51,11 +51,12 @@ public class GameOverTest extends AbstractGameServerTest {
         .getPlayerId();
 
     for (int i = 0; i < deadConnectionsToCreate; i++) {
-      GameConnection deadConnection = createGameConnection( "localhost",
+      GameConnection deadConnection = createGameConnection("localhost",
           port);
       deadConnection.write(
           JoinGameCommand.newBuilder()
-              .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.WARRIOR)
+              .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+              .setPlayerClass(PlayerClass.WARRIOR)
               .setPlayerName("my other player name " + i)
               .setGameId(gameIdToConnectTo).build());
       waitUntilQueueNonEmpty(killerConnection.getResponse());
@@ -75,7 +76,7 @@ public class GameOverTest extends AbstractGameServerTest {
       killerConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(shooterPlayerId)
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-          .setGameId(gameIdToConnectTo)
+          .setMatchId(0).setGameId(gameIdToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.ATTACK)
           .setWeaponType(WeaponType.SHOTGUN)
           .setDirection(
@@ -105,14 +106,25 @@ public class GameOverTest extends AbstractGameServerTest {
       assertEquals(PING_MLS,
           gameOverResponse.getGameOver().getLeaderBoard().getItems(0).getPingMls());
       assertEquals(deadConnectionsToCreate,
-          gameOverResponse.getGameOver().getLeaderBoard().getItems(0).getKills());
-      assertEquals(0, gameOverResponse.getGameOver().getLeaderBoard().getItems(0).getDeaths());
-
+          gameOverResponse.getGameOver().getLeaderBoard().getItems(0)
+              .getKills());
+      assertEquals(0,
+          gameOverResponse.getGameOver().getLeaderBoard().getItems(0)
+              .getDeaths());
+      assertEquals(PlayerClass.WARRIOR,
+          gameOverResponse.getGameOver().getLeaderBoard().getItems(0).getPlayerClass());
+      assertEquals(PlayerSkinColor.YELLOW,
+          gameOverResponse.getGameOver().getLeaderBoard().getItems(0).getSkinColor());
       // check victims stats
       for (int i = 1; i < gameOverResponse.getGameOver().getLeaderBoard().getItemsCount(); i++) {
         assertEquals(0,
             gameOverResponse.getGameOver().getLeaderBoard().getItems(i).getKills());
-        assertEquals(1, gameOverResponse.getGameOver().getLeaderBoard().getItems(i).getDeaths());
+        assertEquals(1, gameOverResponse.getGameOver().getLeaderBoard().getItems(i)
+            .getDeaths());
+        assertEquals(PlayerClass.WARRIOR,
+            gameOverResponse.getGameOver().getLeaderBoard().getItems(i).getPlayerClass());
+        assertEquals(PlayerSkinColor.GREEN,
+            gameOverResponse.getGameOver().getLeaderBoard().getItems(i).getSkinColor());
       }
     });
   }

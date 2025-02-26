@@ -62,7 +62,7 @@ public class JoinGameTest extends AbstractGameServerTest {
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
             .setPlayerClass(PlayerClass.forNumber(playerClassNumber))
             .setPlayerName("my player name")
-            .setGameId(gameIdToConnectTo).build());
+           .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
     assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
     assertEquals(1, gameConnection.getResponse().size(),

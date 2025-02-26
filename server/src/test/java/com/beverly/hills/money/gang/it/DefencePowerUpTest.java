@@ -80,7 +80,7 @@ public class DefencePowerUpTest extends AbstractGameServerTest {
         .setPlayerId(playerId)
         .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
         .setPingMls(PING_MLS)
-        .setGameId(gameIdToConnectTo)
+        .setMatchId(0).setGameId(gameIdToConnectTo)
         .setPosition(Vector.newBuilder()
             .setX(playerSpawnEvent.getPlayer().getPosition().getX())
             .setY(playerSpawnEvent.getPlayer().getPosition().getY())

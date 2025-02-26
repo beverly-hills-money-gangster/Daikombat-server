@@ -65,7 +65,7 @@ public class IdleServerTest extends AbstractGameServerTest {
       gameConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(playerId)
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-          .setGameId(gameToConnectTo)
+          .setMatchId(0).setGameId(gameToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
           .setDirection(Vector.newBuilder().setX(0).setY(1).build())
           .setPosition(Vector.newBuilder()

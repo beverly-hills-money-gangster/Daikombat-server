@@ -59,6 +59,8 @@ public interface ServerResponseFactory {
         .setDeaths(leaderBoardItem.getDeaths())
         .setKills(leaderBoardItem.getKills())
         .setPingMls(leaderBoardItem.getPingMls())
+        .setSkinColor(createPlayerSkinColor(leaderBoardItem.getColor()))
+        .setPlayerClass(createPlayerClass(leaderBoardItem.getPlayerClass()))
         .build()));
     return leaderBoardResponse.build();
   }
@@ -181,6 +183,7 @@ public interface ServerResponseFactory {
             .setGameId(game.gameId())
             .setPlayersOnline(game.playersOnline())
             .setMaxGamePlayers(game.maxPlayersAvailable())
+            .setMatchId(game.matchId())
             .build()));
 
     return ServerResponse.newBuilder()

@@ -479,7 +479,8 @@ public class GameTest {
     assertEquals(
         playerAttackingGameState.getAttackingPlayer().getPlayerId(),
         observerPlayerConnectedGameState.getLeaderBoard().get(0).getPlayerId());
-    assertEquals(0, observerPlayerConnectedGameState.getLeaderBoard().get(0).getDeaths());
+    assertEquals(0,
+        observerPlayerConnectedGameState.getLeaderBoard().get(0).getDeaths());
     assertEquals(
         1,
         observerPlayerConnectedGameState.getLeaderBoard().get(0).getKills(),
@@ -488,14 +489,16 @@ public class GameTest {
     assertEquals(
         observerPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         observerPlayerConnectedGameState.getLeaderBoard().get(1).getPlayerId());
-    assertEquals(0, observerPlayerConnectedGameState.getLeaderBoard().get(1).getDeaths());
+    assertEquals(0,
+        observerPlayerConnectedGameState.getLeaderBoard().get(1).getDeaths());
     assertEquals(
         0, observerPlayerConnectedGameState.getLeaderBoard().get(1).getKills());
 
     assertEquals(
         shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         observerPlayerConnectedGameState.getLeaderBoard().get(2).getPlayerId());
-    assertEquals(1, observerPlayerConnectedGameState.getLeaderBoard().get(2).getDeaths());
+    assertEquals(1,
+        observerPlayerConnectedGameState.getLeaderBoard().get(2).getDeaths());
     assertEquals(
         0, observerPlayerConnectedGameState.getLeaderBoard().get(2).getKills());
 
@@ -512,6 +515,7 @@ public class GameTest {
    */
   @Test
   public void testShootGameOver() throws Throwable {
+    int matchId = game.matchId();
     String shooterPlayerName = "shooter player";
     String shotPlayerName = "shot player";
     Channel channel = mock(Channel.class);
@@ -557,6 +561,7 @@ public class GameTest {
       }
     }
 
+    assertEquals(matchId + 1, game.matchId(), "Match id should be incremented");
     assertEquals(playersToKill + 1, game.getLeaderBoard().size(), "Should be victims+killer");
     game.getLeaderBoard().forEach(gameLeaderBoardItem -> {
       assertEquals(0, gameLeaderBoardItem.getKills(),

@@ -71,6 +71,7 @@ message ServerResponse {
     optional int32 gameId = 1;
     optional int32 playersOnline = 2;
     optional int32 maxGamePlayers = 3;
+    optional int32 matchId = 4;
   }
 
   message ErrorEvent {
@@ -126,6 +127,8 @@ message ServerResponse {
     optional string playerName = 3;
     optional int32 deaths = 4;
     optional int32 pingMls = 5;
+    optional PlayerClass playerClass = 6;
+    optional PlayerSkinColor skinColor = 7;
   }
 
   message GameEventPlayerStats {

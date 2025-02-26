@@ -78,6 +78,25 @@ private static final long serialVersionUID = 0L;
     return playerId_;
   }
 
+  public static final int MATCHID_FIELD_NUMBER = 3;
+  private int matchId_ = 0;
+  /**
+   * <code>optional int32 matchId = 3;</code>
+   * @return Whether the matchId field is set.
+   */
+  @java.lang.Override
+  public boolean hasMatchId() {
+    return ((bitField0_ & 0x00000004) != 0);
+  }
+  /**
+   * <code>optional int32 matchId = 3;</code>
+   * @return The matchId.
+   */
+  @java.lang.Override
+  public int getMatchId() {
+    return matchId_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -98,6 +117,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000002) != 0)) {
       output.writeInt32(2, playerId_);
     }
+    if (((bitField0_ & 0x00000004) != 0)) {
+      output.writeInt32(3, matchId_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -114,6 +136,10 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(2, playerId_);
+    }
+    if (((bitField0_ & 0x00000004) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(3, matchId_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -140,6 +166,11 @@ private static final long serialVersionUID = 0L;
       if (getPlayerId()
           != other.getPlayerId()) return false;
     }
+    if (hasMatchId() != other.hasMatchId()) return false;
+    if (hasMatchId()) {
+      if (getMatchId()
+          != other.getMatchId()) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -158,6 +189,10 @@ private static final long serialVersionUID = 0L;
     if (hasPlayerId()) {
       hash = (37 * hash) + PLAYERID_FIELD_NUMBER;
       hash = (53 * hash) + getPlayerId();
+    }
+    if (hasMatchId()) {
+      hash = (37 * hash) + MATCHID_FIELD_NUMBER;
+      hash = (53 * hash) + getMatchId();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -292,6 +327,7 @@ private static final long serialVersionUID = 0L;
       bitField0_ = 0;
       gameId_ = 0;
       playerId_ = 0;
+      matchId_ = 0;
       return this;
     }
 
@@ -333,6 +369,10 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.playerId_ = playerId_;
         to_bitField0_ |= 0x00000002;
+      }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.matchId_ = matchId_;
+        to_bitField0_ |= 0x00000004;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -387,6 +427,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasPlayerId()) {
         setPlayerId(other.getPlayerId());
       }
+      if (other.hasMatchId()) {
+        setMatchId(other.getMatchId());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -423,6 +466,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000002;
               break;
             } // case 16
+            case 24: {
+              matchId_ = input.readInt32();
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 24
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -516,6 +564,46 @@ private static final long serialVersionUID = 0L;
     public Builder clearPlayerId() {
       bitField0_ = (bitField0_ & ~0x00000002);
       playerId_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private int matchId_ ;
+    /**
+     * <code>optional int32 matchId = 3;</code>
+     * @return Whether the matchId field is set.
+     */
+    @java.lang.Override
+    public boolean hasMatchId() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>optional int32 matchId = 3;</code>
+     * @return The matchId.
+     */
+    @java.lang.Override
+    public int getMatchId() {
+      return matchId_;
+    }
+    /**
+     * <code>optional int32 matchId = 3;</code>
+     * @param value The matchId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setMatchId(int value) {
+
+      matchId_ = value;
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional int32 matchId = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearMatchId() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      matchId_ = 0;
       onChanged();
       return this;
     }

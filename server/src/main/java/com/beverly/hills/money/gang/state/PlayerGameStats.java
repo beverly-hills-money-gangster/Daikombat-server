@@ -1,7 +1,9 @@
 package com.beverly.hills.money.gang.state;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import lombok.ToString;
 
+@ToString
 public class PlayerGameStats implements PlayerGameStatsReader {
 
   private final AtomicInteger kills = new AtomicInteger();

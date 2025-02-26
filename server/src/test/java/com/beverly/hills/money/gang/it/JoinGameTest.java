@@ -18,7 +18,6 @@ import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType;
 import com.beverly.hills.money.gang.proto.Vector;
-import com.beverly.hills.money.gang.registry.BannedPlayersRegistry;
 import com.beverly.hills.money.gang.state.PlayerRPGStatType;
 import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
 import java.io.IOException;
@@ -44,8 +43,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
 public class JoinGameTest extends AbstractGameServerTest {
 
-  @MockBean
-  private BannedPlayersRegistry bannedPlayersRegistry;
 
   /**
    * @given a running game server
@@ -165,49 +162,6 @@ public class JoinGameTest extends AbstractGameServerTest {
       assertEquals(GameEvent.GameEventType.SPAWN, gameEvent.getEventType());
       assertEquals(PlayerSkinColor.ORANGE, gameEvent.getPlayer().getSkinColor());
     });
-  }
-
-  /**
-   * @given a running game server and one player that got banned
-   * @when the banned player tried to join the game
-   * @then the player is not connected
-   */
-  @Test
-  public void testJoinGameBannedPlayer() throws IOException {
-    // first player is banned, second is not
-    doReturn(true, false).when(bannedPlayersRegistry).isBanned(any());
-    int gameIdToConnectTo = 0;
-    GameConnection gameConnection = createGameConnection("localhost", port);
-    gameConnection.write(
-        JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerName("my player name")
-            .setGameId(gameIdToConnectTo).build());
-    waitUntilQueueNonEmpty(gameConnection.getResponse());
-    assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
-    assertEquals(1, gameConnection.getResponse().size(), "Should be 1 response");
-
-    ServerResponse serverResponse = gameConnection.getResponse().poll().get();
-    ServerResponse.ErrorEvent errorEvent = serverResponse.getErrorEvent();
-    assertEquals(GameErrorCode.COMMON_ERROR.ordinal(), errorEvent.getErrorCode());
-    assertEquals("Player is banned", errorEvent.getMessage());
-
-    // need a new game connection because the previous is closed
-    var newGameConnection = createGameConnection("localhost", port);
-    newGameConnection.write(
-        GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR).build());
-    waitUntilQueueNonEmpty(newGameConnection.getResponse());
-    assertEquals(0, newGameConnection.getErrors().size(), "Should be no error");
-    assertEquals(1, newGameConnection.getResponse().size(), "Should be exactly one response");
-
-    ServerResponse gamesInfoServerResponse = newGameConnection.getResponse().poll().get();
-    List<ServerResponse.GameInfo> games = gamesInfoServerResponse.getServerInfo().getGamesList();
-    assertEquals(ServerConfig.GAMES_TO_CREATE, games.size());
-    for (ServerResponse.GameInfo gameInfo : games) {
-      assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, gameInfo.getMaxGamePlayers());
-      assertEquals(0, gameInfo.getPlayersOnline(), "Should be no connected players yet");
-    }
-    assertTrue(gameConnection.isDisconnected());
   }
 
   /**

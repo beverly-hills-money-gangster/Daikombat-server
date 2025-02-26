@@ -13,16 +13,10 @@ public interface ServerConfig {
   int MAX_PLAYERS_PER_GAME = NumberUtils.toInt(System.getenv("GAME_SERVER_MAX_PLAYERS_PER_GAME"),
       25);
 
-  int BAN_TIMEOUT_MLS = NumberUtils.toInt(System.getenv("GAME_SERVER_BAN_TIMEOUT_MLS"),
-      30 * 60 * 1000);
-
   int MAX_VISIBILITY = NumberUtils.toInt(System.getenv("GAME_SERVER_MAX_VISIBILITY"), 12);
 
   int MOVES_UPDATE_FREQUENCY_MLS = NumberUtils.toInt(
       System.getenv("GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS"), 50);
-
-  int PLAYER_SPEED_CHECK_FREQUENCY_MLS = NumberUtils.toInt(
-      System.getenv("GAME_SERVER_PLAYER_SPEED_CHECK_FREQUENCY_MLS"), 10_000);
 
   int PLAYER_SPEED = NumberUtils.toInt(System.getenv("GAME_SERVER_PLAYER_SPEED"), 7);
   int MAX_IDLE_TIME_MLS = NumberUtils.toInt(System.getenv("GAME_SERVER_MAX_IDLE_TIME_MLS"), 10_000);

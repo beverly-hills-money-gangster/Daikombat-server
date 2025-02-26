@@ -23,7 +23,6 @@ import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.proto.ServerCommand.CommandCase;
 import com.beverly.hills.money.gang.proto.ServerResponse;
-import com.beverly.hills.money.gang.registry.BannedPlayersRegistry;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.scheduler.Scheduler;
 import com.beverly.hills.money.gang.state.Damage;
@@ -34,7 +33,6 @@ import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import com.beverly.hills.money.gang.state.entity.PlayerAttackingGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.Vector;
-import com.beverly.hills.money.gang.util.NetworkUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import java.util.List;
@@ -63,8 +61,6 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
 
   private final AntiCheat antiCheat;
 
-  private final BannedPlayersRegistry bannedPlayersRegistry;
-
   @Override
   protected boolean isValidCommand(ServerCommand msg, Channel currentChannel) {
     var gameCommand = msg.getGameCommand();
@@ -86,9 +82,6 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
             handleGameEvents(game, msg.getGameCommand(), playerStateChannel);
           } catch (GameLogicError e) {
             LOG.error("Game logic error", e);
-            if (e.getErrorCode() == GameErrorCode.CHEATING) {
-              bannedPlayersRegistry.ban(NetworkUtil.getChannelAddress(currentChannel));
-            }
             currentChannel.writeAndFlush(createErrorEvent(e))
                 .addListener(ChannelFutureListener.CLOSE);
           }

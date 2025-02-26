@@ -50,8 +50,6 @@ public class PlayerState implements PlayerStateReader {
   private final PlayerStateColor color;
   private final Map<PowerUpType, PowerUpInEffect> powerUps = new ConcurrentHashMap<>();
 
-  private final AtomicDouble lastDistanceTravelled = new AtomicDouble();
-
   @Getter
   private final int playerId;
 
@@ -130,10 +128,6 @@ public class PlayerState implements PlayerStateReader {
     powerUps.remove(power.getType());
   }
 
-  public double getLastDistanceTravelled() {
-    return lastDistanceTravelled.get();
-  }
-
   public void revertAllPowerUps() {
     powerUps.forEach((powerUpType, power)
         -> power.getPowerUp().revert(PlayerState.this));
@@ -169,7 +163,6 @@ public class PlayerState implements PlayerStateReader {
   }
 
   public void respawn(final Coordinates coordinates) {
-    clearLastDistanceTravelled();
     this.playerCoordinatesRef.set(coordinates);
     health.set(DEFAULT_HP);
     dead.set(false);
@@ -211,9 +204,7 @@ public class PlayerState implements PlayerStateReader {
       LOG.warn("Concurrent move for player {}. Skip move.", playerId);
       return;
     }
-    double travelledDistance = Vector.getDistance(
-        newCoordinates.getPosition(), playerCoordinatesRef.get().position);
-    lastDistanceTravelled.addAndGet(travelledDistance);
+
     playerCoordinatesRef.set(newCoordinates);
     moved.set(true);
   }
@@ -222,10 +213,6 @@ public class PlayerState implements PlayerStateReader {
     playerCoordinatesRef.set(newCoordinates);
   }
 
-
-  public void clearLastDistanceTravelled() {
-    lastDistanceTravelled.set(0);
-  }
 
   public void flushMove() {
     moved.set(false);

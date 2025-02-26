@@ -1,18 +1,17 @@
 package com.beverly.hills.money.gang.it;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.doReturn;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
+import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
-import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.Vector;
 import com.beverly.hills.money.gang.registry.TeleportRegistry;
 import com.beverly.hills.money.gang.spawner.Spawner;
@@ -37,7 +36,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 @SetEnvironmentVariable(key = "GAME_SERVER_DEFENCE_LASTS_FOR_MLS", value = "2000")
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "999999")
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "999999")
-@SetEnvironmentVariable(key = "GAME_SERVER_PLAYER_SPEED_CHECK_FREQUENCY_MLS", value = "1000")
 
 public class TeleportTest extends AbstractGameServerTest {
 
@@ -57,7 +55,8 @@ public class TeleportTest extends AbstractGameServerTest {
   @Test
   public void testTeleport() throws IOException, InterruptedException {
     var teleportCoordinates = Coordinates.builder()
-        .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().y(1000).x(-1000).build())
+        .direction(
+            com.beverly.hills.money.gang.state.entity.Vector.builder().y(1000).x(-1000).build())
         .position(com.beverly.hills.money.gang.state.entity.Vector.builder().x(-1).y(1).build())
         .build();
     var mockTeleport = Teleport.builder()
@@ -69,7 +68,7 @@ public class TeleportTest extends AbstractGameServerTest {
     doReturn(List.of(mockTeleport)).when(teleportRegistry).getAllTeleports();
 
     int gameIdToConnectTo = 0;
-    GameConnection playerConnection = createGameConnection( "localhost",
+    GameConnection playerConnection = createGameConnection("localhost",
         port);
     playerConnection.write(
         JoinGameCommand.newBuilder()
@@ -122,10 +121,5 @@ public class TeleportTest extends AbstractGameServerTest {
     assertEquals(teleportCoordinates.getPosition().getY(), teleportedPlayer.getPosition().getY());
     assertEquals(teleportCoordinates.getDirection().getX(), teleportedPlayer.getDirection().getX());
     assertEquals(teleportCoordinates.getDirection().getY(), teleportedPlayer.getDirection().getY());
-
-    // check that we don't get disconnected for cheating
-    Thread.sleep(ServerConfig.PLAYER_SPEED_CHECK_FREQUENCY_MLS * 3L);
-    assertFalse(playerConnection.isDisconnected(), "Player should stay connected");
-
   }
 }

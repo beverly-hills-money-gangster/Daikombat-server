@@ -11,5 +11,7 @@ public interface QueueReader<T> {
 
   List<T> poll(int max);
 
+  List<T> pollBlocking(int maxElements) throws InterruptedException;
+
   List<T> list();
 }

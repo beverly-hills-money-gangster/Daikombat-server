@@ -6,15 +6,8 @@ import com.beverly.hills.money.gang.initializer.GameServerInitializer;
 import com.beverly.hills.money.gang.scheduler.GameScheduler;
 import com.beverly.hills.money.gang.transport.ServerTransport;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelOutboundInvoker;
 import io.netty.channel.EventLoopGroup;
-import java.io.Closeable;
-import java.util.Optional;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +18,9 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class ServerRunner implements Closeable {
+public class GameServerRunner extends AbstractServerRunner {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ServerRunner.class);
+  private static final Logger LOG = LoggerFactory.getLogger(GameServerRunner.class);
 
   private final ServerTransport serverTransport;
 
@@ -35,16 +28,12 @@ public class ServerRunner implements Closeable {
 
   private final GameScheduler gameScheduler;
 
-  private final CountDownLatch startWaitingLatch = new CountDownLatch(1);
-
-  private final AtomicReference<State> stateRef = new AtomicReference<>(State.INIT);
-  private final AtomicReference<Channel> serverChannelRef = new AtomicReference<>();
-
+  @Override
   public void runServer(int port) throws InterruptedException {
-    if (!stateRef.compareAndSet(State.INIT, State.STARTING)) {
+    if (!stateRef.compareAndSet(ServerState.INIT, ServerState.STARTING)) {
       throw new IllegalStateException("Can't run!");
     }
-    LOG.info("Starting server on port {}", port);
+    LOG.info("Starting game server on port {}", port);
     // Create event loop groups. One for incoming connections handling and
     // second for handling actual event by workers
     EventLoopGroup serverGroup = serverTransport.createEventLoopGroup(1);
@@ -62,7 +51,7 @@ public class ServerRunner implements Closeable {
       LOG.info("Server version: {}", ServerConfig.VERSION);
       LOG.info("Server started on port: {}. Fast TCP enabled: {}", port, ServerConfig.FAST_TCP);
       serverChannelRef.set(serverChannel);
-      if (!stateRef.compareAndSet(State.STARTING, State.RUNNING)) {
+      if (!stateRef.compareAndSet(ServerState.STARTING, ServerState.RUNNING)) {
         throw new IllegalStateException("Can't run!");
       }
       gameScheduler.init();
@@ -76,37 +65,14 @@ public class ServerRunner implements Closeable {
       LOG.info("Stopping server");
       serverGroup.shutdownGracefully();
       workerGroup.shutdownGracefully();
-      stateRef.set(State.STOPPED);
+      stateRef.set(ServerState.STOPPED);
       LOG.info("Server stopped");
     }
   }
 
-  public boolean waitFullyRunning() throws InterruptedException {
-    return startWaitingLatch.await(1, TimeUnit.MINUTES);
-  }
-
-
-  public State getState() {
-    return stateRef.get();
-  }
-
-  public void stop() {
-    stateRef.set(State.STOPPING);
-    try {
-      Optional.ofNullable(serverChannelRef.get())
-          .ifPresent(ChannelOutboundInvoker::close);
-    } catch (Exception e) {
-      LOG.error("Can't close server channel", e);
-    }
-  }
-
   @Override
-  public void close() {
-    stop();
-  }
-
-  public enum State {
-    INIT, STARTING, RUNNING, STOPPING, STOPPED
+  public void runServer() throws InterruptedException {
+    runServer(ServerConfig.GAME_SERVER_PORT);
   }
 
 }

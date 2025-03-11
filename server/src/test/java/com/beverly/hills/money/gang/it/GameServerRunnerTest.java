@@ -1,11 +1,14 @@
 package com.beverly.hills.money.gang.it;
 
+import static com.beverly.hills.money.gang.runner.ServerState.INIT;
+import static com.beverly.hills.money.gang.runner.ServerState.RUNNING;
+import static com.beverly.hills.money.gang.runner.ServerState.STOPPED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.beverly.hills.money.gang.runner.ServerRunner;
+import com.beverly.hills.money.gang.runner.GameServerRunner;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -21,22 +24,22 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfig.class)
-public class ServerRunnerTest {
+public class GameServerRunnerTest {
 
   @Autowired
   private ApplicationContext applicationContext;
 
-  private final List<ServerRunner> runners = new ArrayList<>();
+  private final List<GameServerRunner> runners = new ArrayList<>();
 
-  private ServerRunner createRunner() {
-    var runner = applicationContext.getBean(ServerRunner.class);
+  private GameServerRunner createRunner() {
+    var runner = applicationContext.getBean(GameServerRunner.class);
     runners.add(runner);
     return runner;
   }
 
   @AfterEach
   public void tearDown() {
-    runners.forEach(ServerRunner::stop);
+    runners.forEach(GameServerRunner::stop);
     runners.clear();
   }
 
@@ -51,7 +54,7 @@ public class ServerRunnerTest {
     int port = AbstractGameServerTest.createRandomPort();
     var runner = createRunner();
     AtomicBoolean failed = new AtomicBoolean();
-    assertEquals(ServerRunner.State.INIT, runner.getState());
+    assertEquals(INIT, runner.getState());
     new Thread(() -> {
       try {
         runner.runServer(port);
@@ -63,7 +66,7 @@ public class ServerRunnerTest {
     runner.waitFullyRunning();
     assertFalse(AbstractGameServerTest.isPortAvailable(port),
         "Port shouldn't available as game server uses it");
-    assertEquals(ServerRunner.State.RUNNING, runner.getState());
+    assertEquals(RUNNING, runner.getState());
     assertFalse(failed.get(), "No failure expected");
   }
 
@@ -78,7 +81,7 @@ public class ServerRunnerTest {
     int port = AbstractGameServerTest.createRandomPort();
     var runner = createRunner();
     AtomicBoolean failed = new AtomicBoolean();
-    assertEquals(ServerRunner.State.INIT, runner.getState());
+    assertEquals(INIT, runner.getState());
     new Thread(() -> {
       try {
         runner.runServer(port);
@@ -105,7 +108,7 @@ public class ServerRunnerTest {
     var runner = createRunner();
     CountDownLatch stopLatch = new CountDownLatch(1);
     AtomicBoolean failed = new AtomicBoolean();
-    assertEquals(ServerRunner.State.INIT, runner.getState());
+    assertEquals(INIT, runner.getState());
     new Thread(() -> {
       try {
         runner.runServer(port);
@@ -119,7 +122,7 @@ public class ServerRunnerTest {
     runner.stop();
     assertTrue(stopLatch.await(10, TimeUnit.SECONDS), "Server should stop gracefully");
     assertFalse(failed.get(), "No failure expected");
-    assertEquals(ServerRunner.State.STOPPED, runner.getState());
+    assertEquals(STOPPED, runner.getState());
   }
 
   /**
@@ -133,7 +136,7 @@ public class ServerRunnerTest {
     var runner = createRunner();
     CountDownLatch stopLatch = new CountDownLatch(1);
     AtomicBoolean failed = new AtomicBoolean();
-    assertEquals(ServerRunner.State.INIT, runner.getState());
+    assertEquals(INIT, runner.getState());
     new Thread(() -> {
       try {
         runner.runServer(port);
@@ -148,6 +151,6 @@ public class ServerRunnerTest {
     runner.stop(); // stop twice
     assertTrue(stopLatch.await(10, TimeUnit.SECONDS), "Server should stop gracefully");
     assertFalse(failed.get(), "No failure expected");
-    assertEquals(ServerRunner.State.STOPPED, runner.getState());
+    assertEquals(STOPPED, runner.getState());
   }
 }

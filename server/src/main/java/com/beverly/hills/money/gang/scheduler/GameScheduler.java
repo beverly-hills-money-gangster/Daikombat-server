@@ -52,6 +52,8 @@ public class GameScheduler {
                         () -> player.writeFlushBalanced(createMovesEventAllPlayers
                             (game.getPlayersRegistry().playersOnline(), moves)))));
 
+          } catch (Exception e) {
+            LOG.error("Error while scheduling", e);
           } finally {
             game.flushBufferedMoves();
           }

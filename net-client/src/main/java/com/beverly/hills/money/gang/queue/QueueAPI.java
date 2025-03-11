@@ -6,9 +6,12 @@ import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+// Warning! This API is designed for 1 consumer and 1 producer only
 public class QueueAPI<T> implements QueueReader<T>, QueueWriter<T> {
 
   private final Queue<T> queue = new ConcurrentLinkedQueue<>();
+
+  private final Object waiter = new Object();
 
   @Override
   public int size() {
@@ -35,6 +38,16 @@ public class QueueAPI<T> implements QueueReader<T>, QueueWriter<T> {
   }
 
   @Override
+  public List<T> pollBlocking(int maxElements) throws InterruptedException {
+    synchronized (waiter) {
+      while (queue.isEmpty()) {
+        waiter.wait();
+      }
+    }
+    return poll(maxElements);
+  }
+
+  @Override
   public List<T> list() {
     return new ArrayList<>(queue);
   }
@@ -42,6 +55,9 @@ public class QueueAPI<T> implements QueueReader<T>, QueueWriter<T> {
   @Override
   public void push(T event) {
     queue.add(event);
+    synchronized (waiter) {
+      waiter.notifyAll();
+    }
   }
 
   @Override

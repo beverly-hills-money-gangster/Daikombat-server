@@ -59,10 +59,10 @@ public class GameServerInfoTest extends AbstractGameServerTest {
     assertEquals(GameProjectileType.values().length,
         serverResponse.getServerInfo().getProjectileInfoList().size(),
         "All attack projectiles should have info");
-    assertEquals(1, gameConnection.getNetworkStats().getReceivedMessages());
-    assertTrue(gameConnection.getNetworkStats().getInboundPayloadBytes() > 0);
-    assertEquals(1, gameConnection.getNetworkStats().getSentMessages());
-    assertTrue(gameConnection.getNetworkStats().getOutboundPayloadBytes() > 0);
+    assertEquals(1, gameConnection.getGameNetworkStats().getReceivedMessages());
+    assertTrue(gameConnection.getGameNetworkStats().getInboundPayloadBytes() > 0);
+    assertEquals(1, gameConnection.getGameNetworkStats().getSentMessages());
+    assertTrue(gameConnection.getGameNetworkStats().getOutboundPayloadBytes() > 0);
   }
 
 }

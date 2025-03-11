@@ -49,6 +49,10 @@ public class PlayersRegistry implements Closeable {
         .map(PlayerStateChannel::getPlayerState);
   }
 
+  public Optional<PlayerStateChannel> getPlayerStateChannel(int playerId) {
+    return Optional.ofNullable(players.get(playerId));
+  }
+
   public Stream<PlayerStateChannel> allPlayers() {
     return players.values().stream();
   }

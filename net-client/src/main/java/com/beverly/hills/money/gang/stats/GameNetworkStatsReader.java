@@ -2,7 +2,7 @@ package com.beverly.hills.money.gang.stats;
 
 import io.micrometer.common.lang.Nullable;
 
-public interface NetworkStatsReader {
+public interface GameNetworkStatsReader {
 
   int getReceivedMessages();
 

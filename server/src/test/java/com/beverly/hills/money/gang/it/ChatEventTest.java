@@ -80,7 +80,7 @@ public class ChatEventTest extends AbstractGameServerTest {
           "We must have MAX_PLAYERS-1 messages for every player." +
               " -1 because you don't send your own message to yourself. Actual responses are:"
               + chatMessagesResponse);
-      assertEquals(2, gameConnection.getNetworkStats().getSentMessages(),
+      assertEquals(2, gameConnection.getGameNetworkStats().getSentMessages(),
           "Every player connected and sent one chat message so it should be 2 sent messages only");
       chatMessagesResponse.forEach(serverResponse -> {
         assertTrue(serverResponse.hasChatEvents(), "Must be chat events only");
@@ -143,7 +143,7 @@ public class ChatEventTest extends AbstractGameServerTest {
           "We must have MAX_PLAYERS-1 messages for every player." +
               " -1 because you don't send your own message to yourself. Actual responses are:"
               + chatMessagesResponse);
-      assertEquals(2, gameConnection.getNetworkStats().getSentMessages(),
+      assertEquals(2, gameConnection.getGameNetworkStats().getSentMessages(),
           "Every player connected and sent one chat message so it should be 2 sent messages only");
       chatMessagesResponse.forEach(serverResponse -> {
         assertTrue(serverResponse.hasChatEvents(), "Must be chat events only");

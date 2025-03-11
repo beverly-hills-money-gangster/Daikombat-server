@@ -16,7 +16,7 @@ import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
 import com.beverly.hills.money.gang.queue.QueueReader;
-import com.beverly.hills.money.gang.runner.ServerRunner;
+import com.beverly.hills.money.gang.runner.GameServerRunner;
 import java.io.IOException;
 import java.net.BindException;
 import java.net.ServerSocket;
@@ -58,7 +58,7 @@ public abstract class AbstractGameServerTest {
   @Autowired
   private ApplicationContext applicationContext;
 
-  protected ServerRunner serverRunner;
+  protected GameServerRunner gameServerRunner;
 
   protected final List<GameConnection> gameConnections = new CopyOnWriteArrayList<>();
 
@@ -93,15 +93,15 @@ public abstract class AbstractGameServerTest {
   @BeforeEach
   public void setUp() throws InterruptedException, IOException {
     port = createRandomPort();
-    serverRunner = applicationContext.getBean(ServerRunner.class);
+    gameServerRunner = applicationContext.getBean(GameServerRunner.class);
     new Thread(() -> {
       try {
-        serverRunner.runServer(port);
+        gameServerRunner.runServer(port);
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }
     }).start();
-    serverRunner.waitFullyRunning();
+    gameServerRunner.waitFullyRunning();
     waitUntilServerIsHealthy();
   }
 
@@ -136,7 +136,7 @@ public abstract class AbstractGameServerTest {
           throwable -> LOG.error("Got warning while testing", throwable));
     });
     secondaryGameConnections.forEach(AbstractGameConnection::disconnect);
-    serverRunner.stop();
+    gameServerRunner.stop();
     gameConnections.clear();
     secondaryGameConnections.clear();
   }

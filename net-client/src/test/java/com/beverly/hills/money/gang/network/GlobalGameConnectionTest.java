@@ -9,18 +9,19 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.beverly.hills.money.gang.entity.HostPort;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
-import com.beverly.hills.money.gang.proto.WeaponType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import com.beverly.hills.money.gang.proto.WeaponType;
 import com.beverly.hills.money.gang.queue.QueueAPI;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class LoadBalancedGameConnectionTest {
+public class GlobalGameConnectionTest {
 
-  private LoadBalancedGameConnection loadBalancedGameConnection;
+  private GlobalGameConnection globalGameConnection;
   private GameConnection gameConnection;
   private SecondaryGameConnection secondaryGameConnection1;
   private SecondaryGameConnection secondaryGameConnection2;
@@ -28,9 +29,11 @@ public class LoadBalancedGameConnectionTest {
   @BeforeEach
   public void setUp() {
     gameConnection = mock(GameConnection.class);
+    var hostPost = HostPort.builder().host("localhost").port(999).build();
+    doReturn(hostPost).when(gameConnection).getHostPort();
     secondaryGameConnection1 = mock(SecondaryGameConnection.class);
     secondaryGameConnection2 = mock(SecondaryGameConnection.class);
-    loadBalancedGameConnection = new LoadBalancedGameConnection(gameConnection,
+    globalGameConnection = new GlobalGameConnection(gameConnection,
         List.of(secondaryGameConnection1, secondaryGameConnection2));
   }
 
@@ -39,12 +42,12 @@ public class LoadBalancedGameConnectionTest {
     var gameEvent = PushGameEventCommand.newBuilder().setGameId(0).setSequence(1).setEventType(
         PushGameEventCommand.GameEventType.MOVE).build();
 
-    loadBalancedGameConnection.write(gameEvent);
-    loadBalancedGameConnection.write(gameEvent);
-    loadBalancedGameConnection.write(gameEvent);
-    loadBalancedGameConnection.write(gameEvent);
-    loadBalancedGameConnection.write(gameEvent);
-    loadBalancedGameConnection.write(gameEvent);
+    globalGameConnection.write(gameEvent);
+    globalGameConnection.write(gameEvent);
+    globalGameConnection.write(gameEvent);
+    globalGameConnection.write(gameEvent);
+    globalGameConnection.write(gameEvent);
+    globalGameConnection.write(gameEvent);
 
     verify(secondaryGameConnection1, times(2)).write(gameEvent);
     verify(secondaryGameConnection2, times(2)).write(gameEvent);
@@ -56,7 +59,7 @@ public class LoadBalancedGameConnectionTest {
     var gameEvent = PushGameEventCommand.newBuilder().setGameId(0).setSequence(1)
         .setEventType(GameEventType.ATTACK)
         .setWeaponType(WeaponType.PUNCH).build();
-    loadBalancedGameConnection.write(gameEvent);
+    globalGameConnection.write(gameEvent);
 
     verify(secondaryGameConnection1, never()).write(any(PushGameEventCommand.class));
     verify(secondaryGameConnection2, never()).write(any(PushGameEventCommand.class));
@@ -67,7 +70,7 @@ public class LoadBalancedGameConnectionTest {
 
   @Test
   public void testDisconnect() {
-    loadBalancedGameConnection.disconnect();
+    globalGameConnection.disconnect();
 
     verify(gameConnection).disconnect();
     verify(secondaryGameConnection1).disconnect();
@@ -80,7 +83,7 @@ public class LoadBalancedGameConnectionTest {
     doReturn(new QueueAPI<>()).when(secondaryGameConnection1).getResponse();
     doReturn(new QueueAPI<>()).when(secondaryGameConnection2).getResponse();
 
-    assertEquals(0, loadBalancedGameConnection.pollResponses().size());
+    assertEquals(0, globalGameConnection.pollResponses().size());
   }
 
   @Test
@@ -102,7 +105,7 @@ public class LoadBalancedGameConnectionTest {
     doReturn(secondaryConnection1Responses).when(secondaryGameConnection1).getResponse();
     doReturn(secondaryConnection2Responses).when(secondaryGameConnection2).getResponse();
 
-    var results = loadBalancedGameConnection.pollResponses();
+    var results = globalGameConnection.pollResponses();
     assertEquals(3, results.size());
     assertEquals(response1, results.get(0));
     assertEquals(response2, results.get(1));
@@ -128,9 +131,9 @@ public class LoadBalancedGameConnectionTest {
     doReturn(secondaryConnection1Responses).when(secondaryGameConnection1).getResponse();
     doReturn(secondaryConnection2Responses).when(secondaryGameConnection2).getResponse();
 
-    var results = loadBalancedGameConnection.pollPrimaryConnectionResponse();
+    var results = globalGameConnection.pollPrimaryConnectionResponse();
     assertEquals(response1, results.get());
-    assertTrue(loadBalancedGameConnection.pollPrimaryConnectionResponse().isEmpty(),
+    assertTrue(globalGameConnection.pollPrimaryConnectionResponse().isEmpty(),
         "There is nothing to poll from the primary connection anymore");
   }
 

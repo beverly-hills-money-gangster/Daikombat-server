@@ -109,7 +109,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(100, shootingEvent.getPlayer().getHealth(),
         "Full health is nobody got shot(miss)");
     assertFalse(shootingEvent.hasAffectedPlayer(), "Nobody is affected. Missed the shot");
-    assertEquals(2, shooterConnection.getNetworkStats().getSentMessages(),
+    assertEquals(2, shooterConnection.getGameNetworkStats().getSentMessages(),
         "Only 2 messages must be sent by shooter: join + shoot");
     assertTrue(shooterConnection.getResponse().list().isEmpty(),
         "Shooter shouldn't receive any new messages");
@@ -247,7 +247,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         shootingEvent.getAffectedPlayer().getPosition().getY(),
         "Shot player hasn't moved so position has to stay the same");
 
-    assertEquals(2, shooterConnection.getNetworkStats().getSentMessages(),
+    assertEquals(2, shooterConnection.getGameNetworkStats().getSentMessages(),
         "Only 2 messages must be sent by shooter: join + shoot");
     emptyQueue(shooterConnection.getResponse());
     shooterConnection.write(
@@ -378,7 +378,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         shootingEvent.getAffectedPlayer().getPosition().getY(),
         "Shot player hasn't moved so position has to stay the same");
 
-    assertEquals(3, shooterConnection.getNetworkStats().getSentMessages(),
+    assertEquals(3, shooterConnection.getGameNetworkStats().getSentMessages(),
         "Only 3 messages must be sent by shooter: join + launch + rocket");
     emptyQueue(shooterConnection.getResponse());
     shooterConnection.write(
@@ -509,7 +509,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         shootingEvent.getAffectedPlayer().getPosition().getY(),
         "Shot player hasn't moved so position has to stay the same");
 
-    assertEquals(3, shooterConnection.getNetworkStats().getSentMessages(),
+    assertEquals(3, shooterConnection.getGameNetworkStats().getSentMessages(),
         "Only 3 messages must be sent by shooter: join + launch + rocket");
     emptyQueue(shooterConnection.getResponse());
     shooterConnection.write(
@@ -611,7 +611,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         shootingEvent.getAffectedPlayer().getPosition().getY(),
         "Shot player hasn't moved so position has to stay the same");
 
-    assertEquals(2, shooterConnection.getNetworkStats().getSentMessages(),
+    assertEquals(2, shooterConnection.getGameNetworkStats().getSentMessages(),
         "Only 2 messages must be sent by shooter: join + shoot");
     emptyQueue(shooterConnection.getResponse());
     shooterConnection.write(
@@ -713,7 +713,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         shootingEvent.getAffectedPlayer().getPosition().getY(),
         "Shot player hasn't moved so position has to stay the same");
 
-    assertEquals(2, shooterConnection.getNetworkStats().getSentMessages(),
+    assertEquals(2, shooterConnection.getGameNetworkStats().getSentMessages(),
         "Only 2 messages must be sent by shooter: join + shoot");
     emptyQueue(shooterConnection.getResponse());
     shooterConnection.write(
@@ -802,7 +802,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         punchingEvent.getAffectedPlayer().getPosition().getY(),
         "Punched player hasn't moved so position has to stay the same");
 
-    assertEquals(2, punchingConnection.getNetworkStats().getSentMessages(),
+    assertEquals(2, punchingConnection.getGameNetworkStats().getSentMessages(),
         "Only 2 messages must be sent by puncher: join + punch");
     emptyQueue(punchingConnection.getResponse());
     punchingConnection.write(

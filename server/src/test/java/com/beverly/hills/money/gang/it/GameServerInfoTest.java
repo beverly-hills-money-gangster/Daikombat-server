@@ -47,6 +47,8 @@ public class GameServerInfoTest extends AbstractGameServerTest {
         serverResponse.getServerInfo().getMovesUpdateFreqMls());
     assertEquals(ServerConfig.FRAGS_PER_GAME, serverResponse.getServerInfo().getFragsToWin());
     assertEquals(ServerConfig.PLAYER_SPEED, serverResponse.getServerInfo().getPlayerSpeed());
+    assertEquals(ServerConfig.VOICE_CHAT_SAMPLING_RATE_HERTZ,
+        serverResponse.getServerInfo().getVoiceChatSamplingFrequencyHertz());
     assertEquals(ServerConfig.MAX_VISIBILITY, serverResponse.getServerInfo().getMaxVisibility());
     for (ServerResponse.GameInfo gameInfo : games) {
       assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, gameInfo.getMaxGamePlayers());
@@ -59,10 +61,10 @@ public class GameServerInfoTest extends AbstractGameServerTest {
     assertEquals(GameProjectileType.values().length,
         serverResponse.getServerInfo().getProjectileInfoList().size(),
         "All attack projectiles should have info");
-    assertEquals(1, gameConnection.getNetworkStats().getReceivedMessages());
-    assertTrue(gameConnection.getNetworkStats().getInboundPayloadBytes() > 0);
-    assertEquals(1, gameConnection.getNetworkStats().getSentMessages());
-    assertTrue(gameConnection.getNetworkStats().getOutboundPayloadBytes() > 0);
+    assertEquals(1, gameConnection.getGameNetworkStats().getReceivedMessages());
+    assertTrue(gameConnection.getGameNetworkStats().getInboundPayloadBytes() > 0);
+    assertEquals(1, gameConnection.getGameNetworkStats().getSentMessages());
+    assertTrue(gameConnection.getGameNetworkStats().getOutboundPayloadBytes() > 0);
   }
 
 }

@@ -4,8 +4,8 @@ import static com.beverly.hills.money.gang.exception.GameErrorCode.NOT_EXISTING_
 
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameLogicError;
-import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import com.beverly.hills.money.gang.state.Game;
+import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
 import io.netty.channel.Channel;
 import java.io.Closeable;
@@ -25,7 +25,7 @@ public class GameRoomRegistry implements Closeable {
   private final Map<Integer, Game> games = new HashMap<>();
 
   public GameRoomRegistry(final ApplicationContext applicationContext) {
-    for (int i = 0; i < ServerConfig.GAMES_TO_CREATE; i++) {
+    for (byte i = 0; i < ServerConfig.GAMES_TO_CREATE; i++) {
       var game = applicationContext.getBean(Game.class);
       games.put(game.gameId(), game);
     }
@@ -65,7 +65,6 @@ public class GameRoomRegistry implements Closeable {
 
   @Override
   public void close() {
-    LOG.info("Close");
     games.values().forEach(game -> {
       try {
         game.close();

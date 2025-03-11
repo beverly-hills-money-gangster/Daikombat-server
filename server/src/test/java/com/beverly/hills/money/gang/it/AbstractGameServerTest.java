@@ -11,12 +11,14 @@ import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.network.AbstractGameConnection;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.network.SecondaryGameConnection;
+import com.beverly.hills.money.gang.network.VoiceChatConnection;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
 import com.beverly.hills.money.gang.queue.QueueReader;
-import com.beverly.hills.money.gang.runner.ServerRunner;
+import com.beverly.hills.money.gang.runner.GameServerRunner;
+import com.beverly.hills.money.gang.runner.VoiceChatServerRunner;
 import java.io.IOException;
 import java.net.BindException;
 import java.net.ServerSocket;
@@ -58,9 +60,13 @@ public abstract class AbstractGameServerTest {
   @Autowired
   private ApplicationContext applicationContext;
 
-  protected ServerRunner serverRunner;
+  protected GameServerRunner gameServerRunner;
+
+  protected VoiceChatServerRunner voiceChatServerRunner;
 
   protected final List<GameConnection> gameConnections = new CopyOnWriteArrayList<>();
+
+  protected final List<VoiceChatConnection> voiceChatConnections = new CopyOnWriteArrayList<>();
 
   protected final List<SecondaryGameConnection> secondaryGameConnections = new CopyOnWriteArrayList<>();
 
@@ -82,7 +88,8 @@ public abstract class AbstractGameServerTest {
   public static int createRandomPort() {
     for (int i = 0; i < 100; i++) {
       int port = ThreadLocalRandom.current().nextInt(1_024, 49_151);
-      if (isPortAvailable(port)) {
+      // port + 1 because it's voice chat port. they both should not be taken
+      if (isPortAvailable(port) && isPortAvailable(port + 1)) {
         return port;
       }
     }
@@ -93,15 +100,25 @@ public abstract class AbstractGameServerTest {
   @BeforeEach
   public void setUp() throws InterruptedException, IOException {
     port = createRandomPort();
-    serverRunner = applicationContext.getBean(ServerRunner.class);
+    gameServerRunner = applicationContext.getBean(GameServerRunner.class);
+    voiceChatServerRunner = applicationContext.getBean(VoiceChatServerRunner.class);
     new Thread(() -> {
       try {
-        serverRunner.runServer(port);
+        gameServerRunner.runServer(port);
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }
     }).start();
-    serverRunner.waitFullyRunning();
+
+    new Thread(() -> {
+      try {
+        voiceChatServerRunner.runServer(port + 1);
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+    }).start();
+    gameServerRunner.waitFullyRunning();
+    voiceChatServerRunner.waitFullyRunning();
     waitUntilServerIsHealthy();
   }
 
@@ -127,7 +144,7 @@ public abstract class AbstractGameServerTest {
   }
 
   @AfterEach
-  public void tearDown() throws InterruptedException {
+  public void tearDown() throws InterruptedException, IOException {
     gameConnections.forEach(AbstractGameConnection::disconnect);
     gameConnections.forEach(gameConnection -> {
       gameConnection.getErrors().list().forEach(
@@ -136,9 +153,12 @@ public abstract class AbstractGameServerTest {
           throwable -> LOG.error("Got warning while testing", throwable));
     });
     secondaryGameConnections.forEach(AbstractGameConnection::disconnect);
-    serverRunner.stop();
+    gameServerRunner.stop();
     gameConnections.clear();
     secondaryGameConnections.clear();
+    for (VoiceChatConnection voiceChatConnection : voiceChatConnections) {
+      voiceChatConnection.close();
+    }
   }
 
   @AfterEach
@@ -191,6 +211,13 @@ public abstract class AbstractGameServerTest {
         "Timeout waiting for response. Actual response is: " + queueReader.list());
   }
 
+
+  protected VoiceChatConnection createVoiceConnection(final String host, final int port) {
+    var voiceChatConnection = new VoiceChatConnection(
+        HostPort.builder().host(host).port(port).build());
+    voiceChatConnections.add(voiceChatConnection);
+    return voiceChatConnection;
+  }
 
   protected GameConnection createGameConnection(final String host, final int port)
       throws IOException {

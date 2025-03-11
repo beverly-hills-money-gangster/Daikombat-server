@@ -3,7 +3,7 @@ package com.beverly.hills.money.gang.handler;
 import com.beverly.hills.money.gang.config.ClientConfig;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.queue.QueueAPI;
-import com.beverly.hills.money.gang.stats.NetworkStats;
+import com.beverly.hills.money.gang.stats.GameNetworkStats;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -13,8 +13,6 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.ChannelPromise;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.codec.compression.JdkZlibDecoder;
-import io.netty.handler.codec.compression.JdkZlibEncoder;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
@@ -39,7 +37,7 @@ public class GameConnectionInitializer extends ChannelInitializer<SocketChannel>
 
   private final QueueAPI<Throwable> errorsQueueAPI;
   private final QueueAPI<ServerResponse> serverEventsQueueAPI;
-  private final NetworkStats networkStats;
+  private final GameNetworkStats gameNetworkStats;
   private final Runnable onDisconnect;
   private final AtomicBoolean hasPendingPing;
   private final AtomicLong pingRequestedTimeMls;
@@ -52,7 +50,7 @@ public class GameConnectionInitializer extends ChannelInitializer<SocketChannel>
       @Override
       public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ByteBuf buf = (ByteBuf) msg;
-        networkStats.addInboundPayloadBytes(buf.readableBytes());
+        gameNetworkStats.addInboundPayloadBytes(buf.readableBytes());
         super.channelRead(ctx, msg);
       }
     });
@@ -61,7 +59,7 @@ public class GameConnectionInitializer extends ChannelInitializer<SocketChannel>
       public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise)
           throws Exception {
         ByteBuf buf = (ByteBuf) msg;
-        networkStats.addOutboundPayloadBytes(buf.readableBytes());
+        gameNetworkStats.addOutboundPayloadBytes(buf.readableBytes());
         super.write(ctx, msg, promise);
       }
     });
@@ -83,7 +81,7 @@ public class GameConnectionInitializer extends ChannelInitializer<SocketChannel>
         LOG.debug("Incoming msg {}", msg);
         if (msg.hasPing()) {
           int ping = (int) (System.currentTimeMillis() - pingRequestedTimeMls.get());
-          networkStats.setPingMls(ping);
+          gameNetworkStats.setPingMls(ping);
           if (ping >= BAD_PING_THRESHOLD_MLS) {
             LOG.warn("Ping is bad: {} mls", ping);
           }
@@ -91,7 +89,7 @@ public class GameConnectionInitializer extends ChannelInitializer<SocketChannel>
         } else {
           serverEventsQueueAPI.push(msg);
         }
-        networkStats.incReceivedMessages();
+        gameNetworkStats.incReceivedMessages();
       }
 
       @Override
@@ -102,7 +100,7 @@ public class GameConnectionInitializer extends ChannelInitializer<SocketChannel>
 
       @Override
       public void channelInactive(ChannelHandlerContext ctx) {
-        LOG.info("Channel closed. Network stats {}", networkStats);
+        LOG.info("Channel closed. Network stats {}", gameNetworkStats);
         onDisconnect.run();
       }
 

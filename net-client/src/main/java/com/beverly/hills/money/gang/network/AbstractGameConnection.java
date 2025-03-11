@@ -14,8 +14,8 @@ import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.queue.QueueAPI;
 import com.beverly.hills.money.gang.queue.QueueReader;
-import com.beverly.hills.money.gang.stats.NetworkStats;
-import com.beverly.hills.money.gang.stats.NetworkStatsReader;
+import com.beverly.hills.money.gang.stats.GameNetworkStats;
+import com.beverly.hills.money.gang.stats.GameNetworkStatsReader;
 import com.google.protobuf.GeneratedMessageV3;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -51,6 +51,7 @@ public abstract class AbstractGameConnection {
   private static final ServerCommand PING
       = ServerCommand.newBuilder().setPingCommand(PingCommand.newBuilder().build()).build();
 
+  // TODO think about using channel scheduler
   private final ScheduledExecutorService pingScheduler = Executors.newScheduledThreadPool(1,
       new BasicThreadFactory.Builder().namingPattern("ping-%d").build());
 
@@ -60,7 +61,7 @@ public abstract class AbstractGameConnection {
 
   private static final int MAX_CONNECTION_TIME_MLS = 5_000;
 
-  private final NetworkStats networkStats = new NetworkStats();
+  private final GameNetworkStats gameNetworkStats = new GameNetworkStats();
 
   private final QueueAPI<ServerResponse> serverEventsQueueAPI = new QueueAPI<>();
 
@@ -75,12 +76,16 @@ public abstract class AbstractGameConnection {
 
   private final EventLoopGroup group;
 
-  private final AtomicReference<GameConnectionState> state = new AtomicReference<>();
+  private final AtomicReference<ConnectionState> state = new AtomicReference<>();
+
+  @Getter
+  private final HostPort hostPort;
 
   protected AbstractGameConnection(
       final HostPort hostPort) throws IOException {
+    this.hostPort = hostPort;
     LOG.info("Initializing game connection {}", getId());
-    state.set(GameConnectionState.CONNECTING);
+    state.set(ConnectionState.CONNECTING);
     long startTime = System.currentTimeMillis();
     this.group = new NioEventLoopGroup();
     try {
@@ -90,7 +95,7 @@ public abstract class AbstractGameConnection {
           .option(ChannelOption.TCP_NODELAY, ClientConfig.FAST_TCP);
       bootstrap.channel(NioSocketChannel.class);
       bootstrap.handler(new GameConnectionInitializer(
-          errorsQueueAPI, serverEventsQueueAPI, networkStats, this::disconnect, hasPendingPing,
+          errorsQueueAPI, serverEventsQueueAPI, gameNetworkStats, this::disconnect, hasPendingPing,
           pingRequestedTimeMls));
       LOG.info("Start connecting");
       bootstrap.connect(
@@ -101,7 +106,7 @@ public abstract class AbstractGameConnection {
           LOG.info("Connected to server in {} mls. Fast TCP enabled: {}",
               System.currentTimeMillis() - startTime, ClientConfig.FAST_TCP);
           schedulePing();
-          state.set(GameConnectionState.CONNECTED);
+          state.set(ConnectionState.CONNECTED);
           connectedLatch.countDown();
         } else {
           LOG.error("Error occurred", future.cause());
@@ -181,7 +186,7 @@ public abstract class AbstractGameConnection {
   }
 
   private void writeToChannel(ServerCommand serverCommand) {
-    if (state.get() != GameConnectionState.CONNECTED) {
+    if (state.get() != ConnectionState.CONNECTED) {
       LOG.warn("Can't write to closed channel");
       return;
     }
@@ -192,18 +197,18 @@ public abstract class AbstractGameConnection {
           errorsQueueAPI.push(
               new IOException("Failed to write command " + serverCommand, future.cause()));
         } else {
-          networkStats.incSentMessages();
+          gameNetworkStats.incSentMessages();
         }
       });
     });
   }
 
   public void disconnect() {
-    if (state.get() == GameConnectionState.DISCONNECTED) {
+    if (state.get() == ConnectionState.DISCONNECTED) {
       LOG.info("Already disconnected");
       return;
     }
-    state.set(GameConnectionState.DISCONNECTING);
+    state.set(ConnectionState.DISCONNECTING);
     LOG.info("Disconnect");
     try {
       Optional.ofNullable(group).ifPresent(EventExecutorGroup::shutdownGracefully);
@@ -216,17 +221,17 @@ public abstract class AbstractGameConnection {
       LOG.error("Can not close channel", e);
     }
     shutdownPingScheduler();
-    state.set(GameConnectionState.DISCONNECTED);
+    state.set(ConnectionState.DISCONNECTED);
   }
 
 
   public boolean isConnected() {
-    return state.get().equals(GameConnectionState.CONNECTED);
+    return ConnectionState.CONNECTED.equals(state.get());
   }
 
 
   public boolean isDisconnected() {
-    return state.get().equals(GameConnectionState.DISCONNECTED);
+    return ConnectionState.DISCONNECTED.equals(state.get());
   }
 
   public QueueReader<Throwable> getErrors() {
@@ -241,11 +246,9 @@ public abstract class AbstractGameConnection {
     return serverEventsQueueAPI;
   }
 
-  public NetworkStatsReader getNetworkStats() {
-    return networkStats;
+  public GameNetworkStatsReader getGameNetworkStats() {
+    return gameNetworkStats;
   }
 
-  private enum GameConnectionState {
-    CONNECTING, CONNECTED, DISCONNECTING, DISCONNECTED
-  }
+
 }

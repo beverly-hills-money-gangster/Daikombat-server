@@ -1,15 +1,22 @@
 package com.beverly.hills.money.gang.queue;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class QueueAPITest {
+
+  private static final Logger LOG = LoggerFactory.getLogger(QueueAPITest.class);
 
   private QueueAPI<Integer> queueAPI;
 
@@ -140,6 +147,70 @@ public class QueueAPITest {
     });
 
     assertEquals(threadsToCreate * eventsToPush, queueAPI.size());
+  }
 
+  @RepeatedTest(8)
+  public void testPollBlockingEmpty() throws InterruptedException {
+    var polledElements = new AtomicInteger();
+    var interrupted = new AtomicBoolean();
+    var failed = new AtomicBoolean();
+    var thread = new Thread(() -> {
+      try {
+        var polled = queueAPI.pollBlocking(1);
+        polledElements.addAndGet(polled.size());
+      } catch (InterruptedException e) {
+        interrupted.set(true);
+      } catch (Exception e) {
+        LOG.error("Error", e);
+        failed.set(true);
+      }
+    });
+    thread.start();
+    Thread.sleep(500);
+    thread.interrupt();
+    thread.join();
+
+    assertFalse(failed.get(), "No failures are expected");
+    assertTrue(interrupted.get());
+    assertEquals(0, polledElements.get(),
+        "No elements to be polled because we haven't pushed anything");
+  }
+
+  @RepeatedTest(8)
+  public void testPollBlockingOneElement() throws InterruptedException {
+    var polledElement = new AtomicInteger();
+    int maxElementsToPoll = 1;
+    var failed = new AtomicBoolean();
+    var consumerThread = new Thread(() -> {
+      try {
+        var polled = queueAPI.pollBlocking(maxElementsToPoll);
+        assertEquals(maxElementsToPoll, polled.size());
+        polledElement.set(polled.get(0));
+      } catch (InterruptedException ignored) {
+      } catch (Exception e) {
+        LOG.error("Error in consumer", e);
+        failed.set(true);
+      }
+    });
+
+    var producerThread = new Thread(() -> {
+      try {
+        queueAPI.push(123);
+        queueAPI.push(456);
+        queueAPI.push(789);
+      } catch (Exception e) {
+        LOG.error("Error in producer", e);
+        failed.set(true);
+      }
+    });
+
+    consumerThread.start();
+    Thread.sleep(500);
+    producerThread.start();
+    consumerThread.join();
+    producerThread.join();
+
+    assertFalse(failed.get(), "No failures are expected");
+    assertEquals(123, polledElement.get());
   }
 }

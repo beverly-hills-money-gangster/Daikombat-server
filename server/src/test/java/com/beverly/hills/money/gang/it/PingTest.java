@@ -32,9 +32,9 @@ public class PingTest extends AbstractGameServerTest {
     assertTrue(gameConnection.isConnected(), "Connection should still be open");
     assertEquals(0, gameConnection.getResponse().size(),
         "We shouldn't get any response as we haven't sent anything yet");
-    assertEquals(5, gameConnection.getNetworkStats().getSentMessages(),
+    assertEquals(5, gameConnection.getGameNetworkStats().getSentMessages(),
         "We should have sent 5 PING messages");
-    assertTrue(gameConnection.getNetworkStats().getPingMls() >= 0);
+    assertTrue(gameConnection.getGameNetworkStats().getPingMls() >= 0);
   }
 
   /**
@@ -50,8 +50,8 @@ public class PingTest extends AbstractGameServerTest {
     assertTrue(secondaryGameConnection.isConnected(), "Connection should still be open");
     assertEquals(0, secondaryGameConnection.getResponse().size(),
         "We shouldn't get any response as we haven't sent anything yet");
-    assertEquals(5, secondaryGameConnection.getNetworkStats().getSentMessages(),
+    assertEquals(5, secondaryGameConnection.getGameNetworkStats().getSentMessages(),
         "We should have sent 5 PING messages");
-    assertTrue(secondaryGameConnection.getNetworkStats().getPingMls() >= 0);
+    assertTrue(secondaryGameConnection.getGameNetworkStats().getPingMls() >= 0);
   }
 }

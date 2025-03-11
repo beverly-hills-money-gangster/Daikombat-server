@@ -13,7 +13,7 @@ public interface ServerConfig {
   int MAX_PLAYERS_PER_GAME = NumberUtils.toInt(System.getenv("GAME_SERVER_MAX_PLAYERS_PER_GAME"),
       25);
 
-  int MAX_VISIBILITY = NumberUtils.toInt(System.getenv("GAME_SERVER_MAX_VISIBILITY"), 12);
+  int MAX_VISIBILITY = NumberUtils.toInt(System.getenv("GAME_SERVER_MAX_VISIBILITY"), 14);
 
   int MOVES_UPDATE_FREQUENCY_MLS = NumberUtils.toInt(
       System.getenv("GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS"), 50);

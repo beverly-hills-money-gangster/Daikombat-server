@@ -42,7 +42,7 @@ Game server can be configured using the following environment variables:
   network activity, which includes in-game events + ping responds. For example, if player connects
   to a game and doesn't move but responds to PING requests, then it's NOT considered idle. This
   check is mostly needed when a TCP connection was closed abruptly(no FIN). Default - `10_000`.
-- `GAME_SERVER_MAX_VISIBILITY` Maximum visibility on the map. Default - `12`. Events outside of this
+- `GAME_SERVER_MAX_VISIBILITY` Maximum visibility on the map. Default - `14`. Events outside of this
   radius won't be transmitted over the network to save traffic.
 - `GAME_SERVER_DEFAULT_SHOTGUN_DAMAGE` Gunshot damage. Default - `20`.
 - `GAME_SERVER_DEFAULT_RAILGUN_DAMAGE` Railgun damage. Default - `75`.

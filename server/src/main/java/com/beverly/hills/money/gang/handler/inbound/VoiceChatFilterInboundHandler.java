@@ -7,6 +7,8 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,12 +17,13 @@ import org.springframework.stereotype.Component;
 @Component
 @ChannelHandler.Sharable
 @RequiredArgsConstructor
-public class VoiceChatPlayerInitInboundHandler extends SimpleChannelInboundHandler<DatagramPacket> {
+public class VoiceChatFilterInboundHandler extends SimpleChannelInboundHandler<DatagramPacket> {
 
   private final GameRoomRegistry gameRoomRegistry;
 
   private static final Logger LOG = LoggerFactory.getLogger(
-      VoiceChatPlayerInitInboundHandler.class);
+      VoiceChatFilterInboundHandler.class);
+
 
   // 4 bytes player id + 4 bytes game id
   private static final int MIN_BYTES = 8;

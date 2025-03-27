@@ -20,7 +20,9 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -36,6 +38,8 @@ public class VoiceChatConnection implements Closeable {
   private static final int MIN_BUFFER_SIZE = 8;
 
   private final QueueAPI<VoiceChatPayload> incomingVoiceChatQueueAPI = new QueueAPI<>();
+
+  private final Map<Integer, Integer> lastPlayerSequence = new ConcurrentHashMap<>();
 
   private final QueueAPI<Throwable> errorsQueueAPI = new QueueAPI<>();
 
@@ -76,13 +80,21 @@ public class VoiceChatConnection implements Closeable {
                 }
                 int playerId = buf.readInt();
                 int gameId = buf.readInt();
+                int sequence = buf.readInt();
+                var lastSequence = lastPlayerSequence.getOrDefault(playerId, Integer.MIN_VALUE);
+                if (sequence <= lastSequence) {
+                  // out-of-order or duplicate
+                  return;
+                }
                 byte[] pcm = new byte[buf.readableBytes()];
                 buf.readBytes(pcm);
                 incomingVoiceChatQueueAPI.push(VoiceChatPayload.builder()
                     .playerId(playerId)
                     .gameId(gameId)
+                    .sequence(sequence)
                     .pcm(ShortToByteArrayConverter.toShortArray(pcm))
                     .build());
+                lastPlayerSequence.put(playerId, sequence);
 
               }
 
@@ -130,6 +142,7 @@ public class VoiceChatConnection implements Closeable {
     ByteBuf buf = Unpooled.buffer(MIN_BUFFER_SIZE + payload.getPcm().length * 2);
     buf.writeInt(payload.getPlayerId());
     buf.writeInt(payload.getGameId());
+    buf.writeInt(payload.getSequence());
     buf.writeBytes(ShortToByteArrayConverter.toByteArray(payload.getPcm()));
     write(buf);
   }

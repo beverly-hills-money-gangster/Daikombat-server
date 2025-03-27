@@ -9,6 +9,7 @@ public class VoiceChatPayload {
 
   private final int playerId;
   private final int gameId;
+  private final int sequence;
   private final short[] pcm;
 
 }

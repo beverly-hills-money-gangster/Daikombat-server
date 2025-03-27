@@ -34,8 +34,8 @@ public class VoiceChatConnection implements Closeable {
 
   private static final Logger LOG = LoggerFactory.getLogger(VoiceChatConnection.class);
 
-  // 4 bytes player id + 4 bytes game id
-  private static final int MIN_BUFFER_SIZE = 8;
+  // 4 bytes player id + 4 bytes game id + 4 bytes sequence
+  private static final int MIN_BUFFER_SIZE = 12;
 
   private final QueueAPI<VoiceChatPayload> incomingVoiceChatQueueAPI = new QueueAPI<>();
 
@@ -83,6 +83,9 @@ public class VoiceChatConnection implements Closeable {
                 int sequence = buf.readInt();
                 var lastSequence = lastPlayerSequence.getOrDefault(playerId, Integer.MIN_VALUE);
                 if (sequence <= lastSequence) {
+                  LOG.warn(
+                      "Out-of-order voice payload for player {}. Was {} but received {}. Ignore.",
+                      playerId, lastSequence, sequence);
                   // out-of-order or duplicate
                   return;
                 }

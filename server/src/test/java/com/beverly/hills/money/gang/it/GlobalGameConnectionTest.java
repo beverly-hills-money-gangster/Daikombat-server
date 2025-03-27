@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.network.GameConnection;
-import com.beverly.hills.money.gang.network.LoadBalancedGameConnection;
+import com.beverly.hills.money.gang.network.GlobalGameConnection;
 import com.beverly.hills.money.gang.network.SecondaryGameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.MergeConnectionCommand;
@@ -15,7 +15,7 @@ import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.Vector;
-import com.beverly.hills.money.gang.stats.NetworkStatsReader;
+import com.beverly.hills.money.gang.stats.GameNetworkStatsReader;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
@@ -26,7 +26,7 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "250")
 @SetEnvironmentVariable(key = "GAME_SERVER_SPAWN_IMMORTAL_MLS", value = "0")
-public class LoadBalancedGameConnectionTest extends AbstractGameServerTest {
+public class GlobalGameConnectionTest extends AbstractGameServerTest {
 
 
   /**
@@ -72,7 +72,7 @@ public class LoadBalancedGameConnectionTest extends AbstractGameServerTest {
     assertTrue(secondaryGameConnection.isConnected(),
         "Secondary connection should be successfully connected");
 
-    LoadBalancedGameConnection loadBalancedGameConnection = new LoadBalancedGameConnection(
+    GlobalGameConnection globalGameConnection = new GlobalGameConnection(
         observerPlayerConnection,
         List.of(secondaryGameConnection));
 
@@ -80,9 +80,9 @@ public class LoadBalancedGameConnectionTest extends AbstractGameServerTest {
 
     Thread.sleep(1_000);
 
-    assertTrue(loadBalancedGameConnection.isAllConnected(),
+    assertTrue(globalGameConnection.isAllConnected(),
         "All connections should be online");
-    assertFalse(loadBalancedGameConnection.isAnyDisconnected(),
+    assertFalse(globalGameConnection.isAnyDisconnected(),
         "All connections should be online");
 
     float newPositionY = mySpawnGameEvent.getPlayer().getPosition().getY() + 0.01f;
@@ -122,7 +122,7 @@ public class LoadBalancedGameConnectionTest extends AbstractGameServerTest {
         .build());
 
     Thread.sleep(1_000);
-    List<ServerResponse> lbResponses = loadBalancedGameConnection.pollResponses();
+    List<ServerResponse> lbResponses = globalGameConnection.pollResponses();
     assertEquals(2, lbResponses.size(),
         "2 responses are expected(player 1 moves)");
 
@@ -150,10 +150,10 @@ public class LoadBalancedGameConnectionTest extends AbstractGameServerTest {
         0.00001);
 
     Thread.sleep(1_000);
-    assertEquals(0, loadBalancedGameConnection.pollResponses().size(),
+    assertEquals(0, globalGameConnection.pollResponses().size(),
         "No action so no response is expected");
 
-    NetworkStatsReader secondaryNetworkStats = loadBalancedGameConnection.getSecondaryNetworkStats()
+    GameNetworkStatsReader secondaryNetworkStats = globalGameConnection.getSecondaryNetworkStats()
         .iterator()
         .next();
     assertEquals(1, secondaryNetworkStats.getReceivedMessages(),
@@ -161,7 +161,7 @@ public class LoadBalancedGameConnectionTest extends AbstractGameServerTest {
     assertEquals(1, secondaryNetworkStats.getSentMessages(),
         "Only one (MERGE) message is expected to be sent by the secondary connection");
 
-    NetworkStatsReader primaryNetworkStats = loadBalancedGameConnection.getPrimaryNetworkStats();
+    GameNetworkStatsReader primaryNetworkStats = globalGameConnection.getPrimaryNetworkStats();
     assertEquals(3, primaryNetworkStats.getReceivedMessages(),
         "Only 3 (my spawn, other player's spawn, and MOVE) messages are expected to be received by the primary connection");
   }

@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.Getter;
 
-public class NetworkStats implements NetworkStatsReader {
+public class GameNetworkStats implements GameNetworkStatsReader {
 
   private static final AtomicInteger COUNTER = new AtomicInteger();
   private static final MeterRegistry METER_REGISTRY = new SimpleMeterRegistry();
@@ -24,7 +24,7 @@ public class NetworkStats implements NetworkStatsReader {
   @Getter
   private final DistributionSummary inboundDistributionSummary;
 
-  public NetworkStats() {
+  public GameNetworkStats() {
     this.pingDistributionSummary = DistributionSummary
         .builder("ping.distribution.summary" + COUNTER.incrementAndGet())
         .publishPercentiles(0.5, 0.75, 0.99)

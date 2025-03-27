@@ -160,13 +160,15 @@ public interface ServerResponseFactory {
       List<GameProjectileInfo> projectilesInfo,
       int movesUpdateFreqMls,
       float playerSpeed,
-      int maxVisibility) {
+      int maxVisibility,
+      int voiceChatSamplingRateHertz) {
     var serverInfo = ServerResponse.ServerInfo.newBuilder();
     serverInfo.setFragsToWin(fragsToWin);
     serverInfo.setMaxVisibility(maxVisibility);
     serverInfo.setPlayerSpeed(playerSpeed);
     serverInfo.setMovesUpdateFreqMls(movesUpdateFreqMls);
     serverInfo.setVersion(serverVersion);
+    serverInfo.setVoiceChatSamplingFrequencyHertz(voiceChatSamplingRateHertz);
     serverInfo.addAllWeaponsInfo(weaponsInfo.stream().map(gameWeaponInfo -> WeaponInfo.newBuilder()
         .setWeaponType(getWeaponType(gameWeaponInfo.getGameWeaponType()))
         .setDelayMls(gameWeaponInfo.getDelayMls())

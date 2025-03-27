@@ -24,4 +24,5 @@ services:
         "-jar", "server.jar" ]
     ports:
       - "0.0.0.0:7777:7777" # default server port. exposed to public internet
+      - "0.0.0.0:7778:7778" # default voice chat port. exposed to public internet
       - "127.0.0.1:9999:9999" # JMX port. localhost only

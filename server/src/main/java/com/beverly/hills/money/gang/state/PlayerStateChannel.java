@@ -7,12 +7,14 @@ import com.beverly.hills.money.gang.util.NetworkUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelOutboundInvoker;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -30,12 +32,21 @@ public class PlayerStateChannel {
   private final List<Channel> secondaryChannels = new CopyOnWriteArrayList<>();
   private final AtomicInteger lastPickedChannelIdx = new AtomicInteger();
   private final List<Channel> allChannels = new CopyOnWriteArrayList<>();
+  private final AtomicReference<InetSocketAddress> datagramSocketAddress = new AtomicReference<>();
 
   @Builder
   private PlayerStateChannel(Channel channel, PlayerState playerState) {
     this.channel = channel;
     allChannels.add(channel);
     this.playerState = playerState;
+  }
+
+  public void setDatagramSocketAddress(final InetSocketAddress address) {
+    datagramSocketAddress.set(address);
+  }
+
+  public Optional<InetSocketAddress> getDataGramSocketAddress() {
+    return Optional.ofNullable(datagramSocketAddress.get());
   }
 
   public void addSecondaryChannel(Channel channel) {
@@ -93,6 +104,7 @@ public class PlayerStateChannel {
   public void close() {
     LOG.info("Close connection");
     allChannels.forEach(ChannelOutboundInvoker::close);
+
   }
 
   public boolean isOurChannel(Channel otherChannel) {

@@ -142,9 +142,9 @@ public class IdleClientTest extends AbstractGameServerTest {
     assertTrue(validExitEventExists, "There must be a valid EXIT event for idle player. " +
         "Actual response is :" + gameConnectionObserver.getResponse().list());
 
-    assertEquals(2, gameConnectionIdle.getNetworkStats().getSentMessages(),
+    assertEquals(2, gameConnectionIdle.getGameNetworkStats().getSentMessages(),
         "2 messages should be sent: join and get server info");
-    assertEquals(1 + observerMoves, gameConnectionObserver.getNetworkStats().getSentMessages());
+    assertEquals(1 + observerMoves, gameConnectionObserver.getGameNetworkStats().getSentMessages());
   }
 
 

@@ -44,7 +44,8 @@ public class GetServerInfoCommandHandler extends ServerCommandHandler {
         RPGWeaponInfo.getProjectilesInfo(playerClass),
         ServerConfig.MOVES_UPDATE_FREQUENCY_MLS,
         AntiCheat.getMaxSpeed(playerClass),
-        ServerConfig.MAX_VISIBILITY));
+        ServerConfig.MAX_VISIBILITY,
+        ServerConfig.VOICE_CHAT_SAMPLING_RATE_HERTZ));
   }
 
 }

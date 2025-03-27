@@ -31,9 +31,12 @@ All communications (server-to-client and client-to-server) are totally non-block
 
 Game server can be configured using the following environment variables:
 
-- `GAME_SERVER_PORT`  TCP server port at which client connections are going to be accepted.
-  Default - `7777`.
+- `GAME_SERVER_PORT` TCP server port at which client connections are going to be accepted. For
+  simplicity, voice chat port is `GAME_SERVER_PORT`+1. Default - `7777`.
 - `GAME_SERVER_GAMES_TO_CREATE` Games to create. Default - `10`.
+- `VOICE_CHAT_SAMPLING_RATE_HERTZ` Sampling rate for voice chat in Hertz. Lower value means poor
+  sound quality. Greater value means better sound quality but more traffic is generated.
+  Default - `8000`.
 - `GAME_SERVER_MAX_PLAYERS_PER_GAME` Maximum number of players to join a game. Default - `25`. Total
   number of players on the server is `GAME_SERVER_GAMES_TO_CREATE*GAME_SERVER_MAX_PLAYERS_PER_GAME`.
 - `GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS` Frequency(in milliseconds) at which server notifies

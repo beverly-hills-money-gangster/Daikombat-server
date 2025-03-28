@@ -38,6 +38,8 @@ public class VoiceChatPayloadInboundHandler extends SimpleChannelInboundHandler<
     int sequence = buf.getInt(8);
     var myLastSeq = lastVoiceSequence.getOrDefault(playerId, Integer.MIN_VALUE);
     if (sequence <= myLastSeq) {
+      LOG.warn("Out-of-order voice payload for player {}. Was {} but received {}. Ignore.",
+          playerId, myLastSeq, sequence);
       // out-of-order or duplicate
       return;
     }

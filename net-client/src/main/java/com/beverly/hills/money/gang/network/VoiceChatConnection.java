@@ -34,12 +34,11 @@ public class VoiceChatConnection implements Closeable {
 
   private static final Logger LOG = LoggerFactory.getLogger(VoiceChatConnection.class);
 
-  // 4 bytes player id + 4 bytes game id + 4 bytes sequence
-  private static final int MIN_BUFFER_SIZE = 12;
+  // 4 bytes player id + 4 bytes game id
+  private static final int MIN_BUFFER_SIZE = 8;
 
   private final QueueAPI<VoiceChatPayload> incomingVoiceChatQueueAPI = new QueueAPI<>();
 
-  private final Map<Integer, Integer> lastPlayerSequence = new ConcurrentHashMap<>();
 
   private final QueueAPI<Throwable> errorsQueueAPI = new QueueAPI<>();
 
@@ -80,24 +79,13 @@ public class VoiceChatConnection implements Closeable {
                 }
                 int playerId = buf.readInt();
                 int gameId = buf.readInt();
-                int sequence = buf.readInt();
-                var lastSequence = lastPlayerSequence.getOrDefault(playerId, Integer.MIN_VALUE);
-                if (sequence <= lastSequence) {
-                  LOG.warn(
-                      "Out-of-order voice payload for player {}. Was {} but received {}. Ignore.",
-                      playerId, lastSequence, sequence);
-                  // out-of-order or duplicate
-                  return;
-                }
                 byte[] pcm = new byte[buf.readableBytes()];
                 buf.readBytes(pcm);
                 incomingVoiceChatQueueAPI.push(VoiceChatPayload.builder()
                     .playerId(playerId)
                     .gameId(gameId)
-                    .sequence(sequence)
                     .pcm(ShortToByteArrayConverter.toShortArray(pcm))
                     .build());
-                lastPlayerSequence.put(playerId, sequence);
 
               }
 
@@ -145,7 +133,6 @@ public class VoiceChatConnection implements Closeable {
     ByteBuf buf = Unpooled.buffer(MIN_BUFFER_SIZE + payload.getPcm().length * 2);
     buf.writeInt(payload.getPlayerId());
     buf.writeInt(payload.getGameId());
-    buf.writeInt(payload.getSequence());
     buf.writeBytes(ShortToByteArrayConverter.toByteArray(payload.getPcm()));
     write(buf);
   }

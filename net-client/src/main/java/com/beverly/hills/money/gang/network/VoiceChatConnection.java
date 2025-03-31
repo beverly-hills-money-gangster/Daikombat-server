@@ -68,6 +68,8 @@ public class VoiceChatConnection implements Closeable {
         .handler(new ChannelInitializer<NioDatagramChannel>() {
           @Override
           protected void initChannel(NioDatagramChannel ch) {
+            ch.pipeline()
+                .addLast(new IdleStateHandler(ClientConfig.SERVER_MAX_INACTIVE_MLS / 1000, 0, 0));
             ch.pipeline().addLast(new SimpleChannelInboundHandler<DatagramPacket>() {
               @Override
               protected void channelRead0(ChannelHandlerContext channelHandlerContext,
@@ -112,9 +114,6 @@ public class VoiceChatConnection implements Closeable {
                 errorsQueueAPI.push(cause);
               }
             });
-            ch.pipeline().addLast(new IdleStateHandler(
-                ClientConfig.SERVER_MAX_INACTIVE_MLS / 1000,
-                0, 0));
           }
         });
 

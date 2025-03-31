@@ -53,6 +53,13 @@ public class PlayersRegistry implements Closeable {
     return Optional.ofNullable(players.get(playerId));
   }
 
+  public Optional<PlayerStateChannel> getPlayerStateChannel(int playerId, String ipAddress){
+     return getPlayerStateChannel(playerId)
+        // check that it matches our ip address
+        .filter(playerStateChannel -> playerStateChannel.getPrimaryChannelAddress()
+            .equals(ipAddress));
+  }
+
   public Stream<PlayerStateChannel> allPlayers() {
     return players.values().stream();
   }

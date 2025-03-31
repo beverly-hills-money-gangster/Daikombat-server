@@ -19,17 +19,12 @@ public class VoiceChatPayloadInboundHandler extends SimpleChannelInboundHandler<
 
   private final GameRoomRegistry gameRoomRegistry;
 
-  // 4 bytes player id + 4 bytes game id
-  private static final int MIN_BYTES = 8;
   private static final Logger LOG = LoggerFactory.getLogger(VoiceChatPayloadInboundHandler.class);
 
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket packet)
       throws GameLogicError {
     ByteBuf buf = packet.content();
-    if (buf.readableBytes() < MIN_BYTES) {
-      return;
-    }
     int playerId = buf.getInt(0);
     int gameId = buf.getInt(4);
     gameRoomRegistry.getGame(gameId).getPlayersRegistry().allJoinedPlayers()

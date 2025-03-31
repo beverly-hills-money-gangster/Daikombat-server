@@ -1,5 +1,6 @@
 package com.beverly.hills.money.gang.network;
 
+import com.beverly.hills.money.gang.config.ClientConfig;
 import com.beverly.hills.money.gang.converter.ShortToByteArrayConverter;
 import com.beverly.hills.money.gang.entity.HostPort;
 import com.beverly.hills.money.gang.entity.VoiceChatPayload;
@@ -17,12 +18,13 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.handler.timeout.IdleStateHandler;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -74,7 +76,7 @@ public class VoiceChatConnection implements Closeable {
                 voiceChatNetworkStats.incReceivedMessages();
                 voiceChatNetworkStats.addInboundPayloadBytes(buf.readableBytes());
                 if (buf.readableBytes() <= MIN_BUFFER_SIZE) {
-                  // ignore small datagrams. this might be keep-alive or a mistakenly send message
+                  // ignore small datagrams. this might be keep-alive or a mistakenly sent message
                   return;
                 }
                 int playerId = buf.readInt();
@@ -90,11 +92,29 @@ public class VoiceChatConnection implements Closeable {
               }
 
               @Override
+              public void userEventTriggered(ChannelHandlerContext ctx, Object evt)
+                  throws Exception {
+                if (evt instanceof IdleStateEvent) {
+                  IdleStateEvent e = (IdleStateEvent) evt;
+                  if (e.state() == IdleState.READER_IDLE) {
+                    LOG.info("Voice chat server is inactive");
+                    errorsQueueAPI.push(
+                        new IOException("Voice chat server is inactive for too long"));
+                  }
+                } else {
+                  super.userEventTriggered(ctx, evt);
+                }
+              }
+
+              @Override
               public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
                 LOG.error("Error caught", cause);
                 errorsQueueAPI.push(cause);
               }
             });
+            ch.pipeline().addLast(new IdleStateHandler(
+                ClientConfig.SERVER_MAX_INACTIVE_MLS / 1000,
+                0, 0));
           }
         });
 

@@ -83,7 +83,7 @@ public class VoiceChatTest extends AbstractGameServerTest {
           .playerId(aPlayerId).gameId(gameIdToConnectTo).pcm(shortPCM).build();
       aPlayerVoiceConnection.write(outgoingVoiceMessage);
       var bIncomingVoiceData = bPlayerVoiceConnection.getIncomingVoiceChatData()
-          .pollBlocking(1);
+          .pollBlocking(1000, 1);
       assertEquals(1, bIncomingVoiceData.size(), "Only one voice message was sent");
       var incomingPayload = bIncomingVoiceData.get(0);
       assertEquals(outgoingVoiceMessage.getGameId(), incomingPayload.getGameId());

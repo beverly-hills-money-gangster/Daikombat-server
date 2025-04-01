@@ -38,11 +38,9 @@ public class QueueAPI<T> implements QueueReader<T>, QueueWriter<T> {
   }
 
   @Override
-  public List<T> pollBlocking(int maxElements) throws InterruptedException {
+  public List<T> pollBlocking(int maxWaitMls, int maxElements) throws InterruptedException {
     synchronized (waiter) {
-      while (queue.isEmpty()) {
-        waiter.wait();
-      }
+      waiter.wait(maxWaitMls);
     }
     return poll(maxElements);
   }

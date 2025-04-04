@@ -156,7 +156,7 @@ public class QueueAPITest {
     var failed = new AtomicBoolean();
     var thread = new Thread(() -> {
       try {
-        var polled = queueAPI.pollBlocking(1);
+        var polled = queueAPI.pollBlocking(1000, 1);
         polledElements.addAndGet(polled.size());
       } catch (InterruptedException e) {
         interrupted.set(true);
@@ -177,13 +177,27 @@ public class QueueAPITest {
   }
 
   @RepeatedTest(8)
+  public void testPollBlockingTimeout() throws InterruptedException {
+    int maxTimeoutMls = 500;
+    long start = System.currentTimeMillis();
+    queueAPI.pollBlocking(maxTimeoutMls, 1);
+    assertEquals(maxTimeoutMls, System.currentTimeMillis() - start, 100,
+        "Delay should be around 500 ms");
+  }
+
+
+  @RepeatedTest(8)
   public void testPollBlockingOneElement() throws InterruptedException {
     var polledElement = new AtomicInteger();
     int maxElementsToPoll = 1;
+    int producerDelayMls = 500;
     var failed = new AtomicBoolean();
     var consumerThread = new Thread(() -> {
       try {
-        var polled = queueAPI.pollBlocking(maxElementsToPoll);
+        long start = System.currentTimeMillis();
+        var polled = queueAPI.pollBlocking(1000, maxElementsToPoll);
+        assertEquals(System.currentTimeMillis() - start, producerDelayMls, 100,
+            "Delay should be around 500 ms");
         assertEquals(maxElementsToPoll, polled.size());
         polledElement.set(polled.get(0));
       } catch (InterruptedException ignored) {
@@ -205,7 +219,7 @@ public class QueueAPITest {
     });
 
     consumerThread.start();
-    Thread.sleep(500);
+    Thread.sleep(producerDelayMls);
     producerThread.start();
     consumerThread.join();
     producerThread.join();

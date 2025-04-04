@@ -102,6 +102,7 @@ public class VoiceChatConnection implements Closeable {
                     LOG.info("Voice chat server is inactive");
                     errorsQueueAPI.push(
                         new IOException("Voice chat server is inactive for too long"));
+                    close();
                   }
                 } else {
                   super.userEventTriggered(ctx, evt);

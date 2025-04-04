@@ -131,9 +131,9 @@ public class GlobalGameConnection {
     return polledResponses;
   }
 
-  public List<VoiceChatPayload> pollPCMBlocking() throws InterruptedException {
+  public List<VoiceChatPayload> pollPCMBlocking(int maxWaitMls) throws InterruptedException {
     return voiceChatConnection.getIncomingVoiceChatData()
-        .pollBlocking(Integer.MAX_VALUE);
+        .pollBlocking(maxWaitMls, Integer.MAX_VALUE);
   }
 
   public void initVoiceChat(int playerId, int gameId) {

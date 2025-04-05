@@ -43,7 +43,7 @@ public class VoiceChatPlayerInitInboundHandler extends SimpleChannelInboundHandl
         ctx.fireChannelRead(packet.retain());
       } else if (buf.readableBytes() == MIN_BYTES) {
         // means it's player id + game id only. send back as keep-alive message
-        ctx.writeAndFlush(new DatagramPacket(packet.content(), packet.sender()));
+        ctx.writeAndFlush(new DatagramPacket(packet.content().retain(), packet.sender()));
       }
     }, () -> LOG.warn("Can't find player"));
   }

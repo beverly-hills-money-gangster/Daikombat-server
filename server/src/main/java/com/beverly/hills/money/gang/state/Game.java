@@ -33,6 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -296,6 +297,20 @@ public class Game implements Closeable, GameReader {
 
   private Optional<PlayerState> getPlayer(int playerId) {
     return playersRegistry.getPlayerState(playerId);
+  }
+
+  public Optional<PlayerStateReader> getPlayerWithinDamageRadius(
+      final Vector projectileBoomPosition,
+      final double radius) {
+    return playersRegistry.allJoinedPlayers()
+        .filter(playerStateChannel -> !playerStateChannel.getPlayerState().isDead())
+        .map(player -> Pair.of(
+            Vector.getDistance(player.getPlayerState().getCoordinates().getPosition(),
+                projectileBoomPosition), player))
+        .min(java.util.Map.Entry.comparingByKey())
+        .filter(distancePlayerMap -> distancePlayerMap.getKey() < radius).stream()
+        .findFirst()
+        .map(distancePlayerMap -> distancePlayerMap.getValue().getPlayerState());
   }
 
   public PlayerTeleportingGameState teleport(

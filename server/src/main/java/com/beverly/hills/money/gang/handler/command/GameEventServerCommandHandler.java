@@ -30,6 +30,7 @@ import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.GameProjectileType;
 import com.beverly.hills.money.gang.state.GameWeaponType;
 import com.beverly.hills.money.gang.state.PlayerStateChannel;
+import com.beverly.hills.money.gang.state.PlayerStateReader;
 import com.beverly.hills.money.gang.state.entity.PlayerAttackingGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.Vector;
@@ -37,6 +38,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
@@ -268,23 +270,14 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
     if (gameCommand.hasAffectedPlayerId()) {
       return gameCommand.getAffectedPlayerId();
     } else if (gameCommand.hasProjectile()) {
-      return getPlayerInDistance(
-          createVector(gameCommand.getProjectile().getPosition()), damage.getMaxDistance(), game);
+      return game.getPlayerWithinDamageRadius(
+          createVector(gameCommand.getProjectile().getPosition()), damage.getMaxDistance())
+          .map(PlayerStateReader::getPlayerId).orElse(null);
     }
     return null;
   }
 
-  private Integer getPlayerInDistance(Vector projectileBoomPosition, double radius, Game game) {
-    return game.getPlayersRegistry().allJoinedPlayers()
-        .map(player -> Pair.of(
-            Vector.getDistance(player.getPlayerState().getCoordinates().getPosition(),
-                projectileBoomPosition), player))
-        .min(java.util.Map.Entry.comparingByKey())
-        .filter(distancePlayerMap -> distancePlayerMap.getKey() < radius).stream()
-        .findFirst()
-        .map(distancePlayerMap -> distancePlayerMap.getValue().getPlayerState().getPlayerId())
-        .orElse(null);
-  }
+
 
   private boolean isAttackCheating(PushGameEventCommand gameCommand, Game game) {
     var position = Vector.builder()

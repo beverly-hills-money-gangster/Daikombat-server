@@ -45,6 +45,8 @@ public class GameServerInfoTest extends AbstractGameServerTest {
     assertEquals(ServerConfig.VERSION, serverResponse.getServerInfo().getVersion());
     assertEquals(ServerConfig.MOVES_UPDATE_FREQUENCY_MLS,
         serverResponse.getServerInfo().getMovesUpdateFreqMls());
+    assertEquals(ServerConfig.VOICE_CHAT_PAYLOAD_BYTES,
+        serverResponse.getServerInfo().getVoiceChatPayloadBytes());
     assertEquals(ServerConfig.FRAGS_PER_GAME, serverResponse.getServerInfo().getFragsToWin());
     assertEquals(ServerConfig.PLAYER_SPEED, serverResponse.getServerInfo().getPlayerSpeed());
     assertEquals(ServerConfig.VOICE_CHAT_SAMPLING_RATE_HERTZ,

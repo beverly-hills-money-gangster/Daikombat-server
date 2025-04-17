@@ -53,6 +53,7 @@ message ServerResponse {
     repeated ProjectileInfo projectileInfo = 7;
     optional int32 maxVisibility = 8;
     optional int32 voiceChatSamplingFrequencyHertz = 9;
+    optional int32 voiceChatPayloadBytes = 10;
   }
 
   message WeaponInfo {

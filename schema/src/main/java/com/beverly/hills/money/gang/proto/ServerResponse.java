@@ -3941,6 +3941,17 @@ private static final long serialVersionUID = 0L;
      * @return The voiceChatSamplingFrequencyHertz.
      */
     int getVoiceChatSamplingFrequencyHertz();
+
+    /**
+     * <code>optional int32 voiceChatPayloadBytes = 10;</code>
+     * @return Whether the voiceChatPayloadBytes field is set.
+     */
+    boolean hasVoiceChatPayloadBytes();
+    /**
+     * <code>optional int32 voiceChatPayloadBytes = 10;</code>
+     * @return The voiceChatPayloadBytes.
+     */
+    int getVoiceChatPayloadBytes();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.ServerInfo}
@@ -4247,6 +4258,25 @@ private static final long serialVersionUID = 0L;
       return voiceChatSamplingFrequencyHertz_;
     }
 
+    public static final int VOICECHATPAYLOADBYTES_FIELD_NUMBER = 10;
+    private int voiceChatPayloadBytes_ = 0;
+    /**
+     * <code>optional int32 voiceChatPayloadBytes = 10;</code>
+     * @return Whether the voiceChatPayloadBytes field is set.
+     */
+    @java.lang.Override
+    public boolean hasVoiceChatPayloadBytes() {
+      return ((bitField0_ & 0x00000040) != 0);
+    }
+    /**
+     * <code>optional int32 voiceChatPayloadBytes = 10;</code>
+     * @return The voiceChatPayloadBytes.
+     */
+    @java.lang.Override
+    public int getVoiceChatPayloadBytes() {
+      return voiceChatPayloadBytes_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -4287,6 +4317,9 @@ private static final long serialVersionUID = 0L;
       }
       if (((bitField0_ & 0x00000020) != 0)) {
         output.writeInt32(9, voiceChatSamplingFrequencyHertz_);
+      }
+      if (((bitField0_ & 0x00000040) != 0)) {
+        output.writeInt32(10, voiceChatPayloadBytes_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -4331,6 +4364,10 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000020) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(9, voiceChatSamplingFrequencyHertz_);
+      }
+      if (((bitField0_ & 0x00000040) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(10, voiceChatPayloadBytes_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -4384,6 +4421,11 @@ private static final long serialVersionUID = 0L;
         if (getVoiceChatSamplingFrequencyHertz()
             != other.getVoiceChatSamplingFrequencyHertz()) return false;
       }
+      if (hasVoiceChatPayloadBytes() != other.hasVoiceChatPayloadBytes()) return false;
+      if (hasVoiceChatPayloadBytes()) {
+        if (getVoiceChatPayloadBytes()
+            != other.getVoiceChatPayloadBytes()) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -4431,6 +4473,10 @@ private static final long serialVersionUID = 0L;
       if (hasVoiceChatSamplingFrequencyHertz()) {
         hash = (37 * hash) + VOICECHATSAMPLINGFREQUENCYHERTZ_FIELD_NUMBER;
         hash = (53 * hash) + getVoiceChatSamplingFrequencyHertz();
+      }
+      if (hasVoiceChatPayloadBytes()) {
+        hash = (37 * hash) + VOICECHATPAYLOADBYTES_FIELD_NUMBER;
+        hash = (53 * hash) + getVoiceChatPayloadBytes();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -4590,6 +4636,7 @@ private static final long serialVersionUID = 0L;
         bitField0_ = (bitField0_ & ~0x00000040);
         maxVisibility_ = 0;
         voiceChatSamplingFrequencyHertz_ = 0;
+        voiceChatPayloadBytes_ = 0;
         return this;
       }
 
@@ -4678,6 +4725,10 @@ private static final long serialVersionUID = 0L;
         if (((from_bitField0_ & 0x00000100) != 0)) {
           result.voiceChatSamplingFrequencyHertz_ = voiceChatSamplingFrequencyHertz_;
           to_bitField0_ |= 0x00000020;
+        }
+        if (((from_bitField0_ & 0x00000200) != 0)) {
+          result.voiceChatPayloadBytes_ = voiceChatPayloadBytes_;
+          to_bitField0_ |= 0x00000040;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -4824,6 +4875,9 @@ private static final long serialVersionUID = 0L;
         if (other.hasVoiceChatSamplingFrequencyHertz()) {
           setVoiceChatSamplingFrequencyHertz(other.getVoiceChatSamplingFrequencyHertz());
         }
+        if (other.hasVoiceChatPayloadBytes()) {
+          setVoiceChatPayloadBytes(other.getVoiceChatPayloadBytes());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -4919,6 +4973,11 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000100;
                 break;
               } // case 72
+              case 80: {
+                voiceChatPayloadBytes_ = input.readInt32();
+                bitField0_ |= 0x00000200;
+                break;
+              } // case 80
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -5931,6 +5990,46 @@ private static final long serialVersionUID = 0L;
       public Builder clearVoiceChatSamplingFrequencyHertz() {
         bitField0_ = (bitField0_ & ~0x00000100);
         voiceChatSamplingFrequencyHertz_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int voiceChatPayloadBytes_ ;
+      /**
+       * <code>optional int32 voiceChatPayloadBytes = 10;</code>
+       * @return Whether the voiceChatPayloadBytes field is set.
+       */
+      @java.lang.Override
+      public boolean hasVoiceChatPayloadBytes() {
+        return ((bitField0_ & 0x00000200) != 0);
+      }
+      /**
+       * <code>optional int32 voiceChatPayloadBytes = 10;</code>
+       * @return The voiceChatPayloadBytes.
+       */
+      @java.lang.Override
+      public int getVoiceChatPayloadBytes() {
+        return voiceChatPayloadBytes_;
+      }
+      /**
+       * <code>optional int32 voiceChatPayloadBytes = 10;</code>
+       * @param value The voiceChatPayloadBytes to set.
+       * @return This builder for chaining.
+       */
+      public Builder setVoiceChatPayloadBytes(int value) {
+
+        voiceChatPayloadBytes_ = value;
+        bitField0_ |= 0x00000200;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 voiceChatPayloadBytes = 10;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearVoiceChatPayloadBytes() {
+        bitField0_ = (bitField0_ & ~0x00000200);
+        voiceChatPayloadBytes_ = 0;
         onChanged();
         return this;
       }

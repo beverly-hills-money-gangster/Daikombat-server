@@ -1,5 +1,7 @@
 package com.beverly.hills.money.gang.factory.response;
 
+import com.beverly.hills.money.gang.cheat.AntiCheat;
+import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
@@ -27,13 +29,12 @@ import com.beverly.hills.money.gang.state.GameReader;
 import com.beverly.hills.money.gang.state.GameWeaponType;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
 import com.beverly.hills.money.gang.state.entity.GameLeaderBoardItem;
-import com.beverly.hills.money.gang.state.entity.GameProjectileInfo;
-import com.beverly.hills.money.gang.state.entity.GameWeaponInfo;
 import com.beverly.hills.money.gang.state.entity.PlayerJoinedGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerRespawnedGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
 import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
 import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
+import com.beverly.hills.money.gang.state.entity.RPGWeaponInfo;
 import com.beverly.hills.money.gang.teleport.Teleport;
 import java.util.List;
 import java.util.Optional;
@@ -154,21 +155,19 @@ public interface ServerResponseFactory {
   }
 
   static ServerResponse createServerInfo(
-      String serverVersion, Stream<GameReader> games,
-      int fragsToWin,
-      List<GameWeaponInfo> weaponsInfo,
-      List<GameProjectileInfo> projectilesInfo,
-      int movesUpdateFreqMls,
-      float playerSpeed,
-      int maxVisibility,
-      int voiceChatSamplingRateHertz) {
+      Stream<GameReader> games,
+      RPGPlayerClass playerClass) {
+    var weaponsInfo = RPGWeaponInfo.getWeaponsInfo(playerClass);
+    var projectilesInfo = RPGWeaponInfo.getProjectilesInfo(playerClass);
+    var playerSpeed = AntiCheat.getMaxSpeed(playerClass);
     var serverInfo = ServerResponse.ServerInfo.newBuilder();
-    serverInfo.setFragsToWin(fragsToWin);
-    serverInfo.setMaxVisibility(maxVisibility);
+    serverInfo.setFragsToWin(ServerConfig.FRAGS_PER_GAME);
+    serverInfo.setMaxVisibility(ServerConfig.MAX_VISIBILITY);
     serverInfo.setPlayerSpeed(playerSpeed);
-    serverInfo.setMovesUpdateFreqMls(movesUpdateFreqMls);
-    serverInfo.setVersion(serverVersion);
-    serverInfo.setVoiceChatSamplingFrequencyHertz(voiceChatSamplingRateHertz);
+    serverInfo.setMovesUpdateFreqMls(ServerConfig.MOVES_UPDATE_FREQUENCY_MLS);
+    serverInfo.setVersion(ServerConfig.VERSION);
+    serverInfo.setVoiceChatSamplingFrequencyHertz(ServerConfig.VOICE_CHAT_SAMPLING_RATE_HERTZ);
+    serverInfo.setVoiceChatPayloadBytes(ServerConfig.VOICE_CHAT_PAYLOAD_BYTES);
     serverInfo.addAllWeaponsInfo(weaponsInfo.stream().map(gameWeaponInfo -> WeaponInfo.newBuilder()
         .setWeaponType(getWeaponType(gameWeaponInfo.getGameWeaponType()))
         .setDelayMls(gameWeaponInfo.getDelayMls())

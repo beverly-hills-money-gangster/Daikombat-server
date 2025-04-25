@@ -7,11 +7,11 @@
     <parent>
         <groupId>com.beverly.hills.money.gang</groupId>
         <artifactId>daikombat-server</artifactId>
-        <version>21.1.0</version>
+        <version>22.0.0</version>
     </parent>
 
     <artifactId>net-client</artifactId>
-    <version>21.1.0</version>
+    <version>22.0.0</version>
 
     <properties>
         <maven.compiler.source>14</maven.compiler.source>
@@ -20,7 +20,11 @@
     </properties>
 
     <dependencies>
-
+        <dependency>
+            <groupId>io.github.jaredmdobson</groupId>
+            <artifactId>concentus</artifactId>
+            <version>1.0.2</version>
+        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -81,7 +85,7 @@
         <dependency>
             <groupId>com.beverly.hills.money.gang</groupId>
             <artifactId>schema</artifactId>
-            <version>21.1.0</version>
+            <version>22.0.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.maven/maven-model -->
         <dependency>

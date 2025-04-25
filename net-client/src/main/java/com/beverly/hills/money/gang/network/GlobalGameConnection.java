@@ -1,5 +1,6 @@
 package com.beverly.hills.money.gang.network;
 
+import com.beverly.hills.money.gang.codec.OpusCodec;
 import com.beverly.hills.money.gang.entity.HostPort;
 import com.beverly.hills.money.gang.entity.VoiceChatPayload;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
@@ -16,8 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +57,14 @@ public class GlobalGameConnection {
         HostPort.builder()
             .host(gameConnection.getHostPort().getHost())
             .port(gameConnection.getHostPort().getPort() + 1)
-            .build());
+            .build(),
+        new OpusCodec());
+  }
+
+  public VoiceChatConfigs getVoiceChatConfigs() {
+    var codec = voiceChatConnection.getOpusCodec();
+    return VoiceChatConfigs.builder().sampleRate(codec.getSamplingRateHertz())
+        .sampleSize(codec.getSampleSize()).build();
   }
 
   public void write(PushGameEventCommand pushGameEventCommand) {
@@ -140,6 +150,7 @@ public class GlobalGameConnection {
     voiceChatConnection.join(playerId, gameId);
   }
 
+
   public boolean waitUntilAllConnected(int timeoutMls) throws InterruptedException {
     for (AbstractGameConnection connection : allGameConnections) {
       if (!connection.waitUntilConnected(timeoutMls)) {
@@ -151,6 +162,15 @@ public class GlobalGameConnection {
 
   public Optional<ServerResponse> pollPrimaryConnectionResponse() {
     return gameConnection.getResponse().poll();
+  }
+
+  @Builder
+  @Getter
+  @ToString
+  public static class VoiceChatConfigs {
+
+    private final int sampleRate;
+    private final int sampleSize;
   }
 
 }

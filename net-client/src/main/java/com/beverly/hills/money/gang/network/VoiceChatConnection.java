@@ -1,7 +1,7 @@
 package com.beverly.hills.money.gang.network;
 
+import com.beverly.hills.money.gang.codec.OpusCodec;
 import com.beverly.hills.money.gang.config.ClientConfig;
-import com.beverly.hills.money.gang.converter.ShortToByteArrayConverter;
 import com.beverly.hills.money.gang.entity.HostPort;
 import com.beverly.hills.money.gang.entity.VoiceChatPayload;
 import com.beverly.hills.money.gang.queue.QueueAPI;
@@ -28,6 +28,7 @@ import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +42,8 @@ public class VoiceChatConnection implements Closeable {
 
   private final QueueAPI<VoiceChatPayload> incomingVoiceChatQueueAPI = new QueueAPI<>();
 
+  @Getter
+  private final OpusCodec opusCodec;
 
   private final QueueAPI<Throwable> errorsQueueAPI = new QueueAPI<>();
 
@@ -57,8 +60,10 @@ public class VoiceChatConnection implements Closeable {
 
   private final NioEventLoopGroup group;
 
-  public VoiceChatConnection(HostPort hostPort) {
+  public VoiceChatConnection(
+      final HostPort hostPort, final OpusCodec opusCodec) {
     connectionState.set(ConnectionState.CONNECTING);
+    this.opusCodec = opusCodec;
     this.hostPort = hostPort;
     group = new NioEventLoopGroup();
 
@@ -83,12 +88,12 @@ public class VoiceChatConnection implements Closeable {
                 }
                 int playerId = buf.readInt();
                 int gameId = buf.readInt();
-                byte[] pcm = new byte[buf.readableBytes()];
-                buf.readBytes(pcm);
+                byte[] encoded = new byte[buf.readableBytes()];
+                buf.readBytes(encoded);
                 incomingVoiceChatQueueAPI.push(VoiceChatPayload.builder()
                     .playerId(playerId)
                     .gameId(gameId)
-                    .pcm(ShortToByteArrayConverter.toShortArray(pcm))
+                    .pcm(opusCodec.decode(encoded))
                     .build());
 
               }
@@ -150,10 +155,11 @@ public class VoiceChatConnection implements Closeable {
   }
 
   public void write(final VoiceChatPayload payload) {
-    ByteBuf buf = Unpooled.buffer(MIN_BUFFER_SIZE + payload.getPcm().length * 2);
+    var encoded = opusCodec.encode(payload.getPcm());
+    ByteBuf buf = Unpooled.buffer(MIN_BUFFER_SIZE + encoded.length);
     buf.writeInt(payload.getPlayerId());
     buf.writeInt(payload.getGameId());
-    buf.writeBytes(ShortToByteArrayConverter.toByteArray(payload.getPcm()));
+    buf.writeBytes(encoded);
     write(buf);
   }
 

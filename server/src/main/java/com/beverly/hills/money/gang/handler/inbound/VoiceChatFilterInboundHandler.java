@@ -1,5 +1,6 @@
 package com.beverly.hills.money.gang.handler.inbound;
 
+import com.beverly.hills.money.gang.config.ServerConfig;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -21,13 +22,13 @@ public class VoiceChatFilterInboundHandler extends SimpleChannelInboundHandler<D
   // 4 bytes player id + 4 bytes game id
   public static final int MIN_BYTES = 8;
 
+  public static final int MAX_BYTES = 5_000;
+
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket packet) {
     ByteBuf buf = packet.content();
-    if (buf.readableBytes() < MIN_BYTES) {
-      return;
-    } else if (buf.readableBytes() % 2 != 0) {
-      LOG.error("Non-even number of bytes {}", buf.readableBytes());
+    if (buf.readableBytes() < MIN_BYTES
+        || buf.readableBytes() > MAX_BYTES) {
       return;
     }
     ctx.fireChannelRead(packet.retain());

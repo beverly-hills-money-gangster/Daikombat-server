@@ -6,6 +6,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
+import com.beverly.hills.money.gang.codec.OpusCodec;
 import com.beverly.hills.money.gang.entity.HostPort;
 import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.network.AbstractGameConnection;
@@ -214,7 +215,7 @@ public abstract class AbstractGameServerTest {
 
   protected VoiceChatConnection createVoiceConnection(final String host, final int port) {
     var voiceChatConnection = new VoiceChatConnection(
-        HostPort.builder().host(host).port(port).build());
+        HostPort.builder().host(host).port(port).build(), new OpusCodec());
     voiceChatConnections.add(voiceChatConnection);
     return voiceChatConnection;
   }

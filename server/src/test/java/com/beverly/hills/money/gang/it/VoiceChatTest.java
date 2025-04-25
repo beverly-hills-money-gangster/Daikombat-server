@@ -1,6 +1,5 @@
 package com.beverly.hills.money.gang.it;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
@@ -77,7 +76,7 @@ public class VoiceChatTest extends AbstractGameServerTest {
 
     int voiceMessagesToSend = 16;
     for (int i = 0; i < voiceMessagesToSend; i++) {
-      short[] shortPCM = new short[512];
+      short[] shortPCM = new short[aPlayerVoiceConnection.getOpusCodec().getSampleSize()];
       randomShortArray(shortPCM);
       var outgoingVoiceMessage = VoiceChatPayload.builder()
           .playerId(aPlayerId).gameId(gameIdToConnectTo).pcm(shortPCM).build();
@@ -88,7 +87,7 @@ public class VoiceChatTest extends AbstractGameServerTest {
       var incomingPayload = bIncomingVoiceData.get(0);
       assertEquals(outgoingVoiceMessage.getGameId(), incomingPayload.getGameId());
       assertEquals(outgoingVoiceMessage.getPlayerId(), incomingPayload.getPlayerId());
-      assertArrayEquals(outgoingVoiceMessage.getPcm(), incomingPayload.getPcm());
+      assertEquals(outgoingVoiceMessage.getPcm().length, incomingPayload.getPcm().length);
     }
     assertEquals(0, aPlayerVoiceConnection.getIncomingVoiceChatData().size(),
         "Player A shouldn't receive any voice message because it player don't receive their OWN voice messages");

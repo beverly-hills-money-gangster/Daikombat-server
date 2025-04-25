@@ -166,8 +166,6 @@ public interface ServerResponseFactory {
     serverInfo.setPlayerSpeed(playerSpeed);
     serverInfo.setMovesUpdateFreqMls(ServerConfig.MOVES_UPDATE_FREQUENCY_MLS);
     serverInfo.setVersion(ServerConfig.VERSION);
-    serverInfo.setVoiceChatSamplingFrequencyHertz(ServerConfig.VOICE_CHAT_SAMPLING_RATE_HERTZ);
-    serverInfo.setVoiceChatPayloadBytes(ServerConfig.VOICE_CHAT_PAYLOAD_BYTES);
     serverInfo.addAllWeaponsInfo(weaponsInfo.stream().map(gameWeaponInfo -> WeaponInfo.newBuilder()
         .setWeaponType(getWeaponType(gameWeaponInfo.getGameWeaponType()))
         .setDelayMls(gameWeaponInfo.getDelayMls())

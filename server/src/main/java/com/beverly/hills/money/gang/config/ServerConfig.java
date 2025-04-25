@@ -10,12 +10,6 @@ public interface ServerConfig {
 
   int GAME_SERVER_PORT = NumberUtils.toInt(System.getenv("GAME_SERVER_PORT"), 7777);
   int VOICE_CHAT_SERVER_PORT = GAME_SERVER_PORT + 1;
-
-  int VOICE_CHAT_SAMPLING_RATE_HERTZ = NumberUtils.toInt(
-      System.getenv("GAME_SERVER_VOICE_CHAT_SAMPLING_RATE_HERTZ"), 8000);
-
-  int VOICE_CHAT_PAYLOAD_BYTES = NumberUtils.toInt(
-      System.getenv("GAME_SERVER_VOICE_CHAT_PAYLOAD_BYTES"), 1150);
   int GAMES_TO_CREATE = NumberUtils.toInt(System.getenv("GAME_SERVER_GAMES_TO_CREATE"), 10);
   int MAX_PLAYERS_PER_GAME = NumberUtils.toInt(System.getenv("GAME_SERVER_MAX_PLAYERS_PER_GAME"),
       25);

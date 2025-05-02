@@ -39,6 +39,8 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_PLAYERS_PER_GAME", value = "8")
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_SPAWN_IMMORTAL_MLS", value = "0")
+@SetEnvironmentVariable(key = "GAME_SERVER_BLACKLISTED_WORDS",
+    value = "leonardo, raphael, donatello, michelangelo, r@phael")
 public class JoinGameTest extends AbstractGameServerTest {
 
 
@@ -60,7 +62,7 @@ public class JoinGameTest extends AbstractGameServerTest {
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
             .setPlayerClass(PlayerClass.forNumber(playerClassNumber))
             .setPlayerName("my player name")
-           .setGameId(gameIdToConnectTo).build());
+            .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
     assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
     assertEquals(1, gameConnection.getResponse().size(),
@@ -184,7 +186,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     ServerResponse serverResponse = gameConnection.getResponse().poll().get();
     ServerResponse.ErrorEvent errorEvent = serverResponse.getErrorEvent();
     assertEquals(GameErrorCode.NOT_EXISTING_GAME_ROOM.ordinal(), errorEvent.getErrorCode(),
-        "Should a non-existing game error");
+        "Should be a non-existing game error");
     assertEquals("Not existing game room", errorEvent.getMessage());
 
     // need a new game connection because the previous is closed
@@ -204,6 +206,37 @@ public class JoinGameTest extends AbstractGameServerTest {
     }
     Thread.sleep(1_000);
     assertTrue(gameConnection.isDisconnected());
+  }
+
+  /**
+   * @given a running game server
+   * @when a player connects to a server using a blacklisted word
+   * @then the player is not connected
+   */
+  @ParameterizedTest
+  @ValueSource(strings = {
+      "donatello",
+      "Donatello",
+      "raphael",
+      "I hate all donatellos",
+      "what the hell is with r@phael?"})
+  public void testJoinGameBlacklisted(String userName) throws IOException, InterruptedException {
+    int gameIdToConnectTo = 0;
+    GameConnection gameConnection = createGameConnection("localhost", port);
+    gameConnection.write(
+        JoinGameCommand.newBuilder()
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.WARRIOR)
+            .setPlayerName(userName)
+            .setGameId(gameIdToConnectTo).build());
+    waitUntilQueueNonEmpty(gameConnection.getResponse());
+    assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
+    assertEquals(1, gameConnection.getResponse().size(), "Should be 1 response");
+
+    ServerResponse serverResponse = gameConnection.getResponse().poll().get();
+    ServerResponse.ErrorEvent errorEvent = serverResponse.getErrorEvent();
+    assertEquals("Blacklisted player name", errorEvent.getMessage());
+    assertEquals(GameErrorCode.COMMON_ERROR.ordinal(), errorEvent.getErrorCode());
   }
 
   /**

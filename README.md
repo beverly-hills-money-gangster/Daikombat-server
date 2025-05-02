@@ -33,6 +33,9 @@ Game server can be configured using the following environment variables:
 
 - `GAME_SERVER_PORT` TCP server port at which client connections are going to be accepted. For
   simplicity, voice chat port is `GAME_SERVER_PORT`+1. Default - `7777`.
+- `GAME_SERVER_BLACKLISTED_WORDS` Blacklisted words. Affects chat messages and player names. Words
+  should be separated by a comma (`,`) symbol. Case-insensitive. Example: `ABC,XYZ,QWE`. Not set by
+  default.
 - `GAME_SERVER_GAMES_TO_CREATE` Games to create. Default - `10`.
 - `GAME_SERVER_MAX_PLAYERS_PER_GAME` Maximum number of players to join a game. Default - `25`. Total
   number of players on the server is `GAME_SERVER_GAMES_TO_CREATE*GAME_SERVER_MAX_PLAYERS_PER_GAME`.

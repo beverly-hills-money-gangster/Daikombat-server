@@ -20,9 +20,8 @@ import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import com.beverly.hills.money.gang.state.entity.PlayerJoinedGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
-import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
 import com.beverly.hills.money.gang.teleport.Teleport;
-import com.beverly.hills.money.gang.util.NetworkUtil;
+import com.beverly.hills.money.gang.util.TextUtil;
 import com.beverly.hills.money.gang.util.VersionUtil;
 import io.netty.channel.Channel;
 import java.util.List;
@@ -61,6 +60,9 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
   @Override
   protected void handleInternal(ServerCommand msg, Channel currentChannel) throws GameLogicError {
     var command = msg.getJoinGameCommand();
+    if (TextUtil.containsBlacklistedWord(command.getPlayerName(), ServerConfig.BLACKLISTED_WORDS)) {
+      throw new GameLogicError("Blacklisted player name", GameErrorCode.COMMON_ERROR);
+    }
     Game game = gameRoomRegistry.getGame(command.getGameId());
     PlayerJoinedGameState playerConnected = game.joinPlayer(
         command.getPlayerName(), currentChannel, getSkinColor(command.getSkin()),

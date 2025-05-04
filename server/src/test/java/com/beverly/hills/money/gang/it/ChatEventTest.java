@@ -14,6 +14,7 @@ import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.PushChatEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_POWER_UPS_ENABLED", value = "false")
@@ -31,7 +34,52 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_PLAYERS_PER_GAME", value = "5")
 @SetEnvironmentVariable(key = "GAME_SERVER_SPAWN_IMMORTAL_MLS", value = "0")
+@SetEnvironmentVariable(key = "GAME_SERVER_BLACKLISTED_WORDS",
+    value = "leonardo, raphael, donatello, michelangelo")
 public class ChatEventTest extends AbstractGameServerTest {
+
+
+  /**
+   * @given a running game server
+   * @when a player sends a blacklisted word
+   * @then nobody receives a message
+   */
+  @ParameterizedTest
+  @ValueSource(strings = {
+      "donatello",
+      "Donatello",
+      "raphael",
+      "I hate all donatellos"})
+  public void testChatBadWords(String realBadWords) throws IOException, InterruptedException {
+    int gameIdToConnectTo = 0;
+    List<GameConnection> connections = new ArrayList<>();
+    for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
+      GameConnection gameConnection = createGameConnection("localhost", port);
+      connections.add(gameConnection);
+      gameConnection.write(
+          JoinGameCommand.newBuilder()
+              .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+              .setPlayerClass(PlayerClass.WARRIOR)
+              .setPlayerName("my player name " + i)
+              .setGameId(gameIdToConnectTo).build());
+      waitUntilGetResponses(gameConnection.getResponse(), 1);
+      ServerResponse mySpawn = gameConnection.getResponse().poll().get();
+      int myId = mySpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
+      gameConnection.write(PushChatEventCommand.newBuilder()
+          .setGameId(gameIdToConnectTo)
+          .setPlayerId(myId).setMessage(realBadWords).build());
+      emptyQueue(gameConnection.getResponse());
+    }
+    Thread.sleep(2_500);
+
+    connections.forEach(
+        gameConnection -> assertTrue(gameConnection.getResponse().list().stream().noneMatch(
+                ServerResponse::hasChatEvents),
+            "Should have no chat messages because bad words are not to be spread"));
+
+    connections.forEach(gameConnection -> assertTrue(gameConnection.isConnected(),
+        "Everyone should stay connected regardless of bad words"));
+  }
 
   /**
    * @given a running game server

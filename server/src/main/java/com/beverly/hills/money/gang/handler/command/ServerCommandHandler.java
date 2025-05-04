@@ -29,7 +29,7 @@ public abstract class ServerCommandHandler {
         handleInternal(msg, currentChannel);
       } else {
         LOG.error("Invalid command {}", msg);
-        throw new GameLogicError("Invalid command. Try updating client.", COMMAND_NOT_RECOGNIZED);
+        throw new GameLogicError("Command not recognized", COMMAND_NOT_RECOGNIZED);
       }
     });
   }

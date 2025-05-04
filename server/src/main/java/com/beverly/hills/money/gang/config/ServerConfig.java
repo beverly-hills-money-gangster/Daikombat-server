@@ -1,12 +1,18 @@
 package com.beverly.hills.money.gang.config;
 
 
+import static com.beverly.hills.money.gang.util.TextUtil.splitCommaSeparatedConfig;
+
 import java.util.Optional;
 import java.util.Properties;
+import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 public interface ServerConfig {
+
+  Set<String> BLACKLISTED_WORDS = splitCommaSeparatedConfig(
+      System.getenv("GAME_SERVER_BLACKLISTED_WORDS"));
 
   int GAME_SERVER_PORT = NumberUtils.toInt(System.getenv("GAME_SERVER_PORT"), 7777);
   int VOICE_CHAT_SERVER_PORT = GAME_SERVER_PORT + 1;
@@ -98,5 +104,6 @@ public interface ServerConfig {
         }
       }).orElseThrow(
       () -> new IllegalStateException("Can't get version"));
+
 
 }

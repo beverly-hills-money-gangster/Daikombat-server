@@ -32,6 +32,7 @@ import com.beverly.hills.money.gang.state.entity.GameLeaderBoardItem;
 import com.beverly.hills.money.gang.state.entity.PlayerJoinedGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerRespawnedGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
+import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
 import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
 import com.beverly.hills.money.gang.state.entity.RPGWeaponInfo;
@@ -446,4 +447,19 @@ public interface ServerResponseFactory {
       case PLASMA -> ProjectileType.PLASMA;
     };
   }
+
+  static Coordinates createCoordinates(PushGameEventCommand gameCommand) {
+    return Coordinates
+        .builder()
+        .direction(createVector(gameCommand.getDirection()))
+        .position(createVector(gameCommand.getPosition()))
+        .build();
+  }
+
+  static com.beverly.hills.money.gang.state.entity.Vector createVector(
+      com.beverly.hills.money.gang.proto.Vector vector) {
+    return com.beverly.hills.money.gang.state.entity.Vector.builder()
+        .x(vector.getX()).y(vector.getY()).build();
+  }
+
 }

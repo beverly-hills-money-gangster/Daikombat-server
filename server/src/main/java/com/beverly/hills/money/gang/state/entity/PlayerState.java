@@ -2,7 +2,7 @@ package com.beverly.hills.money.gang.state.entity;
 
 import com.beverly.hills.money.gang.cheat.AntiCheat;
 import com.beverly.hills.money.gang.config.ServerConfig;
-import com.beverly.hills.money.gang.factory.RPGStatsFactory;
+import com.beverly.hills.money.gang.factory.rpg.RPGStatsFactory;
 import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;

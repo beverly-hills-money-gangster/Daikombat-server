@@ -1,7 +1,7 @@
 package com.beverly.hills.money.gang.cheat;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
-import com.beverly.hills.money.gang.factory.RPGStatsFactory;
+import com.beverly.hills.money.gang.factory.rpg.RPGStatsFactory;
 import com.beverly.hills.money.gang.state.GameWeaponType;
 import com.beverly.hills.money.gang.state.PlayerRPGStatType;
 import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;

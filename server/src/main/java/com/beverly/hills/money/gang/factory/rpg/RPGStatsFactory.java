@@ -1,4 +1,4 @@
-package com.beverly.hills.money.gang.factory;
+package com.beverly.hills.money.gang.factory.rpg;
 
 import static com.beverly.hills.money.gang.state.entity.PlayerState.DEFAULT_VAMPIRE_HP_BOOST;
 

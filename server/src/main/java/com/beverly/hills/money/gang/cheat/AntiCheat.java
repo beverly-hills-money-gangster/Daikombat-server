@@ -2,6 +2,7 @@ package com.beverly.hills.money.gang.cheat;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.factory.rpg.RPGStatsFactory;
+import com.beverly.hills.money.gang.state.Damage;
 import com.beverly.hills.money.gang.state.GameWeaponType;
 import com.beverly.hills.money.gang.state.PlayerRPGStatType;
 import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
@@ -24,8 +25,8 @@ public class AntiCheat {
   }
 
   public boolean isAttackingTooFar(final Vector position, final Vector victimPosition,
-      final GameWeaponType gameWeaponType) {
-    return Vector.getDistance(position, victimPosition) > gameWeaponType.getMaxDistance();
+      final Damage damage) {
+    return Vector.getDistance(position, victimPosition) > damage.getMaxDistance();
   }
 
   public boolean isPowerUpTooFar(final Vector playerPosition, final Vector powerUpPosition) {

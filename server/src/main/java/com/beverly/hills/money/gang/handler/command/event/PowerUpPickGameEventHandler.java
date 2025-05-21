@@ -15,7 +15,6 @@ import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.scheduler.Scheduler;
 import com.beverly.hills.money.gang.state.Game;
-import java.util.List;
 import java.util.Set;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -64,7 +63,8 @@ public class PowerUpPickGameEventHandler implements GameEventHandler {
         LOG.warn("Can't release power-up {}", powerUp.getType());
         return;
       }
-      ServerResponse serverResponse = createPowerUpSpawn(List.of(powerUp));
+      // TODO object can be reused
+      ServerResponse serverResponse = createPowerUpSpawn(powerUp);
       game.getPlayersRegistry().allJoinedPlayers().forEach(
           playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(serverResponse));
     });

@@ -23,7 +23,7 @@ public class PlayerStateSpawnImmortalTest {
         "test player",
         Coordinates.builder().build(), 123, PlayerStateColor.GREEN,
         RPGPlayerClass.WARRIOR);
-    playerState.getAttacked(GameWeaponType.SHOTGUN, 1);
+    playerState.getAttacked(GameWeaponType.SHOTGUN.getDamage(), 1);
 
     assertEquals(100, playerState.getHealth(), "Health shouldn't be affected "
         + "because the player just spawned and is immortal");
@@ -31,7 +31,7 @@ public class PlayerStateSpawnImmortalTest {
     // wait until the player is mortal
     Thread.sleep(ServerConfig.SPAWN_IMMORTAL_MLS + 500);
 
-    playerState.getAttacked(GameWeaponType.SHOTGUN, 1);
+    playerState.getAttacked(GameWeaponType.SHOTGUN.getDamage(), 1);
     assertEquals(PlayerState.DEFAULT_HP - ServerConfig.DEFAULT_SHOTGUN_DAMAGE,
         playerState.getHealth(),
         "Damage is registered because it was done after GAME_SERVER_SPAWN_IMMORTAL_MLS");
@@ -53,20 +53,20 @@ public class PlayerStateSpawnImmortalTest {
     Thread.sleep(ServerConfig.SPAWN_IMMORTAL_MLS + 500);
 
     // dead after this attack
-    playerState.getAttacked(GameWeaponType.SHOTGUN, 10);
+    playerState.getAttacked(GameWeaponType.SHOTGUN.getDamage(), 10);
 
     playerState.respawn(Coordinates.builder()
         .position(Vector.builder().build())
         .direction(Vector.builder().build()).build());
 
-    playerState.getAttacked(GameWeaponType.SHOTGUN, 1);
+    playerState.getAttacked(GameWeaponType.SHOTGUN.getDamage(), 1);
 
     assertEquals(PlayerState.DEFAULT_HP, playerState.getHealth(),
         "Health shouldn't be affected because the player just respawned and is immortal");
 
     // wait until the player is mortal
     Thread.sleep(ServerConfig.SPAWN_IMMORTAL_MLS + 500);
-    playerState.getAttacked(GameWeaponType.SHOTGUN, 1);
+    playerState.getAttacked(GameWeaponType.SHOTGUN.getDamage(), 1);
     assertEquals(PlayerState.DEFAULT_HP - ServerConfig.DEFAULT_SHOTGUN_DAMAGE,
         playerState.getHealth(),
         "Damage is registered because it was done after GAME_SERVER_SPAWN_IMMORTAL_MLS");

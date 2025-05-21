@@ -49,8 +49,8 @@ public class PlayerStateTest {
         "test player",
         Coordinates.builder().build(), 123, PlayerStateColor.GREEN,
         RPGPlayerClass.WARRIOR);
-    playerState.getAttacked(GameWeaponType.SHOTGUN, 1);
-    playerState.getAttacked(GameWeaponType.SHOTGUN, 1);
+    playerState.getAttacked(GameWeaponType.SHOTGUN.getDamage(), 1);
+    playerState.getAttacked(GameWeaponType.SHOTGUN.getDamage(), 1);
 
     playerState.registerKill();
 
@@ -62,7 +62,6 @@ public class PlayerStateTest {
   }
 
 
-
   @RepeatedTest(32)
   public void testRegisterKillConcurrent() {
     int threadsNum = 8;
@@ -71,10 +70,10 @@ public class PlayerStateTest {
         Coordinates.builder().build(), 123, PlayerStateColor.GREEN,
         RPGPlayerClass.WARRIOR);
 
-    playerState.getAttacked(GameWeaponType.SHOTGUN, 1);
-    playerState.getAttacked(GameWeaponType.SHOTGUN, 1);
-    playerState.getAttacked(GameWeaponType.SHOTGUN, 1);
-    playerState.getAttacked(GameWeaponType.SHOTGUN, 1);
+    playerState.getAttacked(GameWeaponType.SHOTGUN.getDamage(), 1);
+    playerState.getAttacked(GameWeaponType.SHOTGUN.getDamage(), 1);
+    playerState.getAttacked(GameWeaponType.SHOTGUN.getDamage(), 1);
+    playerState.getAttacked(GameWeaponType.SHOTGUN.getDamage(), 1);
 
     CountDownLatch latch = new CountDownLatch(1);
     List<Thread> threads = new ArrayList<>();

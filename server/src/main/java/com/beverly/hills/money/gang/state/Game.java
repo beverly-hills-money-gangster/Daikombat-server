@@ -24,6 +24,7 @@ import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
 import com.beverly.hills.money.gang.state.entity.PlayerTeleportingGameState;
 import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
+import com.beverly.hills.money.gang.state.entity.RPGWeaponInfo;
 import com.beverly.hills.money.gang.state.entity.Vector;
 import io.netty.channel.Channel;
 import java.io.Closeable;
@@ -65,6 +66,9 @@ public class Game implements Closeable, GameReader {
 
   private final AntiCheat antiCheat;
 
+  @Getter
+  private final RPGWeaponInfo rpgWeaponInfo;
+
   private final AtomicInteger matchId = new AtomicInteger();
 
   public Game(
@@ -83,6 +87,7 @@ public class Game implements Closeable, GameReader {
     this.antiCheat = antiCheat;
     this.playerStatsRecoveryRegistry = playerStatsRecoveryRegistry;
     this.playersRegistry = new PlayersRegistry(playerStatsRecoveryRegistry);
+    this.rpgWeaponInfo = new RPGWeaponInfo(this);
   }
 
   public void mergeConnection(int playerId, Channel channel) throws GameLogicError {
@@ -181,8 +186,11 @@ public class Game implements Closeable, GameReader {
     } else if (attackingPlayerState.isDead()) {
       LOG.warn("Dead players can't attack");
       return null;
+    } else if (attackedPlayerId != null &&
+        isAttackCheating(attackPosition, damage, attackedPlayerId)) {
+      LOG.warn("Cheating detected");
+      return null;
     }
-
     move(attackingPlayerId, playerCoordinates, eventSequence, pingMls);
     if (attackedPlayerId == null) {
       LOG.debug("Nobody got attacked");
@@ -331,6 +339,16 @@ public class Game implements Closeable, GameReader {
     }
     player.teleport(teleport.getTeleportCoordinates());
     return PlayerTeleportingGameState.builder().teleportedPlayer(player).build();
+  }
+
+
+  private boolean isAttackCheating(Vector attackPosition, Damage damage,
+      int affectedPlayerId) {
+    return playersRegistry
+        .getPlayerState(affectedPlayerId)
+        .map(affectedPlayerState -> antiCheat.isAttackingTooFar(
+            attackPosition, affectedPlayerState.getCoordinates().getPosition(), damage))
+        .orElse(false);
   }
 
   private void move(final int movingPlayerId,

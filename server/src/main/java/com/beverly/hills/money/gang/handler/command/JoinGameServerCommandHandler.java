@@ -18,7 +18,6 @@ import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerStateChannel;
-import com.beverly.hills.money.gang.state.entity.PlayerJoinedGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
 import com.beverly.hills.money.gang.teleport.Teleport;
 import com.beverly.hills.money.gang.util.TextUtil;
@@ -64,11 +63,11 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
       throw new GameLogicError("Blacklisted player name", GameErrorCode.COMMON_ERROR);
     }
     Game game = gameRoomRegistry.getGame(command.getGameId());
-    PlayerJoinedGameState playerConnected = game.joinPlayer(
+    var playerConnected = game.joinPlayer(
         command.getPlayerName(), currentChannel, getSkinColor(command.getSkin()),
         command.hasRecoveryPlayerId() ? command.getRecoveryPlayerId() : null,
         getRPGPlayerClass(command.getPlayerClass()));
-    ServerResponse playerSpawnEvent = createJoinSinglePlayer(
+    var playerSpawnEvent = createJoinSinglePlayer(
         game.playersOnline(), playerConnected);
     playerConnected.getPlayerStateChannel()
         .writeFlushPrimaryChannel(playerSpawnEvent, channelFuture -> {

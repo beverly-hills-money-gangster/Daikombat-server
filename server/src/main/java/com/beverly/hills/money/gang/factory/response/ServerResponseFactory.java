@@ -35,7 +35,6 @@ import com.beverly.hills.money.gang.state.entity.PlayerState;
 import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
 import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
-import com.beverly.hills.money.gang.state.entity.RPGWeaponInfo;
 import com.beverly.hills.money.gang.teleport.Teleport;
 import java.util.List;
 import java.util.Optional;
@@ -158,8 +157,12 @@ public interface ServerResponseFactory {
   static ServerResponse createServerInfo(
       Stream<GameReader> games,
       RPGPlayerClass playerClass) {
-    var weaponsInfo = RPGWeaponInfo.getWeaponsInfo(playerClass);
-    var projectilesInfo = RPGWeaponInfo.getProjectilesInfo(playerClass);
+    // TODO change the schema
+    return null;
+    /*
+    var rpgWeaponInfo = gameReader.getRPGWeaponInfo();
+    var weaponsInfo = rpgWeaponInfo.getWeaponsInfo(playerClass);
+    var projectilesInfo = rpgWeaponInfo.getProjectilesInfo(playerClass);
     var playerSpeed = AntiCheat.getMaxSpeed(playerClass);
     var serverInfo = ServerResponse.ServerInfo.newBuilder();
     serverInfo.setFragsToWin(ServerConfig.FRAGS_PER_GAME);
@@ -188,7 +191,7 @@ public interface ServerResponseFactory {
 
     return ServerResponse.newBuilder()
         .setServerInfo(serverInfo)
-        .build();
+        .build();*/
   }
 
   static ServerResponse createMovesEventAllPlayers(int playersOnline,
@@ -200,6 +203,10 @@ public interface ServerResponseFactory {
     return ServerResponse.newBuilder()
         .setGameEvents(allPlayersMoves)
         .build();
+  }
+
+  static ServerResponse createPowerUpSpawn(PowerUp powerUp) {
+    return createPowerUpSpawn(List.of(powerUp));
   }
 
   static ServerResponse createPowerUpSpawn(List<PowerUp> powerUps) {

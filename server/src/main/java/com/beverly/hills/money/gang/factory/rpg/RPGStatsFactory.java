@@ -1,8 +1,5 @@
 package com.beverly.hills.money.gang.factory.rpg;
 
-import static com.beverly.hills.money.gang.state.entity.PlayerState.DEFAULT_VAMPIRE_HP_BOOST;
-
-import com.beverly.hills.money.gang.state.GameWeaponType;
 import com.beverly.hills.money.gang.state.PlayerRPGStatType;
 import com.beverly.hills.money.gang.state.PlayerRPGStatValue;
 import com.beverly.hills.money.gang.state.PlayerRPGStats;
@@ -63,28 +60,6 @@ public class RPGStatsFactory {
         PlayerRPGStatType.VAMPIRISM, PlayerRPGStatValue.createMin(),
         PlayerRPGStatType.GUN_SPEED, PlayerRPGStatValue.createDefault(),
         PlayerRPGStatType.RUN_SPEED, PlayerRPGStatValue.create(90)));
-  }
-
-  public static void main(String[] args) {
-
-    StringBuilder statsBuilder = new StringBuilder();
-    for (GameWeaponType gameWeaponType : GameWeaponType.values()) {
-      for (RPGPlayerClass attackerClass : RPGPlayerClass.values()) {
-        var attackerStats = create(attackerClass);
-        for (RPGPlayerClass victimClass : RPGPlayerClass.values()) {
-          var victimStats = create(victimClass);
-          statsBuilder.append(attackerClass).append(" attacks ").append(victimClass)
-              .append(" with a ").append(gameWeaponType).append(": -")
-              .append(gameWeaponType.getDefaultDamage() * attackerStats.getNormalized(
-                  PlayerRPGStatType.ATTACK) / victimStats.getNormalized(PlayerRPGStatType.DEFENSE))
-              .append(". Kill gets HP boost ")
-              .append(DEFAULT_VAMPIRE_HP_BOOST * attackerStats.getNormalized(PlayerRPGStatType.VAMPIRISM))
-              .append("\n");
-        }
-      }
-      statsBuilder.append("\n");
-    }
-    System.out.println(statsBuilder);
   }
 
 }

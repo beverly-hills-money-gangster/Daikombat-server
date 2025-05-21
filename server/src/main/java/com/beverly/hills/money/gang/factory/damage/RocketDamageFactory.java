@@ -4,7 +4,7 @@ import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.state.Damage;
 import com.beverly.hills.money.gang.state.GameReader;
 
-public class RocketDamageFactory implements DamageFactory {
+public class RocketDamageFactory extends DamageFactory {
 
   private final Damage damage = new Damage(ServerConfig.DEFAULT_ROCKET_DAMAGE, 1.75f, 0,
       distance -> {
@@ -15,7 +15,7 @@ public class RocketDamageFactory implements DamageFactory {
       });
 
   @Override
-  public Damage getDamage(GameReader gameReader) {
+  protected Damage createDamage(GameReader gameReader) {
     return damage;
   }
 }

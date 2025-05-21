@@ -158,28 +158,28 @@ public final class ServerResponseOuterClass {
       " \001(\0132\025.daikombat.dto.VectorH\001\210\001\001B\007\n\005_typ" +
       "eB\013\n\t_position\032_\n\010GameOver\022C\n\013leaderBoar" +
       "d\030\001 \001(\0132).daikombat.dto.ServerResponse.L" +
-      "eaderBoardH\000\210\001\001B\016\n\014_leaderBoard\032\242\003\n\nServ" +
+      "eaderBoardH\000\210\001\001B\016\n\014_leaderBoard\032\235\002\n\nServ" +
       "erInfo\0225\n\005games\030\001 \003(\0132&.daikombat.dto.Se" +
       "rverResponse.GameInfo\022\024\n\007version\030\002 \001(\tH\000" +
       "\210\001\001\022\027\n\nfragsToWin\030\003 \001(\005H\001\210\001\001\022\037\n\022movesUpd" +
       "ateFreqMls\030\004 \001(\005H\002\210\001\001\022\030\n\013playerSpeed\030\005 \001" +
-      "(\002H\003\210\001\001\022=\n\013weaponsInfo\030\006 \003(\0132(.daikombat" +
-      ".dto.ServerResponse.WeaponInfo\022D\n\016projec" +
-      "tileInfo\030\007 \003(\0132,.daikombat.dto.ServerRes" +
-      "ponse.ProjectileInfo\022\032\n\rmaxVisibility\030\010 " +
-      "\001(\005H\004\210\001\001B\n\n\010_versionB\r\n\013_fragsToWinB\025\n\023_" +
-      "movesUpdateFreqMlsB\016\n\014_playerSpeedB\020\n\016_m" +
-      "axVisibility\032\235\001\n\nWeaponInfo\0222\n\nweaponTyp" +
-      "e\030\001 \001(\0162\031.daikombat.dto.WeaponTypeH\000\210\001\001\022" +
-      "\030\n\013maxDistance\030\002 \001(\001H\001\210\001\001\022\025\n\010delayMls\030\003 " +
-      "\001(\005H\002\210\001\001B\r\n\013_weaponTypeB\016\n\014_maxDistanceB" +
-      "\013\n\t_delayMls\032\177\n\016ProjectileInfo\022:\n\016projec" +
-      "tileType\030\001 \001(\0162\035.daikombat.dto.Projectil" +
-      "eTypeH\000\210\001\001\022\023\n\006radius\030\002 \001(\001H\001\210\001\001B\021\n\017_proj" +
-      "ectileTypeB\t\n\007_radius\032\006\n\004Ping\032\252\001\n\010GameIn" +
-      "fo\022\023\n\006gameId\030\001 \001(\005H\000\210\001\001\022\032\n\rplayersOnline" +
-      "\030\002 \001(\005H\001\210\001\001\022\033\n\016maxGamePlayers\030\003 \001(\005H\002\210\001\001" +
-      "\022\024\n\007matchId\030\004 \001(\005H\003\210\001\001B\t\n\007_gameIdB\020\n\016_pl" +
+      "(\002H\003\210\001\001\022\032\n\rmaxVisibility\030\010 \001(\005H\004\210\001\001B\n\n\010_" +
+      "versionB\r\n\013_fragsToWinB\025\n\023_movesUpdateFr" +
+      "eqMlsB\016\n\014_playerSpeedB\020\n\016_maxVisibility\032" +
+      "\235\001\n\nWeaponInfo\0222\n\nweaponType\030\001 \001(\0162\031.dai" +
+      "kombat.dto.WeaponTypeH\000\210\001\001\022\030\n\013maxDistanc" +
+      "e\030\002 \001(\001H\001\210\001\001\022\025\n\010delayMls\030\003 \001(\005H\002\210\001\001B\r\n\013_" +
+      "weaponTypeB\016\n\014_maxDistanceB\013\n\t_delayMls\032" +
+      "\177\n\016ProjectileInfo\022:\n\016projectileType\030\001 \001(" +
+      "\0162\035.daikombat.dto.ProjectileTypeH\000\210\001\001\022\023\n" +
+      "\006radius\030\002 \001(\001H\001\210\001\001B\021\n\017_projectileTypeB\t\n" +
+      "\007_radius\032\006\n\004Ping\032\257\002\n\010GameInfo\022\023\n\006gameId\030" +
+      "\001 \001(\005H\000\210\001\001\022\032\n\rplayersOnline\030\002 \001(\005H\001\210\001\001\022\033" +
+      "\n\016maxGamePlayers\030\003 \001(\005H\002\210\001\001\022\024\n\007matchId\030\004" +
+      " \001(\005H\003\210\001\001\022=\n\013weaponsInfo\030\005 \003(\0132(.daikomb" +
+      "at.dto.ServerResponse.WeaponInfo\022D\n\016proj" +
+      "ectileInfo\030\006 \003(\0132,.daikombat.dto.ServerR" +
+      "esponse.ProjectileInfoB\t\n\007_gameIdB\020\n\016_pl" +
       "ayersOnlineB\021\n\017_maxGamePlayersB\n\n\010_match" +
       "Id\032T\n\nErrorEvent\022\026\n\terrorCode\030\001 \001(\005H\000\210\001\001" +
       "\022\024\n\007message\030\002 \001(\tH\001\210\001\001B\014\n\n_errorCodeB\n\n\010" +
@@ -290,7 +290,7 @@ public final class ServerResponseOuterClass {
     internal_static_daikombat_dto_ServerResponse_ServerInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_ServerResponse_ServerInfo_descriptor,
-        new java.lang.String[] { "Games", "Version", "FragsToWin", "MovesUpdateFreqMls", "PlayerSpeed", "WeaponsInfo", "ProjectileInfo", "MaxVisibility", });
+        new java.lang.String[] { "Games", "Version", "FragsToWin", "MovesUpdateFreqMls", "PlayerSpeed", "MaxVisibility", });
     internal_static_daikombat_dto_ServerResponse_WeaponInfo_descriptor =
       internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(6);
     internal_static_daikombat_dto_ServerResponse_WeaponInfo_fieldAccessorTable = new
@@ -314,7 +314,7 @@ public final class ServerResponseOuterClass {
     internal_static_daikombat_dto_ServerResponse_GameInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_ServerResponse_GameInfo_descriptor,
-        new java.lang.String[] { "GameId", "PlayersOnline", "MaxGamePlayers", "MatchId", });
+        new java.lang.String[] { "GameId", "PlayersOnline", "MaxGamePlayers", "MatchId", "WeaponsInfo", "ProjectileInfo", });
     internal_static_daikombat_dto_ServerResponse_ErrorEvent_descriptor =
       internal_static_daikombat_dto_ServerResponse_descriptor.getNestedTypes().get(10);
     internal_static_daikombat_dto_ServerResponse_ErrorEvent_fieldAccessorTable = new

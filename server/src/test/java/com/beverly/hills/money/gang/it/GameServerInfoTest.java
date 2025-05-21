@@ -52,17 +52,16 @@ public class GameServerInfoTest extends AbstractGameServerTest {
       assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, gameInfo.getMaxGamePlayers());
       assertEquals(0, gameInfo.getPlayersOnline(), "Should be no connected players yet");
       assertEquals(0, gameInfo.getMatchId());
+      assertEquals(GameWeaponType.values().length, gameInfo.getWeaponsInfoList().size(),
+          "All attack weapons should have info");
+      assertEquals(GameProjectileType.values().length, gameInfo.getProjectileInfoList().size(),
+          "All attack projectiles should have info");
     }
-    assertEquals(GameWeaponType.values().length,
-        serverResponse.getServerInfo().getWeaponsInfoList().size(),
-        "All attack weapons should have info");
-    assertEquals(GameProjectileType.values().length,
-        serverResponse.getServerInfo().getProjectileInfoList().size(),
-        "All attack projectiles should have info");
     assertEquals(1, gameConnection.getGameNetworkStats().getReceivedMessages());
     assertTrue(gameConnection.getGameNetworkStats().getInboundPayloadBytes() > 0);
     assertEquals(1, gameConnection.getGameNetworkStats().getSentMessages());
     assertTrue(gameConnection.getGameNetworkStats().getOutboundPayloadBytes() > 0);
+
   }
 
 }

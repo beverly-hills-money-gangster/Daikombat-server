@@ -157,12 +157,7 @@ public interface ServerResponseFactory {
   static ServerResponse createServerInfo(
       Stream<GameReader> games,
       RPGPlayerClass playerClass) {
-    // TODO change the schema
-    return null;
-    /*
-    var rpgWeaponInfo = gameReader.getRPGWeaponInfo();
-    var weaponsInfo = rpgWeaponInfo.getWeaponsInfo(playerClass);
-    var projectilesInfo = rpgWeaponInfo.getProjectilesInfo(playerClass);
+
     var playerSpeed = AntiCheat.getMaxSpeed(playerClass);
     var serverInfo = ServerResponse.ServerInfo.newBuilder();
     serverInfo.setFragsToWin(ServerConfig.FRAGS_PER_GAME);
@@ -170,28 +165,33 @@ public interface ServerResponseFactory {
     serverInfo.setPlayerSpeed(playerSpeed);
     serverInfo.setMovesUpdateFreqMls(ServerConfig.MOVES_UPDATE_FREQUENCY_MLS);
     serverInfo.setVersion(ServerConfig.VERSION);
-    serverInfo.addAllWeaponsInfo(weaponsInfo.stream().map(gameWeaponInfo -> WeaponInfo.newBuilder()
-        .setWeaponType(getWeaponType(gameWeaponInfo.getGameWeaponType()))
-        .setDelayMls(gameWeaponInfo.getDelayMls())
-        .setMaxDistance(gameWeaponInfo.getMaxDistance())
-        .build()).collect(Collectors.toList()));
-    serverInfo.addAllProjectileInfo(
-        projectilesInfo.stream().map(projectileInfo -> ProjectileInfo.newBuilder()
-            .setProjectileType(getProjectileType(projectileInfo.getGameProjectileType()))
-            .setRadius(projectileInfo.getMaxDistance())
-            .build()).collect(Collectors.toList()));
-    games.forEach(game
-        -> serverInfo.addGames(
-        ServerResponse.GameInfo.newBuilder()
-            .setGameId(game.gameId())
-            .setPlayersOnline(game.playersOnline())
-            .setMaxGamePlayers(game.maxPlayersAvailable())
-            .setMatchId(game.matchId())
-            .build()));
+
+    games.forEach(game -> {
+      var rpgWeaponInfo = game.getRpgWeaponInfo();
+      var weaponsInfo = rpgWeaponInfo.getWeaponsInfo(playerClass);
+      var projectilesInfo = rpgWeaponInfo.getProjectilesInfo(playerClass);
+      serverInfo.addGames(
+          ServerResponse.GameInfo.newBuilder()
+              .setGameId(game.gameId())
+              .setPlayersOnline(game.playersOnline())
+              .setMaxGamePlayers(game.maxPlayersAvailable())
+              .setMatchId(game.matchId())
+              .addAllWeaponsInfo(weaponsInfo.stream().map(gameWeaponInfo -> WeaponInfo.newBuilder()
+                  .setWeaponType(getWeaponType(gameWeaponInfo.getGameWeaponType()))
+                  .setDelayMls(gameWeaponInfo.getDelayMls())
+                  .setMaxDistance(gameWeaponInfo.getMaxDistance())
+                  .build()).collect(Collectors.toList()))
+              .addAllProjectileInfo(
+                  projectilesInfo.stream().map(projectileInfo -> ProjectileInfo.newBuilder()
+                      .setProjectileType(getProjectileType(projectileInfo.getGameProjectileType()))
+                      .setRadius(projectileInfo.getMaxDistance())
+                      .build()).collect(Collectors.toList()))
+              .build());
+    });
 
     return ServerResponse.newBuilder()
         .setServerInfo(serverInfo)
-        .build();*/
+        .build();
   }
 
   static ServerResponse createMovesEventAllPlayers(int playersOnline,

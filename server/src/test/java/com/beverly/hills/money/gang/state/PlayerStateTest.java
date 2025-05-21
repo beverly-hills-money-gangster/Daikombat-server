@@ -1,6 +1,7 @@
 package com.beverly.hills.money.gang.state;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
@@ -12,12 +13,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_SPAWN_IMMORTAL_MLS", value = "0")
 public class PlayerStateTest {
+
+  private Game game;
+
+  @BeforeEach
+  public void setUp() {
+    game = mock(Game.class);
+  }
+
 
   /**
    * @given player
@@ -49,8 +59,8 @@ public class PlayerStateTest {
         "test player",
         Coordinates.builder().build(), 123, PlayerStateColor.GREEN,
         RPGPlayerClass.WARRIOR);
-    playerState.getAttacked(GameWeaponType.SHOTGUN.getDamage(), 1);
-    playerState.getAttacked(GameWeaponType.SHOTGUN.getDamage(), 1);
+    playerState.getAttacked(GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game), 1);
+    playerState.getAttacked(GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game), 1);
 
     playerState.registerKill();
 
@@ -70,10 +80,10 @@ public class PlayerStateTest {
         Coordinates.builder().build(), 123, PlayerStateColor.GREEN,
         RPGPlayerClass.WARRIOR);
 
-    playerState.getAttacked(GameWeaponType.SHOTGUN.getDamage(), 1);
-    playerState.getAttacked(GameWeaponType.SHOTGUN.getDamage(), 1);
-    playerState.getAttacked(GameWeaponType.SHOTGUN.getDamage(), 1);
-    playerState.getAttacked(GameWeaponType.SHOTGUN.getDamage(), 1);
+    playerState.getAttacked(GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game), 1);
+    playerState.getAttacked(GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game), 1);
+    playerState.getAttacked(GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game), 1);
+    playerState.getAttacked(GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game), 1);
 
     CountDownLatch latch = new CountDownLatch(1);
     List<Thread> threads = new ArrayList<>();

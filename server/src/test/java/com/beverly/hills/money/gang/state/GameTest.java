@@ -115,6 +115,7 @@ public class GameTest {
         teleportRegistry,
         antiCheat,
         playerStatsRecoveryRegistry);
+    doReturn(false).when(antiCheat).isAttackingTooFar(any(), any(), any());
   }
 
   @AfterEach
@@ -346,7 +347,7 @@ public class GameTest {
         playerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
             .getPosition(),
         playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), null,
-        GameWeaponType.SHOTGUN.getDamage(),
+        GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
         testSequenceGenerator.getNext(),
         PING_MLS);
     assertNull(playerAttackingGameState.getPlayerAttacked(), "Nobody is shot");
@@ -386,7 +387,7 @@ public class GameTest {
             .getPosition(),
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        GameWeaponType.SHOTGUN.getDamage(),
+        GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
         testSequenceGenerator.getNext(),
         PING_MLS);
     assertNotNull(playerAttackingGameState.getPlayerAttacked());
@@ -438,7 +439,7 @@ public class GameTest {
               .getPosition(),
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          GameWeaponType.SHOTGUN.getDamage(),
+          GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
@@ -448,7 +449,7 @@ public class GameTest {
             .getPosition(),
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        GameWeaponType.SHOTGUN.getDamage(),
+        GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
         testSequenceGenerator.getNext(),
         PING_MLS);
     assertNotNull(playerAttackingGameState.getPlayerAttacked());
@@ -542,7 +543,7 @@ public class GameTest {
                 .getPosition(),
             shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
             shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-            GameWeaponType.RAILGUN.getDamage(),
+            GameWeaponType.RAILGUN.getDamageFactory().getDamage(game),
             testSequenceGenerator.getNext(),
             PING_MLS);
       }
@@ -599,7 +600,7 @@ public class GameTest {
               .getPosition(),
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          GameWeaponType.SHOTGUN.getDamage(),
+          GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
@@ -611,7 +612,7 @@ public class GameTest {
               .getPosition(),
           shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          GameWeaponType.SHOTGUN.getDamage(),
+          GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
@@ -622,7 +623,7 @@ public class GameTest {
             .getPosition(),
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        GameWeaponType.SHOTGUN.getDamage(),
+        GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
         testSequenceGenerator.getNext(),
         PING_MLS);
     assertNotNull(playerAttackingGameState.getPlayerAttacked());
@@ -674,7 +675,7 @@ public class GameTest {
               .getPosition(),
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          GameWeaponType.SHOTGUN.getDamage(),
+          GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
@@ -685,7 +686,7 @@ public class GameTest {
             .getPosition(),
         shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        GameWeaponType.SHOTGUN.getDamage(),
+        GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
         testSequenceGenerator.getNext(),
         PING_MLS);
 
@@ -695,7 +696,7 @@ public class GameTest {
             .getPosition(),
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        GameWeaponType.SHOTGUN.getDamage(),
+        GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
         testSequenceGenerator.getNext(),
         PING_MLS);
     assertNotNull(playerAttackingGameState.getPlayerAttacked());
@@ -754,11 +755,12 @@ public class GameTest {
               shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState()
                   .getPlayerId(),
               shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-              gameWeaponType.getDamage(),
+              gameWeaponType.getDamageFactory().getDamage(game),
               testSequenceGenerator.getNext(),
               PING_MLS);
           int damageCaused = (int) (
-              gameWeaponType.getDamage().getDefaultDamage() * attackerStats.getNormalized(
+              gameWeaponType.getDamageFactory().getDamage(game).getDefaultDamage()
+                  * attackerStats.getNormalized(
                   PlayerRPGStatType.ATTACK) / victimStats.getNormalized(PlayerRPGStatType.DEFENSE));
 
           assertEquals(Math.max(0, DEFAULT_HP - damageCaused),
@@ -803,7 +805,7 @@ public class GameTest {
               .getPosition(),
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          GameWeaponType.SHOTGUN.getDamage(),
+          GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
@@ -813,7 +815,7 @@ public class GameTest {
             .getPosition(),
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        GameWeaponType.SHOTGUN.getDamage(),
+        GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
         testSequenceGenerator.getNext(),
         PING_MLS);
     assertNotNull(playerAttackingGameState.getPlayerAttacked());
@@ -894,7 +896,7 @@ public class GameTest {
               .getPosition(),
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          GameWeaponType.SHOTGUN.getDamage(),
+          GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
@@ -934,7 +936,7 @@ public class GameTest {
               .getPosition(),
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          GameWeaponType.SHOTGUN.getDamage(),
+          GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
@@ -944,7 +946,7 @@ public class GameTest {
             .getPosition(),
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        GameWeaponType.SHOTGUN.getDamage(),
+        GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
         testSequenceGenerator.getNext(),
         PING_MLS);
     assertNull(playerAttackingGameState, "You can't shoot a dead player");
@@ -983,7 +985,7 @@ public class GameTest {
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
             .getPosition(),
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        123, GameWeaponType.SHOTGUN.getDamage(),
+        123, GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
         testSequenceGenerator.getNext(),
         PING_MLS);
     assertNull(playerAttackingGameState, "You can't shoot a non-existing player");
@@ -1023,7 +1025,7 @@ public class GameTest {
               .getPosition(),
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          GameWeaponType.SHOTGUN.getDamage(),
+          GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
@@ -1033,7 +1035,7 @@ public class GameTest {
             .getPosition(),
         shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        GameWeaponType.SHOTGUN.getDamage(),
+        GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
         testSequenceGenerator.getNext(),
         PING_MLS);
 
@@ -1090,7 +1092,7 @@ public class GameTest {
               me.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
               me.getPlayerStateChannel().getPlayerState().getPlayerId(),
               myTarget.getPlayerStateChannel().getPlayerState().getPlayerId(),
-              GameWeaponType.PUNCH.getDamage(),
+              GameWeaponType.PUNCH.getDamageFactory().getDamage(game),
               testSequenceGenerator.getNext(),
               PING_MLS);
         } catch (Exception e) {
@@ -1291,7 +1293,7 @@ public class GameTest {
               .getPosition(),
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          GameWeaponType.SHOTGUN.getDamage(),
+          GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
@@ -1474,7 +1476,7 @@ public class GameTest {
               .getPosition(),
           playerRespawnedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           playerVictimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          GameWeaponType.SHOTGUN.getDamage(),
+          GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
@@ -1491,7 +1493,7 @@ public class GameTest {
               .getPosition(),
           killerPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           playerRespawnedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          GameWeaponType.SHOTGUN.getDamage(),
+          GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
@@ -1702,7 +1704,7 @@ public class GameTest {
             .getDamageAmplifier(
                 playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
                 victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
-                GameWeaponType.PUNCH.getDamage()),
+                GameWeaponType.PUNCH.getDamageFactory().getDamage(game)),
         0.001,
         "Damage should amplify after picking up quad damage power-up");
 
@@ -1711,7 +1713,7 @@ public class GameTest {
         playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
         playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        GameWeaponType.PUNCH.getDamage(),
+        GameWeaponType.PUNCH.getDamageFactory().getDamage(game),
         testSequenceGenerator.getNext(),
         PING_MLS);
 
@@ -1738,7 +1740,7 @@ public class GameTest {
         playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
         playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        GameWeaponType.PUNCH.getDamage(),
+        GameWeaponType.PUNCH.getDamageFactory().getDamage(game),
         testSequenceGenerator.getNext(),
         PING_MLS);
 
@@ -1799,7 +1801,7 @@ public class GameTest {
           playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
           playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          GameWeaponType.PUNCH.getDamage(),
+          GameWeaponType.PUNCH.getDamageFactory().getDamage(game),
           testSequenceGenerator.getNext(),
           PING_MLS);
       assertFalse(playerAttackingGameState.getPlayerAttacked().isDead(),
@@ -1851,7 +1853,7 @@ public class GameTest {
           playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
           playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          GameWeaponType.PUNCH.getDamage(),
+          GameWeaponType.PUNCH.getDamageFactory().getDamage(game),
           testSequenceGenerator.getNext(),
           PING_MLS);
       assertFalse(playerAttackingGameState.getPlayerAttacked().isDead(),
@@ -1863,7 +1865,7 @@ public class GameTest {
         playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
         playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        GameWeaponType.PUNCH.getDamage(),
+        GameWeaponType.PUNCH.getDamageFactory().getDamage(game),
         testSequenceGenerator.getNext(),
         PING_MLS);
     assertTrue(playerAttackingGameState.getPlayerAttacked().isDead(),
@@ -1921,7 +1923,7 @@ public class GameTest {
           playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
           playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          GameWeaponType.PUNCH.getDamage(),
+          GameWeaponType.PUNCH.getDamageFactory().getDamage(game),
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
@@ -1936,7 +1938,7 @@ public class GameTest {
             .getDamageAmplifier(
                 playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
                 victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
-                GameWeaponType.PUNCH.getDamage()),
+                GameWeaponType.PUNCH.getDamageFactory().getDamage(game)),
         0.001,
         "Damage amplifier has to default to 1");
 
@@ -2019,7 +2021,7 @@ public class GameTest {
               .getPosition(),
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          GameWeaponType.SHOTGUN.getDamage(),
+          GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
@@ -2063,7 +2065,7 @@ public class GameTest {
             .getPosition(),
         shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
         shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        GameWeaponType.PUNCH.getDamage(),
+        GameWeaponType.PUNCH.getDamageFactory().getDamage(game),
         testSequenceGenerator.getNext(),
         PING_MLS);
 
@@ -2317,7 +2319,7 @@ public class GameTest {
               .getPosition(),
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
           shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          GameWeaponType.SHOTGUN.getDamage(),
+          GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
           testSequenceGenerator.getNext(),
           PING_MLS);
     }

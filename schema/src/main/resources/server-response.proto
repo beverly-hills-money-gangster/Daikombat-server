@@ -49,8 +49,6 @@ message ServerResponse {
     optional int32 fragsToWin = 3;
     optional int32 movesUpdateFreqMls = 4;
     optional float playerSpeed = 5;
-    repeated WeaponInfo weaponsInfo = 6;
-    repeated ProjectileInfo projectileInfo = 7;
     optional int32 maxVisibility = 8;
   }
 
@@ -72,6 +70,8 @@ message ServerResponse {
     optional int32 playersOnline = 2;
     optional int32 maxGamePlayers = 3;
     optional int32 matchId = 4;
+    repeated WeaponInfo weaponsInfo = 5;
+    repeated ProjectileInfo projectileInfo = 6;
   }
 
   message ErrorEvent {

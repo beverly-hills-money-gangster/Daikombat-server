@@ -1,6 +1,5 @@
 package com.beverly.hills.money.gang.factory.response;
 
-import com.beverly.hills.money.gang.cheat.AntiCheat;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.powerup.PowerUp;
@@ -157,12 +156,8 @@ public interface ServerResponseFactory {
   static ServerResponse createServerInfo(
       Stream<GameReader> games,
       RPGPlayerClass playerClass) {
-
-    var playerSpeed = AntiCheat.getMaxSpeed(playerClass);
     var serverInfo = ServerResponse.ServerInfo.newBuilder();
     serverInfo.setFragsToWin(ServerConfig.FRAGS_PER_GAME);
-    serverInfo.setMaxVisibility(ServerConfig.MAX_VISIBILITY);
-    serverInfo.setPlayerSpeed(playerSpeed);
     serverInfo.setMovesUpdateFreqMls(ServerConfig.MOVES_UPDATE_FREQUENCY_MLS);
     serverInfo.setVersion(ServerConfig.VERSION);
 
@@ -173,9 +168,13 @@ public interface ServerResponseFactory {
       serverInfo.addGames(
           ServerResponse.GameInfo.newBuilder()
               .setGameId(game.gameId())
+              .setDescription(game.getGameConfig().getDescription())
+              .setTitle(game.getGameConfig().getTitle())
               .setPlayersOnline(game.playersOnline())
               .setMaxGamePlayers(game.maxPlayersAvailable())
               .setMatchId(game.matchId())
+              .setMaxVisibility(game.getGameConfig().getMaxVisibility())
+              .setPlayerSpeed(game.getGameConfig().getPlayerSpeed())
               .addAllWeaponsInfo(weaponsInfo.stream().map(gameWeaponInfo -> WeaponInfo.newBuilder()
                   .setWeaponType(getWeaponType(gameWeaponInfo.getGameWeaponType()))
                   .setDelayMls(gameWeaponInfo.getDelayMls())

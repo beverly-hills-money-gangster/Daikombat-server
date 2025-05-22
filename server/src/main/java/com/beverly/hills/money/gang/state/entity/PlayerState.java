@@ -1,6 +1,7 @@
 package com.beverly.hills.money.gang.state.entity;
 
 import com.beverly.hills.money.gang.cheat.AntiCheat;
+import com.beverly.hills.money.gang.config.GameRoomServerConfig;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.factory.rpg.RPGStatsFactory;
 import com.beverly.hills.money.gang.generator.SequenceGenerator;
@@ -66,7 +67,8 @@ public class PlayerState implements PlayerStateReader {
 
   public PlayerState(
       String name, Coordinates coordinates, int id, PlayerStateColor color,
-      RPGPlayerClass rpgPlayerClass) {
+      RPGPlayerClass rpgPlayerClass,
+      GameRoomServerConfig gameRoomServerConfig) {
     this.playerName = name;
     this.rpgPlayerClass = rpgPlayerClass;
     this.rpgStats = RPGStatsFactory.create(rpgPlayerClass);
@@ -75,7 +77,7 @@ public class PlayerState implements PlayerStateReader {
     this.playerId = id;
     defaultDamage();
     defaultDefence();
-    speed = AntiCheat.getMaxSpeed(rpgPlayerClass);
+    speed = AntiCheat.getMaxSpeed(rpgPlayerClass, gameRoomServerConfig);
     initImmortality();
   }
 

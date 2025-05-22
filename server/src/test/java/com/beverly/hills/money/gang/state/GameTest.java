@@ -394,7 +394,7 @@ public class GameTest {
 
     assertFalse(playerAttackingGameState.getPlayerAttacked().isDead(),
         "Just one shot. Nobody is dead yet");
-    assertEquals(100 - ServerConfig.DEFAULT_SHOTGUN_DAMAGE,
+    assertEquals(100 - game.getGameConfig().getDefaultShotgunDamage(),
         playerAttackingGameState.getPlayerAttacked().getHealth());
     PlayerState shooterState = game.getPlayersRegistry()
         .getPlayerState(
@@ -409,7 +409,7 @@ public class GameTest {
             shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
-    assertEquals(100 - ServerConfig.DEFAULT_SHOTGUN_DAMAGE, shotState.getHealth());
+    assertEquals(100 - game.getGameConfig().getDefaultShotgunDamage(), shotState.getHealth());
     assertFalse(shotState.isDead());
   }
 
@@ -429,7 +429,7 @@ public class GameTest {
     PlayerJoinedGameState shotPlayerConnectedGameState = fullyJoin(shotPlayerName, channel,
         PlayerStateColor.GREEN);
 
-    int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_SHOTGUN_DAMAGE);
+    int shotsToKill = (int) Math.ceil(100d / game.getGameConfig().getDefaultShotgunDamage());
 
     // after this loop, one player is almost dead
     for (int i = 0; i < shotsToKill - 1; i++) {
@@ -530,7 +530,7 @@ public class GameTest {
       PlayerJoinedGameState shotPlayerConnectedGameState = fullyJoin(shotPlayerName + j, channel,
           PlayerStateColor.GREEN);
 
-      int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_RAILGUN_DAMAGE);
+      int shotsToKill = (int) Math.ceil(100d / game.getGameConfig().getDefaultRailgunDamage());
 
       PlayerAttackingGameState lastShot = null;
       // after this loop, the player is dead
@@ -590,7 +590,7 @@ public class GameTest {
     PlayerJoinedGameState shotPlayerConnectedGameState = fullyJoin(shotPlayerName, channel,
         PlayerStateColor.GREEN);
 
-    int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_SHOTGUN_DAMAGE);
+    int shotsToKill = (int) Math.ceil(100d / game.getGameConfig().getDefaultShotgunDamage());
 
     // after this loop, one player is almost dead
     for (int i = 0; i < shotsToKill - 1; i++) {
@@ -663,7 +663,7 @@ public class GameTest {
         PlayerStateColor.GREEN);
 
     int shotsToKill = (int) Math.ceil(
-        100d / (ServerConfig.DEFAULT_SHOTGUN_DAMAGE * RPGStatsFactory.create(
+        100d / (game.getGameConfig().getDefaultShotgunDamage() * RPGStatsFactory.create(
                 RPGPlayerClass.ANGRY_SKELETON)
             .getNormalized(PlayerRPGStatType.ATTACK)));
 
@@ -795,7 +795,7 @@ public class GameTest {
     PlayerJoinedGameState shotPlayerConnectedGameState = fullyJoin(shotPlayerName, channel,
         PlayerStateColor.GREEN);
 
-    int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_SHOTGUN_DAMAGE);
+    int shotsToKill = (int) Math.ceil(100d / game.getGameConfig().getDefaultShotgunDamage());
 
     // after this loop, one player is almost dead
     for (int i = 0; i < shotsToKill - 1; i++) {
@@ -926,7 +926,7 @@ public class GameTest {
     PlayerJoinedGameState shotPlayerConnectedGameState = fullyJoin(shotPlayerName, channel,
         PlayerStateColor.GREEN);
 
-    int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_SHOTGUN_DAMAGE);
+    int shotsToKill = (int) Math.ceil(100d / game.getGameConfig().getDefaultShotgunDamage());
 
     // after this loop, one player is  dead
     for (int i = 0; i < shotsToKill; i++) {
@@ -1015,7 +1015,7 @@ public class GameTest {
     PlayerJoinedGameState shotPlayerConnectedGameState = fullyJoin(shotPlayerName, channel,
         PlayerStateColor.GREEN);
 
-    int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_SHOTGUN_DAMAGE);
+    int shotsToKill = (int) Math.ceil(100d / game.getGameConfig().getDefaultShotgunDamage());
 
     // after this loop, one player is  dead
     for (int i = 0; i < shotsToKill; i++) {
@@ -1116,7 +1116,7 @@ public class GameTest {
       assertFalse(playerStateChannel.getPlayerState().isDead(), "Nobody is dead");
       assertEquals(0, playerStateChannel.getPlayerState().getGameStats().getKills(),
           "Nobody got killed");
-      assertEquals(100 - ServerConfig.DEFAULT_PUNCH_DAMAGE,
+      assertEquals(100 - game.getGameConfig().getDefaultPunchDamage(),
           playerStateChannel.getPlayerState().getHealth(), "Everybody got hit once");
     });
   }
@@ -1283,7 +1283,7 @@ public class GameTest {
     PlayerJoinedGameState shotPlayerConnectedGameState = fullyJoin(shotPlayerName, channel,
         PlayerStateColor.GREEN);
 
-    int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_SHOTGUN_DAMAGE);
+    int shotsToKill = (int) Math.ceil(100d / game.getGameConfig().getDefaultShotgunDamage());
 
     // after this loop, one player is  dead
     for (int i = 0; i < shotsToKill; i++) {
@@ -1466,7 +1466,7 @@ public class GameTest {
     PlayerJoinedGameState killerPlayerConnectedGameState = fullyJoin("killer",
         mock(Channel.class), PlayerStateColor.GREEN);
 
-    int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_SHOTGUN_DAMAGE);
+    int shotsToKill = (int) Math.ceil(100d / game.getGameConfig().getDefaultShotgunDamage());
 
     // after this loop, victim player is dead
     for (int i = 0; i < shotsToKill; i++) {
@@ -1744,7 +1744,7 @@ public class GameTest {
         testSequenceGenerator.getNext(),
         PING_MLS);
 
-    assertEquals(100 - ServerConfig.DEFAULT_PUNCH_DAMAGE,
+    assertEquals(100 - game.getGameConfig().getDefaultPunchDamage(),
         playerAttackingGameState.getPlayerAttacked().getHealth());
 
     var result = game.pickupPowerUp(
@@ -1916,7 +1916,7 @@ public class GameTest {
         testSequenceGenerator.getNext(),
         PING_MLS);
 
-    int punchesToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_PUNCH_DAMAGE);
+    int punchesToKill = (int) Math.ceil(100d / game.getGameConfig().getDefaultPunchDamage());
     for (int i = 0; i < punchesToKill; i++) {
       game.attack(
           playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
@@ -2012,7 +2012,7 @@ public class GameTest {
     PlayerJoinedGameState shotPlayerConnectedGameState = fullyJoin(shotPlayerName, channel,
         PlayerStateColor.GREEN);
 
-    int shotsToKill = (int) Math.ceil(100d / ServerConfig.DEFAULT_SHOTGUN_DAMAGE);
+    int shotsToKill = (int) Math.ceil(100d / game.getGameConfig().getDefaultShotgunDamage());
 
     for (int i = 0; i < shotsToKill; i++) {
       game.attack(

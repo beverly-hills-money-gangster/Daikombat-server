@@ -3860,28 +3860,6 @@ private static final long serialVersionUID = 0L;
      * @return The movesUpdateFreqMls.
      */
     int getMovesUpdateFreqMls();
-
-    /**
-     * <code>optional float playerSpeed = 5;</code>
-     * @return Whether the playerSpeed field is set.
-     */
-    boolean hasPlayerSpeed();
-    /**
-     * <code>optional float playerSpeed = 5;</code>
-     * @return The playerSpeed.
-     */
-    float getPlayerSpeed();
-
-    /**
-     * <code>optional int32 maxVisibility = 8;</code>
-     * @return Whether the maxVisibility field is set.
-     */
-    boolean hasMaxVisibility();
-    /**
-     * <code>optional int32 maxVisibility = 8;</code>
-     * @return The maxVisibility.
-     */
-    int getMaxVisibility();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.ServerInfo}
@@ -4047,44 +4025,6 @@ private static final long serialVersionUID = 0L;
       return movesUpdateFreqMls_;
     }
 
-    public static final int PLAYERSPEED_FIELD_NUMBER = 5;
-    private float playerSpeed_ = 0F;
-    /**
-     * <code>optional float playerSpeed = 5;</code>
-     * @return Whether the playerSpeed field is set.
-     */
-    @java.lang.Override
-    public boolean hasPlayerSpeed() {
-      return ((bitField0_ & 0x00000008) != 0);
-    }
-    /**
-     * <code>optional float playerSpeed = 5;</code>
-     * @return The playerSpeed.
-     */
-    @java.lang.Override
-    public float getPlayerSpeed() {
-      return playerSpeed_;
-    }
-
-    public static final int MAXVISIBILITY_FIELD_NUMBER = 8;
-    private int maxVisibility_ = 0;
-    /**
-     * <code>optional int32 maxVisibility = 8;</code>
-     * @return Whether the maxVisibility field is set.
-     */
-    @java.lang.Override
-    public boolean hasMaxVisibility() {
-      return ((bitField0_ & 0x00000010) != 0);
-    }
-    /**
-     * <code>optional int32 maxVisibility = 8;</code>
-     * @return The maxVisibility.
-     */
-    @java.lang.Override
-    public int getMaxVisibility() {
-      return maxVisibility_;
-    }
-
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -4111,12 +4051,6 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000004) != 0)) {
         output.writeInt32(4, movesUpdateFreqMls_);
       }
-      if (((bitField0_ & 0x00000008) != 0)) {
-        output.writeFloat(5, playerSpeed_);
-      }
-      if (((bitField0_ & 0x00000010) != 0)) {
-        output.writeInt32(8, maxVisibility_);
-      }
       getUnknownFields().writeTo(output);
     }
 
@@ -4140,14 +4074,6 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000004) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(4, movesUpdateFreqMls_);
-      }
-      if (((bitField0_ & 0x00000008) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeFloatSize(5, playerSpeed_);
-      }
-      if (((bitField0_ & 0x00000010) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(8, maxVisibility_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -4181,17 +4107,6 @@ private static final long serialVersionUID = 0L;
         if (getMovesUpdateFreqMls()
             != other.getMovesUpdateFreqMls()) return false;
       }
-      if (hasPlayerSpeed() != other.hasPlayerSpeed()) return false;
-      if (hasPlayerSpeed()) {
-        if (java.lang.Float.floatToIntBits(getPlayerSpeed())
-            != java.lang.Float.floatToIntBits(
-                other.getPlayerSpeed())) return false;
-      }
-      if (hasMaxVisibility() != other.hasMaxVisibility()) return false;
-      if (hasMaxVisibility()) {
-        if (getMaxVisibility()
-            != other.getMaxVisibility()) return false;
-      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -4218,15 +4133,6 @@ private static final long serialVersionUID = 0L;
       if (hasMovesUpdateFreqMls()) {
         hash = (37 * hash) + MOVESUPDATEFREQMLS_FIELD_NUMBER;
         hash = (53 * hash) + getMovesUpdateFreqMls();
-      }
-      if (hasPlayerSpeed()) {
-        hash = (37 * hash) + PLAYERSPEED_FIELD_NUMBER;
-        hash = (53 * hash) + java.lang.Float.floatToIntBits(
-            getPlayerSpeed());
-      }
-      if (hasMaxVisibility()) {
-        hash = (37 * hash) + MAXVISIBILITY_FIELD_NUMBER;
-        hash = (53 * hash) + getMaxVisibility();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -4369,8 +4275,6 @@ private static final long serialVersionUID = 0L;
         version_ = "";
         fragsToWin_ = 0;
         movesUpdateFreqMls_ = 0;
-        playerSpeed_ = 0F;
-        maxVisibility_ = 0;
         return this;
       }
 
@@ -4429,14 +4333,6 @@ private static final long serialVersionUID = 0L;
         if (((from_bitField0_ & 0x00000008) != 0)) {
           result.movesUpdateFreqMls_ = movesUpdateFreqMls_;
           to_bitField0_ |= 0x00000004;
-        }
-        if (((from_bitField0_ & 0x00000010) != 0)) {
-          result.playerSpeed_ = playerSpeed_;
-          to_bitField0_ |= 0x00000008;
-        }
-        if (((from_bitField0_ & 0x00000020) != 0)) {
-          result.maxVisibility_ = maxVisibility_;
-          to_bitField0_ |= 0x00000010;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -4522,12 +4418,6 @@ private static final long serialVersionUID = 0L;
         if (other.hasMovesUpdateFreqMls()) {
           setMovesUpdateFreqMls(other.getMovesUpdateFreqMls());
         }
-        if (other.hasPlayerSpeed()) {
-          setPlayerSpeed(other.getPlayerSpeed());
-        }
-        if (other.hasMaxVisibility()) {
-          setMaxVisibility(other.getMaxVisibility());
-        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -4582,16 +4472,6 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000008;
                 break;
               } // case 32
-              case 45: {
-                playerSpeed_ = input.readFloat();
-                bitField0_ |= 0x00000010;
-                break;
-              } // case 45
-              case 64: {
-                maxVisibility_ = input.readInt32();
-                bitField0_ |= 0x00000020;
-                break;
-              } // case 64
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -5004,86 +4884,6 @@ private static final long serialVersionUID = 0L;
       public Builder clearMovesUpdateFreqMls() {
         bitField0_ = (bitField0_ & ~0x00000008);
         movesUpdateFreqMls_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private float playerSpeed_ ;
-      /**
-       * <code>optional float playerSpeed = 5;</code>
-       * @return Whether the playerSpeed field is set.
-       */
-      @java.lang.Override
-      public boolean hasPlayerSpeed() {
-        return ((bitField0_ & 0x00000010) != 0);
-      }
-      /**
-       * <code>optional float playerSpeed = 5;</code>
-       * @return The playerSpeed.
-       */
-      @java.lang.Override
-      public float getPlayerSpeed() {
-        return playerSpeed_;
-      }
-      /**
-       * <code>optional float playerSpeed = 5;</code>
-       * @param value The playerSpeed to set.
-       * @return This builder for chaining.
-       */
-      public Builder setPlayerSpeed(float value) {
-
-        playerSpeed_ = value;
-        bitField0_ |= 0x00000010;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional float playerSpeed = 5;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearPlayerSpeed() {
-        bitField0_ = (bitField0_ & ~0x00000010);
-        playerSpeed_ = 0F;
-        onChanged();
-        return this;
-      }
-
-      private int maxVisibility_ ;
-      /**
-       * <code>optional int32 maxVisibility = 8;</code>
-       * @return Whether the maxVisibility field is set.
-       */
-      @java.lang.Override
-      public boolean hasMaxVisibility() {
-        return ((bitField0_ & 0x00000020) != 0);
-      }
-      /**
-       * <code>optional int32 maxVisibility = 8;</code>
-       * @return The maxVisibility.
-       */
-      @java.lang.Override
-      public int getMaxVisibility() {
-        return maxVisibility_;
-      }
-      /**
-       * <code>optional int32 maxVisibility = 8;</code>
-       * @param value The maxVisibility to set.
-       * @return This builder for chaining.
-       */
-      public Builder setMaxVisibility(int value) {
-
-        maxVisibility_ = value;
-        bitField0_ |= 0x00000020;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 maxVisibility = 8;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearMaxVisibility() {
-        bitField0_ = (bitField0_ & ~0x00000020);
-        maxVisibility_ = 0;
         onChanged();
         return this;
       }
@@ -7018,6 +6818,28 @@ private static final long serialVersionUID = 0L;
      */
     com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfoOrBuilder getProjectileInfoOrBuilder(
         int index);
+
+    /**
+     * <code>optional float playerSpeed = 7;</code>
+     * @return Whether the playerSpeed field is set.
+     */
+    boolean hasPlayerSpeed();
+    /**
+     * <code>optional float playerSpeed = 7;</code>
+     * @return The playerSpeed.
+     */
+    float getPlayerSpeed();
+
+    /**
+     * <code>optional int32 maxVisibility = 8;</code>
+     * @return Whether the maxVisibility field is set.
+     */
+    boolean hasMaxVisibility();
+    /**
+     * <code>optional int32 maxVisibility = 8;</code>
+     * @return The maxVisibility.
+     */
+    int getMaxVisibility();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.GameInfo}
@@ -7215,6 +7037,44 @@ private static final long serialVersionUID = 0L;
       return projectileInfo_.get(index);
     }
 
+    public static final int PLAYERSPEED_FIELD_NUMBER = 7;
+    private float playerSpeed_ = 0F;
+    /**
+     * <code>optional float playerSpeed = 7;</code>
+     * @return Whether the playerSpeed field is set.
+     */
+    @java.lang.Override
+    public boolean hasPlayerSpeed() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <code>optional float playerSpeed = 7;</code>
+     * @return The playerSpeed.
+     */
+    @java.lang.Override
+    public float getPlayerSpeed() {
+      return playerSpeed_;
+    }
+
+    public static final int MAXVISIBILITY_FIELD_NUMBER = 8;
+    private int maxVisibility_ = 0;
+    /**
+     * <code>optional int32 maxVisibility = 8;</code>
+     * @return Whether the maxVisibility field is set.
+     */
+    @java.lang.Override
+    public boolean hasMaxVisibility() {
+      return ((bitField0_ & 0x00000020) != 0);
+    }
+    /**
+     * <code>optional int32 maxVisibility = 8;</code>
+     * @return The maxVisibility.
+     */
+    @java.lang.Override
+    public int getMaxVisibility() {
+      return maxVisibility_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -7246,6 +7106,12 @@ private static final long serialVersionUID = 0L;
       }
       for (int i = 0; i < projectileInfo_.size(); i++) {
         output.writeMessage(6, projectileInfo_.get(i));
+      }
+      if (((bitField0_ & 0x00000010) != 0)) {
+        output.writeFloat(7, playerSpeed_);
+      }
+      if (((bitField0_ & 0x00000020) != 0)) {
+        output.writeInt32(8, maxVisibility_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -7279,6 +7145,14 @@ private static final long serialVersionUID = 0L;
       for (int i = 0; i < projectileInfo_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(6, projectileInfo_.get(i));
+      }
+      if (((bitField0_ & 0x00000010) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(7, playerSpeed_);
+      }
+      if (((bitField0_ & 0x00000020) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(8, maxVisibility_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -7319,6 +7193,17 @@ private static final long serialVersionUID = 0L;
           .equals(other.getWeaponsInfoList())) return false;
       if (!getProjectileInfoList()
           .equals(other.getProjectileInfoList())) return false;
+      if (hasPlayerSpeed() != other.hasPlayerSpeed()) return false;
+      if (hasPlayerSpeed()) {
+        if (java.lang.Float.floatToIntBits(getPlayerSpeed())
+            != java.lang.Float.floatToIntBits(
+                other.getPlayerSpeed())) return false;
+      }
+      if (hasMaxVisibility() != other.hasMaxVisibility()) return false;
+      if (hasMaxVisibility()) {
+        if (getMaxVisibility()
+            != other.getMaxVisibility()) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -7353,6 +7238,15 @@ private static final long serialVersionUID = 0L;
       if (getProjectileInfoCount() > 0) {
         hash = (37 * hash) + PROJECTILEINFO_FIELD_NUMBER;
         hash = (53 * hash) + getProjectileInfoList().hashCode();
+      }
+      if (hasPlayerSpeed()) {
+        hash = (37 * hash) + PLAYERSPEED_FIELD_NUMBER;
+        hash = (53 * hash) + java.lang.Float.floatToIntBits(
+            getPlayerSpeed());
+      }
+      if (hasMaxVisibility()) {
+        hash = (37 * hash) + MAXVISIBILITY_FIELD_NUMBER;
+        hash = (53 * hash) + getMaxVisibility();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -7503,6 +7397,8 @@ private static final long serialVersionUID = 0L;
           projectileInfoBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000020);
+        playerSpeed_ = 0F;
+        maxVisibility_ = 0;
         return this;
       }
 
@@ -7574,6 +7470,14 @@ private static final long serialVersionUID = 0L;
         if (((from_bitField0_ & 0x00000008) != 0)) {
           result.matchId_ = matchId_;
           to_bitField0_ |= 0x00000008;
+        }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          result.playerSpeed_ = playerSpeed_;
+          to_bitField0_ |= 0x00000010;
+        }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.maxVisibility_ = maxVisibility_;
+          to_bitField0_ |= 0x00000020;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -7686,6 +7590,12 @@ private static final long serialVersionUID = 0L;
             }
           }
         }
+        if (other.hasPlayerSpeed()) {
+          setPlayerSpeed(other.getPlayerSpeed());
+        }
+        if (other.hasMaxVisibility()) {
+          setMaxVisibility(other.getMaxVisibility());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -7758,6 +7668,16 @@ private static final long serialVersionUID = 0L;
                 }
                 break;
               } // case 50
+              case 61: {
+                playerSpeed_ = input.readFloat();
+                bitField0_ |= 0x00000040;
+                break;
+              } // case 61
+              case 64: {
+                maxVisibility_ = input.readInt32();
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 64
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -8413,6 +8333,86 @@ private static final long serialVersionUID = 0L;
           projectileInfo_ = null;
         }
         return projectileInfoBuilder_;
+      }
+
+      private float playerSpeed_ ;
+      /**
+       * <code>optional float playerSpeed = 7;</code>
+       * @return Whether the playerSpeed field is set.
+       */
+      @java.lang.Override
+      public boolean hasPlayerSpeed() {
+        return ((bitField0_ & 0x00000040) != 0);
+      }
+      /**
+       * <code>optional float playerSpeed = 7;</code>
+       * @return The playerSpeed.
+       */
+      @java.lang.Override
+      public float getPlayerSpeed() {
+        return playerSpeed_;
+      }
+      /**
+       * <code>optional float playerSpeed = 7;</code>
+       * @param value The playerSpeed to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPlayerSpeed(float value) {
+
+        playerSpeed_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional float playerSpeed = 7;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPlayerSpeed() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        playerSpeed_ = 0F;
+        onChanged();
+        return this;
+      }
+
+      private int maxVisibility_ ;
+      /**
+       * <code>optional int32 maxVisibility = 8;</code>
+       * @return Whether the maxVisibility field is set.
+       */
+      @java.lang.Override
+      public boolean hasMaxVisibility() {
+        return ((bitField0_ & 0x00000080) != 0);
+      }
+      /**
+       * <code>optional int32 maxVisibility = 8;</code>
+       * @return The maxVisibility.
+       */
+      @java.lang.Override
+      public int getMaxVisibility() {
+        return maxVisibility_;
+      }
+      /**
+       * <code>optional int32 maxVisibility = 8;</code>
+       * @param value The maxVisibility to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxVisibility(int value) {
+
+        maxVisibility_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 maxVisibility = 8;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxVisibility() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        maxVisibility_ = 0;
+        onChanged();
+        return this;
       }
       @java.lang.Override
       public final Builder setUnknownFields(

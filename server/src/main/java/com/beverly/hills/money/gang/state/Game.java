@@ -3,6 +3,7 @@ package com.beverly.hills.money.gang.state;
 import static com.beverly.hills.money.gang.util.NetworkUtil.getChannelAddress;
 
 import com.beverly.hills.money.gang.cheat.AntiCheat;
+import com.beverly.hills.money.gang.config.GameRoomServerConfig;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
@@ -69,6 +70,9 @@ public class Game implements Closeable, GameReader {
   @Getter
   private final RPGWeaponInfo rpgWeaponInfo;
 
+  @Getter
+  private final GameRoomServerConfig gameConfig;
+
   private final AtomicInteger matchId = new AtomicInteger();
 
   public Game(
@@ -87,7 +91,9 @@ public class Game implements Closeable, GameReader {
     this.antiCheat = antiCheat;
     this.playerStatsRecoveryRegistry = playerStatsRecoveryRegistry;
     this.playersRegistry = new PlayersRegistry(playerStatsRecoveryRegistry);
+    this.gameConfig = new GameRoomServerConfig(this.id);
     this.rpgWeaponInfo = new RPGWeaponInfo(this);
+    LOG.info("Created game {}. Configs {}", this.id, gameConfig);
   }
 
   public void mergeConnection(int playerId, Channel channel) throws GameLogicError {
@@ -107,7 +113,7 @@ public class Game implements Closeable, GameReader {
     int playerId = playerSequenceGenerator.getNext();
     Coordinates spawn = spawner.spawnPlayer(this);
     PlayerState connectedPlayerState = new PlayerState(
-        playerName, spawn, playerId, color, rpgPlayerClass);
+        playerName, spawn, playerId, color, rpgPlayerClass, gameConfig);
     // recover game stats if we can
     Optional.ofNullable(recoveryPlayerId).flatMap(
         playerStatsRecoveryRegistry::getStats).ifPresent(

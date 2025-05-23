@@ -16,6 +16,7 @@ import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType;
 import com.beverly.hills.money.gang.proto.Vector;
+import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.state.PlayerRPGStatType;
 import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
 import java.io.IOException;
@@ -31,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_POWER_UPS_ENABLED", value = "false")
 @SetEnvironmentVariable(key = "GAME_SERVER_TELEPORTS_ENABLED", value = "false")
@@ -43,6 +45,8 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
     value = "leonardo, raphael, donatello, michelangelo, r@phael")
 public class JoinGameTest extends AbstractGameServerTest {
 
+  @Autowired
+  private GameRoomRegistry gameRoomRegistry;
 
   /**
    * @given a running game server
@@ -53,9 +57,10 @@ public class JoinGameTest extends AbstractGameServerTest {
   @ValueSource(ints = {0, 1, 2})
   public void testJoinGame(int playerClassNumber) throws Exception {
     int gameIdToConnectTo = 0;
+    var game = gameRoomRegistry.getGame(gameIdToConnectTo);
     var expectedPlayerSpeed =
         RPGStatsFactory.create(RPGPlayerClass.values()[playerClassNumber]).getNormalized(
-            PlayerRPGStatType.RUN_SPEED) * ServerConfig.PLAYER_SPEED;
+            PlayerRPGStatType.RUN_SPEED) * game.getGameConfig().getPlayerSpeed();
     GameConnection gameConnection = createGameConnection("localhost", port);
     gameConnection.write(
         JoinGameCommand.newBuilder()

@@ -4,16 +4,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
+import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.state.GameProjectileType;
 import com.beverly.hills.money.gang.state.GameWeaponType;
 import java.io.IOException;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_POWER_UPS_ENABLED", value = "false")
 @SetEnvironmentVariable(key = "GAME_SERVER_TELEPORTS_ENABLED", value = "false")
@@ -24,13 +27,16 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 @SetEnvironmentVariable(key = "GAME_SERVER_SPAWN_IMMORTAL_MLS", value = "0")
 public class GameServerInfoTest extends AbstractGameServerTest {
 
+  @Autowired
+  private GameRoomRegistry gameRoomRegistry;
+
   /**
    * @given a running game server
    * @when player 1 requests server info
    * @then player 1 gets server info for all games
    */
   @Test
-  public void testGetServerInfoCommoner() throws IOException {
+  public void testGetServerInfoCommoner() throws IOException, GameLogicError {
     GameConnection gameConnection = createGameConnection("localhost", port);
 
     gameConnection.write(GetServerInfoCommand.newBuilder()
@@ -46,23 +52,23 @@ public class GameServerInfoTest extends AbstractGameServerTest {
     assertEquals(ServerConfig.MOVES_UPDATE_FREQUENCY_MLS,
         serverResponse.getServerInfo().getMovesUpdateFreqMls());
     assertEquals(ServerConfig.FRAGS_PER_GAME, serverResponse.getServerInfo().getFragsToWin());
-    assertEquals(ServerConfig.PLAYER_SPEED, serverResponse.getServerInfo().getPlayerSpeed());
-    assertEquals(ServerConfig.MAX_VISIBILITY, serverResponse.getServerInfo().getMaxVisibility());
     for (ServerResponse.GameInfo gameInfo : games) {
+      var game = gameRoomRegistry.getGame(gameInfo.getGameId());
       assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, gameInfo.getMaxGamePlayers());
       assertEquals(0, gameInfo.getPlayersOnline(), "Should be no connected players yet");
       assertEquals(0, gameInfo.getMatchId());
+      assertEquals(GameWeaponType.values().length, gameInfo.getWeaponsInfoList().size(),
+          "All attack weapons should have info");
+      assertEquals(GameProjectileType.values().length, gameInfo.getProjectileInfoList().size(),
+          "All attack projectiles should have info");
+      assertEquals(game.getGameConfig().getPlayerSpeed(), gameInfo.getPlayerSpeed());
+      assertEquals(game.getGameConfig().getMaxVisibility(), gameInfo.getMaxVisibility());
     }
-    assertEquals(GameWeaponType.values().length,
-        serverResponse.getServerInfo().getWeaponsInfoList().size(),
-        "All attack weapons should have info");
-    assertEquals(GameProjectileType.values().length,
-        serverResponse.getServerInfo().getProjectileInfoList().size(),
-        "All attack projectiles should have info");
     assertEquals(1, gameConnection.getGameNetworkStats().getReceivedMessages());
     assertTrue(gameConnection.getGameNetworkStats().getInboundPayloadBytes() > 0);
     assertEquals(1, gameConnection.getGameNetworkStats().getSentMessages());
     assertTrue(gameConnection.getGameNetworkStats().getOutboundPayloadBytes() > 0);
+
   }
 
 }

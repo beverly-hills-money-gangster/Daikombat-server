@@ -92,7 +92,11 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
         throw new GameLogicError("Unsupported event type. Try updating client.",
             GameErrorCode.COMMAND_NOT_RECOGNIZED);
       }
-      handler.handle(game, gameCommand);
+      if (handler.isValidEvent(gameCommand)) {
+        handler.handle(game, gameCommand);
+      } else {
+        throw new GameLogicError("Invalid event", GameErrorCode.COMMAND_NOT_RECOGNIZED);
+      }
     } finally {
       MDC.remove(MDC_PLAYER_ID);
       MDC.remove(MDC_GAME_ID);

@@ -14,6 +14,7 @@ import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.Vector;
+import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.spawner.Spawner;
 import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_POWER_UPS_ENABLED", value = "false")
@@ -31,9 +33,11 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 @SetEnvironmentVariable(key = "GAME_SERVER_SPAWN_IMMORTAL_MLS", value = "0")
 public class MoveEventTest extends AbstractGameServerTest {
 
-
   @SpyBean
   private Spawner spawner;
+
+  @Autowired
+  private GameRoomRegistry gameRoomRegistry;
 
   /**
    * @given a running server with 2 connected players
@@ -42,14 +46,15 @@ public class MoveEventTest extends AbstractGameServerTest {
    */
   @Test
   public void testMove() throws Exception {
-    int gameIdToConnectTo = 2;
+    int gameIdToConnectTo = 0;
+    var game = gameRoomRegistry.getGame(gameIdToConnectTo);
     doReturn(
         Coordinates.builder()
             .direction(createGameVector(0, 0))
             .position(createGameVector(0, 0)).build(),
         Coordinates.builder()
             .direction(createGameVector(0, 0))
-            .position(createGameVector(ServerConfig.MAX_VISIBILITY * 0.5f, 0))
+            .position(createGameVector(game.getGameConfig().getMaxVisibility() * 0.5f, 0))
             .build())
         .when(spawner).spawnPlayer(any());
     GameConnection movingPlayerConnection = createGameConnection("localhost",
@@ -140,14 +145,15 @@ public class MoveEventTest extends AbstractGameServerTest {
    */
   @Test
   public void testMoveFarAway() throws Exception {
-    int gameIdToConnectTo = 2;
+    int gameIdToConnectTo = 0;
+    var game = gameRoomRegistry.getGame(gameIdToConnectTo);
     doReturn(
         Coordinates.builder()
             .direction(createGameVector(0, 0))
             .position(createGameVector(0, 0)).build(),
         Coordinates.builder()
             .direction(createGameVector(0, 0))
-            .position(createGameVector(ServerConfig.MAX_VISIBILITY * 1.2f, 0))
+            .position(createGameVector(game.getGameConfig().getMaxVisibility() * 1.2f, 0))
             .build())
         .when(spawner).spawnPlayer(any());
 
@@ -158,7 +164,7 @@ public class MoveEventTest extends AbstractGameServerTest {
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
             .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("my player name")
-           .setGameId(gameIdToConnectTo).build());
+            .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(movingPlayerConnection.getResponse());
     ServerResponse mySpawn = movingPlayerConnection.getResponse().poll().get();
     ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
@@ -208,7 +214,7 @@ public class MoveEventTest extends AbstractGameServerTest {
    */
   @Test
   public void testMoveAscendingSequence() throws Exception {
-    int gameIdToConnectTo = 2;
+    int gameIdToConnectTo = 0;
     GameConnection movingPlayerConnection = createGameConnection("localhost",
         port);
     movingPlayerConnection.write(
@@ -280,7 +286,7 @@ public class MoveEventTest extends AbstractGameServerTest {
    */
   @Test
   public void testMoveOutOfOrderSequence() throws Exception {
-    int gameIdToConnectTo = 2;
+    int gameIdToConnectTo = 0;
     GameConnection movingPlayerConnection = createGameConnection("localhost",
         port);
     movingPlayerConnection.write(
@@ -288,7 +294,7 @@ public class MoveEventTest extends AbstractGameServerTest {
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
             .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("my player name")
-           .setGameId(gameIdToConnectTo).build());
+            .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(movingPlayerConnection.getResponse());
     ServerResponse mySpawn = movingPlayerConnection.getResponse().poll().get();
     ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
@@ -366,7 +372,7 @@ public class MoveEventTest extends AbstractGameServerTest {
    */
   @Test
   public void testMoveWrongPlayerId() throws Exception {
-    int gameIdToConnectTo = 2;
+    int gameIdToConnectTo = 0;
     GameConnection observerConnection = createGameConnection("localhost",
         port);
     observerConnection.write(

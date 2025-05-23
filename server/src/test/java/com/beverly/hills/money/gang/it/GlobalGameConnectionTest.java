@@ -36,7 +36,7 @@ public class GlobalGameConnectionTest extends AbstractGameServerTest {
    */
   @Test
   public void testLoadBalancedGameConnection() throws Exception {
-    int gameIdToConnectTo = 2;
+    int gameIdToConnectTo = 0;
     GameConnection movingPlayerConnection = createGameConnection( "localhost",
         port);
     movingPlayerConnection.write(

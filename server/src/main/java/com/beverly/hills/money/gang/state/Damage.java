@@ -1,14 +1,18 @@
 package com.beverly.hills.money.gang.state;
 
 import java.util.function.Function;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-public interface Damage {
+@Getter
+@RequiredArgsConstructor
+public class Damage {
 
-  double getMaxDistance();
+  private final int defaultDamage;
 
-  int getDefaultDamage();
+  private final double maxDistance;
 
-  int getAttackDelayMls();
+  private final int attackDelayMls;
 
-  Function<Double, Double> getDistanceDamageAmplifier();
+  private final Function<Double, Double> distanceDamageAmplifier;
 }

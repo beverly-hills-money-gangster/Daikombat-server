@@ -15,8 +15,10 @@ import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
 import com.beverly.hills.money.gang.proto.Vector;
 import com.beverly.hills.money.gang.proto.WeaponType;
+import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_POWER_UPS_ENABLED", value = "false")
 @SetEnvironmentVariable(key = "GAME_SERVER_TELEPORTS_ENABLED", value = "false")
@@ -26,6 +28,10 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 @SetEnvironmentVariable(key = "GAME_SERVER_SPAWN_IMMORTAL_MLS", value = "0")
 public class RespawnEventTest extends AbstractGameServerTest {
 
+
+  @Autowired
+  private GameRoomRegistry gameRoomRegistry;
+
   /**
    * @given a running server with 2 connected player
    * @when player 1 kills player 2 and then player 2 respawns
@@ -34,6 +40,7 @@ public class RespawnEventTest extends AbstractGameServerTest {
   @Test
   public void testRespawn() throws Exception {
     int gameIdToConnectTo = 0;
+    var gameConfig = gameRoomRegistry.getGame(gameIdToConnectTo).getGameConfig();
     String shooterPlayerName = "killer";
     GameConnection killerConnection = createGameConnection("localhost",
         port);
@@ -68,7 +75,7 @@ public class RespawnEventTest extends AbstractGameServerTest {
     var shooterSpawnEvent = shooterPlayerSpawn.getGameEvents().getEvents(0);
     float newPositionX = shooterSpawnEvent.getPlayer().getPosition().getX() + 0.1f;
     float newPositionY = shooterSpawnEvent.getPlayer().getPosition().getY() - 0.1f;
-    int shotsToKill = (int) Math.ceil(100D / ServerConfig.DEFAULT_SHOTGUN_DAMAGE);
+    int shotsToKill = (int) Math.ceil(100D / gameConfig.getDefaultShotgunDamage());
     for (int i = 0; i < shotsToKill; i++) {
       killerConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(shooterPlayerId)
@@ -142,6 +149,7 @@ public class RespawnEventTest extends AbstractGameServerTest {
   @Test
   public void testRespawnWrongMatchId() throws Exception {
     int gameIdToConnectTo = 0;
+    var gameConfig = gameRoomRegistry.getGame(gameIdToConnectTo).getGameConfig();
     String shooterPlayerName = "killer";
     GameConnection killerConnection = createGameConnection("localhost",
         port);
@@ -176,7 +184,7 @@ public class RespawnEventTest extends AbstractGameServerTest {
     var shooterSpawnEvent = shooterPlayerSpawn.getGameEvents().getEvents(0);
     float newPositionX = shooterSpawnEvent.getPlayer().getPosition().getX() + 0.1f;
     float newPositionY = shooterSpawnEvent.getPlayer().getPosition().getY() - 0.1f;
-    int shotsToKill = (int) Math.ceil(100D / ServerConfig.DEFAULT_SHOTGUN_DAMAGE);
+    int shotsToKill = (int) Math.ceil(100D / gameConfig.getDefaultShotgunDamage());
     for (int i = 0; i < shotsToKill; i++) {
       killerConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(shooterPlayerId)

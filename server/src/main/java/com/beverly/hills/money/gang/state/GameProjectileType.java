@@ -1,31 +1,17 @@
 package com.beverly.hills.money.gang.state;
 
-import com.beverly.hills.money.gang.config.ServerConfig;
-import java.util.function.Function;
+import com.beverly.hills.money.gang.factory.damage.DamageFactory;
+import com.beverly.hills.money.gang.factory.damage.PlasmaDamageFactory;
+import com.beverly.hills.money.gang.factory.damage.RocketDamageFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public enum GameProjectileType implements Damage {
-  ROCKET(ServerConfig.DEFAULT_ROCKET_DAMAGE, 1.75f, 0,
-      distance -> {
-        if (distance <= 1) {
-          return 1.0;
-        }
-        return 1.0 / distance;
-      }),
-  PLASMA(ServerConfig.DEFAULT_PLASMA_DAMAGE, 1f, 0, distance -> 1.0);
+public enum GameProjectileType {
+  ROCKET(new RocketDamageFactory()),
+  PLASMA(new PlasmaDamageFactory());
 
   @Getter
-  private final int defaultDamage;
-
-  @Getter
-  private final double maxDistance;
-
-  @Getter
-  private final int attackDelayMls;
-
-  @Getter
-  private final Function<Double, Double> distanceDamageAmplifier;
+  private final DamageFactory damageFactory;
 
 }

@@ -32,7 +32,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
    */
   @Test
   public void testExit() throws IOException, InterruptedException {
-    int gameToConnectTo = 1;
+    int gameToConnectTo = 0;
     GameConnection gameConnection1 = createGameConnection("localhost", port);
     gameConnection1.write(
         JoinGameCommand.newBuilder()

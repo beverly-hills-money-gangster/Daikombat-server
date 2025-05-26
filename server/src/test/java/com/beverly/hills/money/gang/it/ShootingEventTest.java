@@ -22,12 +22,12 @@ import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
 import com.beverly.hills.money.gang.proto.Vector;
 import com.beverly.hills.money.gang.proto.WeaponType;
+import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.spawner.Spawner;
 import com.beverly.hills.money.gang.state.GameProjectileType;
 import com.beverly.hills.money.gang.state.GameWeaponType;
 import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
-import com.beverly.hills.money.gang.state.entity.RPGWeaponInfo;
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Supplier;
@@ -35,6 +35,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_DEFAULT_RAILGUN_DAMAGE", value = "100")
@@ -48,6 +49,9 @@ public class ShootingEventTest extends AbstractGameServerTest {
 
   @SpyBean
   private Spawner spawner;
+
+  @Autowired
+  private GameRoomRegistry gameRoomRegistry;
 
   /**
    * @given a running server with 1 connected player
@@ -167,8 +171,10 @@ public class ShootingEventTest extends AbstractGameServerTest {
    */
   @Test
   public void testShootHit() throws Exception {
-
-    var shotgunInfo = RPGWeaponInfo.getWeaponInfo(RPGPlayerClass.WARRIOR, GameWeaponType.SHOTGUN)
+    int gameIdToConnectTo = 0;
+    var gameConfig = gameRoomRegistry.getGame(gameIdToConnectTo).getGameConfig();
+    var shotgunInfo = gameRoomRegistry.getGame(gameIdToConnectTo)
+        .getRpgWeaponInfo().getWeaponInfo(RPGPlayerClass.WARRIOR, GameWeaponType.SHOTGUN)
         .get();
     doReturn(Coordinates.builder()
         .position(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(0F).build())
@@ -178,8 +184,6 @@ public class ShootingEventTest extends AbstractGameServerTest {
                 .x((float) (shotgunInfo.getMaxDistance()) - 0.5f).y(0).build())
         .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(1F).build())
         .build()).when(spawner).spawnPlayer(any());
-
-    int gameIdToConnectTo = 0;
 
     GameConnection shooterConnection = createGameConnection("localhost", port);
     shooterConnection.write(
@@ -238,7 +242,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(100, shootingEvent.getPlayer().getHealth(), "Shooter player health is full");
     assertTrue(shootingEvent.hasAffectedPlayer(), "One player must be shot");
     assertEquals(shotPlayerId, shootingEvent.getAffectedPlayer().getPlayerId());
-    assertEquals(100 - ServerConfig.DEFAULT_SHOTGUN_DAMAGE,
+    assertEquals(100 - gameConfig.getDefaultShotgunDamage(),
         shootingEvent.getAffectedPlayer().getHealth());
     assertEquals(shotPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPosition().getX(),
         shootingEvent.getAffectedPlayer().getPosition().getX(),
@@ -270,7 +274,9 @@ public class ShootingEventTest extends AbstractGameServerTest {
   @Test
   public void testShootHitRocketLauncher() throws Exception {
 
-    var rocketLauncherInfo = RPGWeaponInfo.getWeaponInfo(RPGPlayerClass.WARRIOR,
+    int gameIdToConnectTo = 0;
+    var rocketLauncherInfo = gameRoomRegistry.getGame(gameIdToConnectTo)
+        .getRpgWeaponInfo().getWeaponInfo(RPGPlayerClass.WARRIOR,
             GameWeaponType.ROCKET_LAUNCHER)
         .get();
     doReturn(Coordinates.builder()
@@ -281,8 +287,6 @@ public class ShootingEventTest extends AbstractGameServerTest {
                 .x((float) (rocketLauncherInfo.getMaxDistance()) - 0.5f).y(0).build())
         .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(1F).build())
         .build()).when(spawner).spawnPlayer(any());
-
-    int gameIdToConnectTo = 0;
 
     GameConnection shooterConnection = createGameConnection("localhost", port);
     shooterConnection.write(
@@ -369,7 +373,9 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(100, shootingEvent.getPlayer().getHealth(), "Shooter player health is full");
     assertTrue(shootingEvent.hasAffectedPlayer(), "One player must be shot");
     assertEquals(shotPlayerId, shootingEvent.getAffectedPlayer().getPlayerId());
-    assertEquals(100 - GameProjectileType.ROCKET.getDefaultDamage(),
+    assertEquals(100 - GameProjectileType.ROCKET
+            .getDamageFactory().getDamage(gameRoomRegistry.getGame(gameIdToConnectTo))
+            .getDefaultDamage(),
         shootingEvent.getAffectedPlayer().getHealth());
     assertEquals(shotPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPosition().getX(),
         shootingEvent.getAffectedPlayer().getPosition().getX(),
@@ -400,9 +406,9 @@ public class ShootingEventTest extends AbstractGameServerTest {
    */
   @Test
   public void testShootHitPlasmagun() throws Exception {
-
-    var rocketLauncherInfo = RPGWeaponInfo.getWeaponInfo(RPGPlayerClass.WARRIOR,
-            GameWeaponType.PLASMAGUN)
+    int gameIdToConnectTo = 0;
+    var rocketLauncherInfo = gameRoomRegistry.getGame(gameIdToConnectTo).getRpgWeaponInfo()
+        .getWeaponInfo(RPGPlayerClass.WARRIOR, GameWeaponType.PLASMAGUN)
         .get();
     doReturn(Coordinates.builder()
         .position(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(0F).build())
@@ -412,8 +418,6 @@ public class ShootingEventTest extends AbstractGameServerTest {
                 .x((float) (rocketLauncherInfo.getMaxDistance()) - 0.5f).y(0).build())
         .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(1F).build())
         .build()).when(spawner).spawnPlayer(any());
-
-    int gameIdToConnectTo = 0;
 
     GameConnection shooterConnection = createGameConnection("localhost", port);
     shooterConnection.write(
@@ -500,7 +504,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(100, shootingEvent.getPlayer().getHealth(), "Shooter player health is full");
     assertTrue(shootingEvent.hasAffectedPlayer(), "One player must be shot");
     assertEquals(shotPlayerId, shootingEvent.getAffectedPlayer().getPlayerId());
-    assertEquals(100 - GameProjectileType.PLASMA.getDefaultDamage(),
+    assertEquals(100 - GameProjectileType.PLASMA.getDamageFactory()
+            .getDamage(gameRoomRegistry.getGame(gameIdToConnectTo)).getDefaultDamage(),
         shootingEvent.getAffectedPlayer().getHealth());
     assertEquals(shotPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPosition().getX(),
         shootingEvent.getAffectedPlayer().getPosition().getX(),
@@ -533,7 +538,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
    */
   @Test
   public void testShootHitVeryClose() throws Exception {
-
+    int gameIdToConnectTo = 0;
+    var gameConfig = gameRoomRegistry.getGame(gameIdToConnectTo).getGameConfig();
     doReturn(Coordinates.builder()
         .position(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(0F).build())
         .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(1F).build())
@@ -542,8 +548,6 @@ public class ShootingEventTest extends AbstractGameServerTest {
                 .build()) // standing in front of him
         .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(15F).build())
         .build()).when(spawner).spawnPlayer(any());
-
-    int gameIdToConnectTo = 0;
 
     GameConnection shooterConnection = createGameConnection("localhost", port);
     shooterConnection.write(
@@ -601,7 +605,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(100, shootingEvent.getPlayer().getHealth(), "Shooter player health is full");
     assertTrue(shootingEvent.hasAffectedPlayer(), "One player must be shot");
     assertEquals(shotPlayerId, shootingEvent.getAffectedPlayer().getPlayerId());
-    assertEquals(100 - ServerConfig.DEFAULT_SHOTGUN_DAMAGE * 3,
+    assertEquals(100 - gameConfig.getDefaultShotgunDamage() * 3,
         shootingEvent.getAffectedPlayer().getHealth(),
         "Damage should be amplified because we stand in front of the victim");
     assertEquals(shotPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPosition().getX(),
@@ -634,7 +638,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
    */
   @Test
   public void testShootHitClose() throws Exception {
-
+    int gameIdToConnectTo = 0;
+    var gameConfig = gameRoomRegistry.getGame(gameIdToConnectTo).getGameConfig();
     doReturn(Coordinates.builder()
         .position(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(0F).build())
         .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(1F).build())
@@ -643,8 +648,6 @@ public class ShootingEventTest extends AbstractGameServerTest {
                 .build()) // standing in front of him
         .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(1F).build())
         .build()).when(spawner).spawnPlayer(any());
-
-    int gameIdToConnectTo = 0;
 
     GameConnection shooterConnection = createGameConnection("localhost", port);
     shooterConnection.write(
@@ -703,7 +706,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(100, shootingEvent.getPlayer().getHealth(), "Shooter player health is full");
     assertTrue(shootingEvent.hasAffectedPlayer(), "One player must be shot");
     assertEquals(shotPlayerId, shootingEvent.getAffectedPlayer().getPlayerId());
-    assertEquals(100 - ServerConfig.DEFAULT_SHOTGUN_DAMAGE * 2,
+    assertEquals(100 - gameConfig.getDefaultShotgunDamage() * 2,
         shootingEvent.getAffectedPlayer().getHealth(),
         "Damage should be amplified because we stand in front of the victim");
     assertEquals(shotPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPosition().getX(),
@@ -737,6 +740,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
   @Test
   public void testPunchHit() throws Exception {
     int gameIdToConnectTo = 0;
+    var gameConfig = gameRoomRegistry.getGame(gameIdToConnectTo).getGameConfig();
     GameConnection punchingConnection = createGameConnection("localhost", port);
     punchingConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
@@ -793,7 +797,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(100, punchingEvent.getPlayer().getHealth(), "Puncher player health is full");
     assertTrue(punchingEvent.hasAffectedPlayer(), "One player must be punched");
     assertEquals(punchedPlayerId, punchingEvent.getAffectedPlayer().getPlayerId());
-    assertEquals(100 - ServerConfig.DEFAULT_PUNCH_DAMAGE,
+    assertEquals(100 - gameConfig.getDefaultPunchDamage(),
         punchingEvent.getAffectedPlayer().getHealth());
     assertEquals(punchedPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPosition().getX(),
         punchingEvent.getAffectedPlayer().getPosition().getX(),
@@ -850,6 +854,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
     emptyQueue(getShotConnection.getResponse());
     emptyQueue(shooterConnection.getResponse());
 
+    var maxDistance = weaponType.getDamageFactory()
+        .getDamage(gameRoomRegistry.getGame(gameIdToConnectTo)).getMaxDistance();
     shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
         .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setMatchId(0)
         .setGameId(gameIdToConnectTo)
@@ -858,8 +864,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
                 .setY(shooterSpawnEvent.getPlayer().getDirection().getY()).build())
         .setPosition(Vector.newBuilder()
             // too far
-            .setX((float) weaponType.getMaxDistance() * 2)
-            .setY((float) weaponType.getMaxDistance() * 2).build())
+            .setX((float) maxDistance * 2)
+            .setY((float) maxDistance * 2).build())
         .setAffectedPlayerId(shotPlayerId).build());
     Thread.sleep(1_000);
     assertEquals(0, getShotConnection.getResponse().size(),
@@ -878,20 +884,22 @@ public class ShootingEventTest extends AbstractGameServerTest {
   @EnumSource
   @ParameterizedTest
   public void testShootKillAllWeapons(GameWeaponType weaponType) throws Exception {
-    if (weaponType.getDefaultDamage() == 0) {
+    int gameIdToConnectTo = 0;
+    if (weaponType.getDamageFactory().getDamage(gameRoomRegistry.getGame(gameIdToConnectTo))
+        .getDefaultDamage() == 0) {
       // skip
       return;
     }
-    int gameIdToConnectTo = 0;
     String shooterPlayerName = "killer";
-    var shotgunInfo = RPGWeaponInfo.getWeaponInfo(RPGPlayerClass.WARRIOR, weaponType)
+    var weaponInfo = gameRoomRegistry.getGame(gameIdToConnectTo).getRpgWeaponInfo()
+        .getWeaponInfo(RPGPlayerClass.WARRIOR, weaponType)
         .get();
     doReturn(Coordinates.builder()
         .position(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(0F).build())
         .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(1F).build())
         .build(), Coordinates.builder().position(
             com.beverly.hills.money.gang.state.entity.Vector.builder()
-                .x((float) (shotgunInfo.getMaxDistance()) - 0.5f).y(0).build())
+                .x((float) (weaponInfo.getMaxDistance()) - 0.5f).y(0).build())
         .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(1F).build())
         .build()).when(spawner).spawnPlayer(any());
 
@@ -924,7 +932,9 @@ public class ShootingEventTest extends AbstractGameServerTest {
     var shooterSpawnEvent = shooterPlayerSpawn.getGameEvents().getEvents(0);
     float newPositionX = shooterSpawnEvent.getPlayer().getPosition().getX() + 0.1f;
     float newPositionY = shooterSpawnEvent.getPlayer().getPosition().getY() - 0.1f;
-    int shotsToKill = (int) Math.ceil(100D / weaponType.getDefaultDamage());
+    int shotsToKill = (int) Math.ceil(
+        100D / weaponType.getDamageFactory().getDamage(gameRoomRegistry.getGame(gameIdToConnectTo))
+            .getDefaultDamage());
     for (int i = 0; i < shotsToKill - 1; i++) {
       killerConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
@@ -945,7 +955,9 @@ public class ShootingEventTest extends AbstractGameServerTest {
       assertEquals(100, shootingEvent.getPlayer().getHealth(), "Shooter player health is full");
       assertTrue(shootingEvent.hasAffectedPlayer(), "One player must be shot");
       assertEquals(shotPlayerId, shootingEvent.getAffectedPlayer().getPlayerId());
-      assertEquals(100 - weaponType.getDefaultDamage() * (i + 1),
+      assertEquals(100 -
+              weaponType.getDamageFactory().getDamage(gameRoomRegistry.getGame(gameIdToConnectTo))
+                  .getDefaultDamage() * (i + 1),
           shootingEvent.getAffectedPlayer().getHealth());
     }
     waitUntilGetResponses(killerConnection.getResponse(), shotsToKill - 1);
@@ -1185,8 +1197,9 @@ public class ShootingEventTest extends AbstractGameServerTest {
   @Test
   public void testShootDeadPlayer() throws Exception {
     int gameIdToConnectTo = 0;
-    var shotgunInfo = RPGWeaponInfo.getWeaponInfo(RPGPlayerClass.WARRIOR, GameWeaponType.SHOTGUN)
-        .get();
+    var gameConfig = gameRoomRegistry.getGame(gameIdToConnectTo).getGameConfig();
+    var shotgunInfo = gameRoomRegistry.getGame(gameIdToConnectTo).getRpgWeaponInfo()
+        .getWeaponInfo(RPGPlayerClass.WARRIOR, GameWeaponType.SHOTGUN).get();
     doReturn(Coordinates.builder()
         .position(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(0F).build())
         .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(1F).build())
@@ -1218,7 +1231,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     var shooterSpawnEvent = shooterPlayerSpawn.getGameEvents().getEvents(0);
     float newPositionX = shooterSpawnEvent.getPlayer().getPosition().getX() + 0.1f;
     float newPositionY = shooterSpawnEvent.getPlayer().getPosition().getY() + 0.1f;
-    int shotsToKill = (int) Math.ceil(100D / ServerConfig.DEFAULT_SHOTGUN_DAMAGE);
+    int shotsToKill = (int) Math.ceil(100D / gameConfig.getDefaultShotgunDamage());
     for (int i = 0; i < shotsToKill; i++) {
       shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
@@ -1243,7 +1256,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
       assertEquals(100, shootingEvent.getPlayer().getHealth(), "Shooter player health is full");
       assertTrue(shootingEvent.hasAffectedPlayer(), "One player must be shot");
       assertEquals(shotPlayerId, shootingEvent.getAffectedPlayer().getPlayerId());
-      assertEquals(100 - ServerConfig.DEFAULT_SHOTGUN_DAMAGE * (i + 1),
+      assertEquals(100 - gameConfig.getDefaultShotgunDamage() * (i + 1),
           shootingEvent.getAffectedPlayer().getHealth());
     }
     emptyQueue(shooterConnection.getResponse());
@@ -1289,6 +1302,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         .build()).when(spawner).spawnPlayer(any());
 
     int gameIdToConnectTo = 0;
+    var gameConfig = gameRoomRegistry.getGame(gameIdToConnectTo).getGameConfig();
 
     GameConnection shooterConnection = createGameConnection("localhost", port);
     shooterConnection.write(
@@ -1334,7 +1348,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(newPositionX, shootingEvent.getPlayer().getPosition().getX());
     assertEquals(newPositionY, shootingEvent.getPlayer().getPosition().getY());
 
-    assertEquals(100 - ServerConfig.DEFAULT_SHOTGUN_DAMAGE * 3,
+    assertEquals(100 - gameConfig.getDefaultShotgunDamage() * 3,
         shootingEvent.getPlayer().getHealth(), "Shooter player health is reduced. "
             + "Damage should be amplified because we are shooting point blank");
     assertTrue(shootingEvent.hasAffectedPlayer(), "One player must be shot");

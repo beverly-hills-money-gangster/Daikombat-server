@@ -36,7 +36,7 @@ Game server can be configured using the following environment variables:
 - `GAME_SERVER_BLACKLISTED_WORDS` Blacklisted words. Affects chat messages and player names. Words
   should be separated by a comma (`,`) symbol. Case-insensitive. Example: `ABC,XYZ,QWE`. Not set by
   default.
-- `GAME_SERVER_GAMES_TO_CREATE` Games to create. Default - `10`.
+- `GAME_SERVER_GAMES_TO_CREATE` Games to create. Default - `1`.
 - `GAME_SERVER_MAX_PLAYERS_PER_GAME` Maximum number of players to join a game. Default - `25`. Total
   number of players on the server is `GAME_SERVER_GAMES_TO_CREATE*GAME_SERVER_MAX_PLAYERS_PER_GAME`.
 - `GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS` Frequency(in milliseconds) at which server notifies
@@ -83,6 +83,26 @@ Game server can be configured using the following environment variables:
 - `GAME_SERVER_RAILGUN_DELAY_MLS` Railgun attack delay(in milliseconds). Default - `1_700`
 - `GAME_SERVER_MINIGUN_DELAY_MLS` Minigun attack delay(in milliseconds). Default - `155`
 - `SENTRY_DSN` Sentry DSN. Not specified by default.
+
+Some environment variables can be overridden for a specific game room. The format
+is `<ROOM_ID>_<ENV_VAR_NAME>`. For example `0_GAME_SERVER_DEFAULT_SHOTGUN_DAMAGE=99` overrides
+`GAME_SERVER_DEFAULT_SHOTGUN_DAMAGE` variable for game room 0. Here is the list of all room-specific configs:
+- `GAME_SERVER_ROOM_TITLE`
+- `GAME_SERVER_ROOM_DESCRIPTION`
+- `GAME_SERVER_DEFAULT_SHOTGUN_DAMAGE`
+- `GAME_SERVER_DEFAULT_RAILGUN_DAMAGE`
+- `GAME_SERVER_DEFAULT_MINIGUN_DAMAGE`
+- `GAME_SERVER_DEFAULT_PLASMA_DAMAGE`
+- `GAME_SERVER_DEFAULT_ROCKET_DAMAGE`
+- `GAME_SERVER_DEFAULT_PUNCH_DAMAGE`
+- `GAME_SERVER_PUNCH_DELAY_MLS`
+- `GAME_SERVER_SHOTGUN_DELAY_MLS`
+- `GAME_SERVER_RAILGUN_DELAY_MLS`
+- `GAME_SERVER_ROCKET_LAUNCHER_DELAY_MLS`
+- `GAME_SERVER_PLASMAGUN_DELAY_MLS`
+- `GAME_SERVER_MINIGUN_DELAY_MLS`
+- `GAME_SERVER_PLAYER_SPEED`
+- `GAME_SERVER_MAX_VISIBILITY`
 
 Game client is also configurable through environments variables:
 

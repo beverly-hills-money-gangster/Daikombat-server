@@ -4,6 +4,7 @@ import static com.beverly.hills.money.gang.factory.response.ServerResponseFactor
 
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
+import com.beverly.hills.money.gang.state.GameReader;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
 import com.beverly.hills.money.gang.state.entity.Vector;
 import java.util.List;
@@ -46,7 +47,7 @@ public class GameScheduler {
             }
             game.getPlayersRegistry().allJoinedPlayers().forEach(
                 player -> Optional.of(
-                        getPlayerBufferedMoves(bufferedMoves, player.getPlayerState()))
+                        getPlayerBufferedMoves(bufferedMoves, player.getPlayerState(), game))
                     .filter(moves -> !moves.isEmpty())
                     .ifPresent(moves -> player.executeInPrimaryEventLoop(
                         () -> player.writeFlushBalanced(createMovesEventAllPlayers
@@ -61,7 +62,8 @@ public class GameScheduler {
   }
 
   private List<PlayerStateReader> getPlayerBufferedMoves(
-      List<PlayerStateReader> bufferedPlayerMoves, PlayerStateReader playerStateReader) {
+      List<PlayerStateReader> bufferedPlayerMoves, PlayerStateReader playerStateReader,
+      GameReader gameReader) {
     return bufferedPlayerMoves
         .stream()
         .filter(bufferedPlayerMove ->
@@ -69,7 +71,8 @@ public class GameScheduler {
         .filter(bufferedPlayerMove ->
             Vector.getDistance(
                 playerStateReader.getCoordinates().getPosition(),
-                bufferedPlayerMove.getCoordinates().getPosition()) < ServerConfig.MAX_VISIBILITY)
+                bufferedPlayerMove.getCoordinates().getPosition()) < gameReader.getGameConfig()
+                .getMaxVisibility())
         .collect(Collectors.toList());
   }
 

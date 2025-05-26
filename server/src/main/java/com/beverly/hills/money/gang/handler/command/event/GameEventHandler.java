@@ -9,6 +9,10 @@ import java.util.Set;
 public interface GameEventHandler {
 
 
+  default boolean isValidEvent(final PushGameEventCommand gameEventCommand) {
+    return true;
+  }
+
   Set<GameEventType> getEventTypes();
 
   void handle(Game game, PushGameEventCommand command) throws GameLogicError;

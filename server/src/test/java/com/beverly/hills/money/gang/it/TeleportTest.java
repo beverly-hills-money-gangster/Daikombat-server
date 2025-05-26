@@ -53,7 +53,7 @@ public class TeleportTest extends AbstractGameServerTest {
    * @then the player gets teleported
    */
   @Test
-  public void testTeleport() throws IOException, InterruptedException {
+  public void testTeleport() throws IOException {
     var teleportCoordinates = Coordinates.builder()
         .direction(
             com.beverly.hills.money.gang.state.entity.Vector.builder().y(1000).x(-1000).build())

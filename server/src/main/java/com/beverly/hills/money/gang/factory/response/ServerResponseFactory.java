@@ -1,6 +1,5 @@
 package com.beverly.hills.money.gang.factory.response;
 
-import com.beverly.hills.money.gang.cheat.AntiCheat;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.powerup.PowerUp;
@@ -35,7 +34,6 @@ import com.beverly.hills.money.gang.state.entity.PlayerState;
 import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
 import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
-import com.beverly.hills.money.gang.state.entity.RPGWeaponInfo;
 import com.beverly.hills.money.gang.teleport.Teleport;
 import java.util.List;
 import java.util.Optional;
@@ -158,33 +156,37 @@ public interface ServerResponseFactory {
   static ServerResponse createServerInfo(
       Stream<GameReader> games,
       RPGPlayerClass playerClass) {
-    var weaponsInfo = RPGWeaponInfo.getWeaponsInfo(playerClass);
-    var projectilesInfo = RPGWeaponInfo.getProjectilesInfo(playerClass);
-    var playerSpeed = AntiCheat.getMaxSpeed(playerClass);
     var serverInfo = ServerResponse.ServerInfo.newBuilder();
     serverInfo.setFragsToWin(ServerConfig.FRAGS_PER_GAME);
-    serverInfo.setMaxVisibility(ServerConfig.MAX_VISIBILITY);
-    serverInfo.setPlayerSpeed(playerSpeed);
     serverInfo.setMovesUpdateFreqMls(ServerConfig.MOVES_UPDATE_FREQUENCY_MLS);
     serverInfo.setVersion(ServerConfig.VERSION);
-    serverInfo.addAllWeaponsInfo(weaponsInfo.stream().map(gameWeaponInfo -> WeaponInfo.newBuilder()
-        .setWeaponType(getWeaponType(gameWeaponInfo.getGameWeaponType()))
-        .setDelayMls(gameWeaponInfo.getDelayMls())
-        .setMaxDistance(gameWeaponInfo.getMaxDistance())
-        .build()).collect(Collectors.toList()));
-    serverInfo.addAllProjectileInfo(
-        projectilesInfo.stream().map(projectileInfo -> ProjectileInfo.newBuilder()
-            .setProjectileType(getProjectileType(projectileInfo.getGameProjectileType()))
-            .setRadius(projectileInfo.getMaxDistance())
-            .build()).collect(Collectors.toList()));
-    games.forEach(game
-        -> serverInfo.addGames(
-        ServerResponse.GameInfo.newBuilder()
-            .setGameId(game.gameId())
-            .setPlayersOnline(game.playersOnline())
-            .setMaxGamePlayers(game.maxPlayersAvailable())
-            .setMatchId(game.matchId())
-            .build()));
+
+    games.forEach(game -> {
+      var rpgWeaponInfo = game.getRpgWeaponInfo();
+      var weaponsInfo = rpgWeaponInfo.getWeaponsInfo(playerClass);
+      var projectilesInfo = rpgWeaponInfo.getProjectilesInfo(playerClass);
+      serverInfo.addGames(
+          ServerResponse.GameInfo.newBuilder()
+              .setGameId(game.gameId())
+              .setDescription(game.getGameConfig().getDescription())
+              .setTitle(game.getGameConfig().getTitle())
+              .setPlayersOnline(game.playersOnline())
+              .setMaxGamePlayers(game.maxPlayersAvailable())
+              .setMatchId(game.matchId())
+              .setMaxVisibility(game.getGameConfig().getMaxVisibility())
+              .setPlayerSpeed(game.getGameConfig().getPlayerSpeed())
+              .addAllWeaponsInfo(weaponsInfo.stream().map(gameWeaponInfo -> WeaponInfo.newBuilder()
+                  .setWeaponType(getWeaponType(gameWeaponInfo.getGameWeaponType()))
+                  .setDelayMls(gameWeaponInfo.getDelayMls())
+                  .setMaxDistance(gameWeaponInfo.getMaxDistance())
+                  .build()).collect(Collectors.toList()))
+              .addAllProjectileInfo(
+                  projectilesInfo.stream().map(projectileInfo -> ProjectileInfo.newBuilder()
+                      .setProjectileType(getProjectileType(projectileInfo.getGameProjectileType()))
+                      .setRadius(projectileInfo.getMaxDistance())
+                      .build()).collect(Collectors.toList()))
+              .build());
+    });
 
     return ServerResponse.newBuilder()
         .setServerInfo(serverInfo)
@@ -200,6 +202,10 @@ public interface ServerResponseFactory {
     return ServerResponse.newBuilder()
         .setGameEvents(allPlayersMoves)
         .build();
+  }
+
+  static ServerResponse createPowerUpSpawn(PowerUp powerUp) {
+    return createPowerUpSpawn(List.of(powerUp));
   }
 
   static ServerResponse createPowerUpSpawn(List<PowerUp> powerUps) {

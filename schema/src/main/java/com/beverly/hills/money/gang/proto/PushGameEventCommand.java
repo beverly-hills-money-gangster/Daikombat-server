@@ -74,6 +74,14 @@ private static final long serialVersionUID = 0L;
      * <code>HEALTH_POWER_UP = 6;</code>
      */
     HEALTH_POWER_UP(6),
+    /**
+     * <code>BIG_AMMO_POWER_UP = 7;</code>
+     */
+    BIG_AMMO_POWER_UP(7),
+    /**
+     * <code>MEDIUM_AMMO_POWER_UP = 8;</code>
+     */
+    MEDIUM_AMMO_POWER_UP(8),
     UNRECOGNIZED(-1),
     ;
 
@@ -105,6 +113,14 @@ private static final long serialVersionUID = 0L;
      * <code>HEALTH_POWER_UP = 6;</code>
      */
     public static final int HEALTH_POWER_UP_VALUE = 6;
+    /**
+     * <code>BIG_AMMO_POWER_UP = 7;</code>
+     */
+    public static final int BIG_AMMO_POWER_UP_VALUE = 7;
+    /**
+     * <code>MEDIUM_AMMO_POWER_UP = 8;</code>
+     */
+    public static final int MEDIUM_AMMO_POWER_UP_VALUE = 8;
 
 
     public final int getNumber() {
@@ -138,6 +154,8 @@ private static final long serialVersionUID = 0L;
         case 4: return DEFENCE_POWER_UP;
         case 5: return TELEPORT;
         case 6: return HEALTH_POWER_UP;
+        case 7: return BIG_AMMO_POWER_UP;
+        case 8: return MEDIUM_AMMO_POWER_UP;
         default: return null;
       }
     }

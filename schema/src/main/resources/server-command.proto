@@ -75,5 +75,7 @@ message PushGameEventCommand {
     DEFENCE_POWER_UP = 4;
     TELEPORT = 5;
     HEALTH_POWER_UP = 6;
+    BIG_AMMO_POWER_UP = 7;
+    MEDIUM_AMMO_POWER_UP = 8;
   }
 }

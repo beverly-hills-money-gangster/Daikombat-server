@@ -9,38 +9,40 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class HealthPowerUp implements PowerUp {
+public class MediumAmmoPowerUp implements PowerUp {
+
+  private static final float MEDIUM_AMMO_AMPLIFIER = 0.5f;
 
   private final Spawner spawner;
 
   @Override
   public PowerUpType getType() {
-    return PowerUpType.HEALTH;
+    return PowerUpType.MEDIUM_AMMO;
   }
 
   @Override
   public Vector getSpawnPosition() {
-    return spawner.spawnHealth();
+    return spawner.spawnMediumAmmo();
   }
 
   @Override
   public void apply(PlayerState playerState) {
-    playerState.restoreHealth();
+    playerState.restoreAllAmmo(MEDIUM_AMMO_AMPLIFIER);
   }
 
   @Override
   public void revert(PlayerState playerState) {
-    // do nothing
+
   }
 
   @Override
   public int getSpawnPeriodMls() {
-    return ServerConfig.HEALTH_SPAWN_MLS;
+    return ServerConfig.AMMO_SPAWN_MLS;
   }
 
   @Override
   public int getLastsForMls() {
-    // health restore is instant
+    // ammo restore is instant
     return 0;
   }
 

@@ -8,15 +8,17 @@ import static com.beverly.hills.money.gang.factory.response.ServerResponseFactor
 import static com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType.ATTACK;
 
 import com.beverly.hills.money.gang.exception.GameLogicError;
-import com.beverly.hills.money.gang.factory.damage.DamageFactory;
 import com.beverly.hills.money.gang.factory.response.ServerResponseFactory;
+import com.beverly.hills.money.gang.proto.ProjectileType;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
+import com.beverly.hills.money.gang.proto.WeaponType;
 import com.beverly.hills.money.gang.state.Damage;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.GameProjectileType;
 import com.beverly.hills.money.gang.state.GameWeaponType;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
 import com.beverly.hills.money.gang.state.entity.GameOverGameState;
+import com.beverly.hills.money.gang.state.entity.PlayerAttackingGameState;
 import io.netty.channel.ChannelFutureListener;
 import java.util.Optional;
 import java.util.Set;
@@ -41,18 +43,32 @@ public class AttackGameEventHandler implements GameEventHandler {
   }
 
   @Override
-  public void handle(Game game, PushGameEventCommand gameCommand) throws GameLogicError {
-    Damage damage = getDamageFactory(gameCommand).getDamage(game);
-    var attackGameState = game.attack(
-        createCoordinates(gameCommand),
-        gameCommand.hasProjectile()
-            ? createVector(gameCommand.getProjectile().getPosition())
-            : createVector(gameCommand.getPosition()),
-        gameCommand.getPlayerId(),
-        getAffectedPlayerId(gameCommand, damage, game),
-        damage,
-        gameCommand.getSequence(),
-        gameCommand.getPingMls());
+  public void handle(Game game, PushGameEventCommand gameCommand) {
+    final PlayerAttackingGameState attackGameState;
+    if (gameCommand.hasWeaponType()) {
+      attackGameState = game.attackWeapon(
+          createCoordinates(gameCommand),
+          createVector(gameCommand.getPosition()),
+          gameCommand.getPlayerId(),
+          gameCommand.hasAffectedPlayerId() ? gameCommand.getAffectedPlayerId() : null,
+          getGameWeaponType(gameCommand.getWeaponType()),
+          gameCommand.getSequence(),
+          gameCommand.getPingMls());
+    } else if (gameCommand.hasProjectile()) {
+      var projectile = getGameProjectileType(gameCommand.getProjectile().getProjectileType());
+      attackGameState = game.attackProjectile(
+          createCoordinates(gameCommand),
+          createVector(gameCommand.getProjectile().getPosition()),
+          gameCommand.getPlayerId(),
+          getProjectileAffectedPlayerId(
+              gameCommand, projectile.getDamageFactory().getDamage(game), game),
+          projectile,
+          gameCommand.getSequence(),
+          gameCommand.getPingMls());
+    } else {
+      attackGameState = null;
+    }
+
     if (attackGameState == null) {
       LOG.debug("No attacking game state");
       return;
@@ -102,40 +118,33 @@ public class AttackGameEventHandler implements GameEventHandler {
         });
   }
 
-  private Integer getAffectedPlayerId(PushGameEventCommand gameCommand, Damage damage, Game game) {
-    if (gameCommand.hasAffectedPlayerId()) {
-      return gameCommand.getAffectedPlayerId();
-    } else if (gameCommand.hasProjectile()) {
-      return game.getPlayerWithinDamageRadius(
-              createVector(gameCommand.getProjectile().getPosition()), damage.getMaxDistance())
-          .map(PlayerStateReader::getPlayerId).orElse(null);
-    }
-    return null;
+  private Integer getProjectileAffectedPlayerId(PushGameEventCommand gameCommand, Damage damage,
+      Game game) {
+    return game.getPlayerWithinDamageRadius(
+            createVector(gameCommand.getProjectile().getPosition()), damage.getMaxDistance())
+        .map(PlayerStateReader::getPlayerId).orElse(null);
   }
 
-  private DamageFactory getDamageFactory(PushGameEventCommand pushGameEventCommand) {
-    if (pushGameEventCommand.hasWeaponType()) {
-      var weaponType = switch (pushGameEventCommand.getWeaponType()) {
-        case SHOTGUN -> GameWeaponType.SHOTGUN;
-        case PUNCH -> GameWeaponType.PUNCH;
-        case RAILGUN -> GameWeaponType.RAILGUN;
-        case MINIGUN -> GameWeaponType.MINIGUN;
-        case ROCKET_LAUNCHER -> GameWeaponType.ROCKET_LAUNCHER;
-        case PLASMAGUN -> GameWeaponType.PLASMAGUN;
-        default -> throw new IllegalArgumentException(
-            "Not supported weapon type " + pushGameEventCommand.getEventType());
-      };
-      return weaponType.getDamageFactory();
-    } else if (pushGameEventCommand.hasProjectile()) {
-      var projectileType = switch (pushGameEventCommand.getProjectile().getProjectileType()) {
-        case ROCKET -> GameProjectileType.ROCKET;
-        case PLASMA -> GameProjectileType.PLASMA;
-        default -> throw new IllegalArgumentException(
-            "Not supported projectile type " + pushGameEventCommand.getEventType());
-      };
-      return projectileType.getDamageFactory();
-    } else {
-      throw new IllegalArgumentException("Either projectile or weapon type should be set");
-    }
+  private GameWeaponType getGameWeaponType(WeaponType weaponType) {
+    return switch (weaponType) {
+      case SHOTGUN -> GameWeaponType.SHOTGUN;
+      case PUNCH -> GameWeaponType.PUNCH;
+      case RAILGUN -> GameWeaponType.RAILGUN;
+      case MINIGUN -> GameWeaponType.MINIGUN;
+      case ROCKET_LAUNCHER -> GameWeaponType.ROCKET_LAUNCHER;
+      case PLASMAGUN -> GameWeaponType.PLASMAGUN;
+      default -> throw new IllegalArgumentException(
+          "Not supported weapon type " + weaponType);
+    };
   }
+
+  private GameProjectileType getGameProjectileType(ProjectileType projectileType) {
+    return switch (projectileType) {
+      case ROCKET -> GameProjectileType.ROCKET;
+      case PLASMA -> GameProjectileType.PLASMA;
+      default -> throw new IllegalArgumentException(
+          "Not supported projectile type " + projectileType);
+    };
+  }
+
 }

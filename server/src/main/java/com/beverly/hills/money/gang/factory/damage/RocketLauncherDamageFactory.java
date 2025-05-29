@@ -7,8 +7,11 @@ public class RocketLauncherDamageFactory extends DamageFactory {
 
   @Override
   protected Damage createDamage(GameReader gameReader) {
-    return new Damage(0, 999,
-        gameReader.getGameConfig().getRocketLauncherDelayMls(),
-        distance -> 0.0);
+    return Damage.builder()
+        .defaultDamage(0)
+        .maxDistance(999)
+        .attackDelayMls(gameReader.getGameConfig().getRocketLauncherDelayMls())
+        .maxAmmo(gameReader.getGameConfig().getRocketLauncherMaxAmmo())
+        .distanceDamageAmplifier(distance -> 0.0).build();
   }
 }

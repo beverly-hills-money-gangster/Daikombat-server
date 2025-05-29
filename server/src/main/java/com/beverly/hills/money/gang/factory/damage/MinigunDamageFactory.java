@@ -7,8 +7,12 @@ public class MinigunDamageFactory extends DamageFactory {
 
   @Override
   protected Damage createDamage(GameReader gameReader) {
-    return new Damage(gameReader.getGameConfig().getDefaultMinigunDamage(), 7.0,
-        gameReader.getGameConfig().getMinigunDelayMls(),
-        distance -> 1.0);
+    return Damage.builder()
+        .defaultDamage(gameReader.getGameConfig().getDefaultMinigunDamage())
+        .maxDistance(7.0)
+        .attackDelayMls(gameReader.getGameConfig().getMinigunDelayMls())
+        .distanceDamageAmplifier(distance -> 1.0)
+        .maxAmmo(gameReader.getGameConfig().getMinigunMaxAmmo())
+        .build();
   }
 }

@@ -28,8 +28,12 @@ public class RPGWeaponInfo {
                 return GameWeaponInfo
                     .builder()
                     .gameWeaponType(weapon)
-                    .delayMls(Math.max((int) (damage.getAttackDelayMls() / gunSpeed), 150))
+                    .delayMls(Optional.ofNullable(damage.getAttackDelayMls())
+                        .map(delay -> Math.max((int) (delay / gunSpeed), 150))
+                        .orElse(null))
                     .maxDistance(damage.getMaxDistance())
+                    // TODO cover with a test
+                    .maxAmmo(damage.getMaxAmmo())
                     .build();
               })
           .collect(Collectors.toList());

@@ -54,6 +54,7 @@ message ServerResponse {
     optional WeaponType weaponType = 1;
     optional double maxDistance = 2;
     optional int32 delayMls = 3;
+    optional int32 maxAmmo = 4;
   }
 
   message ProjectileInfo {
@@ -145,6 +146,12 @@ message ServerResponse {
     optional int32 pingMls = 9;
     optional PlayerClass playerClass = 10;
     optional float speed = 11;
+    repeated PlayerCurrentWeaponAmmo currentAmmo = 12;
+  }
+
+  message PlayerCurrentWeaponAmmo {
+    optional WeaponType weapon = 1;
+    optional int32 ammo = 2;
   }
 
   message PlayerGameMatchStats {
@@ -162,6 +169,8 @@ message ServerResponse {
     INVISIBILITY = 1;
     DEFENCE = 2;
     HEALTH = 3;
+    MEDIUM_AMMO = 4;
+    BIG_AMMO = 5;
   }
 
 

@@ -1,13 +1,14 @@
 package com.beverly.hills.money.gang.state.entity;
 
 import com.beverly.hills.money.gang.cheat.AntiCheat;
-import com.beverly.hills.money.gang.config.GameRoomServerConfig;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.factory.rpg.RPGStatsFactory;
 import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
 import com.beverly.hills.money.gang.state.Damage;
+import com.beverly.hills.money.gang.state.GameReader;
+import com.beverly.hills.money.gang.state.GameWeaponType;
 import com.beverly.hills.money.gang.state.PlayerGameStats;
 import com.beverly.hills.money.gang.state.PlayerGameStatsReader;
 import com.beverly.hills.money.gang.state.PlayerRPGStatType;
@@ -48,6 +49,7 @@ public class PlayerState implements PlayerStateReader {
   private final AtomicInteger health = new AtomicInteger(DEFAULT_HP);
   private final AtomicLong immortalUntilMls = new AtomicLong();
   private final AtomicInteger lastReceivedEventSequence = new AtomicInteger(-1);
+  private final AmmoStorage ammoStorage;
 
   @Getter
   private final PlayerStateColor color;
@@ -68,7 +70,7 @@ public class PlayerState implements PlayerStateReader {
   public PlayerState(
       String name, Coordinates coordinates, int id, PlayerStateColor color,
       RPGPlayerClass rpgPlayerClass,
-      GameRoomServerConfig gameRoomServerConfig) {
+      GameReader gameReader) {
     this.playerName = name;
     this.rpgPlayerClass = rpgPlayerClass;
     this.rpgStats = RPGStatsFactory.create(rpgPlayerClass);
@@ -77,11 +79,12 @@ public class PlayerState implements PlayerStateReader {
     this.playerId = id;
     defaultDamage();
     defaultDefence();
-    speed = AntiCheat.getMaxSpeed(rpgPlayerClass, gameRoomServerConfig);
+    speed = AntiCheat.getMaxSpeed(rpgPlayerClass, gameReader.getGameConfig());
+    ammoStorage = new AmmoStorage(gameReader);
     initImmortality();
   }
 
-  private void initImmortality(){
+  private void initImmortality() {
     immortalUntilMls.set(System.currentTimeMillis() + ServerConfig.SPAWN_IMMORTAL_MLS);
   }
 
@@ -143,6 +146,17 @@ public class PlayerState implements PlayerStateReader {
     powerUps.clear();
   }
 
+  // TODO test
+  public void restoreAllAmmo(float ratio) {
+    for (GameWeaponType weaponType : GameWeaponType.values()) {
+      ammoStorage.restore(weaponType, ratio);
+    }
+  }
+
+  public boolean wasteAmmo(GameWeaponType gameWeaponType) {
+    return ammoStorage.wasteAmmo(gameWeaponType);
+  }
+
   public void quadDamage() {
     damageAmplifier.set(4);
   }
@@ -177,6 +191,7 @@ public class PlayerState implements PlayerStateReader {
     dead.set(false);
     lastReceivedEventSequence.set(-1);
     initImmortality();
+    restoreAllAmmo(1);
   }
 
   @Override
@@ -184,8 +199,16 @@ public class PlayerState implements PlayerStateReader {
     return playerGameStats;
   }
 
+  @Override
+  public AmmoStorageReader getAmmoStorageReader() {
+    return ammoStorage;
+  }
+
   public void getAttacked(final Damage attackDamage, final double damageAmplifier) {
-    if (System.currentTimeMillis() < immortalUntilMls.get()) {
+    if (attackDamage.getDefaultDamage() == null) {
+      LOG.warn("No damage. Check integration code.");
+      return;
+    } else if (System.currentTimeMillis() < immortalUntilMls.get()) {
       // not getting any damage if immortal
       return;
     }

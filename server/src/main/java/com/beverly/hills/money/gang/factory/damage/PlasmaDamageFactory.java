@@ -8,7 +8,9 @@ public class PlasmaDamageFactory extends DamageFactory {
 
   @Override
   protected Damage createDamage(GameReader gameReader) {
-    return new Damage(gameReader.getGameConfig().getDefaultPlasmaDamage(),
-        1f, 0, distance -> 1.0);
+    return Damage.builder()
+        .defaultDamage(gameReader.getGameConfig().getDefaultPlasmaDamage())
+        .maxDistance(1f)
+        .distanceDamageAmplifier(distance -> 1.0).build();
   }
 }

@@ -7,7 +7,9 @@ import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
+import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
+import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.state.GameProjectileType;
@@ -25,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_TELEPORTS_ENABLED", value = "false")
 @SetEnvironmentVariable(key = "GAME_SERVER_SPAWN_IMMORTAL_MLS", value = "0")
+@SetEnvironmentVariable(key = "GAME_SERVER_GAMES_TO_CREATE", value = "2")
 public class GameServerInfoTest extends AbstractGameServerTest {
 
   @Autowired
@@ -36,7 +39,7 @@ public class GameServerInfoTest extends AbstractGameServerTest {
    * @then player 1 gets server info for all games
    */
   @Test
-  public void testGetServerInfoCommoner() throws IOException, GameLogicError {
+  public void testGetServerInfo() throws IOException, GameLogicError {
     GameConnection gameConnection = createGameConnection("localhost", port);
 
     gameConnection.write(GetServerInfoCommand.newBuilder()
@@ -69,6 +72,63 @@ public class GameServerInfoTest extends AbstractGameServerTest {
     assertEquals(1, gameConnection.getGameNetworkStats().getSentMessages());
     assertTrue(gameConnection.getGameNetworkStats().getOutboundPayloadBytes() > 0);
 
+  }
+
+  /**
+   * @given a running game server with some players
+   * @when player 1 requests server info
+   * @then player 1 gets server info for all games
+   */
+  @Test
+  public void testGetServerInfoWithJoinedPlayers() throws IOException, GameLogicError {
+    int gameIdToConnectTo = 1;
+    int playersToConnect = 5;
+    for (int i = 0; i < playersToConnect; i++) {
+      GameConnection gameConnection = createGameConnection("localhost", port);
+      gameConnection.write(
+          JoinGameCommand.newBuilder()
+              .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+              .setPlayerClass(PlayerClass.WARRIOR)
+              .setPlayerName("my player name " + i)
+              .setGameId(gameIdToConnectTo).build());
+      waitUntilQueueNonEmpty(gameConnection.getResponse());
+      assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
+    }
+    GameConnection gameConnection = createGameConnection("localhost", port);
+    gameConnection.write(GetServerInfoCommand.newBuilder()
+        .setPlayerClass(PlayerClass.WARRIOR).build());
+    waitUntilQueueNonEmpty(gameConnection.getResponse());
+    assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
+    assertEquals(1, gameConnection.getResponse().size(), "Should be exactly one response");
+    ServerResponse serverResponse = gameConnection.getResponse().poll().get();
+    assertTrue(serverResponse.hasServerInfo(), "Must include server info only");
+    List<ServerResponse.GameInfo> games = serverResponse.getServerInfo().getGamesList();
+    assertEquals(ServerConfig.GAMES_TO_CREATE, games.size());
+    assertEquals(ServerConfig.VERSION, serverResponse.getServerInfo().getVersion());
+    assertEquals(ServerConfig.MOVES_UPDATE_FREQUENCY_MLS,
+        serverResponse.getServerInfo().getMovesUpdateFreqMls());
+    assertEquals(ServerConfig.FRAGS_PER_GAME, serverResponse.getServerInfo().getFragsToWin());
+    for (ServerResponse.GameInfo gameInfo : games) {
+      var game = gameRoomRegistry.getGame(gameInfo.getGameId());
+      assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, gameInfo.getMaxGamePlayers());
+      if (game.getId() == gameIdToConnectTo) {
+        assertEquals(playersToConnect, gameInfo.getPlayersOnline(),
+            "Game " + gameIdToConnectTo + " should have " + playersToConnect + " players online");
+      } else {
+        assertEquals(0, gameInfo.getPlayersOnline(), "Should be no connected players yet");
+      }
+      assertEquals(0, gameInfo.getMatchId());
+      assertEquals(GameWeaponType.values().length, gameInfo.getWeaponsInfoList().size(),
+          "All attack weapons should have info");
+      assertEquals(GameProjectileType.values().length, gameInfo.getProjectileInfoList().size(),
+          "All attack projectiles should have info");
+      assertEquals(game.getGameConfig().getPlayerSpeed(), gameInfo.getPlayerSpeed());
+      assertEquals(game.getGameConfig().getMaxVisibility(), gameInfo.getMaxVisibility());
+    }
+    assertEquals(1, gameConnection.getGameNetworkStats().getReceivedMessages());
+    assertTrue(gameConnection.getGameNetworkStats().getInboundPayloadBytes() > 0);
+    assertEquals(1, gameConnection.getGameNetworkStats().getSentMessages());
+    assertTrue(gameConnection.getGameNetworkStats().getOutboundPayloadBytes() > 0);
   }
 
 }

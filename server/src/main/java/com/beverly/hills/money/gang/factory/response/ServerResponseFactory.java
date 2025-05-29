@@ -13,6 +13,7 @@ import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStats;
 import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUp;
 import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType;
+import com.beverly.hills.money.gang.proto.ServerResponse.PlayerCurrentWeaponAmmo;
 import com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats;
 import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent;
 import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem;
@@ -37,6 +38,7 @@ import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
 import com.beverly.hills.money.gang.teleport.Teleport;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -175,11 +177,19 @@ public interface ServerResponseFactory {
               .setMatchId(game.matchId())
               .setMaxVisibility(game.getGameConfig().getMaxVisibility())
               .setPlayerSpeed(game.getGameConfig().getPlayerSpeed())
-              .addAllWeaponsInfo(weaponsInfo.stream().map(gameWeaponInfo -> WeaponInfo.newBuilder()
-                  .setWeaponType(getWeaponType(gameWeaponInfo.getGameWeaponType()))
-                  .setDelayMls(gameWeaponInfo.getDelayMls())
-                  .setMaxDistance(gameWeaponInfo.getMaxDistance())
-                  .build()).collect(Collectors.toList()))
+              .addAllWeaponsInfo(weaponsInfo.stream().map(gameWeaponInfo -> {
+                var builder = WeaponInfo.newBuilder()
+                    .setWeaponType(getWeaponType(gameWeaponInfo.getGameWeaponType()))
+                    .setDelayMls(gameWeaponInfo.getDelayMls())
+                    .setMaxDistance(gameWeaponInfo.getMaxDistance());
+                // TODO make sure nulls are handled properly in the game
+                Optional.ofNullable(gameWeaponInfo.getDelayMls()).ifPresent(
+                    builder::setDelayMls);
+                // TODO cover with a test
+                Optional.ofNullable(gameWeaponInfo.getMaxAmmo()).ifPresent(
+                    builder::setMaxAmmo);
+                return builder.build();
+              }).collect(Collectors.toList()))
               .addAllProjectileInfo(
                   projectilesInfo.stream().map(projectileInfo -> ProjectileInfo.newBuilder()
                       .setProjectileType(getProjectileType(projectileInfo.getGameProjectileType()))
@@ -245,8 +255,9 @@ public interface ServerResponseFactory {
         .build();
   }
 
-  static ServerResponse.GameEventPlayerStats createFullPlayerStats(PlayerStateReader playerReader) {
-    return GameEventPlayerStats.newBuilder()
+  static ServerResponse.GameEventPlayerStats createFullPlayerStats(
+      final PlayerStateReader playerReader) {
+    var builder = GameEventPlayerStats.newBuilder()
         .setPlayerName(playerReader.getPlayerName())
         .setPosition(createVector(playerReader.getCoordinates().getPosition()))
         .setDirection(createVector(playerReader.getCoordinates().getDirection()))
@@ -264,8 +275,17 @@ public interface ServerResponseFactory {
         .setSpeed(playerReader.getSpeed())
         .setGameMatchStats(PlayerGameMatchStats.newBuilder()
             .setDeaths(playerReader.getGameStats().getDeaths())
-            .setKills(playerReader.getGameStats().getKills()).build())
-        .build();
+            .setKills(playerReader.getGameStats().getKills()).build());
+    playerReader.getAmmoStorageReader().getCurrentAmmo().forEach(
+        (gameWeaponType, currentAmmo) -> {
+          if (currentAmmo == null) {
+            return;
+          }
+          builder.addCurrentAmmo(
+              PlayerCurrentWeaponAmmo.newBuilder().setWeapon(getWeaponType(gameWeaponType))
+                  .setAmmo(currentAmmo).build());
+        });
+    return builder.build();
   }
 
   static PlayerSkinColor createPlayerSkinColor(PlayerStateColor color) {
@@ -302,6 +322,8 @@ public interface ServerResponseFactory {
       case DEFENCE -> GamePowerUpType.DEFENCE;
       case INVISIBILITY -> GamePowerUpType.INVISIBILITY;
       case HEALTH -> GamePowerUpType.HEALTH;
+      case BIG_AMMO -> GamePowerUpType.BIG_AMMO;
+      case MEDIUM_AMMO -> GamePowerUpType.MEDIUM_AMMO;
     };
   }
 

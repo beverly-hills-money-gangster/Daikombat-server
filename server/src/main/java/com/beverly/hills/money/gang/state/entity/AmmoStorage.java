@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 
 public class AmmoStorage implements AmmoStorageReader {
@@ -24,11 +25,12 @@ public class AmmoStorage implements AmmoStorageReader {
   }
 
   public void restore(final GameWeaponType weaponType, final float ratio) {
-    int currentAmmo = storage.get(weaponType).getCurrentAmmo();
-    Optional.ofNullable(weaponType.getDamageFactory().getDamage(gameReader).getMaxAmmo()).ifPresent(
-        maxAmmo -> storage.put(weaponType,
-            new WeaponAmmo(Math.min(maxAmmo, currentAmmo + (int) (maxAmmo * Math.abs(ratio))))));
-
+    Optional.ofNullable(storage.get(weaponType)).ifPresent(weaponAmmo -> {
+      int currentAmmo = weaponAmmo.getCurrentAmmo();
+      Optional.ofNullable(weaponType.getDamageFactory().getDamage(gameReader).getMaxAmmo()).ifPresent(
+          maxAmmo -> storage.put(weaponType,
+              new WeaponAmmo(Math.min(maxAmmo, currentAmmo + (int) (maxAmmo * Math.abs(ratio))))));
+    });
   }
 
   public boolean wasteAmmo(final GameWeaponType weaponType) {

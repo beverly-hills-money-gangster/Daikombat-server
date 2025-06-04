@@ -49,10 +49,11 @@ public class Spawner {
       = Vector.builder().x(-13.984175f).y(17.946176f).build();
 
   private static final Vector BIG_AMMO_SPAWN_POSITION
-      = Vector.builder().x(-0.8076027f).y(18.229652f).build();
+      = Vector.builder().x(-24.69848f - 0.25f).y(4.108812f-0.1f).build();
+
 
   private static final Vector MEDIUM_AMMO_SPAWN_POSITION
-      = Vector.builder().x(-13.693601f).y(12.404632f).build();
+      = Vector.builder().x(-0.97069114f).y(18.165932f - 0.2f).build();
 
   private static final Vector DEFENCE_SPAWN_POSITION
       = Vector.builder().x(-24.609121f - 0.35f).y(11.956983f).build();

@@ -13,7 +13,6 @@ public abstract class DamageFactory {
 
   protected abstract Damage createDamage(GameReader gameReader);
 
-  // TODO test it
   public Damage getDamage(GameReader gameReader) {
     return Optional.ofNullable(gameRoomSpecificDamage.get(gameReader.gameId()))
         .orElseGet(() -> {

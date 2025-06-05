@@ -146,7 +146,6 @@ public class PlayerState implements PlayerStateReader {
     powerUps.clear();
   }
 
-  // TODO test
   public void restoreAllAmmo(float ratio) {
     for (GameWeaponType weaponType : GameWeaponType.values()) {
       ammoStorage.restore(weaponType, ratio);

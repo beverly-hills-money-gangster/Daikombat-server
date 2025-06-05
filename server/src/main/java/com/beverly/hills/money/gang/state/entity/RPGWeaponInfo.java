@@ -32,7 +32,6 @@ public class RPGWeaponInfo {
                         .map(delay -> Math.max((int) (delay / gunSpeed), 150))
                         .orElse(null))
                     .maxDistance(damage.getMaxDistance())
-                    // TODO cover with a test
                     .maxAmmo(damage.getMaxAmmo())
                     .build();
               })

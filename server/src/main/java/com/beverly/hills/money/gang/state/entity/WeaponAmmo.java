@@ -15,7 +15,16 @@ public class WeaponAmmo {
   }
 
   public boolean wasteAmmo() {
-    return ammoCounter.decrementAndGet() >= 0;
+    int currentValue = ammoCounter.get();
+    if (currentValue == 0) {
+      return false;
+    }
+    boolean success = ammoCounter.compareAndSet(currentValue, currentValue - 1);
+    if (success) {
+      return true;
+    } else {
+      return wasteAmmo();
+    }
   }
 
 }

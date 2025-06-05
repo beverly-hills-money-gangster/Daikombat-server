@@ -40,21 +40,17 @@ public class PowerUpPickGameEventHandler implements GameEventHandler {
 
   @Override
   public void handle(Game game, PushGameEventCommand gameCommand) {
-    LOG.info("Pickup {}", gameCommand);
     var result = game.pickupPowerUp(
         createCoordinates(gameCommand), getPowerUpType(gameCommand.getEventType()),
         gameCommand.getPlayerId(),
         gameCommand.getSequence(), gameCommand.getPingMls());
-    LOG.info("WTF 1");
     if (result == null) {
       LOG.warn("Can't process power-up");
       return;
     }
-    LOG.info("WTF 2");
     var serverResponse = createPowerUpPlayerServerResponse(result.getPlayerState());
     game.getPlayersRegistry().allJoinedPlayers()
         .forEach(stateChannel -> stateChannel.writeFlushPrimaryChannel(serverResponse));
-    LOG.info("Send server response {}", serverResponse);
     scheduler.schedule(result.getPowerUp().getLastsForMls(), () -> {
       if (!result.getPlayerState().isDead()) {
         LOG.debug("Revert power-up");

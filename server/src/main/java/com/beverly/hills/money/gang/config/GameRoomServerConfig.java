@@ -9,7 +9,6 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 
-// TODO add to readme
 @ToString
 public class GameRoomServerConfig {
 

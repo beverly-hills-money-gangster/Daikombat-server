@@ -1,6 +1,7 @@
 package com.beverly.hills.money.gang.it;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
@@ -120,6 +121,26 @@ public class GameServerInfoTest extends AbstractGameServerTest {
       assertEquals(0, gameInfo.getMatchId());
       assertEquals(GameWeaponType.values().length, gameInfo.getWeaponsInfoList().size(),
           "All attack weapons should have info");
+      gameInfo.getWeaponsInfoList().forEach(weaponInfo -> {
+        switch (weaponInfo.getWeaponType()) {
+          case PUNCH -> assertFalse(weaponInfo.hasMaxAmmo(), "Gauntlet has no ammo");
+          case MINIGUN ->
+              assertEquals(game.getGameConfig().getMinigunMaxAmmo(), weaponInfo.getMaxAmmo());
+          case RAILGUN ->
+              assertEquals(game.getGameConfig().getRailgunMaxAmmo(), weaponInfo.getMaxAmmo());
+          case ROCKET_LAUNCHER -> assertEquals(game.getGameConfig().getRocketLauncherMaxAmmo(),
+              weaponInfo.getMaxAmmo());
+          case SHOTGUN ->
+              assertEquals(game.getGameConfig().getShotgunMaxAmmo(), weaponInfo.getMaxAmmo());
+          case PLASMAGUN ->
+              assertEquals(game.getGameConfig().getPlasmagunMaxAmmo(), weaponInfo.getMaxAmmo());
+          case UNRECOGNIZED -> {
+            // do nothing
+          }
+          default -> throw new IllegalStateException(
+              weaponInfo.getWeaponType() + " is not covered by test");
+        }
+      });
       assertEquals(GameProjectileType.values().length, gameInfo.getProjectileInfoList().size(),
           "All attack projectiles should have info");
       assertEquals(game.getGameConfig().getPlayerSpeed(), gameInfo.getPlayerSpeed());

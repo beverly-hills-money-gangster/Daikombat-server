@@ -182,10 +182,8 @@ public interface ServerResponseFactory {
                     .setWeaponType(getWeaponType(gameWeaponInfo.getGameWeaponType()))
                     .setDelayMls(gameWeaponInfo.getDelayMls())
                     .setMaxDistance(gameWeaponInfo.getMaxDistance());
-                // TODO make sure nulls are handled properly in the game
                 Optional.ofNullable(gameWeaponInfo.getDelayMls()).ifPresent(
                     builder::setDelayMls);
-                // TODO cover with a test
                 Optional.ofNullable(gameWeaponInfo.getMaxAmmo()).ifPresent(
                     builder::setMaxAmmo);
                 return builder.build();

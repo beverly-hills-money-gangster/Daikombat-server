@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-// TODO cover with integration tests
 public class BigAmmoPowerUp implements PowerUp {
 
   private static final float BIG_AMMO_AMPLIFIER = 1;

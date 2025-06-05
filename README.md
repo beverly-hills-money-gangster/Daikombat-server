@@ -67,6 +67,7 @@ Game server can be configured using the following environment variables:
 - `GAME_SERVER_DEFENCE_LASTS_FOR_MLS` Time (in millisecond) defence lasts for. Default - `10_000`.
 - `GAME_SERVER_INVISIBILITY_SPAWN_MLS` Time (in millisecond) it takes to spawn an invisibility
   power-up orb. Default - `30_000`.
+- `GAME_SERVER_AMMO_SPAWN_MLS` Time (in millisecond) it takes to spawn ammo. Default - `30_000`.
 - `GAME_SERVER_HEALTH_SPAWN_MLS` Time (in millisecond) it takes to spawn a health power-up orb.
   Default - `35_000`.
 - `GAME_SERVER_INVISIBILITY_LASTS_FOR_MLS` Time (in millisecond) invisibility lasts for.
@@ -82,6 +83,11 @@ Game server can be configured using the following environment variables:
 - `GAME_SERVER_SHOTGUN_DELAY_MLS` Shotgun attack delay(in milliseconds). Default - `450`
 - `GAME_SERVER_RAILGUN_DELAY_MLS` Railgun attack delay(in milliseconds). Default - `1_700`
 - `GAME_SERVER_MINIGUN_DELAY_MLS` Minigun attack delay(in milliseconds). Default - `155`
+- `GAME_SERVER_SHOTGUN_MAX_AMMO` Shotgun max ammo. Default - `20`
+- `GAME_SERVER_RAILGUN_MAX_AMMO` Railgun max ammo. Default - `10`
+- `GAME_SERVER_MINIGUN_MAX_AMMO` Minigun max ammo. Default - `70`
+- `GAME_SERVER_PLASMAGUN_MAX_AMMO` Plasmagun max ammo. Default - `35`
+- `GAME_SERVER_ROCKET_LAUNCHER_MAX_AMMO` Rocket launcher max ammo. Default - `5`
 - `SENTRY_DSN` Sentry DSN. Not specified by default.
 
 Some environment variables can be overridden for a specific game room. The format
@@ -103,6 +109,11 @@ is `<ROOM_ID>_<ENV_VAR_NAME>`. For example `0_GAME_SERVER_DEFAULT_SHOTGUN_DAMAGE
 - `GAME_SERVER_MINIGUN_DELAY_MLS`
 - `GAME_SERVER_PLAYER_SPEED`
 - `GAME_SERVER_MAX_VISIBILITY`
+- `GAME_SERVER_SHOTGUN_MAX_AMMO`
+- `GAME_SERVER_RAILGUN_MAX_AMMO`
+- `GAME_SERVER_MINIGUN_MAX_AMMO`
+- `GAME_SERVER_PLASMAGUN_MAX_AMMO`
+- `GAME_SERVER_ROCKET_LAUNCHER_MAX_AMMO`
 
 Game client is also configurable through environments variables:
 

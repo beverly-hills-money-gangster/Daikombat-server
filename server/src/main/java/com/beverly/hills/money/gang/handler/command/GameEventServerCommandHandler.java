@@ -67,6 +67,9 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
             LOG.error("Game logic error", e);
             currentChannel.writeAndFlush(createErrorEvent(e))
                 .addListener(ChannelFutureListener.CLOSE);
+          } catch (Exception e) {
+            LOG.error("Exception occurred", e);
+            currentChannel.close();
           }
         }));
 
@@ -97,6 +100,9 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
       } else {
         throw new GameLogicError("Invalid event", GameErrorCode.COMMAND_NOT_RECOGNIZED);
       }
+    } catch (Exception e) {
+      LOG.error("Can't process command: " + gameCommand, e);
+      throw e;
     } finally {
       MDC.remove(MDC_PLAYER_ID);
       MDC.remove(MDC_GAME_ID);

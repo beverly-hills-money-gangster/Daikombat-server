@@ -7,15 +7,19 @@ public class ShotgunDamageFactory extends DamageFactory {
 
   @Override
   protected Damage createDamage(GameReader gameReader) {
-    return new Damage(gameReader.getGameConfig().getDefaultShotgunDamage(), 7.0,
-        gameReader.getGameConfig().getShotgunDelayMls(),
-        distance -> {
-          if (distance < 1) {
-            return 3.0;
-          } else if (distance < 2) {
-            return 2.0;
-          }
-          return 1.0;
-        });
+    return Damage.builder()
+        .defaultDamage(gameReader.getGameConfig().getDefaultShotgunDamage())
+        .maxDistance(7.0)
+        .attackDelayMls(gameReader.getGameConfig().getShotgunDelayMls())
+        .maxAmmo(gameReader.getGameConfig().getShotgunMaxAmmo())
+        .distanceDamageAmplifier(
+            distance -> {
+              if (distance < 1) {
+                return 3.0;
+              } else if (distance < 2) {
+                return 2.0;
+              }
+              return 1.0;
+            }).build();
   }
 }

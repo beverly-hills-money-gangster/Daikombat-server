@@ -8,8 +8,10 @@ public class PunchDamageFactory extends DamageFactory {
 
   @Override
   protected Damage createDamage(GameReader gameReader) {
-    return new Damage(gameReader.getGameConfig().getDefaultPunchDamage(),
-        1.2, gameReader.getGameConfig().getPunchDelayMls(),
-        distance -> 1.0);
+    return Damage.builder()
+        .defaultDamage(gameReader.getGameConfig().getDefaultPunchDamage())
+        .maxDistance(1.2)
+        .attackDelayMls(gameReader.getGameConfig().getPunchDelayMls())
+        .distanceDamageAmplifier(distance -> 1.0).build();
   }
 }

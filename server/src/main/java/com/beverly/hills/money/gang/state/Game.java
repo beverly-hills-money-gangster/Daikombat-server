@@ -92,6 +92,7 @@ public class Game implements Closeable, GameReader {
     this.playerStatsRecoveryRegistry = playerStatsRecoveryRegistry;
     this.playersRegistry = new PlayersRegistry(playerStatsRecoveryRegistry);
     this.gameConfig = new GameRoomServerConfig(this.id);
+    // TODO I don't like this reference escaping
     this.rpgWeaponInfo = new RPGWeaponInfo(this);
     LOG.info("Created game {}. Configs {}", this.id, gameConfig);
   }
@@ -113,7 +114,7 @@ public class Game implements Closeable, GameReader {
     int playerId = playerSequenceGenerator.getNext();
     Coordinates spawn = spawner.spawnPlayer(this);
     PlayerState connectedPlayerState = new PlayerState(
-        playerName, spawn, playerId, color, rpgPlayerClass, gameConfig);
+        playerName, spawn, playerId, color, rpgPlayerClass, this);
     // recover game stats if we can
     Optional.ofNullable(recoveryPlayerId).flatMap(
         playerStatsRecoveryRegistry::getStats).ifPresent(
@@ -177,14 +178,58 @@ public class Game implements Closeable, GameReader {
         .orElse(null);
   }
 
-  public PlayerAttackingGameState attack(
+  public PlayerAttackingGameState attackWeapon(
+      final Coordinates playerCoordinates,
+      final Vector attackPosition,
+      final int attackingPlayerId,
+      final Integer attackedPlayerId,
+      final GameWeaponType weaponType,
+      final int eventSequence,
+      final int pingMls) {
+    var attackingPlayerState = getPlayer(attackingPlayerId).orElse(null);
+    if (attackingPlayerState == null) {
+      LOG.warn("Non-existing player can't attack");
+      return null;
+    } else if (!attackingPlayerState.wasteAmmo(weaponType)) {
+      LOG.warn("Player wasted all ammo");
+      return null;
+    }
+    return attack(
+        playerCoordinates,
+        attackPosition,
+        attackingPlayerId,
+        attackedPlayerId,
+        weaponType.getDamageFactory().getDamage(this),
+        eventSequence,
+        pingMls);
+  }
+
+  public PlayerAttackingGameState attackProjectile(
+      final Coordinates playerCoordinates,
+      final Vector attackPosition,
+      final int attackingPlayerId,
+      final Integer attackedPlayerId,
+      final GameProjectileType projectileType,
+      final int eventSequence,
+      final int pingMls) {
+    return attack(
+        playerCoordinates,
+        attackPosition,
+        attackingPlayerId,
+        attackedPlayerId,
+        projectileType.getDamageFactory().getDamage(this),
+        eventSequence,
+        pingMls);
+  }
+
+  PlayerAttackingGameState attack(
       final Coordinates playerCoordinates,
       final Vector attackPosition,
       final int attackingPlayerId,
       final Integer attackedPlayerId,
       final Damage damage,
       final int eventSequence,
-      final int pingMls) throws GameLogicError {
+      final int pingMls) {
     PlayerState attackingPlayerState = getPlayer(attackingPlayerId).orElse(null);
     if (attackingPlayerState == null) {
       LOG.warn("Non-existing player can't attack");

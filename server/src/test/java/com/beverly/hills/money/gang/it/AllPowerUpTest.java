@@ -6,19 +6,21 @@ import static org.mockito.Mockito.verify;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.network.GameConnection;
+import com.beverly.hills.money.gang.powerup.BigAmmoPowerUp;
 import com.beverly.hills.money.gang.powerup.DefencePowerUp;
 import com.beverly.hills.money.gang.powerup.HealthPowerUp;
 import com.beverly.hills.money.gang.powerup.InvisibilityPowerUp;
+import com.beverly.hills.money.gang.powerup.MediumAmmoPowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.QuadDamagePowerUp;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
+import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType;
 import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem;
-import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.Vector;
 import java.io.IOException;
 import java.util.Arrays;
@@ -54,6 +56,12 @@ public class AllPowerUpTest extends AbstractGameServerTest {
 
   @SpyBean
   private HealthPowerUp healthPowerUp;
+
+  @SpyBean
+  private BigAmmoPowerUp bigAmmoPowerUp;
+
+  @SpyBean
+  private MediumAmmoPowerUp mediumAmmoPowerUp;
 
   @Autowired
   private List<PowerUp> allPowerUpBeans;
@@ -97,7 +105,8 @@ public class AllPowerUpTest extends AbstractGameServerTest {
         spawns, "All power-ups should be spawned");
 
     var allPowerUps = List.of(GameEventType.INVISIBILITY_POWER_UP, GameEventType.DEFENCE_POWER_UP,
-        GameEventType.QUAD_DAMAGE_POWER_UP, GameEventType.HEALTH_POWER_UP);
+        GameEventType.QUAD_DAMAGE_POWER_UP, GameEventType.HEALTH_POWER_UP,
+        GameEventType.BIG_AMMO_POWER_UP, GameEventType.MEDIUM_AMMO_POWER_UP);
 
     allPowerUps.forEach(gameEventType -> playerConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(playerId)

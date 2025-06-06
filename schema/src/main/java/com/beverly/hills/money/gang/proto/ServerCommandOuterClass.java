@@ -98,7 +98,7 @@ public final class ServerCommandOuterClass {
       "ameIdB\013\n\t_playerId\"v\n\016RespawnCommand\022\023\n\006" +
       "gameId\030\001 \001(\005H\000\210\001\001\022\025\n\010playerId\030\002 \001(\005H\001\210\001\001" +
       "\022\024\n\007matchId\030\003 \001(\005H\002\210\001\001B\t\n\007_gameIdB\013\n\t_pl" +
-      "ayerIdB\n\n\010_matchId\"\220\006\n\024PushGameEventComm" +
+      "ayerIdB\n\n\010_matchId\"\301\006\n\024PushGameEventComm" +
       "and\022\023\n\006gameId\030\001 \001(\005H\000\210\001\001\022I\n\teventType\030\002 " +
       "\001(\01621.daikombat.dto.PushGameEventCommand" +
       ".GameEventTypeH\001\210\001\001\022,\n\010position\030\003 \001(\0132\025." +
@@ -110,16 +110,17 @@ public final class ServerCommandOuterClass {
       "weaponType\030\n \001(\0162\031.daikombat.dto.WeaponT" +
       "ypeH\t\210\001\001\0227\n\nprojectile\030\013 \001(\0132\036.daikombat" +
       ".dto.ProjectileStatsH\n\210\001\001\022\024\n\007matchId\030\014 \001" +
-      "(\005H\013\210\001\001\"\223\001\n\rGameEventType\022\010\n\004MOVE\020\000\022\n\n\006A" +
+      "(\005H\013\210\001\001\"\304\001\n\rGameEventType\022\010\n\004MOVE\020\000\022\n\n\006A" +
       "TTACK\020\001\022\030\n\024QUAD_DAMAGE_POWER_UP\020\002\022\031\n\025INV" +
       "ISIBILITY_POWER_UP\020\003\022\024\n\020DEFENCE_POWER_UP" +
-      "\020\004\022\014\n\010TELEPORT\020\005\022\023\n\017HEALTH_POWER_UP\020\006B\t\n" +
-      "\007_gameIdB\014\n\n_eventTypeB\013\n\t_positionB\014\n\n_" +
-      "directionB\013\n\t_playerIdB\023\n\021_affectedPlaye" +
-      "rIdB\013\n\t_sequenceB\n\n\010_pingMlsB\r\n\013_telepor" +
-      "tIdB\r\n\013_weaponTypeB\r\n\013_projectileB\n\n\010_ma" +
-      "tchIdB&\n\"com.beverly.hills.money.gang.pr" +
-      "otoP\001b\006proto3"
+      "\020\004\022\014\n\010TELEPORT\020\005\022\023\n\017HEALTH_POWER_UP\020\006\022\025\n" +
+      "\021BIG_AMMO_POWER_UP\020\007\022\030\n\024MEDIUM_AMMO_POWE" +
+      "R_UP\020\010B\t\n\007_gameIdB\014\n\n_eventTypeB\013\n\t_posi" +
+      "tionB\014\n\n_directionB\013\n\t_playerIdB\023\n\021_affe" +
+      "ctedPlayerIdB\013\n\t_sequenceB\n\n\010_pingMlsB\r\n" +
+      "\013_teleportIdB\r\n\013_weaponTypeB\r\n\013_projecti" +
+      "leB\n\n\010_matchIdB&\n\"com.beverly.hills.mone" +
+      "y.gang.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

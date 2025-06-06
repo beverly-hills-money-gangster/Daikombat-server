@@ -7,8 +7,12 @@ public class RailgunDamageFactory extends DamageFactory {
 
   @Override
   protected Damage createDamage(GameReader gameReader) {
-    return new Damage(gameReader.getGameConfig().getDefaultRailgunDamage(), 10.0,
-        gameReader.getGameConfig().getRailgunDelayMls(),
-        distance -> 1.0);
+    return Damage.builder()
+        .defaultDamage(gameReader.getGameConfig().getDefaultRailgunDamage())
+        .maxDistance(10.0)
+        .attackDelayMls(gameReader.getGameConfig().getRailgunDelayMls())
+        .distanceDamageAmplifier(distance -> 1.0)
+        .maxAmmo(gameReader.getGameConfig().getRailgunMaxAmmo())
+        .build();
   }
 }

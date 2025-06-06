@@ -12,6 +12,8 @@ public class GameWeaponInfo {
 
   private final double maxDistance;
 
-  private final int delayMls;
+  private final Integer delayMls;
+
+  private final Integer maxAmmo;
 
 }

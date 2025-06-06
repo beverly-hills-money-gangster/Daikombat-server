@@ -22,6 +22,16 @@ public class TestConfig {
   public Spawner testSpawner() {
     return new Spawner() {
       @Override
+      public Vector spawnMediumAmmo() {
+        return MAIN_LOCATION;
+      }
+
+      @Override
+      public Vector spawnBigAmmo() {
+        return MAIN_LOCATION;
+      }
+
+      @Override
       public Vector spawnQuadDamage() {
         return MAIN_LOCATION;
       }
@@ -30,7 +40,6 @@ public class TestConfig {
       public Vector spawnInvisibility() {
         return MAIN_LOCATION;
       }
-
 
       @Override
       public Vector spawnDefence() {

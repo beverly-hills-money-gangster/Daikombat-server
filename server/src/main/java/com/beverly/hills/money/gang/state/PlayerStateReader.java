@@ -1,5 +1,6 @@
 package com.beverly.hills.money.gang.state;
 
+import com.beverly.hills.money.gang.state.entity.AmmoStorageReader;
 import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.PlayerState.PowerUpInEffect;
 import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
@@ -37,5 +38,7 @@ public interface PlayerStateReader {
   RPGPlayerClass getRpgPlayerClass();
 
   float getSpeed();
+
+  AmmoStorageReader getAmmoStorageReader();
 
 }

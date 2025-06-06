@@ -2,6 +2,7 @@ package com.beverly.hills.money.gang.config;
 
 import java.util.Optional;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.ToString;
 import lombok.experimental.Delegate;
 import org.apache.commons.lang3.ObjectUtils;
@@ -15,7 +16,7 @@ public class GameRoomServerConfig {
   @Delegate
   private final GameRoomServerConfigHolder gameRoomServerConfigHolder;
 
-  public GameRoomServerConfig(final Integer gameRoomId) {
+  public GameRoomServerConfig(@NonNull final Integer gameRoomId) {
     this.gameRoomId = gameRoomId;
     this.gameRoomServerConfigHolder = new GameRoomServerConfigHolder();
   }
@@ -29,12 +30,22 @@ public class GameRoomServerConfig {
         getRoomEnv("GAME_SERVER_ROOM_DESCRIPTION"), "");
     private final int defaultShotgunDamage = NumberUtils.toInt(
         getRoomEnv("GAME_SERVER_DEFAULT_SHOTGUN_DAMAGE"), 20);
+    private final int shotgunMaxAmmo = NumberUtils.toInt(
+        getRoomEnv("GAME_SERVER_SHOTGUN_MAX_AMMO"), 20);
+    private final int railgunMaxAmmo = NumberUtils.toInt(
+        getRoomEnv("GAME_SERVER_RAILGUN_MAX_AMMO"), 10);
     private final int defaultRailgunDamage = NumberUtils.toInt(
         getRoomEnv("GAME_SERVER_DEFAULT_RAILGUN_DAMAGE"), 75);
+    private final int minigunMaxAmmo = NumberUtils.toInt(
+        getRoomEnv("GAME_SERVER_MINIGUN_MAX_AMMO"), 70);
     private final int defaultMinigunDamage = NumberUtils.toInt(
         getRoomEnv("GAME_SERVER_DEFAULT_MINIGUN_DAMAGE"), 5);
+    private final int plasmagunMaxAmmo = NumberUtils.toInt(
+        getRoomEnv("GAME_SERVER_PLASMAGUN_MAX_AMMO"), 35);
     private final int defaultPlasmaDamage = NumberUtils.toInt(
         getRoomEnv("GAME_SERVER_DEFAULT_PLASMA_DAMAGE"), 10);
+    private final int rocketLauncherMaxAmmo = NumberUtils.toInt(
+        getRoomEnv("GAME_SERVER_ROCKET_LAUNCHER_MAX_AMMO"), 5);
     private final int defaultRocketDamage = NumberUtils.toInt(
         getRoomEnv("GAME_SERVER_DEFAULT_ROCKET_DAMAGE"), 75);
     private final int defaultPunchDamage = NumberUtils.toInt(

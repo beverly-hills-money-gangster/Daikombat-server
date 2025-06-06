@@ -3,9 +3,11 @@ package com.beverly.hills.money.gang.handler.command.event;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createCoordinates;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createPowerUpPlayerServerResponse;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createPowerUpSpawn;
+import static com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType.BIG_AMMO_POWER_UP;
 import static com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType.DEFENCE_POWER_UP;
 import static com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType.HEALTH_POWER_UP;
 import static com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType.INVISIBILITY_POWER_UP;
+import static com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType.MEDIUM_AMMO_POWER_UP;
 import static com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType.QUAD_DAMAGE_POWER_UP;
 
 import com.beverly.hills.money.gang.powerup.PowerUp;
@@ -32,7 +34,9 @@ public class PowerUpPickGameEventHandler implements GameEventHandler {
 
   @Getter
   private final Set<GameEventType> eventTypes = Set.of(
-      QUAD_DAMAGE_POWER_UP, INVISIBILITY_POWER_UP, DEFENCE_POWER_UP, HEALTH_POWER_UP);
+      QUAD_DAMAGE_POWER_UP, INVISIBILITY_POWER_UP,
+      DEFENCE_POWER_UP, HEALTH_POWER_UP,
+      BIG_AMMO_POWER_UP, MEDIUM_AMMO_POWER_UP);
 
   @Override
   public void handle(Game game, PushGameEventCommand gameCommand) {
@@ -47,7 +51,6 @@ public class PowerUpPickGameEventHandler implements GameEventHandler {
     var serverResponse = createPowerUpPlayerServerResponse(result.getPlayerState());
     game.getPlayersRegistry().allJoinedPlayers()
         .forEach(stateChannel -> stateChannel.writeFlushPrimaryChannel(serverResponse));
-
     scheduler.schedule(result.getPowerUp().getLastsForMls(), () -> {
       if (!result.getPlayerState().isDead()) {
         LOG.debug("Revert power-up");
@@ -76,6 +79,8 @@ public class PowerUpPickGameEventHandler implements GameEventHandler {
       case DEFENCE_POWER_UP -> PowerUpType.DEFENCE;
       case INVISIBILITY_POWER_UP -> PowerUpType.INVISIBILITY;
       case HEALTH_POWER_UP -> PowerUpType.HEALTH;
+      case BIG_AMMO_POWER_UP -> PowerUpType.BIG_AMMO;
+      case MEDIUM_AMMO_POWER_UP -> PowerUpType.MEDIUM_AMMO;
       default -> throw new IllegalArgumentException("Not-supported power-up " + gameEventType);
     };
   }

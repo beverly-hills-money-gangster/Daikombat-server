@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
+import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
@@ -20,6 +21,7 @@ import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
+import com.beverly.hills.money.gang.proto.ServerResponse.PlayerCurrentWeaponAmmo;
 import com.beverly.hills.money.gang.proto.Vector;
 import com.beverly.hills.money.gang.proto.WeaponType;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
@@ -78,6 +80,12 @@ public class ShootingEventTest extends AbstractGameServerTest {
     ServerResponse mySpawn = shooterConnection.getResponse().poll().get();
     int playerId = mySpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
     var mySpawnEvent = mySpawn.getGameEvents().getEvents(0);
+    Integer currentAmmo = mySpawnEvent.getPlayer()
+        .getCurrentAmmoList().stream()
+        .filter(playerCurrentWeaponAmmo -> playerCurrentWeaponAmmo.getWeapon()
+            .equals(getWeaponType(gameWeaponType)) && playerCurrentWeaponAmmo.hasAmmo())
+        .findFirst()
+        .map(PlayerCurrentWeaponAmmo::getAmmo).orElse(null);
     float newPositionX = mySpawnEvent.getPlayer().getPosition().getX() + 0.1f;
     float newPositionY = mySpawnEvent.getPlayer().getPosition().getY() - 0.1f;
     emptyQueue(shooterConnection.getResponse());
@@ -107,6 +115,17 @@ public class ShootingEventTest extends AbstractGameServerTest {
         shootingEvent.getPlayer().getDirection().getX(), "Direction shouldn't change");
     assertEquals(mySpawnEvent.getPlayer().getDirection().getY(),
         shootingEvent.getPlayer().getDirection().getY(), "Direction shouldn't change");
+
+    if (currentAmmo != null) {
+      var ammoAfterShooting = shootingEvent.getPlayer().getCurrentAmmoList().stream()
+          .filter(playerCurrentWeaponAmmo -> playerCurrentWeaponAmmo.getWeapon()
+              .equals(getWeaponType(gameWeaponType)))
+          .findFirst().map(PlayerCurrentWeaponAmmo::getAmmo)
+          .orElseThrow(() -> new IllegalStateException(gameWeaponType + " was not found"));
+
+      assertEquals(currentAmmo - 1, ammoAfterShooting, "Ammo should be decreased by 1");
+    }
+
     assertEquals(newPositionX, shootingEvent.getPlayer().getPosition().getX());
     assertEquals(newPositionY, shootingEvent.getPlayer().getPosition().getY());
 
@@ -117,6 +136,73 @@ public class ShootingEventTest extends AbstractGameServerTest {
         "Only 2 messages must be sent by shooter: join + shoot");
     assertTrue(shooterConnection.getResponse().list().isEmpty(),
         "Shooter shouldn't receive any new messages");
+  }
+
+  /**
+   * @given a running server with 1 connected player
+   * @when player 1 wastes all ammo
+   * @then no shooting events are published back to the observers
+   */
+  @EnumSource
+  @ParameterizedTest
+  public void testShootMissWasteAllAmmo(GameWeaponType gameWeaponType)
+      throws IOException, GameLogicError, InterruptedException {
+    int gameIdToConnectTo = 0;
+    var weaponInfo = gameRoomRegistry.getGame(gameIdToConnectTo)
+        .getRpgWeaponInfo().getWeaponInfo(RPGPlayerClass.WARRIOR, gameWeaponType)
+        .get();
+    if (weaponInfo.getMaxAmmo() == null) {
+      return;
+    }
+    GameConnection shooterConnection = createGameConnection("localhost", port);
+    shooterConnection.write(
+        JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my player name")
+            .setGameId(gameIdToConnectTo).build());
+    GameConnection observerConnection = createGameConnection("localhost", port);
+    observerConnection.write(
+        JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my other player name")
+            .setGameId(gameIdToConnectTo).build());
+    waitUntilGetResponses(shooterConnection.getResponse(), 2);
+    waitUntilGetResponses(observerConnection.getResponse(), 2);
+    emptyQueue(observerConnection.getResponse());
+    ServerResponse mySpawn = shooterConnection.getResponse().poll().get();
+    int playerId = mySpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
+    var mySpawnEvent = mySpawn.getGameEvents().getEvents(0);
+    float newPositionX = mySpawnEvent.getPlayer().getPosition().getX() + 0.1f;
+    float newPositionY = mySpawnEvent.getPlayer().getPosition().getY() - 0.1f;
+    emptyQueue(shooterConnection.getResponse());
+
+    var shootingRunnable = new Runnable() {
+      @Override
+      public void run() {
+        shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(playerId)
+            .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS).setMatchId(0)
+            .setGameId(gameIdToConnectTo)
+            .setEventType(GameEventType.ATTACK).setWeaponType(getWeaponType(gameWeaponType))
+            .setDirection(
+                Vector.newBuilder().setX(mySpawnEvent.getPlayer().getDirection().getX())
+                    .setY(mySpawnEvent.getPlayer().getDirection().getY()).build())
+            .setPosition(Vector.newBuilder().setX(newPositionX).setY(newPositionY).build())
+            .build());
+      }
+    };
+
+    // waste all ammo
+    for (int i = 0; i < weaponInfo.getMaxAmmo(); i++) {
+      shootingRunnable.run();
+      waitUntilGetResponses(observerConnection.getResponse(), 1);
+      emptyQueue(observerConnection.getResponse());
+    }
+
+    // shoot again when ammo is wasted
+    shootingRunnable.run();
+
+    // wait a little
+    Thread.sleep(2_000);
+    assertEquals(0, observerConnection.getResponse().size(),
+        "Nothing is expected because all ammo is wasted");
   }
 
 
@@ -407,7 +493,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
   @Test
   public void testShootHitPlasmagun() throws Exception {
     int gameIdToConnectTo = 0;
-    var rocketLauncherInfo = gameRoomRegistry.getGame(gameIdToConnectTo).getRpgWeaponInfo()
+    var plasmagunInfo = gameRoomRegistry.getGame(gameIdToConnectTo).getRpgWeaponInfo()
         .getWeaponInfo(RPGPlayerClass.WARRIOR, GameWeaponType.PLASMAGUN)
         .get();
     doReturn(Coordinates.builder()
@@ -415,7 +501,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(1F).build())
         .build(), Coordinates.builder().position(
             com.beverly.hills.money.gang.state.entity.Vector.builder()
-                .x((float) (rocketLauncherInfo.getMaxDistance()) - 0.5f).y(0).build())
+                .x((float) (plasmagunInfo.getMaxDistance()) - 0.5f).y(0).build())
         .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(1F).build())
         .build()).when(spawner).spawnPlayer(any());
 
@@ -886,14 +972,13 @@ public class ShootingEventTest extends AbstractGameServerTest {
   public void testShootKillAllWeapons(GameWeaponType weaponType) throws Exception {
     int gameIdToConnectTo = 0;
     if (weaponType.getDamageFactory().getDamage(gameRoomRegistry.getGame(gameIdToConnectTo))
-        .getDefaultDamage() == 0) {
+        .getDefaultDamage() == null) {
       // skip
       return;
     }
     String shooterPlayerName = "killer";
     var weaponInfo = gameRoomRegistry.getGame(gameIdToConnectTo).getRpgWeaponInfo()
-        .getWeaponInfo(RPGPlayerClass.WARRIOR, weaponType)
-        .get();
+        .getWeaponInfo(RPGPlayerClass.WARRIOR, weaponType).get();
     doReturn(Coordinates.builder()
         .position(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(0F).build())
         .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(1F).build())

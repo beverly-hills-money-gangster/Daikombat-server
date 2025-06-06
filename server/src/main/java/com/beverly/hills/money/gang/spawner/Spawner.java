@@ -48,6 +48,13 @@ public class Spawner {
   private static final Vector QUAD_DAMAGE_SPAWN_POSITION
       = Vector.builder().x(-13.984175f).y(17.946176f).build();
 
+  private static final Vector BIG_AMMO_SPAWN_POSITION
+      = Vector.builder().x(-24.69848f - 0.25f).y(4.108812f-0.1f).build();
+
+
+  private static final Vector MEDIUM_AMMO_SPAWN_POSITION
+      = Vector.builder().x(-0.97069114f).y(18.165932f - 0.2f).build();
+
   private static final Vector DEFENCE_SPAWN_POSITION
       = Vector.builder().x(-24.609121f - 0.35f).y(11.956983f).build();
 
@@ -55,7 +62,7 @@ public class Spawner {
       = Vector.builder().x(8.045f).y(18.5f - 0.5f).build();
 
   private static final Vector HEALTH_SPAWN_POSITION
-      = Vector.builder().x(-14.810499f-0.2f).y(27.771694f-0.7f).build();
+      = Vector.builder().x(-14.810499f - 0.2f).y(27.771694f - 0.7f).build();
 
   public static final List<Coordinates> SPAWNS = List.of(
 
@@ -113,6 +120,14 @@ public class Spawner {
 
   public Vector spawnQuadDamage() {
     return QUAD_DAMAGE_SPAWN_POSITION;
+  }
+
+  public Vector spawnMediumAmmo() {
+    return MEDIUM_AMMO_SPAWN_POSITION;
+  }
+
+  public Vector spawnBigAmmo() {
+    return BIG_AMMO_SPAWN_POSITION;
   }
 
   public Vector spawnDefence() {

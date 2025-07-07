@@ -68,12 +68,16 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
       LOG.debug("Got command {}", msg);
       ServerCommandHandler serverCommandHandler = handlersMap.get(msg.getCommandCase());
       if (serverCommandHandler == null) {
-        throw new GameLogicError("Command is not recognized. Try updating client.", GameErrorCode.COMMAND_NOT_RECOGNIZED);
+        throw new GameLogicError("Command is not recognized. Try updating client.",
+            GameErrorCode.COMMAND_NOT_RECOGNIZED);
       }
       serverCommandHandler.handle(msg, ctx.channel());
     } catch (GameLogicError e) {
       LOG.warn("Game logic error", e);
       ctx.writeAndFlush(createErrorEvent(e)).addListener(ChannelFutureListener.CLOSE);
+    } catch (Exception e) {
+      LOG.warn("Exception occurred", e);
+      ctx.close();
     }
   }
 
@@ -95,7 +99,8 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
         (game, playerState) -> {
           var disconnectEvent = createExitEvent(game.playersOnline(), playerState);
           game.getPlayersRegistry().allJoinedPlayers()
-              .forEach(playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(disconnectEvent,
+              .forEach(
+                  playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(disconnectEvent,
                       ChannelFutureListener.CLOSE_ON_FAILURE));
         });
     if (!playerWasFound) {

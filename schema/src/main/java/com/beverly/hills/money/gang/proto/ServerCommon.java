@@ -25,6 +25,16 @@ public final class ServerCommon {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_daikombat_dto_ProjectileStats_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_daikombat_dto_MapMetadata_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_daikombat_dto_MapMetadata_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_daikombat_dto_MapAssets_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_daikombat_dto_MapAssets_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -40,7 +50,12 @@ public final class ServerCommon {
       "\017ProjectileStats\022:\n\016projectileType\030\001 \001(\016" +
       "2\035.daikombat.dto.ProjectileTypeH\000\210\001\001\022,\n\010" +
       "position\030\002 \001(\0132\025.daikombat.dto.VectorH\001\210" +
-      "\001\001B\021\n\017_projectileTypeB\013\n\t_position*b\n\nWe" +
+      "\001\001B\021\n\017_projectileTypeB\013\n\t_position\"E\n\013Ma" +
+      "pMetadata\022\021\n\004name\030\001 \001(\tH\000\210\001\001\022\021\n\004hash\030\002 \001" +
+      "(\tH\001\210\001\001B\007\n\005_nameB\007\n\005_hash\"\177\n\tMapAssets\022\025" +
+      "\n\010atlasPng\030\001 \001(\014H\000\210\001\001\022\025\n\010atlasTsx\030\002 \001(\014H" +
+      "\001\210\001\001\022\031\n\014onlineMapTmx\030\003 \001(\014H\002\210\001\001B\013\n\t_atla" +
+      "sPngB\013\n\t_atlasTsxB\017\n\r_onlineMapTmx*b\n\nWe" +
       "aponType\022\t\n\005PUNCH\020\000\022\013\n\007SHOTGUN\020\001\022\013\n\007RAIL" +
       "GUN\020\002\022\013\n\007MINIGUN\020\003\022\023\n\017ROCKET_LAUNCHER\020\004\022" +
       "\r\n\tPLASMAGUN\020\005*(\n\016ProjectileType\022\n\n\006ROCK" +
@@ -72,6 +87,18 @@ public final class ServerCommon {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_ProjectileStats_descriptor,
         new java.lang.String[] { "ProjectileType", "Position", });
+    internal_static_daikombat_dto_MapMetadata_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_daikombat_dto_MapMetadata_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_daikombat_dto_MapMetadata_descriptor,
+        new java.lang.String[] { "Name", "Hash", });
+    internal_static_daikombat_dto_MapAssets_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_daikombat_dto_MapAssets_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_daikombat_dto_MapAssets_descriptor,
+        new java.lang.String[] { "AtlasPng", "AtlasTsx", "OnlineMapTmx", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

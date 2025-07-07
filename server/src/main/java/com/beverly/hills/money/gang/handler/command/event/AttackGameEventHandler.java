@@ -133,7 +133,7 @@ public class AttackGameEventHandler implements GameEventHandler {
       case MINIGUN -> GameWeaponType.MINIGUN;
       case ROCKET_LAUNCHER -> GameWeaponType.ROCKET_LAUNCHER;
       case PLASMAGUN -> GameWeaponType.PLASMAGUN;
-      default -> throw new IllegalArgumentException(
+      case UNRECOGNIZED -> throw new IllegalArgumentException(
           "Not supported weapon type " + weaponType);
     };
   }
@@ -142,7 +142,7 @@ public class AttackGameEventHandler implements GameEventHandler {
     return switch (projectileType) {
       case ROCKET -> GameProjectileType.ROCKET;
       case PLASMA -> GameProjectileType.PLASMA;
-      default -> throw new IllegalArgumentException(
+      case UNRECOGNIZED -> throw new IllegalArgumentException(
           "Not supported projectile type " + projectileType);
     };
   }

@@ -15,6 +15,7 @@ import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.Vector;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
+import com.beverly.hills.money.gang.spawner.AbstractSpawner;
 import com.beverly.hills.money.gang.spawner.Spawner;
 import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 public class MoveEventTest extends AbstractGameServerTest {
 
   @SpyBean
-  private Spawner spawner;
+  private AbstractSpawner spawner;
 
   @Autowired
   private GameRoomRegistry gameRoomRegistry;
@@ -56,7 +57,7 @@ public class MoveEventTest extends AbstractGameServerTest {
             .direction(createGameVector(0, 0))
             .position(createGameVector(game.getGameConfig().getMaxVisibility() * 0.5f, 0))
             .build())
-        .when(spawner).spawnPlayer(any());
+        .when(spawner).getPlayerSpawn(any());
     GameConnection movingPlayerConnection = createGameConnection("localhost",
         port);
     movingPlayerConnection.write(
@@ -155,7 +156,7 @@ public class MoveEventTest extends AbstractGameServerTest {
             .direction(createGameVector(0, 0))
             .position(createGameVector(game.getGameConfig().getMaxVisibility() * 1.2f, 0))
             .build())
-        .when(spawner).spawnPlayer(any());
+        .when(spawner).getPlayerSpawn(any());
 
     GameConnection movingPlayerConnection = createGameConnection("localhost",
         port);

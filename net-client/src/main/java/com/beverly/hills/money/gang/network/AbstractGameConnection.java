@@ -3,6 +3,7 @@ package com.beverly.hills.money.gang.network;
 import com.beverly.hills.money.gang.config.ClientConfig;
 import com.beverly.hills.money.gang.entity.HostPort;
 import com.beverly.hills.money.gang.handler.GameConnectionInitializer;
+import com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.MergeConnectionCommand;
@@ -51,7 +52,6 @@ public abstract class AbstractGameConnection {
   private static final ServerCommand PING
       = ServerCommand.newBuilder().setPingCommand(PingCommand.newBuilder().build()).build();
 
-  // TODO think about using channel scheduler
   private final ScheduledExecutorService pingScheduler = Executors.newScheduledThreadPool(1,
       new BasicThreadFactory.Builder().namingPattern("ping-%d").build());
 
@@ -174,6 +174,8 @@ public abstract class AbstractGameConnection {
         serverCommand.setGetServerInfoCommand((GetServerInfoCommand) command);
       } else if (command instanceof RespawnCommand) {
         serverCommand.setRespawnCommand((RespawnCommand) command);
+      } else if (command instanceof DownloadMapAssetsCommand) {
+        serverCommand.setDownloadMapAssetsCommand((DownloadMapAssetsCommand) command);
       } else if (command instanceof MergeConnectionCommand) {
         serverCommand.setMergeConnectionCommand((MergeConnectionCommand) command);
       } else {

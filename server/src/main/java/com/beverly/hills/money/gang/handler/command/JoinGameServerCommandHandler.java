@@ -93,7 +93,7 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
       case PURPLE -> PlayerStateColor.PURPLE;
       case YELLOW -> PlayerStateColor.YELLOW;
       case ORANGE -> PlayerStateColor.ORANGE;
-      default -> throw new IllegalArgumentException("Not supported skin color");
+      case UNRECOGNIZED -> throw new IllegalArgumentException("Not supported skin color");
     };
   }
 

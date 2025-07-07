@@ -67,6 +67,8 @@ Game server can be configured using the following environment variables:
 - `GAME_SERVER_DEFENCE_LASTS_FOR_MLS` Time (in millisecond) defence lasts for. Default - `10_000`.
 - `GAME_SERVER_INVISIBILITY_SPAWN_MLS` Time (in millisecond) it takes to spawn an invisibility
   power-up orb. Default - `30_000`.
+- `GAME_SERVER_MAP_NAME` Map name. Must be one of built-in maps (
+  see `/server/main/resources/maps` folder). Default - `classic`.
 - `GAME_SERVER_AMMO_SPAWN_MLS` Time (in millisecond) it takes to spawn ammo. Default - `30_000`.
 - `GAME_SERVER_HEALTH_SPAWN_MLS` Time (in millisecond) it takes to spawn a health power-up orb.
   Default - `35_000`.
@@ -92,7 +94,9 @@ Game server can be configured using the following environment variables:
 
 Some environment variables can be overridden for a specific game room. The format
 is `<ROOM_ID>_<ENV_VAR_NAME>`. For example `0_GAME_SERVER_DEFAULT_SHOTGUN_DAMAGE=99` overrides
-`GAME_SERVER_DEFAULT_SHOTGUN_DAMAGE` variable for game room 0. Here is the list of all room-specific configs:
+`GAME_SERVER_DEFAULT_SHOTGUN_DAMAGE` variable for game room 0. Here is the list of all room-specific
+configs:
+
 - `GAME_SERVER_ROOM_TITLE`
 - `GAME_SERVER_ROOM_DESCRIPTION`
 - `GAME_SERVER_DEFAULT_SHOTGUN_DAMAGE`
@@ -114,6 +118,7 @@ is `<ROOM_ID>_<ENV_VAR_NAME>`. For example `0_GAME_SERVER_DEFAULT_SHOTGUN_DAMAGE
 - `GAME_SERVER_MINIGUN_MAX_AMMO`
 - `GAME_SERVER_PLASMAGUN_MAX_AMMO`
 - `GAME_SERVER_ROCKET_LAUNCHER_MAX_AMMO`
+- `GAME_SERVER_MAP_NAME`
 
 Game client is also configurable through environments variables:
 

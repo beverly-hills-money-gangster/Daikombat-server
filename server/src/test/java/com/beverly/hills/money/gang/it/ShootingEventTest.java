@@ -25,6 +25,7 @@ import com.beverly.hills.money.gang.proto.ServerResponse.PlayerCurrentWeaponAmmo
 import com.beverly.hills.money.gang.proto.Vector;
 import com.beverly.hills.money.gang.proto.WeaponType;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
+import com.beverly.hills.money.gang.spawner.AbstractSpawner;
 import com.beverly.hills.money.gang.spawner.Spawner;
 import com.beverly.hills.money.gang.state.GameProjectileType;
 import com.beverly.hills.money.gang.state.GameWeaponType;
@@ -50,7 +51,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 public class ShootingEventTest extends AbstractGameServerTest {
 
   @SpyBean
-  private Spawner spawner;
+  private AbstractSpawner spawner;
 
   @Autowired
   private GameRoomRegistry gameRoomRegistry;
@@ -269,7 +270,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
             com.beverly.hills.money.gang.state.entity.Vector.builder()
                 .x((float) (shotgunInfo.getMaxDistance()) - 0.5f).y(0).build())
         .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(1F).build())
-        .build()).when(spawner).spawnPlayer(any());
+        .build()).when(spawner).getPlayerSpawn(any());
 
     GameConnection shooterConnection = createGameConnection("localhost", port);
     shooterConnection.write(
@@ -372,7 +373,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
             com.beverly.hills.money.gang.state.entity.Vector.builder()
                 .x((float) (rocketLauncherInfo.getMaxDistance()) - 0.5f).y(0).build())
         .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(1F).build())
-        .build()).when(spawner).spawnPlayer(any());
+        .build()).when(spawner).getPlayerSpawn(any());
 
     GameConnection shooterConnection = createGameConnection("localhost", port);
     shooterConnection.write(
@@ -503,7 +504,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
             com.beverly.hills.money.gang.state.entity.Vector.builder()
                 .x((float) (plasmagunInfo.getMaxDistance()) - 0.5f).y(0).build())
         .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(1F).build())
-        .build()).when(spawner).spawnPlayer(any());
+        .build()).when(spawner).getPlayerSpawn(any());
 
     GameConnection shooterConnection = createGameConnection("localhost", port);
     shooterConnection.write(
@@ -633,7 +634,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
             com.beverly.hills.money.gang.state.entity.Vector.builder().x(0.5f).y(0)
                 .build()) // standing in front of him
         .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(15F).build())
-        .build()).when(spawner).spawnPlayer(any());
+        .build()).when(spawner).getPlayerSpawn(any());
 
     GameConnection shooterConnection = createGameConnection("localhost", port);
     shooterConnection.write(
@@ -733,7 +734,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
             com.beverly.hills.money.gang.state.entity.Vector.builder().x(1.5f).y(0)
                 .build()) // standing in front of him
         .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(1F).build())
-        .build()).when(spawner).spawnPlayer(any());
+        .build()).when(spawner).getPlayerSpawn(any());
 
     GameConnection shooterConnection = createGameConnection("localhost", port);
     shooterConnection.write(
@@ -986,7 +987,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
             com.beverly.hills.money.gang.state.entity.Vector.builder()
                 .x((float) (weaponInfo.getMaxDistance()) - 0.5f).y(0).build())
         .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(1F).build())
-        .build()).when(spawner).spawnPlayer(any());
+        .build()).when(spawner).getPlayerSpawn(any());
 
     GameConnection killerConnection = createGameConnection("localhost", port);
     killerConnection.write(
@@ -1292,7 +1293,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
             com.beverly.hills.money.gang.state.entity.Vector.builder()
                 .x((float) (shotgunInfo.getMaxDistance()) - 0.5f).y(0).build())
         .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(1F).build())
-        .build()).when(spawner).spawnPlayer(any());
+        .build()).when(spawner).getPlayerSpawn(any());
     GameConnection shooterConnection = createGameConnection("localhost", port);
     shooterConnection.write(
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
@@ -1384,7 +1385,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     doReturn(Coordinates.builder()
         .position(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(0F).build())
         .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(1F).build())
-        .build()).when(spawner).spawnPlayer(any());
+        .build()).when(spawner).getPlayerSpawn(any());
 
     int gameIdToConnectTo = 0;
     var gameConfig = gameRoomRegistry.getGame(gameIdToConnectTo).getGameConfig();

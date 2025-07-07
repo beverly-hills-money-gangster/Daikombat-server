@@ -1,18 +1,27 @@
 package com.beverly.hills.money.gang.teleport;
 
-import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.Vector;
+import com.beverly.hills.money.gang.state.entity.VectorDirection;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.ToString;
 
 @Builder
 @Getter
+@ToString
 public class Teleport {
 
-  private final int id;
+  @NonNull
+  private final Integer id;
 
+  @NonNull
   private final Vector location;
 
-  private final Coordinates teleportCoordinates;
+  @NonNull
+  private final VectorDirection direction;
+
+  @NonNull
+  private final Integer teleportToId;
 
 }

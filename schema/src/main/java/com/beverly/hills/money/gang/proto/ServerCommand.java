@@ -52,6 +52,7 @@ private static final long serialVersionUID = 0L;
     PINGCOMMAND(7),
     RESPAWNCOMMAND(8),
     MERGECONNECTIONCOMMAND(9),
+    DOWNLOADMAPASSETSCOMMAND(10),
     COMMAND_NOT_SET(0);
     private final int value;
     private CommandCase(int value) {
@@ -76,6 +77,7 @@ private static final long serialVersionUID = 0L;
         case 7: return PINGCOMMAND;
         case 8: return RESPAWNCOMMAND;
         case 9: return MERGECONNECTIONCOMMAND;
+        case 10: return DOWNLOADMAPASSETSCOMMAND;
         case 0: return COMMAND_NOT_SET;
         default: return null;
       }
@@ -308,6 +310,37 @@ private static final long serialVersionUID = 0L;
     return com.beverly.hills.money.gang.proto.MergeConnectionCommand.getDefaultInstance();
   }
 
+  public static final int DOWNLOADMAPASSETSCOMMAND_FIELD_NUMBER = 10;
+  /**
+   * <code>.daikombat.dto.DownloadMapAssetsCommand downloadMapAssetsCommand = 10;</code>
+   * @return Whether the downloadMapAssetsCommand field is set.
+   */
+  @java.lang.Override
+  public boolean hasDownloadMapAssetsCommand() {
+    return commandCase_ == 10;
+  }
+  /**
+   * <code>.daikombat.dto.DownloadMapAssetsCommand downloadMapAssetsCommand = 10;</code>
+   * @return The downloadMapAssetsCommand.
+   */
+  @java.lang.Override
+  public com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand getDownloadMapAssetsCommand() {
+    if (commandCase_ == 10) {
+       return (com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand) command_;
+    }
+    return com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand.getDefaultInstance();
+  }
+  /**
+   * <code>.daikombat.dto.DownloadMapAssetsCommand downloadMapAssetsCommand = 10;</code>
+   */
+  @java.lang.Override
+  public com.beverly.hills.money.gang.proto.DownloadMapAssetsCommandOrBuilder getDownloadMapAssetsCommandOrBuilder() {
+    if (commandCase_ == 10) {
+       return (com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand) command_;
+    }
+    return com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -342,6 +375,9 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 9) {
       output.writeMessage(9, (com.beverly.hills.money.gang.proto.MergeConnectionCommand) command_);
+    }
+    if (commandCase_ == 10) {
+      output.writeMessage(10, (com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand) command_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -379,6 +415,10 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 9) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(9, (com.beverly.hills.money.gang.proto.MergeConnectionCommand) command_);
+    }
+    if (commandCase_ == 10) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(10, (com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand) command_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -425,6 +465,10 @@ private static final long serialVersionUID = 0L;
         if (!getMergeConnectionCommand()
             .equals(other.getMergeConnectionCommand())) return false;
         break;
+      case 10:
+        if (!getDownloadMapAssetsCommand()
+            .equals(other.getDownloadMapAssetsCommand())) return false;
+        break;
       case 0:
       default:
     }
@@ -467,6 +511,10 @@ private static final long serialVersionUID = 0L;
       case 9:
         hash = (37 * hash) + MERGECONNECTIONCOMMAND_FIELD_NUMBER;
         hash = (53 * hash) + getMergeConnectionCommand().hashCode();
+        break;
+      case 10:
+        hash = (37 * hash) + DOWNLOADMAPASSETSCOMMAND_FIELD_NUMBER;
+        hash = (53 * hash) + getDownloadMapAssetsCommand().hashCode();
         break;
       case 0:
       default:
@@ -623,6 +671,9 @@ private static final long serialVersionUID = 0L;
       if (mergeConnectionCommandBuilder_ != null) {
         mergeConnectionCommandBuilder_.clear();
       }
+      if (downloadMapAssetsCommandBuilder_ != null) {
+        downloadMapAssetsCommandBuilder_.clear();
+      }
       commandCase_ = 0;
       command_ = null;
       return this;
@@ -691,6 +742,10 @@ private static final long serialVersionUID = 0L;
       if (commandCase_ == 9 &&
           mergeConnectionCommandBuilder_ != null) {
         result.command_ = mergeConnectionCommandBuilder_.build();
+      }
+      if (commandCase_ == 10 &&
+          downloadMapAssetsCommandBuilder_ != null) {
+        result.command_ = downloadMapAssetsCommandBuilder_.build();
       }
     }
 
@@ -765,6 +820,10 @@ private static final long serialVersionUID = 0L;
         }
         case MERGECONNECTIONCOMMAND: {
           mergeMergeConnectionCommand(other.getMergeConnectionCommand());
+          break;
+        }
+        case DOWNLOADMAPASSETSCOMMAND: {
+          mergeDownloadMapAssetsCommand(other.getDownloadMapAssetsCommand());
           break;
         }
         case COMMAND_NOT_SET: {
@@ -846,6 +905,13 @@ private static final long serialVersionUID = 0L;
               commandCase_ = 9;
               break;
             } // case 74
+            case 82: {
+              input.readMessage(
+                  getDownloadMapAssetsCommandFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              commandCase_ = 10;
+              break;
+            } // case 82
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1870,6 +1936,148 @@ private static final long serialVersionUID = 0L;
       commandCase_ = 9;
       onChanged();
       return mergeConnectionCommandBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand, com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand.Builder, com.beverly.hills.money.gang.proto.DownloadMapAssetsCommandOrBuilder> downloadMapAssetsCommandBuilder_;
+    /**
+     * <code>.daikombat.dto.DownloadMapAssetsCommand downloadMapAssetsCommand = 10;</code>
+     * @return Whether the downloadMapAssetsCommand field is set.
+     */
+    @java.lang.Override
+    public boolean hasDownloadMapAssetsCommand() {
+      return commandCase_ == 10;
+    }
+    /**
+     * <code>.daikombat.dto.DownloadMapAssetsCommand downloadMapAssetsCommand = 10;</code>
+     * @return The downloadMapAssetsCommand.
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand getDownloadMapAssetsCommand() {
+      if (downloadMapAssetsCommandBuilder_ == null) {
+        if (commandCase_ == 10) {
+          return (com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand) command_;
+        }
+        return com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand.getDefaultInstance();
+      } else {
+        if (commandCase_ == 10) {
+          return downloadMapAssetsCommandBuilder_.getMessage();
+        }
+        return com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.daikombat.dto.DownloadMapAssetsCommand downloadMapAssetsCommand = 10;</code>
+     */
+    public Builder setDownloadMapAssetsCommand(com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand value) {
+      if (downloadMapAssetsCommandBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        downloadMapAssetsCommandBuilder_.setMessage(value);
+      }
+      commandCase_ = 10;
+      return this;
+    }
+    /**
+     * <code>.daikombat.dto.DownloadMapAssetsCommand downloadMapAssetsCommand = 10;</code>
+     */
+    public Builder setDownloadMapAssetsCommand(
+        com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand.Builder builderForValue) {
+      if (downloadMapAssetsCommandBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        downloadMapAssetsCommandBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 10;
+      return this;
+    }
+    /**
+     * <code>.daikombat.dto.DownloadMapAssetsCommand downloadMapAssetsCommand = 10;</code>
+     */
+    public Builder mergeDownloadMapAssetsCommand(com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand value) {
+      if (downloadMapAssetsCommandBuilder_ == null) {
+        if (commandCase_ == 10 &&
+            command_ != com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand.getDefaultInstance()) {
+          command_ = com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand.newBuilder((com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 10) {
+          downloadMapAssetsCommandBuilder_.mergeFrom(value);
+        } else {
+          downloadMapAssetsCommandBuilder_.setMessage(value);
+        }
+      }
+      commandCase_ = 10;
+      return this;
+    }
+    /**
+     * <code>.daikombat.dto.DownloadMapAssetsCommand downloadMapAssetsCommand = 10;</code>
+     */
+    public Builder clearDownloadMapAssetsCommand() {
+      if (downloadMapAssetsCommandBuilder_ == null) {
+        if (commandCase_ == 10) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 10) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        downloadMapAssetsCommandBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.daikombat.dto.DownloadMapAssetsCommand downloadMapAssetsCommand = 10;</code>
+     */
+    public com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand.Builder getDownloadMapAssetsCommandBuilder() {
+      return getDownloadMapAssetsCommandFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.daikombat.dto.DownloadMapAssetsCommand downloadMapAssetsCommand = 10;</code>
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.DownloadMapAssetsCommandOrBuilder getDownloadMapAssetsCommandOrBuilder() {
+      if ((commandCase_ == 10) && (downloadMapAssetsCommandBuilder_ != null)) {
+        return downloadMapAssetsCommandBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 10) {
+          return (com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand) command_;
+        }
+        return com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.daikombat.dto.DownloadMapAssetsCommand downloadMapAssetsCommand = 10;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand, com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand.Builder, com.beverly.hills.money.gang.proto.DownloadMapAssetsCommandOrBuilder> 
+        getDownloadMapAssetsCommandFieldBuilder() {
+      if (downloadMapAssetsCommandBuilder_ == null) {
+        if (!(commandCase_ == 10)) {
+          command_ = com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand.getDefaultInstance();
+        }
+        downloadMapAssetsCommandBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand, com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand.Builder, com.beverly.hills.money.gang.proto.DownloadMapAssetsCommandOrBuilder>(
+                (com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 10;
+      onChanged();
+      return downloadMapAssetsCommandBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

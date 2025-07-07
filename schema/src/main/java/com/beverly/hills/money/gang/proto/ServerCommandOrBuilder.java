@@ -113,5 +113,20 @@ public interface ServerCommandOrBuilder extends
    */
   com.beverly.hills.money.gang.proto.MergeConnectionCommandOrBuilder getMergeConnectionCommandOrBuilder();
 
+  /**
+   * <code>.daikombat.dto.DownloadMapAssetsCommand downloadMapAssetsCommand = 10;</code>
+   * @return Whether the downloadMapAssetsCommand field is set.
+   */
+  boolean hasDownloadMapAssetsCommand();
+  /**
+   * <code>.daikombat.dto.DownloadMapAssetsCommand downloadMapAssetsCommand = 10;</code>
+   * @return The downloadMapAssetsCommand.
+   */
+  com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand getDownloadMapAssetsCommand();
+  /**
+   * <code>.daikombat.dto.DownloadMapAssetsCommand downloadMapAssetsCommand = 10;</code>
+   */
+  com.beverly.hills.money.gang.proto.DownloadMapAssetsCommandOrBuilder getDownloadMapAssetsCommandOrBuilder();
+
   com.beverly.hills.money.gang.proto.ServerCommand.CommandCase getCommandCase();
 }

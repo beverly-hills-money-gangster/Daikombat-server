@@ -7,11 +7,11 @@
     <parent>
         <groupId>com.beverly.hills.money.gang</groupId>
         <artifactId>daikombat-server</artifactId>
-        <version>23.0.0</version>
+        <version>24.0.0</version>
     </parent>
 
     <artifactId>server</artifactId>
-    <version>23.0.0</version>
+    <version>24.0.0</version>
 
     <properties>
         <maven.compiler.source>14</maven.compiler.source>
@@ -55,6 +55,24 @@
         </dependency>
 
         <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>4.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>4.0.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.14.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>4.1.106.Final</version>
@@ -92,7 +110,7 @@
         <dependency>
             <groupId>com.beverly.hills.money.gang</groupId>
             <artifactId>schema</artifactId>
-            <version>23.0.0</version>
+            <version>24.0.0</version>
         </dependency>
         <dependency>
             <groupId>eu.rekawek.toxiproxy</groupId>
@@ -138,7 +156,7 @@
         <dependency>
             <groupId>com.beverly.hills.money.gang</groupId>
             <artifactId>net-client</artifactId>
-            <version>23.0.0</version>
+            <version>24.0.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

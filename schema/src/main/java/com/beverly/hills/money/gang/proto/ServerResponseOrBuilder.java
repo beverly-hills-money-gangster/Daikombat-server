@@ -128,5 +128,20 @@ public interface ServerResponseOrBuilder extends
    */
   com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEventOrBuilder getTeleportSpawnOrBuilder();
 
+  /**
+   * <code>.daikombat.dto.MapAssets mapAssets = 9;</code>
+   * @return Whether the mapAssets field is set.
+   */
+  boolean hasMapAssets();
+  /**
+   * <code>.daikombat.dto.MapAssets mapAssets = 9;</code>
+   * @return The mapAssets.
+   */
+  com.beverly.hills.money.gang.proto.MapAssets getMapAssets();
+  /**
+   * <code>.daikombat.dto.MapAssets mapAssets = 9;</code>
+   */
+  com.beverly.hills.money.gang.proto.MapAssetsOrBuilder getMapAssetsOrBuilder();
+
   com.beverly.hills.money.gang.proto.ServerResponse.ResponseCase getResponseCase();
 }

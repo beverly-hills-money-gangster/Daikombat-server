@@ -5,9 +5,9 @@ import com.beverly.hills.money.gang.state.entity.Vector;
 
 public interface PowerUp {
 
-  PowerUpType getType();
+  Vector getPosition();
 
-  Vector getSpawnPosition();
+  PowerUpType getType();
 
   void apply(PlayerState playerState);
 

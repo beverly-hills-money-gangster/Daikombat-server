@@ -1,9 +1,9 @@
 package com.beverly.hills.money.gang.it;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.doReturn;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
+import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
@@ -13,17 +13,11 @@ import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
 import com.beverly.hills.money.gang.proto.Vector;
-import com.beverly.hills.money.gang.registry.TeleportRegistry;
-import com.beverly.hills.money.gang.spawner.Spawner;
-import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
-import com.beverly.hills.money.gang.teleport.Teleport;
+import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "999999")
 @SetEnvironmentVariable(key = "GAME_SERVER_QUAD_DAMAGE_SPAWN_MLS", value = "5000")
@@ -40,11 +34,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 public class TeleportTest extends AbstractGameServerTest {
 
 
-  @MockBean
-  private TeleportRegistry teleportRegistry;
-
   @Autowired
-  private Spawner spawner;
+  private GameRoomRegistry gameRoomRegistry;
 
 
   /**
@@ -52,22 +43,15 @@ public class TeleportTest extends AbstractGameServerTest {
    * @when the player enters a teleport
    * @then the player gets teleported
    */
-  @Test
-  public void testTeleport() throws IOException {
-    var teleportCoordinates = Coordinates.builder()
-        .direction(
-            com.beverly.hills.money.gang.state.entity.Vector.builder().y(1000).x(-1000).build())
-        .position(com.beverly.hills.money.gang.state.entity.Vector.builder().x(-1).y(1).build())
-        .build();
-    var mockTeleport = Teleport.builder()
-        .id(0).location(TestConfig.MAIN_LOCATION)
-        .teleportCoordinates(teleportCoordinates)
-        .build();
 
-    doReturn(Optional.of(mockTeleport)).when(teleportRegistry).getTeleport(0);
-    doReturn(List.of(mockTeleport)).when(teleportRegistry).getAllTeleports();
+  @Test
+  public void testTeleport() throws IOException, GameLogicError {
 
     int gameIdToConnectTo = 0;
+    var game = gameRoomRegistry.getGame(gameIdToConnectTo);
+    var teleport1 = game.getTeleportRegistry().getTeleport(0).orElseThrow();
+    var teleport2 = game.getTeleportRegistry().getTeleport(1).orElseThrow();
+
     GameConnection playerConnection = createGameConnection("localhost",
         port);
     playerConnection.write(
@@ -88,9 +72,9 @@ public class TeleportTest extends AbstractGameServerTest {
     int playerId = playerSpawnEvent.getPlayer().getPlayerId();
 
     ServerResponse teleportSpawnResponse = playerConnection.getResponse().poll().get();
-    var teleportSpawn = teleportSpawnResponse.getTeleportSpawn().getItemsList().stream().findFirst()
-        .orElseThrow(
-            () -> new IllegalStateException("Expected to get at least one teleport"));
+    assertEquals(game.getTeleportRegistry().getAllTeleports().size(),
+        teleportSpawnResponse.getTeleportSpawn().getItemsList().size(),
+        "We must get spawns of all teleports after joining the game");
 
     playerConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(playerId)
@@ -102,7 +86,7 @@ public class TeleportTest extends AbstractGameServerTest {
             .build())
         .setDirection(Vector.newBuilder().setX(0).setY(1).build())
         .setEventType(GameEventType.TELEPORT)
-        .setTeleportId(teleportSpawn.getId())
+        .setTeleportId(teleport1.getId())
         .build());
 
     waitUntilGetResponses(playerConnection.getResponse(), 1);
@@ -117,9 +101,13 @@ public class TeleportTest extends AbstractGameServerTest {
 
     var teleportedPlayer = teleportedGameEvent.getPlayer();
     assertEquals(playerId, teleportedPlayer.getPlayerId());
-    assertEquals(teleportCoordinates.getPosition().getX(), teleportedPlayer.getPosition().getX());
-    assertEquals(teleportCoordinates.getPosition().getY(), teleportedPlayer.getPosition().getY());
-    assertEquals(teleportCoordinates.getDirection().getX(), teleportedPlayer.getDirection().getX());
-    assertEquals(teleportCoordinates.getDirection().getY(), teleportedPlayer.getDirection().getY());
+    assertEquals(teleport2.getLocation().getX() + teleport2.getDirection().getVector().getX(),
+        teleportedPlayer.getPosition().getX());
+    assertEquals(teleport2.getLocation().getY() + teleport2.getDirection().getVector().getY(),
+        teleportedPlayer.getPosition().getY());
+    assertEquals(teleport2.getDirection().getVector().getX(),
+        teleportedPlayer.getDirection().getX());
+    assertEquals(teleport2.getDirection().getVector().getY(),
+        teleportedPlayer.getDirection().getY());
   }
 }

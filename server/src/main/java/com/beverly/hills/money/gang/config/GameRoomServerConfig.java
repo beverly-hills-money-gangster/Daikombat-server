@@ -66,6 +66,8 @@ public class GameRoomServerConfig {
         getRoomEnv("GAME_SERVER_PLAYER_SPEED"), 7);
     private final int maxVisibility = NumberUtils.toInt(
         getRoomEnv("GAME_SERVER_MAX_VISIBILITY"), 14);
+    private final String mapName = ObjectUtils.defaultIfNull(
+        getRoomEnv("GAME_SERVER_MAP_NAME"), "classic");
 
   }
 

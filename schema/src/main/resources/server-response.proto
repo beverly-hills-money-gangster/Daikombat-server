@@ -18,6 +18,7 @@ message ServerResponse {
     GameOver gameOver = 6;
     PowerUpSpawnEvent powerUpSpawn = 7;
     TeleportSpawnEvent teleportSpawn = 8;
+    MapAssets mapAssets = 9;
   }
 
   message TeleportSpawnEvent {
@@ -75,6 +76,7 @@ message ServerResponse {
     optional int32 maxVisibility = 8;
     optional string title = 9;
     optional string description = 10;
+    optional MapMetadata mapMetadata = 11;
   }
 
   message ErrorEvent {

@@ -6991,6 +6991,33 @@ private static final long serialVersionUID = 0L;
      */
     com.google.protobuf.ByteString
         getDescriptionBytes();
+
+    /**
+     * <pre>
+     * TODO populate it
+     * </pre>
+     *
+     * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
+     * @return Whether the mapMetadata field is set.
+     */
+    boolean hasMapMetadata();
+    /**
+     * <pre>
+     * TODO populate it
+     * </pre>
+     *
+     * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
+     * @return The mapMetadata.
+     */
+    com.beverly.hills.money.gang.proto.MapMetadata getMapMetadata();
+    /**
+     * <pre>
+     * TODO populate it
+     * </pre>
+     *
+     * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
+     */
+    com.beverly.hills.money.gang.proto.MapMetadataOrBuilder getMapMetadataOrBuilder();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.GameInfo}
@@ -7322,6 +7349,44 @@ private static final long serialVersionUID = 0L;
       }
     }
 
+    public static final int MAPMETADATA_FIELD_NUMBER = 11;
+    private com.beverly.hills.money.gang.proto.MapMetadata mapMetadata_;
+    /**
+     * <pre>
+     * TODO populate it
+     * </pre>
+     *
+     * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
+     * @return Whether the mapMetadata field is set.
+     */
+    @java.lang.Override
+    public boolean hasMapMetadata() {
+      return ((bitField0_ & 0x00000100) != 0);
+    }
+    /**
+     * <pre>
+     * TODO populate it
+     * </pre>
+     *
+     * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
+     * @return The mapMetadata.
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.MapMetadata getMapMetadata() {
+      return mapMetadata_ == null ? com.beverly.hills.money.gang.proto.MapMetadata.getDefaultInstance() : mapMetadata_;
+    }
+    /**
+     * <pre>
+     * TODO populate it
+     * </pre>
+     *
+     * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.MapMetadataOrBuilder getMapMetadataOrBuilder() {
+      return mapMetadata_ == null ? com.beverly.hills.money.gang.proto.MapMetadata.getDefaultInstance() : mapMetadata_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -7365,6 +7430,9 @@ private static final long serialVersionUID = 0L;
       }
       if (((bitField0_ & 0x00000080) != 0)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 10, description_);
+      }
+      if (((bitField0_ & 0x00000100) != 0)) {
+        output.writeMessage(11, getMapMetadata());
       }
       getUnknownFields().writeTo(output);
     }
@@ -7412,6 +7480,10 @@ private static final long serialVersionUID = 0L;
       }
       if (((bitField0_ & 0x00000080) != 0)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(10, description_);
+      }
+      if (((bitField0_ & 0x00000100) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(11, getMapMetadata());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -7473,6 +7545,11 @@ private static final long serialVersionUID = 0L;
         if (!getDescription()
             .equals(other.getDescription())) return false;
       }
+      if (hasMapMetadata() != other.hasMapMetadata()) return false;
+      if (hasMapMetadata()) {
+        if (!getMapMetadata()
+            .equals(other.getMapMetadata())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -7524,6 +7601,10 @@ private static final long serialVersionUID = 0L;
       if (hasDescription()) {
         hash = (37 * hash) + DESCRIPTION_FIELD_NUMBER;
         hash = (53 * hash) + getDescription().hashCode();
+      }
+      if (hasMapMetadata()) {
+        hash = (37 * hash) + MAPMETADATA_FIELD_NUMBER;
+        hash = (53 * hash) + getMapMetadata().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -7644,13 +7725,21 @@ private static final long serialVersionUID = 0L;
 
       // Construct using com.beverly.hills.money.gang.proto.ServerResponse.GameInfo.newBuilder()
       private Builder() {
-
+        maybeForceBuilderInitialization();
       }
 
       private Builder(
           com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
-
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getWeaponsInfoFieldBuilder();
+          getProjectileInfoFieldBuilder();
+          getMapMetadataFieldBuilder();
+        }
       }
       @java.lang.Override
       public Builder clear() {
@@ -7678,6 +7767,11 @@ private static final long serialVersionUID = 0L;
         maxVisibility_ = 0;
         title_ = "";
         description_ = "";
+        mapMetadata_ = null;
+        if (mapMetadataBuilder_ != null) {
+          mapMetadataBuilder_.dispose();
+          mapMetadataBuilder_ = null;
+        }
         return this;
       }
 
@@ -7765,6 +7859,12 @@ private static final long serialVersionUID = 0L;
         if (((from_bitField0_ & 0x00000200) != 0)) {
           result.description_ = description_;
           to_bitField0_ |= 0x00000080;
+        }
+        if (((from_bitField0_ & 0x00000400) != 0)) {
+          result.mapMetadata_ = mapMetadataBuilder_ == null
+              ? mapMetadata_
+              : mapMetadataBuilder_.build();
+          to_bitField0_ |= 0x00000100;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -7893,6 +7993,9 @@ private static final long serialVersionUID = 0L;
           bitField0_ |= 0x00000200;
           onChanged();
         }
+        if (other.hasMapMetadata()) {
+          mergeMapMetadata(other.getMapMetadata());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -7985,6 +8088,13 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000200;
                 break;
               } // case 82
+              case 90: {
+                input.readMessage(
+                    getMapMetadataFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000400;
+                break;
+              } // case 90
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -8878,6 +8988,163 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000200;
         onChanged();
         return this;
+      }
+
+      private com.beverly.hills.money.gang.proto.MapMetadata mapMetadata_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.beverly.hills.money.gang.proto.MapMetadata, com.beverly.hills.money.gang.proto.MapMetadata.Builder, com.beverly.hills.money.gang.proto.MapMetadataOrBuilder> mapMetadataBuilder_;
+      /**
+       * <pre>
+       * TODO populate it
+       * </pre>
+       *
+       * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
+       * @return Whether the mapMetadata field is set.
+       */
+      public boolean hasMapMetadata() {
+        return ((bitField0_ & 0x00000400) != 0);
+      }
+      /**
+       * <pre>
+       * TODO populate it
+       * </pre>
+       *
+       * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
+       * @return The mapMetadata.
+       */
+      public com.beverly.hills.money.gang.proto.MapMetadata getMapMetadata() {
+        if (mapMetadataBuilder_ == null) {
+          return mapMetadata_ == null ? com.beverly.hills.money.gang.proto.MapMetadata.getDefaultInstance() : mapMetadata_;
+        } else {
+          return mapMetadataBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * TODO populate it
+       * </pre>
+       *
+       * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
+       */
+      public Builder setMapMetadata(com.beverly.hills.money.gang.proto.MapMetadata value) {
+        if (mapMetadataBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          mapMetadata_ = value;
+        } else {
+          mapMetadataBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * TODO populate it
+       * </pre>
+       *
+       * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
+       */
+      public Builder setMapMetadata(
+          com.beverly.hills.money.gang.proto.MapMetadata.Builder builderForValue) {
+        if (mapMetadataBuilder_ == null) {
+          mapMetadata_ = builderForValue.build();
+        } else {
+          mapMetadataBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * TODO populate it
+       * </pre>
+       *
+       * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
+       */
+      public Builder mergeMapMetadata(com.beverly.hills.money.gang.proto.MapMetadata value) {
+        if (mapMetadataBuilder_ == null) {
+          if (((bitField0_ & 0x00000400) != 0) &&
+            mapMetadata_ != null &&
+            mapMetadata_ != com.beverly.hills.money.gang.proto.MapMetadata.getDefaultInstance()) {
+            getMapMetadataBuilder().mergeFrom(value);
+          } else {
+            mapMetadata_ = value;
+          }
+        } else {
+          mapMetadataBuilder_.mergeFrom(value);
+        }
+        if (mapMetadata_ != null) {
+          bitField0_ |= 0x00000400;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * TODO populate it
+       * </pre>
+       *
+       * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
+       */
+      public Builder clearMapMetadata() {
+        bitField0_ = (bitField0_ & ~0x00000400);
+        mapMetadata_ = null;
+        if (mapMetadataBuilder_ != null) {
+          mapMetadataBuilder_.dispose();
+          mapMetadataBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * TODO populate it
+       * </pre>
+       *
+       * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
+       */
+      public com.beverly.hills.money.gang.proto.MapMetadata.Builder getMapMetadataBuilder() {
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return getMapMetadataFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * TODO populate it
+       * </pre>
+       *
+       * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
+       */
+      public com.beverly.hills.money.gang.proto.MapMetadataOrBuilder getMapMetadataOrBuilder() {
+        if (mapMetadataBuilder_ != null) {
+          return mapMetadataBuilder_.getMessageOrBuilder();
+        } else {
+          return mapMetadata_ == null ?
+              com.beverly.hills.money.gang.proto.MapMetadata.getDefaultInstance() : mapMetadata_;
+        }
+      }
+      /**
+       * <pre>
+       * TODO populate it
+       * </pre>
+       *
+       * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.beverly.hills.money.gang.proto.MapMetadata, com.beverly.hills.money.gang.proto.MapMetadata.Builder, com.beverly.hills.money.gang.proto.MapMetadataOrBuilder> 
+          getMapMetadataFieldBuilder() {
+        if (mapMetadataBuilder_ == null) {
+          mapMetadataBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.beverly.hills.money.gang.proto.MapMetadata, com.beverly.hills.money.gang.proto.MapMetadata.Builder, com.beverly.hills.money.gang.proto.MapMetadataOrBuilder>(
+                  getMapMetadata(),
+                  getParentForChildren(),
+                  isClean());
+          mapMetadata_ = null;
+        }
+        return mapMetadataBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -20498,6 +20765,7 @@ private static final long serialVersionUID = 0L;
     GAMEOVER(6),
     POWERUPSPAWN(7),
     TELEPORTSPAWN(8),
+    MAPASSETS(9),
     RESPONSE_NOT_SET(0);
     private final int value;
     private ResponseCase(int value) {
@@ -20523,6 +20791,7 @@ private static final long serialVersionUID = 0L;
         case 6: return GAMEOVER;
         case 7: return POWERUPSPAWN;
         case 8: return TELEPORTSPAWN;
+        case 9: return MAPASSETS;
         case 0: return RESPONSE_NOT_SET;
         default: return null;
       }
@@ -20786,6 +21055,37 @@ private static final long serialVersionUID = 0L;
     return com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent.getDefaultInstance();
   }
 
+  public static final int MAPASSETS_FIELD_NUMBER = 9;
+  /**
+   * <code>.daikombat.dto.MapAssets mapAssets = 9;</code>
+   * @return Whether the mapAssets field is set.
+   */
+  @java.lang.Override
+  public boolean hasMapAssets() {
+    return responseCase_ == 9;
+  }
+  /**
+   * <code>.daikombat.dto.MapAssets mapAssets = 9;</code>
+   * @return The mapAssets.
+   */
+  @java.lang.Override
+  public com.beverly.hills.money.gang.proto.MapAssets getMapAssets() {
+    if (responseCase_ == 9) {
+       return (com.beverly.hills.money.gang.proto.MapAssets) response_;
+    }
+    return com.beverly.hills.money.gang.proto.MapAssets.getDefaultInstance();
+  }
+  /**
+   * <code>.daikombat.dto.MapAssets mapAssets = 9;</code>
+   */
+  @java.lang.Override
+  public com.beverly.hills.money.gang.proto.MapAssetsOrBuilder getMapAssetsOrBuilder() {
+    if (responseCase_ == 9) {
+       return (com.beverly.hills.money.gang.proto.MapAssets) response_;
+    }
+    return com.beverly.hills.money.gang.proto.MapAssets.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -20823,6 +21123,9 @@ private static final long serialVersionUID = 0L;
     }
     if (responseCase_ == 8) {
       output.writeMessage(8, (com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent) response_);
+    }
+    if (responseCase_ == 9) {
+      output.writeMessage(9, (com.beverly.hills.money.gang.proto.MapAssets) response_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -20864,6 +21167,10 @@ private static final long serialVersionUID = 0L;
     if (responseCase_ == 8) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(8, (com.beverly.hills.money.gang.proto.ServerResponse.TeleportSpawnEvent) response_);
+    }
+    if (responseCase_ == 9) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(9, (com.beverly.hills.money.gang.proto.MapAssets) response_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -20914,6 +21221,10 @@ private static final long serialVersionUID = 0L;
         if (!getTeleportSpawn()
             .equals(other.getTeleportSpawn())) return false;
         break;
+      case 9:
+        if (!getMapAssets()
+            .equals(other.getMapAssets())) return false;
+        break;
       case 0:
       default:
     }
@@ -20960,6 +21271,10 @@ private static final long serialVersionUID = 0L;
       case 8:
         hash = (37 * hash) + TELEPORTSPAWN_FIELD_NUMBER;
         hash = (53 * hash) + getTeleportSpawn().hashCode();
+        break;
+      case 9:
+        hash = (37 * hash) + MAPASSETS_FIELD_NUMBER;
+        hash = (53 * hash) + getMapAssets().hashCode();
         break;
       case 0:
       default:
@@ -21119,6 +21434,9 @@ private static final long serialVersionUID = 0L;
       if (teleportSpawnBuilder_ != null) {
         teleportSpawnBuilder_.clear();
       }
+      if (mapAssetsBuilder_ != null) {
+        mapAssetsBuilder_.clear();
+      }
       responseCase_ = 0;
       response_ = null;
       return this;
@@ -21191,6 +21509,10 @@ private static final long serialVersionUID = 0L;
       if (responseCase_ == 8 &&
           teleportSpawnBuilder_ != null) {
         result.response_ = teleportSpawnBuilder_.build();
+      }
+      if (responseCase_ == 9 &&
+          mapAssetsBuilder_ != null) {
+        result.response_ = mapAssetsBuilder_.build();
       }
     }
 
@@ -21269,6 +21591,10 @@ private static final long serialVersionUID = 0L;
         }
         case TELEPORTSPAWN: {
           mergeTeleportSpawn(other.getTeleportSpawn());
+          break;
+        }
+        case MAPASSETS: {
+          mergeMapAssets(other.getMapAssets());
           break;
         }
         case RESPONSE_NOT_SET: {
@@ -21357,6 +21683,13 @@ private static final long serialVersionUID = 0L;
               responseCase_ = 8;
               break;
             } // case 66
+            case 74: {
+              input.readMessage(
+                  getMapAssetsFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              responseCase_ = 9;
+              break;
+            } // case 74
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -22523,6 +22856,148 @@ private static final long serialVersionUID = 0L;
       responseCase_ = 8;
       onChanged();
       return teleportSpawnBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.beverly.hills.money.gang.proto.MapAssets, com.beverly.hills.money.gang.proto.MapAssets.Builder, com.beverly.hills.money.gang.proto.MapAssetsOrBuilder> mapAssetsBuilder_;
+    /**
+     * <code>.daikombat.dto.MapAssets mapAssets = 9;</code>
+     * @return Whether the mapAssets field is set.
+     */
+    @java.lang.Override
+    public boolean hasMapAssets() {
+      return responseCase_ == 9;
+    }
+    /**
+     * <code>.daikombat.dto.MapAssets mapAssets = 9;</code>
+     * @return The mapAssets.
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.MapAssets getMapAssets() {
+      if (mapAssetsBuilder_ == null) {
+        if (responseCase_ == 9) {
+          return (com.beverly.hills.money.gang.proto.MapAssets) response_;
+        }
+        return com.beverly.hills.money.gang.proto.MapAssets.getDefaultInstance();
+      } else {
+        if (responseCase_ == 9) {
+          return mapAssetsBuilder_.getMessage();
+        }
+        return com.beverly.hills.money.gang.proto.MapAssets.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.daikombat.dto.MapAssets mapAssets = 9;</code>
+     */
+    public Builder setMapAssets(com.beverly.hills.money.gang.proto.MapAssets value) {
+      if (mapAssetsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        response_ = value;
+        onChanged();
+      } else {
+        mapAssetsBuilder_.setMessage(value);
+      }
+      responseCase_ = 9;
+      return this;
+    }
+    /**
+     * <code>.daikombat.dto.MapAssets mapAssets = 9;</code>
+     */
+    public Builder setMapAssets(
+        com.beverly.hills.money.gang.proto.MapAssets.Builder builderForValue) {
+      if (mapAssetsBuilder_ == null) {
+        response_ = builderForValue.build();
+        onChanged();
+      } else {
+        mapAssetsBuilder_.setMessage(builderForValue.build());
+      }
+      responseCase_ = 9;
+      return this;
+    }
+    /**
+     * <code>.daikombat.dto.MapAssets mapAssets = 9;</code>
+     */
+    public Builder mergeMapAssets(com.beverly.hills.money.gang.proto.MapAssets value) {
+      if (mapAssetsBuilder_ == null) {
+        if (responseCase_ == 9 &&
+            response_ != com.beverly.hills.money.gang.proto.MapAssets.getDefaultInstance()) {
+          response_ = com.beverly.hills.money.gang.proto.MapAssets.newBuilder((com.beverly.hills.money.gang.proto.MapAssets) response_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          response_ = value;
+        }
+        onChanged();
+      } else {
+        if (responseCase_ == 9) {
+          mapAssetsBuilder_.mergeFrom(value);
+        } else {
+          mapAssetsBuilder_.setMessage(value);
+        }
+      }
+      responseCase_ = 9;
+      return this;
+    }
+    /**
+     * <code>.daikombat.dto.MapAssets mapAssets = 9;</code>
+     */
+    public Builder clearMapAssets() {
+      if (mapAssetsBuilder_ == null) {
+        if (responseCase_ == 9) {
+          responseCase_ = 0;
+          response_ = null;
+          onChanged();
+        }
+      } else {
+        if (responseCase_ == 9) {
+          responseCase_ = 0;
+          response_ = null;
+        }
+        mapAssetsBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.daikombat.dto.MapAssets mapAssets = 9;</code>
+     */
+    public com.beverly.hills.money.gang.proto.MapAssets.Builder getMapAssetsBuilder() {
+      return getMapAssetsFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.daikombat.dto.MapAssets mapAssets = 9;</code>
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.MapAssetsOrBuilder getMapAssetsOrBuilder() {
+      if ((responseCase_ == 9) && (mapAssetsBuilder_ != null)) {
+        return mapAssetsBuilder_.getMessageOrBuilder();
+      } else {
+        if (responseCase_ == 9) {
+          return (com.beverly.hills.money.gang.proto.MapAssets) response_;
+        }
+        return com.beverly.hills.money.gang.proto.MapAssets.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.daikombat.dto.MapAssets mapAssets = 9;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.beverly.hills.money.gang.proto.MapAssets, com.beverly.hills.money.gang.proto.MapAssets.Builder, com.beverly.hills.money.gang.proto.MapAssetsOrBuilder> 
+        getMapAssetsFieldBuilder() {
+      if (mapAssetsBuilder_ == null) {
+        if (!(responseCase_ == 9)) {
+          response_ = com.beverly.hills.money.gang.proto.MapAssets.getDefaultInstance();
+        }
+        mapAssetsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            com.beverly.hills.money.gang.proto.MapAssets, com.beverly.hills.money.gang.proto.MapAssets.Builder, com.beverly.hills.money.gang.proto.MapAssetsOrBuilder>(
+                (com.beverly.hills.money.gang.proto.MapAssets) response_,
+                getParentForChildren(),
+                isClean());
+        response_ = null;
+      }
+      responseCase_ = 9;
+      onChanged();
+      return mapAssetsBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

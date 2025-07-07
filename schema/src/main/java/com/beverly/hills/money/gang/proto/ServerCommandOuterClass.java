@@ -26,6 +26,11 @@ public final class ServerCommandOuterClass {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_daikombat_dto_GetServerInfoCommand_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_daikombat_dto_DownloadMapAssetsCommand_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_daikombat_dto_DownloadMapAssetsCommand_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_daikombat_dto_PingCommand_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -66,7 +71,7 @@ public final class ServerCommandOuterClass {
     java.lang.String[] descriptorData = {
       "\n.schema/src/main/resources/server-comma" +
       "nd.proto\022\rdaikombat.dto\032-schema/src/main" +
-      "/resources/server-common.proto\"\307\003\n\rServe" +
+      "/resources/server-common.proto\"\224\004\n\rServe" +
       "rCommand\022:\n\013chatCommand\030\003 \001(\0132#.daikomba" +
       "t.dto.PushChatEventCommandH\000\022:\n\013gameComm" +
       "and\030\004 \001(\0132#.daikombat.dto.PushGameEventC" +
@@ -77,50 +82,54 @@ public final class ServerCommandOuterClass {
       "daikombat.dto.PingCommandH\000\0227\n\016respawnCo" +
       "mmand\030\010 \001(\0132\035.daikombat.dto.RespawnComma" +
       "ndH\000\022G\n\026mergeConnectionCommand\030\t \001(\0132%.d" +
-      "aikombat.dto.MergeConnectionCommandH\000B\t\n" +
-      "\007command\"\\\n\024GetServerInfoCommand\0224\n\013play" +
-      "erClass\030\001 \001(\0162\032.daikombat.dto.PlayerClas" +
-      "sH\000\210\001\001B\016\n\014_playerClass\"\r\n\013PingCommand\"\260\001" +
-      "\n\024PushChatEventCommand\022\023\n\006gameId\030\001 \001(\005H\000" +
-      "\210\001\001\022\024\n\007message\030\002 \001(\tH\001\210\001\001\022\025\n\010playerId\030\003 " +
-      "\001(\005H\002\210\001\001\022(\n\005taunt\030\004 \001(\0162\024.daikombat.dto." +
-      "TauntH\003\210\001\001B\t\n\007_gameIdB\n\n\010_messageB\013\n\t_pl" +
-      "ayerIdB\010\n\006_taunt\"\261\002\n\017JoinGameCommand\022\023\n\006" +
-      "gameId\030\001 \001(\005H\000\210\001\001\022\024\n\007version\030\002 \001(\tH\001\210\001\001\022" +
-      "\027\n\nplayerName\030\003 \001(\tH\002\210\001\001\0221\n\004skin\030\004 \001(\0162\036" +
-      ".daikombat.dto.PlayerSkinColorH\003\210\001\001\022\035\n\020r" +
-      "ecoveryPlayerId\030\005 \001(\005H\004\210\001\001\0224\n\013playerClas" +
-      "s\030\006 \001(\0162\032.daikombat.dto.PlayerClassH\005\210\001\001" +
-      "B\t\n\007_gameIdB\n\n\010_versionB\r\n\013_playerNameB\007" +
-      "\n\005_skinB\023\n\021_recoveryPlayerIdB\016\n\014_playerC" +
-      "lass\"\\\n\026MergeConnectionCommand\022\023\n\006gameId" +
-      "\030\001 \001(\005H\000\210\001\001\022\025\n\010playerId\030\002 \001(\005H\001\210\001\001B\t\n\007_g" +
-      "ameIdB\013\n\t_playerId\"v\n\016RespawnCommand\022\023\n\006" +
-      "gameId\030\001 \001(\005H\000\210\001\001\022\025\n\010playerId\030\002 \001(\005H\001\210\001\001" +
-      "\022\024\n\007matchId\030\003 \001(\005H\002\210\001\001B\t\n\007_gameIdB\013\n\t_pl" +
-      "ayerIdB\n\n\010_matchId\"\301\006\n\024PushGameEventComm" +
-      "and\022\023\n\006gameId\030\001 \001(\005H\000\210\001\001\022I\n\teventType\030\002 " +
-      "\001(\01621.daikombat.dto.PushGameEventCommand" +
-      ".GameEventTypeH\001\210\001\001\022,\n\010position\030\003 \001(\0132\025." +
-      "daikombat.dto.VectorH\002\210\001\001\022-\n\tdirection\030\004" +
-      " \001(\0132\025.daikombat.dto.VectorH\003\210\001\001\022\025\n\010play" +
-      "erId\030\005 \001(\005H\004\210\001\001\022\035\n\020affectedPlayerId\030\006 \001(" +
-      "\005H\005\210\001\001\022\025\n\010sequence\030\007 \001(\005H\006\210\001\001\022\024\n\007pingMls" +
-      "\030\010 \001(\005H\007\210\001\001\022\027\n\nteleportId\030\t \001(\005H\010\210\001\001\0222\n\n" +
-      "weaponType\030\n \001(\0162\031.daikombat.dto.WeaponT" +
-      "ypeH\t\210\001\001\0227\n\nprojectile\030\013 \001(\0132\036.daikombat" +
-      ".dto.ProjectileStatsH\n\210\001\001\022\024\n\007matchId\030\014 \001" +
-      "(\005H\013\210\001\001\"\304\001\n\rGameEventType\022\010\n\004MOVE\020\000\022\n\n\006A" +
-      "TTACK\020\001\022\030\n\024QUAD_DAMAGE_POWER_UP\020\002\022\031\n\025INV" +
-      "ISIBILITY_POWER_UP\020\003\022\024\n\020DEFENCE_POWER_UP" +
-      "\020\004\022\014\n\010TELEPORT\020\005\022\023\n\017HEALTH_POWER_UP\020\006\022\025\n" +
-      "\021BIG_AMMO_POWER_UP\020\007\022\030\n\024MEDIUM_AMMO_POWE" +
-      "R_UP\020\010B\t\n\007_gameIdB\014\n\n_eventTypeB\013\n\t_posi" +
-      "tionB\014\n\n_directionB\013\n\t_playerIdB\023\n\021_affe" +
-      "ctedPlayerIdB\013\n\t_sequenceB\n\n\010_pingMlsB\r\n" +
-      "\013_teleportIdB\r\n\013_weaponTypeB\r\n\013_projecti" +
-      "leB\n\n\010_matchIdB&\n\"com.beverly.hills.mone" +
-      "y.gang.protoP\001b\006proto3"
+      "aikombat.dto.MergeConnectionCommandH\000\022K\n" +
+      "\030downloadMapAssetsCommand\030\n \001(\0132\'.daikom" +
+      "bat.dto.DownloadMapAssetsCommandH\000B\t\n\007co" +
+      "mmand\"\\\n\024GetServerInfoCommand\0224\n\013playerC" +
+      "lass\030\001 \001(\0162\032.daikombat.dto.PlayerClassH\000" +
+      "\210\001\001B\016\n\014_playerClass\"<\n\030DownloadMapAssets" +
+      "Command\022\024\n\007mapName\030\001 \001(\tH\000\210\001\001B\n\n\010_mapNam" +
+      "e\"\r\n\013PingCommand\"\260\001\n\024PushChatEventComman" +
+      "d\022\023\n\006gameId\030\001 \001(\005H\000\210\001\001\022\024\n\007message\030\002 \001(\tH" +
+      "\001\210\001\001\022\025\n\010playerId\030\003 \001(\005H\002\210\001\001\022(\n\005taunt\030\004 \001" +
+      "(\0162\024.daikombat.dto.TauntH\003\210\001\001B\t\n\007_gameId" +
+      "B\n\n\010_messageB\013\n\t_playerIdB\010\n\006_taunt\"\261\002\n\017" +
+      "JoinGameCommand\022\023\n\006gameId\030\001 \001(\005H\000\210\001\001\022\024\n\007" +
+      "version\030\002 \001(\tH\001\210\001\001\022\027\n\nplayerName\030\003 \001(\tH\002" +
+      "\210\001\001\0221\n\004skin\030\004 \001(\0162\036.daikombat.dto.Player" +
+      "SkinColorH\003\210\001\001\022\035\n\020recoveryPlayerId\030\005 \001(\005" +
+      "H\004\210\001\001\0224\n\013playerClass\030\006 \001(\0162\032.daikombat.d" +
+      "to.PlayerClassH\005\210\001\001B\t\n\007_gameIdB\n\n\010_versi" +
+      "onB\r\n\013_playerNameB\007\n\005_skinB\023\n\021_recoveryP" +
+      "layerIdB\016\n\014_playerClass\"\\\n\026MergeConnecti" +
+      "onCommand\022\023\n\006gameId\030\001 \001(\005H\000\210\001\001\022\025\n\010player" +
+      "Id\030\002 \001(\005H\001\210\001\001B\t\n\007_gameIdB\013\n\t_playerId\"v\n" +
+      "\016RespawnCommand\022\023\n\006gameId\030\001 \001(\005H\000\210\001\001\022\025\n\010" +
+      "playerId\030\002 \001(\005H\001\210\001\001\022\024\n\007matchId\030\003 \001(\005H\002\210\001" +
+      "\001B\t\n\007_gameIdB\013\n\t_playerIdB\n\n\010_matchId\"\301\006" +
+      "\n\024PushGameEventCommand\022\023\n\006gameId\030\001 \001(\005H\000" +
+      "\210\001\001\022I\n\teventType\030\002 \001(\01621.daikombat.dto.P" +
+      "ushGameEventCommand.GameEventTypeH\001\210\001\001\022," +
+      "\n\010position\030\003 \001(\0132\025.daikombat.dto.VectorH" +
+      "\002\210\001\001\022-\n\tdirection\030\004 \001(\0132\025.daikombat.dto." +
+      "VectorH\003\210\001\001\022\025\n\010playerId\030\005 \001(\005H\004\210\001\001\022\035\n\020af" +
+      "fectedPlayerId\030\006 \001(\005H\005\210\001\001\022\025\n\010sequence\030\007 " +
+      "\001(\005H\006\210\001\001\022\024\n\007pingMls\030\010 \001(\005H\007\210\001\001\022\027\n\ntelepo" +
+      "rtId\030\t \001(\005H\010\210\001\001\0222\n\nweaponType\030\n \001(\0162\031.da" +
+      "ikombat.dto.WeaponTypeH\t\210\001\001\0227\n\nprojectil" +
+      "e\030\013 \001(\0132\036.daikombat.dto.ProjectileStatsH" +
+      "\n\210\001\001\022\024\n\007matchId\030\014 \001(\005H\013\210\001\001\"\304\001\n\rGameEvent" +
+      "Type\022\010\n\004MOVE\020\000\022\n\n\006ATTACK\020\001\022\030\n\024QUAD_DAMAG" +
+      "E_POWER_UP\020\002\022\031\n\025INVISIBILITY_POWER_UP\020\003\022" +
+      "\024\n\020DEFENCE_POWER_UP\020\004\022\014\n\010TELEPORT\020\005\022\023\n\017H" +
+      "EALTH_POWER_UP\020\006\022\025\n\021BIG_AMMO_POWER_UP\020\007\022" +
+      "\030\n\024MEDIUM_AMMO_POWER_UP\020\010B\t\n\007_gameIdB\014\n\n" +
+      "_eventTypeB\013\n\t_positionB\014\n\n_directionB\013\n" +
+      "\t_playerIdB\023\n\021_affectedPlayerIdB\013\n\t_sequ" +
+      "enceB\n\n\010_pingMlsB\r\n\013_teleportIdB\r\n\013_weap" +
+      "onTypeB\r\n\013_projectileB\n\n\010_matchIdB&\n\"com" +
+      ".beverly.hills.money.gang.protoP\001b\006proto" +
+      "3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -132,45 +141,51 @@ public final class ServerCommandOuterClass {
     internal_static_daikombat_dto_ServerCommand_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_ServerCommand_descriptor,
-        new java.lang.String[] { "ChatCommand", "GameCommand", "JoinGameCommand", "GetServerInfoCommand", "PingCommand", "RespawnCommand", "MergeConnectionCommand", "Command", });
+        new java.lang.String[] { "ChatCommand", "GameCommand", "JoinGameCommand", "GetServerInfoCommand", "PingCommand", "RespawnCommand", "MergeConnectionCommand", "DownloadMapAssetsCommand", "Command", });
     internal_static_daikombat_dto_GetServerInfoCommand_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_daikombat_dto_GetServerInfoCommand_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_GetServerInfoCommand_descriptor,
         new java.lang.String[] { "PlayerClass", });
-    internal_static_daikombat_dto_PingCommand_descriptor =
+    internal_static_daikombat_dto_DownloadMapAssetsCommand_descriptor =
       getDescriptor().getMessageTypes().get(2);
+    internal_static_daikombat_dto_DownloadMapAssetsCommand_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_daikombat_dto_DownloadMapAssetsCommand_descriptor,
+        new java.lang.String[] { "MapName", });
+    internal_static_daikombat_dto_PingCommand_descriptor =
+      getDescriptor().getMessageTypes().get(3);
     internal_static_daikombat_dto_PingCommand_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_PingCommand_descriptor,
         new java.lang.String[] { });
     internal_static_daikombat_dto_PushChatEventCommand_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(4);
     internal_static_daikombat_dto_PushChatEventCommand_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_PushChatEventCommand_descriptor,
         new java.lang.String[] { "GameId", "Message", "PlayerId", "Taunt", });
     internal_static_daikombat_dto_JoinGameCommand_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(5);
     internal_static_daikombat_dto_JoinGameCommand_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_JoinGameCommand_descriptor,
         new java.lang.String[] { "GameId", "Version", "PlayerName", "Skin", "RecoveryPlayerId", "PlayerClass", });
     internal_static_daikombat_dto_MergeConnectionCommand_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(6);
     internal_static_daikombat_dto_MergeConnectionCommand_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_MergeConnectionCommand_descriptor,
         new java.lang.String[] { "GameId", "PlayerId", });
     internal_static_daikombat_dto_RespawnCommand_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(7);
     internal_static_daikombat_dto_RespawnCommand_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_RespawnCommand_descriptor,
         new java.lang.String[] { "GameId", "PlayerId", "MatchId", });
     internal_static_daikombat_dto_PushGameEventCommand_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_daikombat_dto_PushGameEventCommand_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_daikombat_dto_PushGameEventCommand_descriptor,

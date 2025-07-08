@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.beverly.hills.money.gang.registry.LocalMapRegistry;
-import java.net.URISyntaxException;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
 import lombok.Builder;
@@ -20,7 +20,7 @@ public class SpawnerTest {
   private LocalMapRegistry invalidMapRegistry;
 
   @BeforeEach
-  public void setUp() throws URISyntaxException {
+  public void setUp() throws IOException {
     mapRegistry = new LocalMapRegistry();
     invalidMapRegistry = new LocalMapRegistry("test_maps");
   }

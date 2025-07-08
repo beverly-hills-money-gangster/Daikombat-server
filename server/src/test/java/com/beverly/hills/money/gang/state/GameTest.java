@@ -31,6 +31,8 @@ import com.beverly.hills.money.gang.factory.rpg.RPGStatsFactory;
 import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
+import com.beverly.hills.money.gang.registry.LocalMapRegistry;
+import com.beverly.hills.money.gang.registry.MapRegistry;
 import com.beverly.hills.money.gang.registry.PlayerStatsRecoveryRegistry;
 import com.beverly.hills.money.gang.registry.PowerUpRegistry;
 import com.beverly.hills.money.gang.registry.TeleportRegistry;
@@ -39,9 +41,7 @@ import com.beverly.hills.money.gang.spawner.Spawner;
 import com.beverly.hills.money.gang.spawner.factory.AbstractPowerUpRegistryFactory;
 import com.beverly.hills.money.gang.spawner.factory.AbstractSpawnerFactory;
 import com.beverly.hills.money.gang.spawner.factory.AbstractTeleportRegistryFactory;
-import com.beverly.hills.money.gang.registry.LocalMapRegistry;
 import com.beverly.hills.money.gang.spawner.map.MapData;
-import com.beverly.hills.money.gang.registry.MapRegistry;
 import com.beverly.hills.money.gang.state.entity.PlayerAttackingGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerJoinedGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
@@ -52,9 +52,9 @@ import com.beverly.hills.money.gang.state.entity.Vector;
 import com.beverly.hills.money.gang.teleport.Teleport;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoop;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -102,7 +102,7 @@ public class GameTest {
 
   private static final int PING_MLS = 60;
 
-  public GameTest() throws URISyntaxException {
+  public GameTest() throws IOException {
   }
 
   @BeforeEach

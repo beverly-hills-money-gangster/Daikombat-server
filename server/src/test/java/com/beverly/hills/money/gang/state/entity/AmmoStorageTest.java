@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import com.beverly.hills.money.gang.spawner.factory.ProdSpawnerFactory;
-import com.beverly.hills.money.gang.spawner.map.LocalMapRegistry;
+import com.beverly.hills.money.gang.registry.LocalMapRegistry;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.GameWeaponType;
 import java.net.URISyntaxException;

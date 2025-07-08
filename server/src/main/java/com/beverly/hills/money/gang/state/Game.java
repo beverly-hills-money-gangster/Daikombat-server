@@ -18,7 +18,7 @@ import com.beverly.hills.money.gang.spawner.factory.AbstractPowerUpRegistryFacto
 import com.beverly.hills.money.gang.spawner.factory.AbstractSpawnerFactory;
 import com.beverly.hills.money.gang.spawner.factory.AbstractTeleportRegistryFactory;
 import com.beverly.hills.money.gang.spawner.map.GameMapMetadata;
-import com.beverly.hills.money.gang.spawner.map.MapRegistry;
+import com.beverly.hills.money.gang.registry.MapRegistry;
 import com.beverly.hills.money.gang.state.entity.GameLeaderBoardItem;
 import com.beverly.hills.money.gang.state.entity.GameOverGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerAttackingGameState;

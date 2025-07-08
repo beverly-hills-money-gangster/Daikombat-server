@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.beverly.hills.money.gang.spawner.map.LocalMapRegistry;
+import com.beverly.hills.money.gang.registry.LocalMapRegistry;
 import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Map.Entry;

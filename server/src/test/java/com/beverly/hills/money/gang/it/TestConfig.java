@@ -1,10 +1,21 @@
 package com.beverly.hills.money.gang.it;
 
+import static com.beverly.hills.money.gang.spawner.Spawner.createPowerUp;
+import static org.mockito.Mockito.spy;
+
 import com.beverly.hills.money.gang.AppConfig;
-import com.beverly.hills.money.gang.spawner.Spawner;
-import com.beverly.hills.money.gang.state.Game;
+import com.beverly.hills.money.gang.powerup.PowerUp;
+import com.beverly.hills.money.gang.powerup.PowerUpType;
+import com.beverly.hills.money.gang.spawner.AbstractSpawner;
+import com.beverly.hills.money.gang.spawner.factory.AbstractSpawnerFactory;
+import com.beverly.hills.money.gang.spawner.map.MapData;
+import com.beverly.hills.money.gang.state.PlayerStateReader;
 import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.Vector;
+import com.beverly.hills.money.gang.state.entity.VectorDirection;
+import com.beverly.hills.money.gang.teleport.Teleport;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -19,44 +30,46 @@ public class TestConfig {
 
   @Bean
   @Primary
-  public Spawner testSpawner() {
-    return new Spawner() {
+  public AbstractSpawner testSpawner() {
+    return new AbstractSpawner() {
       @Override
-      public Vector spawnMediumAmmo() {
-        return MAIN_LOCATION;
+      public List<Teleport> getTeleports() {
+        var teleport1 = Teleport.builder()
+            .id(0).teleportToId(1)
+            .location(MAIN_LOCATION)
+            .direction(VectorDirection.EAST).build();
+        var teleport2 = Teleport.builder()
+            .id(1).teleportToId(0)
+            .location(MAIN_LOCATION)
+            .direction(VectorDirection.EAST).build();
+        return List.of(teleport1, teleport2);
       }
 
       @Override
-      public Vector spawnBigAmmo() {
-        return MAIN_LOCATION;
+      public List<PowerUp> getPowerUps() {
+        var powerUps = new ArrayList<PowerUp>();
+        for (PowerUpType type : PowerUpType.values()) {
+          powerUps.add(spy(createPowerUp(type, MAIN_LOCATION)));
+        }
+        return powerUps;
       }
 
       @Override
-      public Vector spawnQuadDamage() {
-        return MAIN_LOCATION;
+      public Coordinates getPlayerSpawn(List<PlayerStateReader> allPlayers) {
+        return Coordinates.builder()
+            .position(MAIN_LOCATION)
+            .direction(VectorDirection.EAST.getVector()).build();
       }
+    };
+  }
 
+  @Bean
+  @Primary
+  public AbstractSpawnerFactory testSpawnerFactory(AbstractSpawner spawner) {
+    return new AbstractSpawnerFactory() {
       @Override
-      public Vector spawnInvisibility() {
-        return MAIN_LOCATION;
-      }
-
-      @Override
-      public Vector spawnDefence() {
-        return MAIN_LOCATION;
-      }
-
-
-      @Override
-      public Vector spawnHealth() {
-        return MAIN_LOCATION;
-      }
-
-      @Override
-      public Coordinates spawnPlayer(Game game) {
-        return Coordinates.builder().position(MAIN_LOCATION)
-            .direction(
-                Vector.builder().x(-0.00313453F).y(-0.9999952F).build()).build();
+      public AbstractSpawner create(MapData mapData) {
+        return spawner;
       }
     };
   }

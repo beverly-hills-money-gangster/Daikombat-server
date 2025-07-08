@@ -1,6 +1,7 @@
 package com.beverly.hills.money.gang.network;
 
 import com.beverly.hills.money.gang.entity.HostPort;
+import com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PushChatEventCommand;
@@ -23,6 +24,10 @@ public class GameConnection extends AbstractGameConnection {
 
   public void write(JoinGameCommand joinGameCommand) {
     writeLocal(joinGameCommand);
+  }
+
+  public void write(DownloadMapAssetsCommand downloadMapAssetsCommand) {
+    writeLocal(downloadMapAssetsCommand);
   }
 
   public void write(GetServerInfoCommand getServerInfoCommand) {

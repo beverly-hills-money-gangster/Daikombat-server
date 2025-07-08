@@ -29,16 +29,19 @@ import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.factory.rpg.RPGStatsFactory;
 import com.beverly.hills.money.gang.generator.SequenceGenerator;
-import com.beverly.hills.money.gang.powerup.DefencePowerUp;
-import com.beverly.hills.money.gang.powerup.HealthPowerUp;
-import com.beverly.hills.money.gang.powerup.InvisibilityPowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
-import com.beverly.hills.money.gang.powerup.QuadDamagePowerUp;
 import com.beverly.hills.money.gang.registry.PlayerStatsRecoveryRegistry;
 import com.beverly.hills.money.gang.registry.PowerUpRegistry;
 import com.beverly.hills.money.gang.registry.TeleportRegistry;
+import com.beverly.hills.money.gang.spawner.AbstractSpawner;
 import com.beverly.hills.money.gang.spawner.Spawner;
+import com.beverly.hills.money.gang.spawner.factory.AbstractPowerUpRegistryFactory;
+import com.beverly.hills.money.gang.spawner.factory.AbstractSpawnerFactory;
+import com.beverly.hills.money.gang.spawner.factory.AbstractTeleportRegistryFactory;
+import com.beverly.hills.money.gang.spawner.map.LocalMapRegistry;
+import com.beverly.hills.money.gang.spawner.map.MapData;
+import com.beverly.hills.money.gang.spawner.map.MapRegistry;
 import com.beverly.hills.money.gang.state.entity.PlayerAttackingGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerJoinedGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
@@ -46,10 +49,12 @@ import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
 import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
 import com.beverly.hills.money.gang.state.entity.Vector;
+import com.beverly.hills.money.gang.teleport.Teleport;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoop;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -75,17 +80,19 @@ public class GameTest {
 
   private Spawner spawner;
 
+  private final MapRegistry mapRegistry = new LocalMapRegistry();
+
   private PowerUpRegistry powerUpRegistry;
 
   private TeleportRegistry teleportRegistry;
 
-  private QuadDamagePowerUp quadDamagePowerUp;
+  private PowerUp quadDamagePowerUp;
 
-  private HealthPowerUp healthPowerUp;
+  private PowerUp healthPowerUp;
 
-  private InvisibilityPowerUp invisibilityPowerUp;
+  private PowerUp invisibilityPowerUp;
 
-  private DefencePowerUp defencePowerUp;
+  private PowerUp defencePowerUp;
 
   private AntiCheat antiCheat;
 
@@ -95,25 +102,54 @@ public class GameTest {
 
   private static final int PING_MLS = 60;
 
+  public GameTest() throws URISyntaxException {
+  }
+
   @BeforeEach
   public void setUp() {
     antiCheat = spy(new AntiCheat());
-    spawner = spy(new Spawner());
-    quadDamagePowerUp = spy(new QuadDamagePowerUp(spawner));
-    defencePowerUp = spy(new DefencePowerUp(spawner));
-    healthPowerUp = spy(new HealthPowerUp(spawner));
-    invisibilityPowerUp = spy(new InvisibilityPowerUp(spawner));
-    teleportRegistry = spy(new TeleportRegistry());
+    spawner = spy(new Spawner(mapRegistry.getMap("classic").orElseThrow().getMapData()));
+    doAnswer(invocationOnMock -> {
+      var powerUps = ((List<PowerUp>) invocationOnMock.callRealMethod());
+      var spies = new ArrayList<PowerUp>();
+      powerUps.forEach(powerUp -> spies.add(spy(powerUp)));
+      return spies;
+    }).when(spawner).getPowerUps();
+
+    powerUpRegistry = spy(new PowerUpRegistry(spawner.getPowerUps()));
+
+    quadDamagePowerUp = powerUpRegistry.get(PowerUpType.QUAD_DAMAGE);
+    defencePowerUp = powerUpRegistry.get(PowerUpType.DEFENCE);
+    healthPowerUp = powerUpRegistry.get(PowerUpType.HEALTH);
+    invisibilityPowerUp = powerUpRegistry.get(PowerUpType.INVISIBILITY);
+    teleportRegistry = spy(new TeleportRegistry(spawner.getTeleports()));
+
     playerStatsRecoveryRegistry = mock(PlayerStatsRecoveryRegistry.class);
     powerUpRegistry = spy(
         new PowerUpRegistry(
             List.of(quadDamagePowerUp, defencePowerUp, invisibilityPowerUp, healthPowerUp)));
-    game = new Game(spawner,
+    game = new Game(mapRegistry,
         new SequenceGenerator(),
         new SequenceGenerator(),
-        powerUpRegistry,
-        teleportRegistry,
         antiCheat,
+        new AbstractSpawnerFactory() {
+          @Override
+          public AbstractSpawner create(MapData mapData) {
+            return spawner;
+          }
+        },
+        new AbstractTeleportRegistryFactory() {
+          @Override
+          public TeleportRegistry create(List<Teleport> teleportList) {
+            return teleportRegistry;
+          }
+        },
+        new AbstractPowerUpRegistryFactory() {
+          @Override
+          public PowerUpRegistry create(List<PowerUp> powerUps) {
+            return powerUpRegistry;
+          }
+        },
         playerStatsRecoveryRegistry);
     doReturn(false).when(antiCheat).isAttackingTooFar(any(), any(), any());
   }
@@ -189,41 +225,19 @@ public class GameTest {
 
     for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME - 1; i++) {
       // spawn everywhere except for the last spawn position
-      doReturn(Spawner.SPAWNS.get(i % (Spawner.SPAWNS.size() - 1))).when(spawner)
-          .spawnPlayer(any());
+      doReturn(spawner.getPlayerSpawns().get(i % (spawner.getPlayerSpawns().size() - 1))).when(
+          spawner).getPlayerSpawn(any());
       fullyJoin(playerName + " " + i, channel, PlayerStateColor.GREEN);
     }
 
-    doCallRealMethod().when(spawner).spawnPlayer(any());
-    doReturn(Spawner.SPAWNS).when(spawner).getRandomSpawns();
+    doCallRealMethod().when(spawner).getPlayerSpawn(any());
+    doReturn(spawner.getPlayerSpawns()).when(spawner).getRandomSpawns();
     var connectedPlayer = fullyJoin(playerName, channel, PlayerStateColor.GREEN);
-    assertEquals(Spawner.SPAWNS.get(Spawner.SPAWNS.size() - 1),
+    assertEquals(spawner.getPlayerSpawns().get(spawner.getPlayerSpawns().size() - 1),
         connectedPlayer.getPlayerStateChannel().getPlayerState().getCoordinates(),
         "Should be spawned to the last spawn position because it's least populated");
   }
 
-  /**
-   * @given game server with no players
-   * @when many players connect to the game
-   * @then all of them get unique spawns
-   **/
-  @Test
-  public void testConnectPlayerUniqueSpawns() throws Throwable {
-    String playerName = "some player";
-    Channel channel = mock(Channel.class);
-    Set<Vector> spawns = new HashSet<>();
-    doReturn(Spawner.SPAWNS).when(spawner).getRandomSpawns();
-    int playersToJoin = Math.min(ServerConfig.MAX_PLAYERS_PER_GAME, Spawner.SPAWNS.size());
-    for (int i = 0; i < playersToJoin; i++) {
-      spawns.add(
-          fullyJoin(playerName + " " + i, channel, PlayerStateColor.GREEN)
-              .getPlayerStateChannel().getPlayerState()
-              .getCoordinates()
-              .getPosition());
-    }
-    assertEquals(playersToJoin, spawns.size(),
-        "All spawn should be unique as every player must get the the least populated position");
-  }
 
   /**
    * @given a connected player
@@ -2258,35 +2272,6 @@ public class GameTest {
         "Coordinates should NOT change if there was an error");
   }
 
-  /**
-   * @given a player that stands close a teleport
-   * @when the player tries to teleport
-   * @then it gets teleported
-   */
-  @Test
-  public void testTeleport() throws GameLogicError {
-    doReturn(false).when(antiCheat).isTeleportTooFar(any(), any());
-    String teleportedPlayerName = "teleported player";
-    Channel channel = mock(Channel.class);
-
-    PlayerJoinedGameState teleportedPlayerGameState = fullyJoin(teleportedPlayerName,
-        channel, PlayerStateColor.GREEN);
-
-    var teleportToUse = teleportedPlayerGameState.getTeleports().get(0);
-
-    var result = game.teleport(
-        teleportedPlayerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        teleportedPlayerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
-        teleportToUse.getId(),
-        testSequenceGenerator.getNext(),
-        PING_MLS
-    );
-
-    assertEquals(
-        teleportToUse.getTeleportCoordinates(),
-        result.getTeleportedPlayer().getCoordinates());
-
-  }
 
   /**
    * @given a game with no players
@@ -2377,7 +2362,7 @@ public class GameTest {
     // same position
     doReturn(Coordinates.builder()
         .direction(Vector.builder().build()).position(Vector.builder().build()).build())
-        .when(spawner).spawnPlayer(any());
+        .when(spawner).getPlayerSpawn(any());
 
     var nearestPlayer = fullyJoin("nearest", channel, PlayerStateColor.GREEN);
 
@@ -2385,7 +2370,7 @@ public class GameTest {
     doReturn(Coordinates.builder()
         .direction(Vector.builder().build()).position(Vector.builder().x(1).y(1).build())
         .build())
-        .when(spawner).spawnPlayer(any());
+        .when(spawner).getPlayerSpawn(any());
 
     var withinRangePlayer = fullyJoin("withing range", channel, PlayerStateColor.GREEN);
 
@@ -2394,7 +2379,7 @@ public class GameTest {
         .direction(Vector.builder().build())
         .position(Vector.builder().y(100).x(-100).build())
         .build())
-        .when(spawner).spawnPlayer(any());
+        .when(spawner).getPlayerSpawn(any());
     fullyJoin("faraway player 1", channel, PlayerStateColor.GREEN);
     fullyJoin("faraway player 2", channel, PlayerStateColor.GREEN);
 

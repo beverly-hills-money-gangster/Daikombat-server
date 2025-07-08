@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.network.GameConnection;
-import com.beverly.hills.money.gang.powerup.BigAmmoPowerUp;
+import com.beverly.hills.money.gang.powerup.PowerUpType;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PlayerSkinColor;
@@ -28,7 +28,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "999999")
 @SetEnvironmentVariable(key = "GAME_SERVER_AMMO_SPAWN_MLS", value = "5000")
@@ -38,8 +37,6 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 @SetEnvironmentVariable(key = "GAME_SERVER_SPAWN_IMMORTAL_MLS", value = "0")
 public class BigAmmoPowerUpTest extends AbstractGameServerTest {
 
-  @SpyBean
-  private BigAmmoPowerUp bigAmmoPowerUp;
 
   @Autowired
   private GameRoomRegistry gameRoomRegistry;
@@ -54,9 +51,9 @@ public class BigAmmoPowerUpTest extends AbstractGameServerTest {
   public void testPickUpPowerUpBigAmmo(GameWeaponType gameWeaponType)
       throws IOException, InterruptedException, GameLogicError {
     int gameIdToConnectTo = 0;
-    var weaponInfo = gameRoomRegistry.getGame(gameIdToConnectTo).getRpgWeaponInfo()
-        .getWeaponInfo(RPGPlayerClass.WARRIOR, gameWeaponType).get();
-
+    var game = gameRoomRegistry.getGame(gameIdToConnectTo);
+    var weaponInfo = game.getRpgWeaponInfo().getWeaponInfo(RPGPlayerClass.WARRIOR, gameWeaponType).get();
+    var bigAmmoPowerUp = game.getPowerUpRegistry().get(PowerUpType.BIG_AMMO);
     if (weaponInfo.getMaxAmmo() == null) {
       // skip
       return;

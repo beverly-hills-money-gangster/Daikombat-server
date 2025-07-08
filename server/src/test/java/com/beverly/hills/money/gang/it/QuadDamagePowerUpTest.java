@@ -7,7 +7,9 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
+import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.network.GameConnection;
+import com.beverly.hills.money.gang.powerup.PowerUpType;
 import com.beverly.hills.money.gang.powerup.QuadDamagePowerUp;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
@@ -18,11 +20,13 @@ import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType;
 import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem;
 import com.beverly.hills.money.gang.proto.Vector;
+import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "999999")
@@ -34,8 +38,8 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 @SetEnvironmentVariable(key = "GAME_SERVER_SPAWN_IMMORTAL_MLS", value = "0")
 public class QuadDamagePowerUpTest extends AbstractGameServerTest {
 
-  @SpyBean
-  private QuadDamagePowerUp quadDamagePowerUp;
+  @Autowired
+  private GameRoomRegistry gameRoomRegistry;
 
   /**
    * @given a game with one player
@@ -45,8 +49,10 @@ public class QuadDamagePowerUpTest extends AbstractGameServerTest {
    */
   @Test
   public void testPickUpPowerUpQuadDamage()
-      throws IOException, InterruptedException {
+      throws IOException, InterruptedException, GameLogicError {
     int gameIdToConnectTo = 0;
+    var game = gameRoomRegistry.getGame(gameIdToConnectTo);
+    var quadDamagePowerUp = game.getPowerUpRegistry().get(PowerUpType.QUAD_DAMAGE);
     GameConnection playerConnection = createGameConnection( "localhost",
         port);
     playerConnection.write(

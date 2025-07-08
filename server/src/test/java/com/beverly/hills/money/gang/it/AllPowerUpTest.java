@@ -5,14 +5,10 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
+import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.network.GameConnection;
-import com.beverly.hills.money.gang.powerup.BigAmmoPowerUp;
-import com.beverly.hills.money.gang.powerup.DefencePowerUp;
-import com.beverly.hills.money.gang.powerup.HealthPowerUp;
-import com.beverly.hills.money.gang.powerup.InvisibilityPowerUp;
-import com.beverly.hills.money.gang.powerup.MediumAmmoPowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUp;
-import com.beverly.hills.money.gang.powerup.QuadDamagePowerUp;
+import com.beverly.hills.money.gang.powerup.PowerUpType;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PlayerSkinColor;
@@ -22,14 +18,15 @@ import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType;
 import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem;
 import com.beverly.hills.money.gang.proto.Vector;
+import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "999999")
 @SetEnvironmentVariable(key = "GAME_SERVER_QUAD_DAMAGE_SPAWN_MLS", value = "5000")
@@ -45,26 +42,8 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "999999")
 public class AllPowerUpTest extends AbstractGameServerTest {
 
-  @SpyBean
-  private DefencePowerUp defencePowerUp;
-
-  @SpyBean
-  private InvisibilityPowerUp invisibilityPowerUp;
-
-  @SpyBean
-  private QuadDamagePowerUp quadDamagePowerUp;
-
-  @SpyBean
-  private HealthPowerUp healthPowerUp;
-
-  @SpyBean
-  private BigAmmoPowerUp bigAmmoPowerUp;
-
-  @SpyBean
-  private MediumAmmoPowerUp mediumAmmoPowerUp;
-
   @Autowired
-  private List<PowerUp> allPowerUpBeans;
+  private GameRoomRegistry gameRoomRegistry;
 
   /**
    * @given a game with one player
@@ -73,10 +52,14 @@ public class AllPowerUpTest extends AbstractGameServerTest {
    */
   @Test
   public void testPickUpPowerUpAll()
-      throws IOException {
+      throws IOException, GameLogicError {
     int gameIdToConnectTo = 0;
-    GameConnection playerConnection = createGameConnection("localhost",
-        port);
+    GameConnection playerConnection = createGameConnection("localhost", port);
+    var game = gameRoomRegistry.getGame(gameIdToConnectTo);
+    var allPowerUps = new ArrayList<PowerUp>();
+    for (PowerUpType type : PowerUpType.values()) {
+      allPowerUps.add(game.getPowerUpRegistry().get(type));
+    }
     playerConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(
@@ -104,11 +87,15 @@ public class AllPowerUpTest extends AbstractGameServerTest {
             .collect(Collectors.toSet()),
         spawns, "All power-ups should be spawned");
 
-    var allPowerUps = List.of(GameEventType.INVISIBILITY_POWER_UP, GameEventType.DEFENCE_POWER_UP,
-        GameEventType.QUAD_DAMAGE_POWER_UP, GameEventType.HEALTH_POWER_UP,
-        GameEventType.BIG_AMMO_POWER_UP, GameEventType.MEDIUM_AMMO_POWER_UP);
+    var powerUpsToPick = List.of(
+        GameEventType.INVISIBILITY_POWER_UP,
+        GameEventType.DEFENCE_POWER_UP,
+        GameEventType.QUAD_DAMAGE_POWER_UP,
+        GameEventType.BIG_AMMO_POWER_UP,
+        GameEventType.HEALTH_POWER_UP,
+        GameEventType.MEDIUM_AMMO_POWER_UP);
 
-    allPowerUps.forEach(gameEventType -> playerConnection.write(PushGameEventCommand.newBuilder()
+    powerUpsToPick.forEach(gameEventType -> playerConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(playerId)
         .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
         .setMatchId(0).setGameId(gameIdToConnectTo)
@@ -120,9 +107,9 @@ public class AllPowerUpTest extends AbstractGameServerTest {
         .setEventType(gameEventType)
         .build()));
 
-    waitUntilGetResponses(playerConnection.getResponse(), allPowerUps.size());
+    waitUntilGetResponses(playerConnection.getResponse(), powerUpsToPick.size());
 
-    for (PowerUp powerUpBean : allPowerUpBeans) {
+    for (PowerUp powerUpBean : allPowerUps) {
       verify(powerUpBean).apply(argThat(playerState -> playerState.getPlayerId() == playerId));
     }
   }

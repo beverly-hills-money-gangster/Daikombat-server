@@ -4,6 +4,8 @@ import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
+import com.beverly.hills.money.gang.proto.MapAssets;
+import com.beverly.hills.money.gang.proto.MapMetadata;
 import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.ProjectileType;
@@ -24,6 +26,7 @@ import com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo;
 import com.beverly.hills.money.gang.proto.Taunt;
 import com.beverly.hills.money.gang.proto.Vector;
 import com.beverly.hills.money.gang.proto.WeaponType;
+import com.beverly.hills.money.gang.spawner.map.GameMapAssets;
 import com.beverly.hills.money.gang.state.GameProjectileType;
 import com.beverly.hills.money.gang.state.GameReader;
 import com.beverly.hills.money.gang.state.GameWeaponType;
@@ -36,9 +39,9 @@ import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
 import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
 import com.beverly.hills.money.gang.teleport.Teleport;
+import com.google.protobuf.ByteString;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -174,6 +177,10 @@ public interface ServerResponseFactory {
               .setTitle(game.getGameConfig().getTitle())
               .setPlayersOnline(game.playersOnline())
               .setMaxGamePlayers(game.maxPlayersAvailable())
+              .setMapMetadata(MapMetadata.newBuilder()
+                  .setName(game.getGameMapMetadata().getName())
+                  .setHash(game.getGameMapMetadata().getHash())
+                  .build())
               .setMatchId(game.matchId())
               .setMaxVisibility(game.getGameConfig().getMaxVisibility())
               .setPlayerSpeed(game.getGameConfig().getPlayerSpeed())
@@ -221,7 +228,7 @@ public interface ServerResponseFactory {
         .setPowerUpSpawn(PowerUpSpawnEvent.newBuilder()
             .addAllItems(powerUps.stream().map(power -> PowerUpSpawnEventItem.newBuilder()
                     .setType(createGamePowerUpType(power.getType()))
-                    .setPosition(createVector(power.getSpawnPosition())).build())
+                    .setPosition(createVector(power.getPosition())).build())
                 .collect(Collectors.toList())))
         .build();
   }
@@ -310,7 +317,7 @@ public interface ServerResponseFactory {
       case ANGRY_SKELETON -> RPGPlayerClass.ANGRY_SKELETON;
       case DEMON_TANK -> RPGPlayerClass.DEMON_TANK;
       case WARRIOR -> RPGPlayerClass.WARRIOR;
-      default -> throw new IllegalArgumentException("Not supported player class");
+      case UNRECOGNIZED -> throw new IllegalArgumentException("Not supported player class");
     };
   }
 
@@ -442,6 +449,16 @@ public interface ServerResponseFactory {
         .setGameEvents(ServerResponse.GameEvents.newBuilder()
             .setPlayersOnline(playersOnline)
             .addEvents(createRespawnEvent(playerState)))
+        .build();
+  }
+
+  static ServerResponse createMapAssetsResponse(final GameMapAssets mapAssets) {
+    return ServerResponse.newBuilder()
+        .setMapAssets(MapAssets.newBuilder()
+            .setAtlasPng(ByteString.copyFrom(mapAssets.getAtlasPng()))
+            .setAtlasTsx(ByteString.copyFrom(mapAssets.getAtlasTsx()))
+            .setOnlineMapTmx(ByteString.copyFrom(mapAssets.getOnlineMapTmx()))
+            .build())
         .build();
   }
 

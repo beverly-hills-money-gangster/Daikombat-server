@@ -60,3 +60,15 @@ enum Taunt {
   U_R_NOTHING = 9;
   U_R_WEAK_PATHETIC_FOOL = 10;
 }
+
+
+message MapMetadata {
+  optional string name = 1;
+  optional string hash = 2;
+}
+
+message MapAssets {
+  optional bytes atlasPng = 1;
+  optional bytes atlasTsx = 2;
+  optional bytes onlineMapTmx = 3;
+}

@@ -13,7 +13,12 @@ import com.beverly.hills.money.gang.registry.PlayerStatsRecoveryRegistry;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import com.beverly.hills.money.gang.registry.PowerUpRegistry;
 import com.beverly.hills.money.gang.registry.TeleportRegistry;
-import com.beverly.hills.money.gang.spawner.Spawner;
+import com.beverly.hills.money.gang.spawner.AbstractSpawner;
+import com.beverly.hills.money.gang.spawner.factory.AbstractPowerUpRegistryFactory;
+import com.beverly.hills.money.gang.spawner.factory.AbstractSpawnerFactory;
+import com.beverly.hills.money.gang.spawner.factory.AbstractTeleportRegistryFactory;
+import com.beverly.hills.money.gang.spawner.map.GameMapMetadata;
+import com.beverly.hills.money.gang.spawner.map.MapRegistry;
 import com.beverly.hills.money.gang.state.entity.GameLeaderBoardItem;
 import com.beverly.hills.money.gang.state.entity.GameOverGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerAttackingGameState;
@@ -49,7 +54,7 @@ public class Game implements Closeable, GameReader {
 
   private static final Logger LOG = LoggerFactory.getLogger(Game.class);
 
-  private final Spawner spawner;
+  private final AbstractSpawner spawner;
 
   @Getter
   private final int id;
@@ -63,6 +68,7 @@ public class Game implements Closeable, GameReader {
   @Getter
   private final PowerUpRegistry powerUpRegistry;
 
+  @Getter
   private final TeleportRegistry teleportRegistry;
 
   private final AntiCheat antiCheat;
@@ -75,23 +81,32 @@ public class Game implements Closeable, GameReader {
 
   private final AtomicInteger matchId = new AtomicInteger();
 
+  @Getter
+  private final GameMapMetadata gameMapMetadata;
+
   public Game(
-      final Spawner spawner,
+      final MapRegistry mapRegistry,
       @Qualifier("gameIdGenerator") final SequenceGenerator gameSequenceGenerator,
       @Qualifier("playerIdGenerator") final SequenceGenerator playerSequenceGenerator,
-      final PowerUpRegistry powerUpRegistry,
-      final TeleportRegistry teleportRegistry,
       final AntiCheat antiCheat,
+      final AbstractSpawnerFactory spawnerFactory,
+      final AbstractTeleportRegistryFactory teleportRegistryFactory,
+      final AbstractPowerUpRegistryFactory powerUpRegistryFactory,
       final PlayerStatsRecoveryRegistry playerStatsRecoveryRegistry) {
-    this.spawner = spawner;
-    this.powerUpRegistry = powerUpRegistry;
-    this.teleportRegistry = teleportRegistry;
     this.id = gameSequenceGenerator.getNext();
+    this.gameConfig = new GameRoomServerConfig(this.id);
+    var mapData = mapRegistry.getMap(gameConfig.getMapName()).orElseThrow(
+        () -> new IllegalStateException("Can't load map data"));
+    gameMapMetadata = GameMapMetadata.builder()
+        .name(gameConfig.getMapName())
+        .hash(mapData.getAssets().getHash()).build();
+    this.spawner = spawnerFactory.create(mapData.getMapData());
+    this.powerUpRegistry = powerUpRegistryFactory.create(spawner.getPowerUps());
+    this.teleportRegistry = teleportRegistryFactory.create(spawner.getTeleports());
     this.playerSequenceGenerator = playerSequenceGenerator;
     this.antiCheat = antiCheat;
     this.playerStatsRecoveryRegistry = playerStatsRecoveryRegistry;
     this.playersRegistry = new PlayersRegistry(playerStatsRecoveryRegistry);
-    this.gameConfig = new GameRoomServerConfig(this.id);
     // TODO I don't like this reference escaping
     this.rpgWeaponInfo = new RPGWeaponInfo(this);
     LOG.info("Created game {}. Configs {}", this.id, gameConfig);
@@ -112,7 +127,8 @@ public class Game implements Closeable, GameReader {
       Integer recoveryPlayerId,
       RPGPlayerClass rpgPlayerClass) throws GameLogicError {
     int playerId = playerSequenceGenerator.getNext();
-    Coordinates spawn = spawner.spawnPlayer(this);
+    Coordinates spawn = spawner.getPlayerSpawn(getPlayersRegistry().allPlayers()
+        .map(PlayerStateChannel::getPlayerState).collect(Collectors.toList()));
     PlayerState connectedPlayerState = new PlayerState(
         playerName, spawn, playerId, color, rpgPlayerClass, this);
     // recover game stats if we can
@@ -138,7 +154,8 @@ public class Game implements Closeable, GameReader {
       throw new GameLogicError("Can't respawn live player", GameErrorCode.COMMON_ERROR);
     }
     LOG.debug("Respawn player {}", playerId);
-    player.getPlayerState().respawn(spawner.spawnPlayer(this));
+    player.getPlayerState().respawn(spawner.getPlayerSpawn(getPlayersRegistry().allPlayers()
+        .map(PlayerStateChannel::getPlayerState).collect(Collectors.toList())));
     return PlayerRespawnedGameState.builder()
         .spawnedPowerUps(powerUpRegistry.getAvailable())
         .teleports(teleportRegistry.getAllTeleports())
@@ -163,9 +180,9 @@ public class Game implements Closeable, GameReader {
     if (powerUp == null) {
       LOG.warn("Power-up missing");
       return null;
-    } else if (antiCheat.isPowerUpTooFar(coordinates.getPosition(),
-        powerUp.getSpawnPosition())) {
-      LOG.warn("Power-up can't be taken due to cheating");
+    } else if (antiCheat.isPowerUpTooFar(coordinates.getPosition(), powerUp.getPosition())) {
+      LOG.warn("Power-up can't be taken due to cheating. Player position {} power-up position {}",
+          coordinates.getPosition(), powerUp.getPosition());
       return null;
     }
     move(playerId, coordinates, eventSequence, pingMls);
@@ -388,7 +405,17 @@ public class Game implements Closeable, GameReader {
         player.getCoordinates().getPosition(), teleport.getLocation())) {
       throw new GameLogicError("Teleport is too far", GameErrorCode.CHEATING);
     }
-    player.teleport(teleport.getTeleportCoordinates());
+    var teleportTo = teleportRegistry.getTeleport(teleport.getTeleportToId()).orElseThrow(
+        () -> new GameLogicError("Unknown teleport", GameErrorCode.COMMON_ERROR));
+    var teleportToPosition = teleportTo.getLocation();
+    var teleportToDirection = teleportTo.getDirection().getVector();
+    // position + direction so you teleport in front of the teleport location
+    var newPosition = Vector.builder()
+        .x(teleportToPosition.getX() + teleportToDirection.getX())
+        .y(teleportToPosition.getY() + teleportToDirection.getY())
+        .build();
+    player.teleport(
+        Coordinates.builder().position(newPosition).direction(teleportToDirection).build());
     return PlayerTeleportingGameState.builder().teleportedPlayer(player).build();
   }
 

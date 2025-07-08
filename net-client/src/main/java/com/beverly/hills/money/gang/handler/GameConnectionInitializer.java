@@ -27,7 +27,6 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO store and show every player's ping
 @RequiredArgsConstructor
 public class GameConnectionInitializer extends ChannelInitializer<SocketChannel> {
 

@@ -16,11 +16,16 @@ message ServerCommand {
     PingCommand pingCommand = 7;
     RespawnCommand respawnCommand = 8;
     MergeConnectionCommand mergeConnectionCommand = 9;
+    DownloadMapAssetsCommand downloadMapAssetsCommand = 10;
   }
 }
 
 message GetServerInfoCommand {
   optional PlayerClass playerClass = 1;
+}
+
+message DownloadMapAssetsCommand {
+  optional string mapName = 1;
 }
 
 message PingCommand {}

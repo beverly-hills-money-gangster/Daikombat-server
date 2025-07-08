@@ -7,8 +7,9 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
+import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.network.GameConnection;
-import com.beverly.hills.money.gang.powerup.DefencePowerUp;
+import com.beverly.hills.money.gang.powerup.PowerUpType;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PlayerSkinColor;
@@ -18,12 +19,13 @@ import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType;
 import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem;
 import com.beverly.hills.money.gang.proto.Vector;
+import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
-import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "999999")
 @SetEnvironmentVariable(key = "GAME_SERVER_DEFENCE_SPAWN_MLS", value = "5000")
@@ -34,8 +36,9 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 @SetEnvironmentVariable(key = "GAME_SERVER_TELEPORTS_ENABLED", value = "false")
 public class DefencePowerUpTest extends AbstractGameServerTest {
 
-  @SpyBean
-  private DefencePowerUp defencePowerUp;
+
+  @Autowired
+  private GameRoomRegistry gameRoomRegistry;
 
   /**
    * @given a game with one player
@@ -45,9 +48,11 @@ public class DefencePowerUpTest extends AbstractGameServerTest {
    */
   @Test
   public void testPickUpPowerUpDefence()
-      throws IOException, InterruptedException {
+      throws IOException, InterruptedException, GameLogicError {
     int gameIdToConnectTo = 0;
-    GameConnection playerConnection = createGameConnection( "localhost",
+    var game = gameRoomRegistry.getGame(gameIdToConnectTo);
+    var defencePowerUp = game.getPowerUpRegistry().get(PowerUpType.DEFENCE);
+    GameConnection playerConnection = createGameConnection("localhost",
         port);
     playerConnection.write(
         JoinGameCommand.newBuilder()
@@ -120,11 +125,12 @@ public class DefencePowerUpTest extends AbstractGameServerTest {
     var quadDamagePowerUpReSpawn = quadDamagePowerUpReSpawnResponse.getPowerUpSpawn();
     assertEquals(GamePowerUpType.DEFENCE, quadDamagePowerUpReSpawn.getItems(0).getType());
 
-    GameConnection observerAfterRevert = createGameConnection( "localhost",
+    GameConnection observerAfterRevert = createGameConnection("localhost",
         port);
     observerAfterRevert.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.WARRIOR)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("after revert")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerAfterRevert.getResponse());

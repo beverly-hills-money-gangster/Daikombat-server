@@ -1,27 +1,20 @@
 package com.beverly.hills.money.gang.powerup;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
-import com.beverly.hills.money.gang.spawner.Spawner;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
 import com.beverly.hills.money.gang.state.entity.Vector;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
-@Component
+
 @RequiredArgsConstructor
 public class HealthPowerUp implements PowerUp {
 
-  private final Spawner spawner;
+  @Getter
+  private final PowerUpType type = PowerUpType.HEALTH;
 
-  @Override
-  public PowerUpType getType() {
-    return PowerUpType.HEALTH;
-  }
-
-  @Override
-  public Vector getSpawnPosition() {
-    return spawner.spawnHealth();
-  }
+  @Getter
+  private final Vector position;
 
   @Override
   public void apply(PlayerState playerState) {

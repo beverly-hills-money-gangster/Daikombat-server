@@ -1,29 +1,21 @@
 package com.beverly.hills.money.gang.powerup;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
-import com.beverly.hills.money.gang.spawner.Spawner;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
 import com.beverly.hills.money.gang.state.entity.Vector;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
-@Component
 @RequiredArgsConstructor
 public class BigAmmoPowerUp implements PowerUp {
 
   private static final float BIG_AMMO_AMPLIFIER = 1;
 
-  private final Spawner spawner;
+  @Getter
+  private final Vector position;
 
-  @Override
-  public PowerUpType getType() {
-    return PowerUpType.BIG_AMMO;
-  }
-
-  @Override
-  public Vector getSpawnPosition() {
-    return spawner.spawnBigAmmo();
-  }
+  @Getter
+  private final PowerUpType type = PowerUpType.BIG_AMMO;
 
   @Override
   public void apply(PlayerState playerState) {

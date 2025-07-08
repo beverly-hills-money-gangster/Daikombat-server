@@ -1,5 +1,8 @@
-package com.beverly.hills.money.gang.spawner.map;
+package com.beverly.hills.money.gang.registry;
 
+import com.beverly.hills.money.gang.spawner.map.CompleteMap;
+import com.beverly.hills.money.gang.spawner.map.GameMapAssets;
+import com.beverly.hills.money.gang.spawner.map.MapData;
 import com.beverly.hills.money.gang.util.HashUtil;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Unmarshaller;
@@ -30,14 +33,14 @@ public class LocalMapRegistry implements MapRegistry, Closeable {
     this.mapFolder = mapFolder;
     URL url = LocalMapRegistry.class.getClassLoader().getResource(mapFolder);
     if (url == null) {
-      throw new IllegalArgumentException("Maps not found");
+      throw new IllegalStateException("Map folder not found");
     }
-    File[] files = new File(url.toURI()).listFiles();
+    File[] folderEntries = new File(url.toURI()).listFiles();
     List<String> folders = new ArrayList<>();
-    if (files == null) {
+    if (folderEntries == null) {
       throw new IllegalStateException("No map files found");
     }
-    for (File file : files) {
+    for (File file : folderEntries) {
       if (file.isDirectory()) {
         folders.add(file.getName());
       }
@@ -53,6 +56,10 @@ public class LocalMapRegistry implements MapRegistry, Closeable {
     this("maps");
   }
 
+  public List<String> getMapNames() {
+    return new ArrayList<>(maps.keySet());
+  }
+
   private CompleteMap loadCompleteMap(final String name) {
     LOG.info("Load map '{}'", name);
     return CompleteMap.builder()
@@ -63,7 +70,7 @@ public class LocalMapRegistry implements MapRegistry, Closeable {
 
 
   private MapData loadMapData(final String name) {
-    String mapFile =  mapFolder + "/" + name + "/online_map.tmx";
+    String mapFile = mapFolder + "/" + name + "/online_map.tmx";
     try (InputStream is = LocalMapRegistry.class.getClassLoader().getResourceAsStream(mapFile)) {
       JAXBContext context = JAXBContext.newInstance(MapData.class);
       Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -75,8 +82,8 @@ public class LocalMapRegistry implements MapRegistry, Closeable {
 
   private GameMapAssets loadMapAssets(final String name) {
     String mapTMX = mapFolder + "/" + name + "/online_map.tmx";
-    String atlasPNG =  mapFolder + "/" + name + "/atlas.png";
-    String atlasTSX =  mapFolder + "/" + name + "/atlas.tsx";
+    String atlasPNG = mapFolder + "/" + name + "/atlas.png";
+    String atlasTSX = mapFolder + "/" + name + "/atlas.tsx";
     var atlasTSXBytes = loadBytes(atlasTSX);
     var atlasPNGBytes = loadBytes(atlasPNG);
     var mapTMXBytes = loadBytes(mapTMX);

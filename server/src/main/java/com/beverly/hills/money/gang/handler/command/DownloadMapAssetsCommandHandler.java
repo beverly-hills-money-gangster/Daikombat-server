@@ -7,7 +7,7 @@ import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.proto.ServerCommand.CommandCase;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.spawner.map.CompleteMap;
-import com.beverly.hills.money.gang.spawner.map.MapRegistry;
+import com.beverly.hills.money.gang.registry.MapRegistry;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import java.util.Map;

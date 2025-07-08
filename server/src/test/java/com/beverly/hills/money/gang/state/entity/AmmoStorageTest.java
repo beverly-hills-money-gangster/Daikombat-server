@@ -9,6 +9,7 @@ import com.beverly.hills.money.gang.spawner.factory.ProdSpawnerFactory;
 import com.beverly.hills.money.gang.registry.LocalMapRegistry;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.GameWeaponType;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
@@ -23,7 +24,7 @@ public class AmmoStorageTest {
   private AmmoStorage ammoStorage;
 
   @BeforeEach
-  public void setUp() throws URISyntaxException {
+  public void setUp() throws IOException {
     ammoStorage = new AmmoStorage(
         new Game(new LocalMapRegistry(),
             mock(), mock(), mock(),

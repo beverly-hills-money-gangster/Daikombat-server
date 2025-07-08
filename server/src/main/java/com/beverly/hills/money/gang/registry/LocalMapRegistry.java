@@ -7,11 +7,10 @@ import com.beverly.hills.money.gang.util.HashUtil;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Unmarshaller;
 import java.io.Closeable;
-import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -29,30 +29,33 @@ public class LocalMapRegistry implements MapRegistry, Closeable {
 
   private final String mapFolder;
 
-  public LocalMapRegistry(final String mapFolder) throws URISyntaxException {
+  public LocalMapRegistry(final String mapFolder) throws IOException {
     this.mapFolder = mapFolder;
-    URL url = LocalMapRegistry.class.getClassLoader().getResource(mapFolder);
-    if (url == null) {
-      throw new IllegalStateException("Map folder not found");
+    /*
+       I have to do this because I have to get map folders from within jar.
+       In this code, we get all tmx files and THEN get the folder name (which is also a map name)
+     */
+    var onlineMaps = new PathMatchingResourcePatternResolver()
+        .getResources("classpath*:" + mapFolder + "/*/online_map.tmx");
+    if (onlineMaps.length == 0) {
+      throw new IllegalStateException("No maps found");
     }
-    File[] folderEntries = new File(url.toURI()).listFiles();
-    List<String> folders = new ArrayList<>();
-    if (folderEntries == null) {
-      throw new IllegalStateException("No map files found");
-    }
-    for (File file : folderEntries) {
-      if (file.isDirectory()) {
-        folders.add(file.getName());
-      }
-    }
-    if (folders.isEmpty()) {
-      throw new IllegalStateException("At least one map should be present");
-    }
-    // init maps
-    folders.forEach(mapName -> maps.put(mapName, loadCompleteMap(mapName)));
+
+    Arrays.stream(onlineMaps)
+        .map(resource -> {
+          try {
+            // get folder name from the file name
+            var folder = resource.getURI().toString().replace("/" + resource.getFilename(), "");
+            // get map name
+            return folder.substring(folder.lastIndexOf("/") + 1);
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+          }
+        })
+        .forEach(mapName -> maps.put(mapName, loadCompleteMap(mapName)));
   }
 
-  public LocalMapRegistry() throws URISyntaxException {
+  public LocalMapRegistry() throws IOException {
     this("maps");
   }
 
@@ -117,4 +120,5 @@ public class LocalMapRegistry implements MapRegistry, Closeable {
     LOG.info("Close map registry");
     maps.clear();
   }
+
 }

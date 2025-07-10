@@ -208,16 +208,3 @@ protoc --java_out=./schema/src/main/java/ .\schema\src\main\resources\server-com
 protoc --java_out=./schema/src/main/java/ .\schema\src\main\resources\server-response.proto
 protoc --java_out=./schema/src/main/java/ .\schema\src\main\resources\server-command.proto
 ```
-
-### Testing and QA
-
-The project provides good quality of service by:
-
-- Unit and integration testing (Junit). Minimum coverage requirements can be found in Jacoco
-  configs.
-- Static code analysis (Spotbugs)
-- Dependency check (Snyk)
-- Resiliency testing (ToxiProxy)
-- Load testing. See `com.beverly.hills.money.gang.bots.BotRunner` for spawning dummy bots
-- Game client manual acceptance testing is also involved in the process. Dev mode is provided for
-  the desktop version.

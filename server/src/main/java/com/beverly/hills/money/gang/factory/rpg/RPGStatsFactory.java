@@ -48,8 +48,8 @@ public class RPGStatsFactory {
         PlayerRPGStatType.ATTACK, PlayerRPGStatValue.create(200),
         PlayerRPGStatType.DEFENSE, PlayerRPGStatValue.createMin(),
         PlayerRPGStatType.VAMPIRISM, PlayerRPGStatValue.createMax(),
-        PlayerRPGStatType.GUN_SPEED, PlayerRPGStatValue.create(160),
-        PlayerRPGStatType.RUN_SPEED, PlayerRPGStatValue.create(130)));
+        PlayerRPGStatType.GUN_SPEED, PlayerRPGStatValue.create(165),
+        PlayerRPGStatType.RUN_SPEED, PlayerRPGStatValue.create(150)));
   }
 
   // DEMON TANK
@@ -58,7 +58,7 @@ public class RPGStatsFactory {
         PlayerRPGStatType.ATTACK, PlayerRPGStatValue.createDefault(),
         PlayerRPGStatType.DEFENSE, PlayerRPGStatValue.createMax(),
         PlayerRPGStatType.VAMPIRISM, PlayerRPGStatValue.createMin(),
-        PlayerRPGStatType.GUN_SPEED, PlayerRPGStatValue.createDefault(),
+        PlayerRPGStatType.GUN_SPEED, PlayerRPGStatValue.create(90),
         PlayerRPGStatType.RUN_SPEED, PlayerRPGStatValue.create(85)));
   }
 

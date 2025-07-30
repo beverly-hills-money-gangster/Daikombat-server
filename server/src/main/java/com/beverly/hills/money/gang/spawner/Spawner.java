@@ -15,6 +15,7 @@ import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.Vector;
 import com.beverly.hills.money.gang.state.entity.VectorDirection;
 import com.beverly.hills.money.gang.teleport.Teleport;
+import com.beverly.hills.money.gang.validator.MapValidator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,9 +30,9 @@ import org.slf4j.LoggerFactory;
 // TODO make map-aware anti-cheat
 public class Spawner extends AbstractSpawner {
 
-  private static final int MAX_MAP_SIZE = 128;
-
   private static final Random RANDOM = new Random();
+
+  private static final MapValidator MAP_VALIDATOR = new MapValidator();
 
   private static final double CLOSE_PROXIMITY = 3;
 
@@ -46,9 +47,7 @@ public class Spawner extends AbstractSpawner {
 
 
   public Spawner(final MapData map) {
-    if (map.getWidth() > MAX_MAP_SIZE || map.getHeight() > MAX_MAP_SIZE) {
-      throw new IllegalStateException("Map is too big. Max size is " + MAX_MAP_SIZE);
-    }
+    MAP_VALIDATOR.validate(map);
     var spawnsGroup = map.getObjectgroup().stream()
         .filter(group -> group.getName().equals("spawns")).findFirst();
     var teleportsGroup = map.getObjectgroup().stream()

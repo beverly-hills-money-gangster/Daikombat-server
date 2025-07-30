@@ -72,7 +72,7 @@
   <object id="203" name="wall" x="464" y="224" width="16" height="16"/>
   <object id="204" name="wall" x="528" y="192" width="16" height="16"/>
   <object id="205" name="wall" x="528" y="224" width="16" height="16"/>
-  <object id="207" name="wall" x="176" y="384" width="47.9961" height="16"/>
+  <object id="207" name="wall" x="176" y="384" width="48" height="16"/>
   <object id="208" name="wall" x="96" y="384" width="16" height="16"/>
   <object id="209" name="wall" x="128" y="384" width="16" height="16"/>
   <object id="212" name="wall" x="16" y="400" width="32" height="96"/>

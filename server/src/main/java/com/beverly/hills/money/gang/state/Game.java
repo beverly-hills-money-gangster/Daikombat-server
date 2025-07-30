@@ -9,6 +9,7 @@ import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
+import com.beverly.hills.money.gang.registry.MapRegistry;
 import com.beverly.hills.money.gang.registry.PlayerStatsRecoveryRegistry;
 import com.beverly.hills.money.gang.registry.PlayersRegistry;
 import com.beverly.hills.money.gang.registry.PowerUpRegistry;
@@ -18,7 +19,6 @@ import com.beverly.hills.money.gang.spawner.factory.AbstractPowerUpRegistryFacto
 import com.beverly.hills.money.gang.spawner.factory.AbstractSpawnerFactory;
 import com.beverly.hills.money.gang.spawner.factory.AbstractTeleportRegistryFactory;
 import com.beverly.hills.money.gang.spawner.map.GameMapMetadata;
-import com.beverly.hills.money.gang.registry.MapRegistry;
 import com.beverly.hills.money.gang.state.entity.GameLeaderBoardItem;
 import com.beverly.hills.money.gang.state.entity.GameOverGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerAttackingGameState;
@@ -96,11 +96,15 @@ public class Game implements Closeable, GameReader {
     this.id = gameSequenceGenerator.getNext();
     this.gameConfig = new GameRoomServerConfig(this.id);
     var mapData = mapRegistry.getMap(gameConfig.getMapName()).orElseThrow(
-        () -> new IllegalStateException("Can't load map data"));
+        () -> new IllegalStateException("Can't load map data for " + gameConfig.getMapName()));
     gameMapMetadata = GameMapMetadata.builder()
         .name(gameConfig.getMapName())
         .hash(mapData.getAssets().getHash()).build();
-    this.spawner = spawnerFactory.create(mapData.getMapData());
+    try {
+      this.spawner = spawnerFactory.create(mapData.getMapData());
+    } catch (Exception e) {
+      throw new IllegalStateException("Can't create map " + gameConfig.getMapName(), e);
+    }
     this.powerUpRegistry = powerUpRegistryFactory.create(spawner.getPowerUps());
     this.teleportRegistry = teleportRegistryFactory.create(spawner.getTeleports());
     this.playerSequenceGenerator = playerSequenceGenerator;

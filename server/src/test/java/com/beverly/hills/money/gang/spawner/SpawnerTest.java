@@ -70,7 +70,9 @@ public class SpawnerTest {
   public void testNoPlayerSpawn() {
     var ex = assertThrows(IllegalStateException.class,
         () -> new Spawner(invalidMapRegistry.getMap("no_player_spawn").orElseThrow().getMapData()));
-    assertTrue(ex.getMessage().startsWith("Map doesn't have player spawns"));
+    assertTrue(ex.getMessage().startsWith("Map doesn't have player spawns"),
+        "Should fail as no player spawn exists on the map. Actual exception message is: "
+            + ex.getMessage());
   }
 
   @Test
@@ -79,6 +81,23 @@ public class SpawnerTest {
         () -> new Spawner(invalidMapRegistry.getMap("too_big").orElseThrow().getMapData()));
     assertTrue(ex.getMessage().startsWith("Map is too big"));
   }
+
+  @Test
+  public void testWrongWallSize() {
+    var ex = assertThrows(IllegalStateException.class,
+        () -> new Spawner(
+            invalidMapRegistry.getMap("walls_wrong_size").orElseThrow().getMapData()));
+    assertTrue(ex.getMessage().startsWith("Wall size should be divisible by 16"));
+  }
+
+  @Test
+  public void testDecorationsNoName() {
+    var ex = assertThrows(IllegalStateException.class,
+        () -> new Spawner(
+            invalidMapRegistry.getMap("decorations_no_name").orElseThrow().getMapData()));
+    assertTrue(ex.getMessage().startsWith("Decoration missing name"));
+  }
+
 
   @Builder
   @Getter

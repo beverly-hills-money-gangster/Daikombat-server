@@ -228,7 +228,7 @@
   </object>
  </objectgroup>
  <objectgroup id="14" name="decorations">
-  <object id="236" name="candles" gid="16" x="144" y="176" width="16" height="16"/>
+  <object id="236" gid="16" x="144" y="176" width="16" height="16"/>
   <object id="238" name="candles" gid="16" x="144" y="112" width="16" height="16"/>
   <object id="239" name="candles" gid="16" x="80" y="112" width="16" height="16"/>
   <object id="240" name="candles" gid="16" x="80" y="176" width="16" height="16"/>

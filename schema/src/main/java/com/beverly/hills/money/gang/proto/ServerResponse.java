@@ -6993,28 +6993,16 @@ private static final long serialVersionUID = 0L;
         getDescriptionBytes();
 
     /**
-     * <pre>
-     * TODO populate it
-     * </pre>
-     *
      * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
      * @return Whether the mapMetadata field is set.
      */
     boolean hasMapMetadata();
     /**
-     * <pre>
-     * TODO populate it
-     * </pre>
-     *
      * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
      * @return The mapMetadata.
      */
     com.beverly.hills.money.gang.proto.MapMetadata getMapMetadata();
     /**
-     * <pre>
-     * TODO populate it
-     * </pre>
-     *
      * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
      */
     com.beverly.hills.money.gang.proto.MapMetadataOrBuilder getMapMetadataOrBuilder();
@@ -7352,10 +7340,6 @@ private static final long serialVersionUID = 0L;
     public static final int MAPMETADATA_FIELD_NUMBER = 11;
     private com.beverly.hills.money.gang.proto.MapMetadata mapMetadata_;
     /**
-     * <pre>
-     * TODO populate it
-     * </pre>
-     *
      * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
      * @return Whether the mapMetadata field is set.
      */
@@ -7364,10 +7348,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000100) != 0);
     }
     /**
-     * <pre>
-     * TODO populate it
-     * </pre>
-     *
      * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
      * @return The mapMetadata.
      */
@@ -7376,10 +7356,6 @@ private static final long serialVersionUID = 0L;
       return mapMetadata_ == null ? com.beverly.hills.money.gang.proto.MapMetadata.getDefaultInstance() : mapMetadata_;
     }
     /**
-     * <pre>
-     * TODO populate it
-     * </pre>
-     *
      * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
      */
     @java.lang.Override
@@ -8994,10 +8970,6 @@ private static final long serialVersionUID = 0L;
       private com.google.protobuf.SingleFieldBuilderV3<
           com.beverly.hills.money.gang.proto.MapMetadata, com.beverly.hills.money.gang.proto.MapMetadata.Builder, com.beverly.hills.money.gang.proto.MapMetadataOrBuilder> mapMetadataBuilder_;
       /**
-       * <pre>
-       * TODO populate it
-       * </pre>
-       *
        * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
        * @return Whether the mapMetadata field is set.
        */
@@ -9005,10 +8977,6 @@ private static final long serialVersionUID = 0L;
         return ((bitField0_ & 0x00000400) != 0);
       }
       /**
-       * <pre>
-       * TODO populate it
-       * </pre>
-       *
        * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
        * @return The mapMetadata.
        */
@@ -9020,10 +8988,6 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <pre>
-       * TODO populate it
-       * </pre>
-       *
        * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
        */
       public Builder setMapMetadata(com.beverly.hills.money.gang.proto.MapMetadata value) {
@@ -9040,10 +9004,6 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <pre>
-       * TODO populate it
-       * </pre>
-       *
        * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
        */
       public Builder setMapMetadata(
@@ -9058,10 +9018,6 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <pre>
-       * TODO populate it
-       * </pre>
-       *
        * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
        */
       public Builder mergeMapMetadata(com.beverly.hills.money.gang.proto.MapMetadata value) {
@@ -9083,10 +9039,6 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <pre>
-       * TODO populate it
-       * </pre>
-       *
        * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
        */
       public Builder clearMapMetadata() {
@@ -9100,10 +9052,6 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <pre>
-       * TODO populate it
-       * </pre>
-       *
        * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
        */
       public com.beverly.hills.money.gang.proto.MapMetadata.Builder getMapMetadataBuilder() {
@@ -9112,10 +9060,6 @@ private static final long serialVersionUID = 0L;
         return getMapMetadataFieldBuilder().getBuilder();
       }
       /**
-       * <pre>
-       * TODO populate it
-       * </pre>
-       *
        * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
        */
       public com.beverly.hills.money.gang.proto.MapMetadataOrBuilder getMapMetadataOrBuilder() {
@@ -9127,10 +9071,6 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <pre>
-       * TODO populate it
-       * </pre>
-       *
        * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<

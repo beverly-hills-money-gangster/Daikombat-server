@@ -7,7 +7,6 @@ import static com.beverly.hills.money.gang.factory.response.ServerResponseFactor
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createVector;
 import static com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType.ATTACK;
 
-import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.factory.response.ServerResponseFactory;
 import com.beverly.hills.money.gang.proto.ProjectileType;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
@@ -142,6 +141,7 @@ public class AttackGameEventHandler implements GameEventHandler {
     return switch (projectileType) {
       case ROCKET -> GameProjectileType.ROCKET;
       case PLASMA -> GameProjectileType.PLASMA;
+      case ENERGY -> GameProjectileType.ENERGY;
       case UNRECOGNIZED -> throw new IllegalArgumentException(
           "Not supported projectile type " + projectileType);
     };

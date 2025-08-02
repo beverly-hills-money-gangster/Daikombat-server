@@ -488,6 +488,7 @@ public interface ServerResponseFactory {
     return switch (gameProjectileType) {
       case ROCKET -> ProjectileType.ROCKET;
       case PLASMA -> ProjectileType.PLASMA;
+      case ENERGY -> ProjectileType.ENERGY;
     };
   }
 

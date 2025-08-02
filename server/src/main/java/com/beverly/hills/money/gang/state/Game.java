@@ -215,12 +215,13 @@ public class Game implements Closeable, GameReader {
       LOG.warn("Player wasted all ammo");
       return null;
     }
+    var damage = weaponType.getDamageFactory().getDamage(this);
     return attack(
         playerCoordinates,
         attackPosition,
         attackingPlayerId,
         attackedPlayerId,
-        weaponType.getDamageFactory().getDamage(this),
+        damage,
         eventSequence,
         pingMls);
   }
@@ -270,7 +271,13 @@ public class Game implements Closeable, GameReader {
       return PlayerAttackingGameState.builder()
           .attackingPlayer(attackingPlayerState)
           .playerAttacked(null).build();
+    } else if (attackedPlayerId == attackingPlayerId && !damage.isSelfInflicting()) {
+      LOG.debug("Can't attack yourself");
+      return PlayerAttackingGameState.builder()
+          .attackingPlayer(attackingPlayerState)
+          .playerAttacked(null).build();
     }
+
     var attackedPlayerState = getPlayer(attackedPlayerId).map(attackedPlayer -> {
       if (attackedPlayer.isDead()) {
         LOG.warn("You can't attack a dead player");

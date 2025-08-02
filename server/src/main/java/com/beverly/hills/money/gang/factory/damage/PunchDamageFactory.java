@@ -5,13 +5,11 @@ import com.beverly.hills.money.gang.state.GameReader;
 
 public class PunchDamageFactory extends DamageFactory {
 
-
   @Override
   protected Damage createDamage(GameReader gameReader) {
     return Damage.builder()
-        .defaultDamage(gameReader.getGameConfig().getDefaultPunchDamage())
-        .maxDistance(1.2)
+        .maxDistance(1.0)
         .attackDelayMls(gameReader.getGameConfig().getPunchDelayMls())
-        .distanceDamageAmplifier(distance -> 1.0).build();
+        .distanceDamageAmplifier(distance -> 0.0).build();
   }
 }

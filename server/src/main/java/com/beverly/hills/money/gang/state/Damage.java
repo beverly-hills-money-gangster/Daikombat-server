@@ -19,4 +19,6 @@ public class Damage {
   private final Function<Double, Double> distanceDamageAmplifier;
 
   private final Integer maxAmmo;
+
+  private final boolean selfInflicting;
 }

@@ -17,6 +17,7 @@ enum WeaponType {
 enum ProjectileType {
   ROCKET = 0;
   PLASMA = 1;
+  ENERGY = 2;
 }
 
 enum PlayerSkinColor {

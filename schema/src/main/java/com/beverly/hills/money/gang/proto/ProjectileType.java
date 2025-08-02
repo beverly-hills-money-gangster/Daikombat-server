@@ -17,6 +17,10 @@ public enum ProjectileType
    * <code>PLASMA = 1;</code>
    */
   PLASMA(1),
+  /**
+   * <code>ENERGY = 2;</code>
+   */
+  ENERGY(2),
   UNRECOGNIZED(-1),
   ;
 
@@ -28,6 +32,10 @@ public enum ProjectileType
    * <code>PLASMA = 1;</code>
    */
   public static final int PLASMA_VALUE = 1;
+  /**
+   * <code>ENERGY = 2;</code>
+   */
+  public static final int ENERGY_VALUE = 2;
 
 
   public final int getNumber() {
@@ -56,6 +64,7 @@ public enum ProjectileType
     switch (value) {
       case 0: return ROCKET;
       case 1: return PLASMA;
+      case 2: return ENERGY;
       default: return null;
     }
   }

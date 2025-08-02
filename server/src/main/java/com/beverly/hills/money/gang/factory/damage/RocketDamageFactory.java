@@ -10,6 +10,7 @@ public class RocketDamageFactory extends DamageFactory {
     return Damage.builder()
         .defaultDamage(gameReader.getGameConfig().getDefaultRocketDamage())
         .maxDistance(1.75f)
+        .selfInflicting(true)
         .distanceDamageAmplifier(distance -> {
           if (distance <= 1) {
             return 1.0;

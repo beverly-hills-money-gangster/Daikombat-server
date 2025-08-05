@@ -86,10 +86,10 @@ Game server can be configured using the following environment variables:
 - `GAME_SERVER_RAILGUN_DELAY_MLS` Railgun attack delay(in milliseconds). Default - `1_700`
 - `GAME_SERVER_MINIGUN_DELAY_MLS` Minigun attack delay(in milliseconds). Default - `155`
 - `GAME_SERVER_SHOTGUN_MAX_AMMO` Shotgun max ammo. Default - `20`
-- `GAME_SERVER_RAILGUN_MAX_AMMO` Railgun max ammo. Default - `10`
+- `GAME_SERVER_RAILGUN_MAX_AMMO` Railgun max ammo. Default - `15`
 - `GAME_SERVER_MINIGUN_MAX_AMMO` Minigun max ammo. Default - `70`
-- `GAME_SERVER_PLASMAGUN_MAX_AMMO` Plasmagun max ammo. Default - `35`
-- `GAME_SERVER_ROCKET_LAUNCHER_MAX_AMMO` Rocket launcher max ammo. Default - `5`
+- `GAME_SERVER_PLASMAGUN_MAX_AMMO` Plasmagun max ammo. Default - `50`
+- `GAME_SERVER_ROCKET_LAUNCHER_MAX_AMMO` Rocket launcher max ammo. Default - `10`
 - `SENTRY_DSN` Sentry DSN. Not specified by default.
 
 Some environment variables can be overridden for a specific game room. The format

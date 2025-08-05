@@ -102,8 +102,9 @@ public class AttackGameEventHandler implements GameEventHandler {
                   game.getPlayersRegistry().allPlayers().forEach(stateChannel -> {
                     stateChannel.writeFlushPrimaryChannel(serverResponse,
                         ChannelFutureListener.CLOSE_ON_FAILURE);
-                    game.getPlayersRegistry().removePlayer(
-                        stateChannel.getPlayerState().getPlayerId());
+                    // TODO just mark player as "game-overed"
+                    //game.getPlayersRegistry().removePlayer(
+                    //    stateChannel.getPlayerState().getPlayerId());
                   }));
         }, () -> {
           LOG.debug("Nobody got attacked");

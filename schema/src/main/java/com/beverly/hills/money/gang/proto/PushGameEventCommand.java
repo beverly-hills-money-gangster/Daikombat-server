@@ -82,6 +82,10 @@ private static final long serialVersionUID = 0L;
      * <code>MEDIUM_AMMO_POWER_UP = 8;</code>
      */
     MEDIUM_AMMO_POWER_UP(8),
+    /**
+     * <code>BEAST_POWER_UP = 9;</code>
+     */
+    BEAST_POWER_UP(9),
     UNRECOGNIZED(-1),
     ;
 
@@ -121,6 +125,10 @@ private static final long serialVersionUID = 0L;
      * <code>MEDIUM_AMMO_POWER_UP = 8;</code>
      */
     public static final int MEDIUM_AMMO_POWER_UP_VALUE = 8;
+    /**
+     * <code>BEAST_POWER_UP = 9;</code>
+     */
+    public static final int BEAST_POWER_UP_VALUE = 9;
 
 
     public final int getNumber() {
@@ -156,6 +164,7 @@ private static final long serialVersionUID = 0L;
         case 6: return HEALTH_POWER_UP;
         case 7: return BIG_AMMO_POWER_UP;
         case 8: return MEDIUM_AMMO_POWER_UP;
+        case 9: return BEAST_POWER_UP;
         default: return null;
       }
     }

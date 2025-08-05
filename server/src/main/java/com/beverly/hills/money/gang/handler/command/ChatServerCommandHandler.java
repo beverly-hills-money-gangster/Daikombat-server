@@ -44,15 +44,18 @@ public class ChatServerCommandHandler extends ServerCommandHandler {
       LOG.warn("Ignoring the message because it contains a blacklisted word");
       return;
     }
+    System.out.println("Got message");
     Game game = gameRoomRegistry.getGame(chatCommand.getGameId());
     gameRoomRegistry.getJoinedPlayer(
             chatCommand.getGameId(), currentChannel, chatCommand.getPlayerId())
         .ifPresent(playerStateReader -> {
+          System.out.println("Found player");
           var chatMsgToSend = createChatEvent(
               chatCommand.getMessage(),
               playerStateReader.getPlayerState().getPlayerId(),
               playerStateReader.getPlayerState().getPlayerName(),
               chatCommand.hasTaunt() ? chatCommand.getTaunt() : null);
+          System.out.println("Sent message to all players");
           game.getPlayersRegistry().allJoinedPlayers()
               .filter(
                   playerStateChannel -> !playerStateChannel.isOurChannel(currentChannel))

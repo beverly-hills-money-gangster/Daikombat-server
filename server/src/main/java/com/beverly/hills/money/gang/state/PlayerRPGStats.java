@@ -1,9 +1,7 @@
 package com.beverly.hills.money.gang.state;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import lombok.Getter;
 
 public class PlayerRPGStats {
 

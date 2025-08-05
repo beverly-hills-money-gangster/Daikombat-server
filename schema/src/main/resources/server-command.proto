@@ -82,5 +82,6 @@ message PushGameEventCommand {
     HEALTH_POWER_UP = 6;
     BIG_AMMO_POWER_UP = 7;
     MEDIUM_AMMO_POWER_UP = 8;
+    BEAST_POWER_UP = 9;
   }
 }

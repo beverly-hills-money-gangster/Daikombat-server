@@ -13,9 +13,9 @@ public class AmmoStorage implements AmmoStorageReader {
 
   private final GameReader gameReader;
 
-  public AmmoStorage(final GameReader gameReader) {
+  public AmmoStorage(final GameReader gameReader, final RPGPlayerClass playerClass) {
     this.gameReader = gameReader;
-    for (GameWeaponType weaponType : GameWeaponType.values()) {
+    for (GameWeaponType weaponType : playerClass.getWeapons()) {
       Optional.ofNullable(weaponType.getDamageFactory().getDamage(gameReader).getMaxAmmo())
           .ifPresent(
               maxAmmo -> storage.put(weaponType, new WeaponAmmo(maxAmmo)));

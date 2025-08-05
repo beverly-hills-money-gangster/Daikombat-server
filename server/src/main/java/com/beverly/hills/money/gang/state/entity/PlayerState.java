@@ -80,7 +80,7 @@ public class PlayerState implements PlayerStateReader {
     defaultDamage();
     defaultDefence();
     speed = AntiCheat.getMaxSpeed(rpgPlayerClass, gameReader.getGameConfig());
-    ammoStorage = new AmmoStorage(gameReader);
+    ammoStorage = new AmmoStorage(gameReader, rpgPlayerClass);
     initImmortality();
   }
 
@@ -147,7 +147,7 @@ public class PlayerState implements PlayerStateReader {
   }
 
   public void restoreAllAmmo(float ratio) {
-    for (GameWeaponType weaponType : GameWeaponType.values()) {
+    for (GameWeaponType weaponType : rpgPlayerClass.getWeapons()) {
       ammoStorage.restore(weaponType, ratio);
     }
   }

@@ -173,6 +173,7 @@ message ServerResponse {
     HEALTH = 3;
     MEDIUM_AMMO = 4;
     BIG_AMMO = 5;
+    BEAST = 6;
   }
 
 

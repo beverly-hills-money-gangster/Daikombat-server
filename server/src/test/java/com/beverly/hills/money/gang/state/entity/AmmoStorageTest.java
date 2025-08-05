@@ -5,12 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
-import com.beverly.hills.money.gang.spawner.factory.ProdSpawnerFactory;
 import com.beverly.hills.money.gang.registry.LocalMapRegistry;
+import com.beverly.hills.money.gang.spawner.factory.ProdSpawnerFactory;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.GameWeaponType;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -25,13 +24,13 @@ public class AmmoStorageTest {
 
   @BeforeEach
   public void setUp() throws IOException {
+    // TODO test that ammo is not crated for non-supported weapon type
     ammoStorage = new AmmoStorage(
         new Game(new LocalMapRegistry(),
             mock(), mock(), mock(),
             new ProdSpawnerFactory(), mock(),
-            mock(), mock()));
+            mock(), mock()), RPGPlayerClass.WARRIOR);
   }
-
 
   @ParameterizedTest
   @EnumSource(GameWeaponType.class)

@@ -49,7 +49,7 @@ public class RPGStatsFactory {
         PlayerRPGStatType.DEFENSE, PlayerRPGStatValue.createMin(),
         PlayerRPGStatType.VAMPIRISM, PlayerRPGStatValue.createMax(),
         PlayerRPGStatType.GUN_SPEED, PlayerRPGStatValue.create(165),
-        PlayerRPGStatType.RUN_SPEED, PlayerRPGStatValue.create(150)));
+        PlayerRPGStatType.RUN_SPEED, PlayerRPGStatValue.create(120)));
   }
 
   // DEMON TANK

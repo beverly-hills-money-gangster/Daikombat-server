@@ -1,5 +1,6 @@
 package com.beverly.hills.money.gang.spawner;
 
+import com.beverly.hills.money.gang.powerup.BeastPowerUp;
 import com.beverly.hills.money.gang.powerup.BigAmmoPowerUp;
 import com.beverly.hills.money.gang.powerup.DefencePowerUp;
 import com.beverly.hills.money.gang.powerup.HealthPowerUp;
@@ -176,6 +177,7 @@ public class Spawner extends AbstractSpawner {
       case DEFENCE -> new DefencePowerUp(position);
       case MEDIUM_AMMO -> new MediumAmmoPowerUp(position);
       case BIG_AMMO -> new BigAmmoPowerUp(position);
+      case BEAST -> new BeastPowerUp(position);
     };
   }
 }

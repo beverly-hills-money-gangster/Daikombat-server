@@ -136,7 +136,7 @@ public final class ServerResponseOuterClass {
     java.lang.String[] descriptorData = {
       "\n/schema/src/main/resources/server-respo" +
       "nse.proto\022\rdaikombat.dto\032-schema/src/mai" +
-      "n/resources/server-common.proto\"\315%\n\016Serv" +
+      "n/resources/server-common.proto\"\330%\n\016Serv" +
       "erResponse\022>\n\nerrorEvent\030\001 \001(\0132(.daikomb" +
       "at.dto.ServerResponse.ErrorEventH\000\022=\n\nch" +
       "atEvents\030\002 \001(\0132\'.daikombat.dto.ServerRes" +
@@ -254,11 +254,11 @@ public final class ServerResponseOuterClass {
       "ePowerUp\022@\n\004type\030\001 \001(\0162-.daikombat.dto.S" +
       "erverResponse.GamePowerUpTypeH\000\210\001\001\022\030\n\013la" +
       "stsForMls\030\002 \001(\005H\001\210\001\001B\007\n\005_typeB\016\n\014_lastsF" +
-      "orMls\"l\n\017GamePowerUpType\022\017\n\013QUAD_DAMAGE\020" +
+      "orMls\"w\n\017GamePowerUpType\022\017\n\013QUAD_DAMAGE\020" +
       "\000\022\020\n\014INVISIBILITY\020\001\022\013\n\007DEFENCE\020\002\022\n\n\006HEAL" +
-      "TH\020\003\022\017\n\013MEDIUM_AMMO\020\004\022\014\n\010BIG_AMMO\020\005B\n\n\010r" +
-      "esponseB&\n\"com.beverly.hills.money.gang." +
-      "protoP\001b\006proto3"
+      "TH\020\003\022\017\n\013MEDIUM_AMMO\020\004\022\014\n\010BIG_AMMO\020\005\022\t\n\005B" +
+      "EAST\020\006B\n\n\010responseB&\n\"com.beverly.hills." +
+      "money.gang.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

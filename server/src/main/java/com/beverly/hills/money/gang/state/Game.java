@@ -211,7 +211,11 @@ public class Game implements Closeable, GameReader {
     if (attackingPlayerState == null) {
       LOG.warn("Non-existing player can't attack");
       return null;
+    } else if (!attackingPlayerState.getRpgPlayerClass().getWeapons().contains(weaponType)) {
+      LOG.warn("Not supported weapon type for player class");
+      return null;
     } else if (!attackingPlayerState.wasteAmmo(weaponType)) {
+      // TODO make sure I don't create ammo for not-supported weapons
       LOG.warn("Player wasted all ammo");
       return null;
     }

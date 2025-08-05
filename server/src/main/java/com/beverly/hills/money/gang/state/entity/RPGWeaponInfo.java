@@ -22,7 +22,7 @@ public class RPGWeaponInfo {
     Arrays.stream(RPGPlayerClass.values()).forEach(playerClass -> {
       var gunSpeed = RPGStatsFactory.create(playerClass)
           .getNormalized(PlayerRPGStatType.GUN_SPEED);
-      var weaponInfo = Arrays.stream(GameWeaponType.values()).map(
+      var weaponInfo = playerClass.getWeapons().stream().map(
               weapon -> {
                 var damage = weapon.getDamageFactory().getDamage(gameReader);
                 return GameWeaponInfo

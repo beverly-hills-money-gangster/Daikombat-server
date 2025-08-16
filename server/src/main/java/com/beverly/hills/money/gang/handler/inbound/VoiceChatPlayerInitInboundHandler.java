@@ -32,7 +32,7 @@ public class VoiceChatPlayerInitInboundHandler extends SimpleChannelInboundHandl
     // initialize player
     int playerId = buf.getInt(0);
     int gameId = buf.getInt(4);
-    String ipAddress = packet.sender().getAddress().getHostAddress();
+    var ipAddress = packet.sender().getAddress().getHostAddress();
     var player = gameRoomRegistry.getGame(gameId).getPlayersRegistry()
         .getPlayerStateChannel(playerId, ipAddress);
 

@@ -28,7 +28,7 @@ public class TeleportGameEventHandler implements GameEventHandler {
         gameCommand.getSequence(),
         gameCommand.getPingMls());
     var serverResponse = createTeleportPlayerServerResponse(result.getTeleportedPlayer());
-    game.getPlayersRegistry().allJoinedPlayers()
+    game.getPlayersRegistry().allActivePlayers()
         .forEach(stateChannel -> stateChannel.writeFlushPrimaryChannel(serverResponse));
 
   }

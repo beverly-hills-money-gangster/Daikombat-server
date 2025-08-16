@@ -60,7 +60,6 @@ public class GameServerInfoTest extends AbstractGameServerTest {
       var game = gameRoomRegistry.getGame(gameInfo.getGameId());
       assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, gameInfo.getMaxGamePlayers());
       assertEquals(0, gameInfo.getPlayersOnline(), "Should be no connected players yet");
-      assertEquals(0, gameInfo.getMatchId());
       assertEquals("classic", gameInfo.getMapMetadata().getName());
       assertEquals(GameWeaponType.values().length, gameInfo.getWeaponsInfoList().size(),
           "All attack weapons should have info");
@@ -119,7 +118,6 @@ public class GameServerInfoTest extends AbstractGameServerTest {
       } else {
         assertEquals(0, gameInfo.getPlayersOnline(), "Should be no connected players yet");
       }
-      assertEquals(0, gameInfo.getMatchId());
       assertEquals(GameWeaponType.values().length, gameInfo.getWeaponsInfoList().size(),
           "All attack weapons should have info");
       gameInfo.getWeaponsInfoList().forEach(weaponInfo -> {

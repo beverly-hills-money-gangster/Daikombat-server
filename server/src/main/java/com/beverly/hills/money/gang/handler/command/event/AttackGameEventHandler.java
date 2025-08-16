@@ -7,7 +7,6 @@ import static com.beverly.hills.money.gang.factory.response.ServerResponseFactor
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createVector;
 import static com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType.ATTACK;
 
-import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.factory.response.ServerResponseFactory;
 import com.beverly.hills.money.gang.proto.ProjectileType;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
@@ -81,7 +80,7 @@ public class AttackGameEventHandler implements GameEventHandler {
                 attackGameState.getAttackingPlayer(),
                 attackGameState.getPlayerAttacked(),
                 gameCommand);
-            game.getPlayersRegistry().allJoinedPlayers().forEach(
+            game.getPlayersRegistry().allActivePlayers().forEach(
                 playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(attackEvent));
             return;
           }
@@ -90,7 +89,7 @@ public class AttackGameEventHandler implements GameEventHandler {
               attackGameState.getPlayerAttacked(), gameCommand);
 
           // send KILL event to all joined players
-          game.getPlayersRegistry().allJoinedPlayers().forEach(
+          game.getPlayersRegistry().allActivePlayers().forEach(
               playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(deadEvent,
                   ChannelFutureListener.CLOSE_ON_FAILURE));
 
@@ -110,7 +109,7 @@ public class AttackGameEventHandler implements GameEventHandler {
           LOG.debug("Nobody got attacked");
           var attackEvent = createAttackingEvent(game.playersOnline(),
               attackGameState.getAttackingPlayer(), gameCommand);
-          game.getPlayersRegistry().allJoinedPlayers()
+          game.getPlayersRegistry().allActivePlayers().stream()
               .filter(playerStateChannel
                   // don't send me my own attack back
                   -> playerStateChannel.getPlayerState().getPlayerId() != gameCommand.getPlayerId())

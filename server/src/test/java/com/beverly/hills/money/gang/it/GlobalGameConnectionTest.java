@@ -90,7 +90,7 @@ public class GlobalGameConnectionTest extends AbstractGameServerTest {
     emptyQueue(movingPlayerConnection.getResponse());
 
     movingPlayerConnection.write(PushGameEventCommand.newBuilder()
-        .setMatchId(0).setGameId(gameIdToConnectTo)
+       .setGameId(gameIdToConnectTo)
         .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
         .setEventType(PushGameEventCommand.GameEventType.MOVE)
         .setPlayerId(playerId1)
@@ -107,7 +107,7 @@ public class GlobalGameConnectionTest extends AbstractGameServerTest {
     Thread.sleep(1_000);
 
     movingPlayerConnection.write(PushGameEventCommand.newBuilder()
-        .setMatchId(0).setGameId(gameIdToConnectTo)
+       .setGameId(gameIdToConnectTo)
         .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
         .setEventType(PushGameEventCommand.GameEventType.MOVE)
         .setPlayerId(playerId1)

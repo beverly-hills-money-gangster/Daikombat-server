@@ -1,6 +1,5 @@
 package com.beverly.hills.money.gang.handler.inbound;
 
-import com.beverly.hills.money.gang.config.ServerConfig;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -16,8 +15,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class VoiceChatFilterInboundHandler extends SimpleChannelInboundHandler<DatagramPacket> {
 
-  private static final Logger LOG = LoggerFactory.getLogger(
-      VoiceChatFilterInboundHandler.class);
+  private static final Logger LOG = LoggerFactory.getLogger(VoiceChatFilterInboundHandler.class);
 
   // 4 bytes player id + 4 bytes game id
   public static final int MIN_BYTES = 8;

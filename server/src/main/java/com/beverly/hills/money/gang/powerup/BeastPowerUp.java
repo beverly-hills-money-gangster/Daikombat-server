@@ -6,7 +6,6 @@ import com.beverly.hills.money.gang.state.entity.Vector;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-// TODO make sure Beast can't be stacked with other powerups
 @RequiredArgsConstructor
 public class BeastPowerUp implements PowerUp {
 
@@ -15,21 +14,25 @@ public class BeastPowerUp implements PowerUp {
 
   private static final int DEFENCE_AMPLIFIER = 2;
 
+  private static final int DAMAGE_AMPLIFIER = 2;
+
   @Getter
   private final Vector position;
 
+
+  // TODO test it
   @Override
   public void apply(PlayerState playerState) {
-    playerState.quadDamage();
-    playerState.setDefenceAmplifier(DEFENCE_AMPLIFIER);
+    playerState.amplifyDamage(DAMAGE_AMPLIFIER);
+    playerState.amplifyDefence(DEFENCE_AMPLIFIER);
     playerState.restoreHealth();
     playerState.restoreAllAmmo(1);
   }
 
   @Override
   public void revert(PlayerState playerState) {
-    playerState.defaultDamage();
-    playerState.defaultDefence();
+    playerState.amplifyDamage(1D / DAMAGE_AMPLIFIER);
+    playerState.amplifyDefence(1D / DEFENCE_AMPLIFIER);
 
   }
 

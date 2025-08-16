@@ -50,7 +50,7 @@ public class PowerUpPickGameEventHandler implements GameEventHandler {
       return;
     }
     var serverResponse = createPowerUpPlayerServerResponse(result.getPlayerState());
-    game.getPlayersRegistry().allJoinedPlayers()
+    game.getPlayersRegistry().allActivePlayers()
         .forEach(stateChannel -> stateChannel.writeFlushPrimaryChannel(serverResponse));
     scheduler.schedule(result.getPowerUp().getLastsForMls(), () -> {
       if (!result.getPlayerState().isDead()) {
@@ -69,7 +69,7 @@ public class PowerUpPickGameEventHandler implements GameEventHandler {
       }
       // TODO object can be reused
       ServerResponse serverResponse = createPowerUpSpawn(powerUp);
-      game.getPlayersRegistry().allJoinedPlayers().forEach(
+      game.getPlayersRegistry().allActivePlayers().forEach(
           playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(serverResponse));
     });
   }

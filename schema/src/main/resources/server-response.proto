@@ -69,7 +69,6 @@ message ServerResponse {
     optional int32 gameId = 1;
     optional int32 playersOnline = 2;
     optional int32 maxGamePlayers = 3;
-    optional int32 matchId = 4;
     repeated WeaponInfo weaponsInfo = 5;
     repeated ProjectileInfo projectileInfo = 6;
     optional float playerSpeed = 7;

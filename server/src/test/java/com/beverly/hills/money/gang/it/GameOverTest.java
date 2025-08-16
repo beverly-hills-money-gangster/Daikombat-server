@@ -76,7 +76,7 @@ public class GameOverTest extends AbstractGameServerTest {
       killerConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(shooterPlayerId)
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-          .setMatchId(0).setGameId(gameIdToConnectTo)
+         .setGameId(gameIdToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.ATTACK)
           .setWeaponType(WeaponType.SHOTGUN)
           .setDirection(

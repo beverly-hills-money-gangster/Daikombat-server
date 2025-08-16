@@ -27,9 +27,8 @@ public class VoiceChatPayloadInboundHandler extends SimpleChannelInboundHandler<
     ByteBuf buf = packet.content();
     int playerId = buf.getInt(0);
     int gameId = buf.getInt(4);
-    gameRoomRegistry.getGame(gameId).getPlayersRegistry().allJoinedPlayers()
-        // send it to all players except for yourself
-        .filter(playerStateChannel -> playerStateChannel.getPlayerState().getPlayerId() != playerId)
+    gameRoomRegistry.getGame(gameId).getPlayersRegistry()
+        .allChatablePlayers(playerId)
         .forEach(playerStateChannel -> playerStateChannel.getDataGramSocketAddress()
             .ifPresent(sender -> {
               var forwardedPacket = new DatagramPacket(packet.content().retain(), sender);

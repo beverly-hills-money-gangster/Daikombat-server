@@ -5,13 +5,16 @@ import static com.beverly.hills.money.gang.config.ServerConfig.MAX_PLAYERS_PER_G
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.state.PlayerStateChannel;
+import com.beverly.hills.money.gang.state.entity.PlayerActivityStatus;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
 import io.netty.channel.Channel;
 import java.io.Closeable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,20 +56,33 @@ public class PlayersRegistry implements Closeable {
     return Optional.ofNullable(players.get(playerId));
   }
 
-  public Optional<PlayerStateChannel> getPlayerStateChannel(int playerId, String ipAddress){
-     return getPlayerStateChannel(playerId)
+  public Optional<PlayerStateChannel> getPlayerStateChannel(int playerId, String ipAddress) {
+    return getPlayerStateChannel(playerId)
         // check that it matches our ip address
         .filter(playerStateChannel -> playerStateChannel.getPrimaryChannelAddress()
             .equals(ipAddress));
   }
 
-  public Stream<PlayerStateChannel> allPlayers() {
-    return players.values().stream();
+  public List<PlayerStateChannel> allPlayers() {
+    return new ArrayList<>(players.values());
   }
 
-  public Stream<PlayerStateChannel> allJoinedPlayers() {
+  // TODO test it
+  public List<PlayerStateChannel> allChatablePlayers(final int myPlayerId) {
+    return getPlayerStateChannel(myPlayerId).map(
+        myPlayer -> players.values().stream().filter(playerStateChannel -> {
+          var playerReader = playerStateChannel.getPlayerState();
+          return playerReader.getPlayerId() != myPlayer.getPlayerState().getPlayerId()
+              && playerReader.getMatchId() == myPlayer.getPlayerState().getMatchId()
+              && playerReader.getActivityStatus() != PlayerActivityStatus.JOINING;
+        }).collect(Collectors.toList())).orElse(List.of());
+  }
+
+
+  public List<PlayerStateChannel> allActivePlayers() {
     return players.values().stream().filter(
-        playerStateChannel -> playerStateChannel.getPlayerState().isFullyJoined());
+        playerStateChannel -> playerStateChannel.getPlayerState().getActivityStatus()
+            == PlayerActivityStatus.ACTIVE).collect(Collectors.toList());
   }
 
 

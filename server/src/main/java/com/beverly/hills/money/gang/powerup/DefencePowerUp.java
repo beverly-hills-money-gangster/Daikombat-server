@@ -4,11 +4,8 @@ import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
 import com.beverly.hills.money.gang.state.entity.Vector;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
 
 
 @RequiredArgsConstructor
@@ -23,13 +20,13 @@ public class DefencePowerUp implements PowerUp {
   private final PowerUpType type = PowerUpType.DEFENCE;
 
   @Override
-  public void apply(PlayerState playerState) {
-    playerState.setDefenceAmplifier(DEFENCE_AMPLIFIER);
+  public void apply(@NonNull PlayerState playerState) {
+    playerState.amplifyDefence(DEFENCE_AMPLIFIER);
   }
 
   @Override
   public void revert(PlayerState playerState) {
-    playerState.defaultDefence();
+    playerState.amplifyDefence(1D / DEFENCE_AMPLIFIER);
   }
 
   @Override

@@ -12,17 +12,19 @@ public class QuadDamagePowerUp implements PowerUp {
   @Getter
   private final PowerUpType type = PowerUpType.QUAD_DAMAGE;
 
+  private static final int DAMAGE_AMPLIFIER = 4;
+
   @Getter
   private final Vector position;
 
   @Override
   public void apply(PlayerState playerState) {
-    playerState.quadDamage();
+    playerState.amplifyDamage(DAMAGE_AMPLIFIER);
   }
 
   @Override
   public void revert(PlayerState playerState) {
-    playerState.defaultDamage();
+    playerState.amplifyDamage(1D / DAMAGE_AMPLIFIER);
   }
 
   @Override

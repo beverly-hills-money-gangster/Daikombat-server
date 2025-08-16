@@ -18,6 +18,7 @@ import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerStateChannel;
+import com.beverly.hills.money.gang.state.entity.PlayerActivityStatus;
 import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
 import com.beverly.hills.money.gang.teleport.Teleport;
 import com.beverly.hills.money.gang.util.TextUtil;
@@ -81,7 +82,8 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
                   game.playersOnline(),
                   playerConnected.getPlayerStateChannel().getPlayerState()));
 
-          playerConnected.getPlayerStateChannel().getPlayerState().fullyJoined();
+          playerConnected.getPlayerStateChannel().getPlayerState()
+              .setStatus(PlayerActivityStatus.ACTIVE);
         });
   }
 
@@ -104,7 +106,7 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
       List<Teleport> teleports,
       ServerResponse playerSpawnEventToSendOtherPlayers) {
     var otherPlayers = game.getPlayersRegistry()
-        .allPlayers()
+        .allActivePlayers().stream()
         .filter(playerStateChannel -> !playerStateChannel.isOurChannel(joinedPlayerStateChannel))
         .collect(Collectors.toList());
 
@@ -120,7 +122,9 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
     }
     sendMapItems(joinedPlayerStateChannel, spawnedPowerUps, teleports);
     otherPlayers.stream().filter(
-            playerStateChannel -> playerStateChannel.getPlayerState().isFullyJoined())
+            playerStateChannel
+                -> playerStateChannel.getPlayerState().getActivityStatus()
+                == PlayerActivityStatus.ACTIVE)
         .forEach(playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(
             playerSpawnEventToSendOtherPlayers));
 

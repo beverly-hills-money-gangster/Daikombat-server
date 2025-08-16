@@ -42,6 +42,7 @@ import com.beverly.hills.money.gang.spawner.factory.AbstractPowerUpRegistryFacto
 import com.beverly.hills.money.gang.spawner.factory.AbstractSpawnerFactory;
 import com.beverly.hills.money.gang.spawner.factory.AbstractTeleportRegistryFactory;
 import com.beverly.hills.money.gang.spawner.map.MapData;
+import com.beverly.hills.money.gang.state.entity.PlayerActivityStatus;
 import com.beverly.hills.money.gang.state.entity.PlayerAttackingGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerJoinedGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
@@ -184,7 +185,7 @@ public class GameTest {
         PlayerStateColor.GREEN);
     assertEquals(1, game.getPlayersRegistry().playersOnline(), "We connected 1 player only");
     assertEquals(0, game.getBufferedMoves().size(), "Nobody moved");
-    assertEquals(1, game.getPlayersRegistry().allPlayers().count(), "We connected 1 player only");
+    assertEquals(1, game.getPlayersRegistry().allPlayers().size(), "We connected 1 player only");
     PlayerState playerState = game.getPlayersRegistry()
         .getPlayerState(
             playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
@@ -258,7 +259,7 @@ public class GameTest {
 
     assertEquals(1, game.getPlayersRegistry().playersOnline(), "We connected 1 player only");
     assertEquals(0, game.getBufferedMoves().size(), "Nobody moved");
-    assertEquals(1, game.getPlayersRegistry().allPlayers().count(), "We connected 1 player only");
+    assertEquals(1, game.getPlayersRegistry().allPlayers().size(), "We connected 1 player only");
     PlayerState playerState = game.getPlayersRegistry()
         .getPlayerState(
             playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
@@ -518,7 +519,7 @@ public class GameTest {
     assertEquals(
         0, observerPlayerConnectedGameState.getLeaderBoard().get(2).getKills());
 
-    assertEquals(3, game.getPlayersRegistry().allPlayers().count(),
+    assertEquals(3, game.getPlayersRegistry().allPlayers().size(),
         "We have 3 live players now: killer, observer, and dead player.");
 
   }
@@ -531,7 +532,7 @@ public class GameTest {
    */
   @Test
   public void testShootGameOver() throws Throwable {
-    int matchId = game.matchId();
+    int matchId = game.getMatchId();
     String shooterPlayerName = "shooter player";
     String shotPlayerName = "shot player";
     Channel channel = mock(Channel.class);
@@ -577,7 +578,7 @@ public class GameTest {
       }
     }
 
-    assertEquals(matchId + 1, game.matchId(), "Match id should be incremented");
+    assertEquals(matchId + 1, game.getMatchId(), "Match id should be incremented");
     assertEquals(playersToKill + 1, game.getLeaderBoard().size(), "Should be victims+killer");
     game.getLeaderBoard().forEach(gameLeaderBoardItem -> {
       assertEquals(0, gameLeaderBoardItem.getKills(),
@@ -1439,7 +1440,7 @@ public class GameTest {
     // all channels should be closed
     verify(channel, times(ServerConfig.MAX_PLAYERS_PER_GAME)).close();
     assertEquals(0, game.playersOnline(), "No players online when game is closed");
-    assertEquals(0, game.getPlayersRegistry().allPlayers().count(),
+    assertEquals(0, game.getPlayersRegistry().allPlayers().size(),
         "No players in the registry when game is closed");
   }
 
@@ -1460,7 +1461,7 @@ public class GameTest {
     // all channels should be closed
     verify(channel, times(ServerConfig.MAX_PLAYERS_PER_GAME)).close();
     assertEquals(0, game.playersOnline(), "No players online when game is closed");
-    assertEquals(0, game.getPlayersRegistry().allPlayers().count(),
+    assertEquals(0, game.getPlayersRegistry().allPlayers().size(),
         "No players in the registry when game is closed");
   }
 
@@ -2401,7 +2402,8 @@ public class GameTest {
         playerChannel, color, null, playerClass);
     game.getPlayersRegistry()
         .findPlayer(player.getPlayerStateChannel().getPlayerState().getPlayerId()).ifPresent(
-            playerStateChannel -> playerStateChannel.getPlayerState().fullyJoined());
+            playerStateChannel -> playerStateChannel.getPlayerState()
+                .setStatus(PlayerActivityStatus.ACTIVE));
     return player;
   }
 

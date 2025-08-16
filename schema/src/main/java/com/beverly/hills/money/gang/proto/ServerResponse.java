@@ -6887,17 +6887,6 @@ private static final long serialVersionUID = 0L;
     int getMaxGamePlayers();
 
     /**
-     * <code>optional int32 matchId = 4;</code>
-     * @return Whether the matchId field is set.
-     */
-    boolean hasMatchId();
-    /**
-     * <code>optional int32 matchId = 4;</code>
-     * @return The matchId.
-     */
-    int getMatchId();
-
-    /**
      * <code>repeated .daikombat.dto.ServerResponse.WeaponInfo weaponsInfo = 5;</code>
      */
     java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo> 
@@ -7113,25 +7102,6 @@ private static final long serialVersionUID = 0L;
       return maxGamePlayers_;
     }
 
-    public static final int MATCHID_FIELD_NUMBER = 4;
-    private int matchId_ = 0;
-    /**
-     * <code>optional int32 matchId = 4;</code>
-     * @return Whether the matchId field is set.
-     */
-    @java.lang.Override
-    public boolean hasMatchId() {
-      return ((bitField0_ & 0x00000008) != 0);
-    }
-    /**
-     * <code>optional int32 matchId = 4;</code>
-     * @return The matchId.
-     */
-    @java.lang.Override
-    public int getMatchId() {
-      return matchId_;
-    }
-
     public static final int WEAPONSINFO_FIELD_NUMBER = 5;
     @SuppressWarnings("serial")
     private java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo> weaponsInfo_;
@@ -7222,7 +7192,7 @@ private static final long serialVersionUID = 0L;
      */
     @java.lang.Override
     public boolean hasPlayerSpeed() {
-      return ((bitField0_ & 0x00000010) != 0);
+      return ((bitField0_ & 0x00000008) != 0);
     }
     /**
      * <code>optional float playerSpeed = 7;</code>
@@ -7241,7 +7211,7 @@ private static final long serialVersionUID = 0L;
      */
     @java.lang.Override
     public boolean hasMaxVisibility() {
-      return ((bitField0_ & 0x00000020) != 0);
+      return ((bitField0_ & 0x00000010) != 0);
     }
     /**
      * <code>optional int32 maxVisibility = 8;</code>
@@ -7261,7 +7231,7 @@ private static final long serialVersionUID = 0L;
      */
     @java.lang.Override
     public boolean hasTitle() {
-      return ((bitField0_ & 0x00000040) != 0);
+      return ((bitField0_ & 0x00000020) != 0);
     }
     /**
      * <code>optional string title = 9;</code>
@@ -7308,7 +7278,7 @@ private static final long serialVersionUID = 0L;
      */
     @java.lang.Override
     public boolean hasDescription() {
-      return ((bitField0_ & 0x00000080) != 0);
+      return ((bitField0_ & 0x00000040) != 0);
     }
     /**
      * <code>optional string description = 10;</code>
@@ -7354,7 +7324,7 @@ private static final long serialVersionUID = 0L;
      */
     @java.lang.Override
     public boolean hasMapMetadata() {
-      return ((bitField0_ & 0x00000100) != 0);
+      return ((bitField0_ & 0x00000080) != 0);
     }
     /**
      * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
@@ -7395,28 +7365,25 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000004) != 0)) {
         output.writeInt32(3, maxGamePlayers_);
       }
-      if (((bitField0_ & 0x00000008) != 0)) {
-        output.writeInt32(4, matchId_);
-      }
       for (int i = 0; i < weaponsInfo_.size(); i++) {
         output.writeMessage(5, weaponsInfo_.get(i));
       }
       for (int i = 0; i < projectileInfo_.size(); i++) {
         output.writeMessage(6, projectileInfo_.get(i));
       }
-      if (((bitField0_ & 0x00000010) != 0)) {
+      if (((bitField0_ & 0x00000008) != 0)) {
         output.writeFloat(7, playerSpeed_);
       }
-      if (((bitField0_ & 0x00000020) != 0)) {
+      if (((bitField0_ & 0x00000010) != 0)) {
         output.writeInt32(8, maxVisibility_);
       }
-      if (((bitField0_ & 0x00000040) != 0)) {
+      if (((bitField0_ & 0x00000020) != 0)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 9, title_);
       }
-      if (((bitField0_ & 0x00000080) != 0)) {
+      if (((bitField0_ & 0x00000040) != 0)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 10, description_);
       }
-      if (((bitField0_ & 0x00000100) != 0)) {
+      if (((bitField0_ & 0x00000080) != 0)) {
         output.writeMessage(11, getMapMetadata());
       }
       getUnknownFields().writeTo(output);
@@ -7440,10 +7407,6 @@ private static final long serialVersionUID = 0L;
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(3, maxGamePlayers_);
       }
-      if (((bitField0_ & 0x00000008) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(4, matchId_);
-      }
       for (int i = 0; i < weaponsInfo_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(5, weaponsInfo_.get(i));
@@ -7452,21 +7415,21 @@ private static final long serialVersionUID = 0L;
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(6, projectileInfo_.get(i));
       }
-      if (((bitField0_ & 0x00000010) != 0)) {
+      if (((bitField0_ & 0x00000008) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeFloatSize(7, playerSpeed_);
       }
-      if (((bitField0_ & 0x00000020) != 0)) {
+      if (((bitField0_ & 0x00000010) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(8, maxVisibility_);
       }
-      if (((bitField0_ & 0x00000040) != 0)) {
+      if (((bitField0_ & 0x00000020) != 0)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(9, title_);
       }
-      if (((bitField0_ & 0x00000080) != 0)) {
+      if (((bitField0_ & 0x00000040) != 0)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(10, description_);
       }
-      if (((bitField0_ & 0x00000100) != 0)) {
+      if (((bitField0_ & 0x00000080) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(11, getMapMetadata());
       }
@@ -7499,11 +7462,6 @@ private static final long serialVersionUID = 0L;
       if (hasMaxGamePlayers()) {
         if (getMaxGamePlayers()
             != other.getMaxGamePlayers()) return false;
-      }
-      if (hasMatchId() != other.hasMatchId()) return false;
-      if (hasMatchId()) {
-        if (getMatchId()
-            != other.getMatchId()) return false;
       }
       if (!getWeaponsInfoList()
           .equals(other.getWeaponsInfoList())) return false;
@@ -7557,10 +7515,6 @@ private static final long serialVersionUID = 0L;
       if (hasMaxGamePlayers()) {
         hash = (37 * hash) + MAXGAMEPLAYERS_FIELD_NUMBER;
         hash = (53 * hash) + getMaxGamePlayers();
-      }
-      if (hasMatchId()) {
-        hash = (37 * hash) + MATCHID_FIELD_NUMBER;
-        hash = (53 * hash) + getMatchId();
       }
       if (getWeaponsInfoCount() > 0) {
         hash = (37 * hash) + WEAPONSINFO_FIELD_NUMBER;
@@ -7733,21 +7687,20 @@ private static final long serialVersionUID = 0L;
         gameId_ = 0;
         playersOnline_ = 0;
         maxGamePlayers_ = 0;
-        matchId_ = 0;
         if (weaponsInfoBuilder_ == null) {
           weaponsInfo_ = java.util.Collections.emptyList();
         } else {
           weaponsInfo_ = null;
           weaponsInfoBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00000008);
         if (projectileInfoBuilder_ == null) {
           projectileInfo_ = java.util.Collections.emptyList();
         } else {
           projectileInfo_ = null;
           projectileInfoBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000020);
+        bitField0_ = (bitField0_ & ~0x00000010);
         playerSpeed_ = 0F;
         maxVisibility_ = 0;
         title_ = "";
@@ -7791,18 +7744,18 @@ private static final long serialVersionUID = 0L;
 
       private void buildPartialRepeatedFields(com.beverly.hills.money.gang.proto.ServerResponse.GameInfo result) {
         if (weaponsInfoBuilder_ == null) {
-          if (((bitField0_ & 0x00000010) != 0)) {
+          if (((bitField0_ & 0x00000008) != 0)) {
             weaponsInfo_ = java.util.Collections.unmodifiableList(weaponsInfo_);
-            bitField0_ = (bitField0_ & ~0x00000010);
+            bitField0_ = (bitField0_ & ~0x00000008);
           }
           result.weaponsInfo_ = weaponsInfo_;
         } else {
           result.weaponsInfo_ = weaponsInfoBuilder_.build();
         }
         if (projectileInfoBuilder_ == null) {
-          if (((bitField0_ & 0x00000020) != 0)) {
+          if (((bitField0_ & 0x00000010) != 0)) {
             projectileInfo_ = java.util.Collections.unmodifiableList(projectileInfo_);
-            bitField0_ = (bitField0_ & ~0x00000020);
+            bitField0_ = (bitField0_ & ~0x00000010);
           }
           result.projectileInfo_ = projectileInfo_;
         } else {
@@ -7825,31 +7778,27 @@ private static final long serialVersionUID = 0L;
           result.maxGamePlayers_ = maxGamePlayers_;
           to_bitField0_ |= 0x00000004;
         }
-        if (((from_bitField0_ & 0x00000008) != 0)) {
-          result.matchId_ = matchId_;
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.playerSpeed_ = playerSpeed_;
           to_bitField0_ |= 0x00000008;
         }
         if (((from_bitField0_ & 0x00000040) != 0)) {
-          result.playerSpeed_ = playerSpeed_;
+          result.maxVisibility_ = maxVisibility_;
           to_bitField0_ |= 0x00000010;
         }
         if (((from_bitField0_ & 0x00000080) != 0)) {
-          result.maxVisibility_ = maxVisibility_;
+          result.title_ = title_;
           to_bitField0_ |= 0x00000020;
         }
         if (((from_bitField0_ & 0x00000100) != 0)) {
-          result.title_ = title_;
+          result.description_ = description_;
           to_bitField0_ |= 0x00000040;
         }
         if (((from_bitField0_ & 0x00000200) != 0)) {
-          result.description_ = description_;
-          to_bitField0_ |= 0x00000080;
-        }
-        if (((from_bitField0_ & 0x00000400) != 0)) {
           result.mapMetadata_ = mapMetadataBuilder_ == null
               ? mapMetadata_
               : mapMetadataBuilder_.build();
-          to_bitField0_ |= 0x00000100;
+          to_bitField0_ |= 0x00000080;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -7907,14 +7856,11 @@ private static final long serialVersionUID = 0L;
         if (other.hasMaxGamePlayers()) {
           setMaxGamePlayers(other.getMaxGamePlayers());
         }
-        if (other.hasMatchId()) {
-          setMatchId(other.getMatchId());
-        }
         if (weaponsInfoBuilder_ == null) {
           if (!other.weaponsInfo_.isEmpty()) {
             if (weaponsInfo_.isEmpty()) {
               weaponsInfo_ = other.weaponsInfo_;
-              bitField0_ = (bitField0_ & ~0x00000010);
+              bitField0_ = (bitField0_ & ~0x00000008);
             } else {
               ensureWeaponsInfoIsMutable();
               weaponsInfo_.addAll(other.weaponsInfo_);
@@ -7927,7 +7873,7 @@ private static final long serialVersionUID = 0L;
               weaponsInfoBuilder_.dispose();
               weaponsInfoBuilder_ = null;
               weaponsInfo_ = other.weaponsInfo_;
-              bitField0_ = (bitField0_ & ~0x00000010);
+              bitField0_ = (bitField0_ & ~0x00000008);
               weaponsInfoBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getWeaponsInfoFieldBuilder() : null;
@@ -7940,7 +7886,7 @@ private static final long serialVersionUID = 0L;
           if (!other.projectileInfo_.isEmpty()) {
             if (projectileInfo_.isEmpty()) {
               projectileInfo_ = other.projectileInfo_;
-              bitField0_ = (bitField0_ & ~0x00000020);
+              bitField0_ = (bitField0_ & ~0x00000010);
             } else {
               ensureProjectileInfoIsMutable();
               projectileInfo_.addAll(other.projectileInfo_);
@@ -7953,7 +7899,7 @@ private static final long serialVersionUID = 0L;
               projectileInfoBuilder_.dispose();
               projectileInfoBuilder_ = null;
               projectileInfo_ = other.projectileInfo_;
-              bitField0_ = (bitField0_ & ~0x00000020);
+              bitField0_ = (bitField0_ & ~0x00000010);
               projectileInfoBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getProjectileInfoFieldBuilder() : null;
@@ -7970,12 +7916,12 @@ private static final long serialVersionUID = 0L;
         }
         if (other.hasTitle()) {
           title_ = other.title_;
-          bitField0_ |= 0x00000100;
+          bitField0_ |= 0x00000080;
           onChanged();
         }
         if (other.hasDescription()) {
           description_ = other.description_;
-          bitField0_ |= 0x00000200;
+          bitField0_ |= 0x00000100;
           onChanged();
         }
         if (other.hasMapMetadata()) {
@@ -8022,11 +7968,6 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000004;
                 break;
               } // case 24
-              case 32: {
-                matchId_ = input.readInt32();
-                bitField0_ |= 0x00000008;
-                break;
-              } // case 32
               case 42: {
                 com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo m =
                     input.readMessage(
@@ -8055,29 +7996,29 @@ private static final long serialVersionUID = 0L;
               } // case 50
               case 61: {
                 playerSpeed_ = input.readFloat();
-                bitField0_ |= 0x00000040;
+                bitField0_ |= 0x00000020;
                 break;
               } // case 61
               case 64: {
                 maxVisibility_ = input.readInt32();
-                bitField0_ |= 0x00000080;
+                bitField0_ |= 0x00000040;
                 break;
               } // case 64
               case 74: {
                 title_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000100;
+                bitField0_ |= 0x00000080;
                 break;
               } // case 74
               case 82: {
                 description_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000200;
+                bitField0_ |= 0x00000100;
                 break;
               } // case 82
               case 90: {
                 input.readMessage(
                     getMapMetadataFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField0_ |= 0x00000400;
+                bitField0_ |= 0x00000200;
                 break;
               } // case 90
               default: {
@@ -8217,52 +8158,12 @@ private static final long serialVersionUID = 0L;
         return this;
       }
 
-      private int matchId_ ;
-      /**
-       * <code>optional int32 matchId = 4;</code>
-       * @return Whether the matchId field is set.
-       */
-      @java.lang.Override
-      public boolean hasMatchId() {
-        return ((bitField0_ & 0x00000008) != 0);
-      }
-      /**
-       * <code>optional int32 matchId = 4;</code>
-       * @return The matchId.
-       */
-      @java.lang.Override
-      public int getMatchId() {
-        return matchId_;
-      }
-      /**
-       * <code>optional int32 matchId = 4;</code>
-       * @param value The matchId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setMatchId(int value) {
-
-        matchId_ = value;
-        bitField0_ |= 0x00000008;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 matchId = 4;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearMatchId() {
-        bitField0_ = (bitField0_ & ~0x00000008);
-        matchId_ = 0;
-        onChanged();
-        return this;
-      }
-
       private java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo> weaponsInfo_ =
         java.util.Collections.emptyList();
       private void ensureWeaponsInfoIsMutable() {
-        if (!((bitField0_ & 0x00000010) != 0)) {
+        if (!((bitField0_ & 0x00000008) != 0)) {
           weaponsInfo_ = new java.util.ArrayList<com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo>(weaponsInfo_);
-          bitField0_ |= 0x00000010;
+          bitField0_ |= 0x00000008;
          }
       }
 
@@ -8412,7 +8313,7 @@ private static final long serialVersionUID = 0L;
       public Builder clearWeaponsInfo() {
         if (weaponsInfoBuilder_ == null) {
           weaponsInfo_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000010);
+          bitField0_ = (bitField0_ & ~0x00000008);
           onChanged();
         } else {
           weaponsInfoBuilder_.clear();
@@ -8489,7 +8390,7 @@ private static final long serialVersionUID = 0L;
           weaponsInfoBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo, com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfo.Builder, com.beverly.hills.money.gang.proto.ServerResponse.WeaponInfoOrBuilder>(
                   weaponsInfo_,
-                  ((bitField0_ & 0x00000010) != 0),
+                  ((bitField0_ & 0x00000008) != 0),
                   getParentForChildren(),
                   isClean());
           weaponsInfo_ = null;
@@ -8500,9 +8401,9 @@ private static final long serialVersionUID = 0L;
       private java.util.List<com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo> projectileInfo_ =
         java.util.Collections.emptyList();
       private void ensureProjectileInfoIsMutable() {
-        if (!((bitField0_ & 0x00000020) != 0)) {
+        if (!((bitField0_ & 0x00000010) != 0)) {
           projectileInfo_ = new java.util.ArrayList<com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo>(projectileInfo_);
-          bitField0_ |= 0x00000020;
+          bitField0_ |= 0x00000010;
          }
       }
 
@@ -8652,7 +8553,7 @@ private static final long serialVersionUID = 0L;
       public Builder clearProjectileInfo() {
         if (projectileInfoBuilder_ == null) {
           projectileInfo_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000020);
+          bitField0_ = (bitField0_ & ~0x00000010);
           onChanged();
         } else {
           projectileInfoBuilder_.clear();
@@ -8729,7 +8630,7 @@ private static final long serialVersionUID = 0L;
           projectileInfoBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo, com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfo.Builder, com.beverly.hills.money.gang.proto.ServerResponse.ProjectileInfoOrBuilder>(
                   projectileInfo_,
-                  ((bitField0_ & 0x00000020) != 0),
+                  ((bitField0_ & 0x00000010) != 0),
                   getParentForChildren(),
                   isClean());
           projectileInfo_ = null;
@@ -8744,7 +8645,7 @@ private static final long serialVersionUID = 0L;
        */
       @java.lang.Override
       public boolean hasPlayerSpeed() {
-        return ((bitField0_ & 0x00000040) != 0);
+        return ((bitField0_ & 0x00000020) != 0);
       }
       /**
        * <code>optional float playerSpeed = 7;</code>
@@ -8762,7 +8663,7 @@ private static final long serialVersionUID = 0L;
       public Builder setPlayerSpeed(float value) {
 
         playerSpeed_ = value;
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000020;
         onChanged();
         return this;
       }
@@ -8771,7 +8672,7 @@ private static final long serialVersionUID = 0L;
        * @return This builder for chaining.
        */
       public Builder clearPlayerSpeed() {
-        bitField0_ = (bitField0_ & ~0x00000040);
+        bitField0_ = (bitField0_ & ~0x00000020);
         playerSpeed_ = 0F;
         onChanged();
         return this;
@@ -8784,7 +8685,7 @@ private static final long serialVersionUID = 0L;
        */
       @java.lang.Override
       public boolean hasMaxVisibility() {
-        return ((bitField0_ & 0x00000080) != 0);
+        return ((bitField0_ & 0x00000040) != 0);
       }
       /**
        * <code>optional int32 maxVisibility = 8;</code>
@@ -8802,7 +8703,7 @@ private static final long serialVersionUID = 0L;
       public Builder setMaxVisibility(int value) {
 
         maxVisibility_ = value;
-        bitField0_ |= 0x00000080;
+        bitField0_ |= 0x00000040;
         onChanged();
         return this;
       }
@@ -8811,7 +8712,7 @@ private static final long serialVersionUID = 0L;
        * @return This builder for chaining.
        */
       public Builder clearMaxVisibility() {
-        bitField0_ = (bitField0_ & ~0x00000080);
+        bitField0_ = (bitField0_ & ~0x00000040);
         maxVisibility_ = 0;
         onChanged();
         return this;
@@ -8823,7 +8724,7 @@ private static final long serialVersionUID = 0L;
        * @return Whether the title field is set.
        */
       public boolean hasTitle() {
-        return ((bitField0_ & 0x00000100) != 0);
+        return ((bitField0_ & 0x00000080) != 0);
       }
       /**
        * <code>optional string title = 9;</code>
@@ -8867,7 +8768,7 @@ private static final long serialVersionUID = 0L;
           java.lang.String value) {
         if (value == null) { throw new NullPointerException(); }
         title_ = value;
-        bitField0_ |= 0x00000100;
+        bitField0_ |= 0x00000080;
         onChanged();
         return this;
       }
@@ -8877,7 +8778,7 @@ private static final long serialVersionUID = 0L;
        */
       public Builder clearTitle() {
         title_ = getDefaultInstance().getTitle();
-        bitField0_ = (bitField0_ & ~0x00000100);
+        bitField0_ = (bitField0_ & ~0x00000080);
         onChanged();
         return this;
       }
@@ -8891,7 +8792,7 @@ private static final long serialVersionUID = 0L;
         if (value == null) { throw new NullPointerException(); }
         checkByteStringIsUtf8(value);
         title_ = value;
-        bitField0_ |= 0x00000100;
+        bitField0_ |= 0x00000080;
         onChanged();
         return this;
       }
@@ -8902,7 +8803,7 @@ private static final long serialVersionUID = 0L;
        * @return Whether the description field is set.
        */
       public boolean hasDescription() {
-        return ((bitField0_ & 0x00000200) != 0);
+        return ((bitField0_ & 0x00000100) != 0);
       }
       /**
        * <code>optional string description = 10;</code>
@@ -8946,7 +8847,7 @@ private static final long serialVersionUID = 0L;
           java.lang.String value) {
         if (value == null) { throw new NullPointerException(); }
         description_ = value;
-        bitField0_ |= 0x00000200;
+        bitField0_ |= 0x00000100;
         onChanged();
         return this;
       }
@@ -8956,7 +8857,7 @@ private static final long serialVersionUID = 0L;
        */
       public Builder clearDescription() {
         description_ = getDefaultInstance().getDescription();
-        bitField0_ = (bitField0_ & ~0x00000200);
+        bitField0_ = (bitField0_ & ~0x00000100);
         onChanged();
         return this;
       }
@@ -8970,7 +8871,7 @@ private static final long serialVersionUID = 0L;
         if (value == null) { throw new NullPointerException(); }
         checkByteStringIsUtf8(value);
         description_ = value;
-        bitField0_ |= 0x00000200;
+        bitField0_ |= 0x00000100;
         onChanged();
         return this;
       }
@@ -8983,7 +8884,7 @@ private static final long serialVersionUID = 0L;
        * @return Whether the mapMetadata field is set.
        */
       public boolean hasMapMetadata() {
-        return ((bitField0_ & 0x00000400) != 0);
+        return ((bitField0_ & 0x00000200) != 0);
       }
       /**
        * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
@@ -9008,7 +8909,7 @@ private static final long serialVersionUID = 0L;
         } else {
           mapMetadataBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000400;
+        bitField0_ |= 0x00000200;
         onChanged();
         return this;
       }
@@ -9022,7 +8923,7 @@ private static final long serialVersionUID = 0L;
         } else {
           mapMetadataBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000400;
+        bitField0_ |= 0x00000200;
         onChanged();
         return this;
       }
@@ -9031,7 +8932,7 @@ private static final long serialVersionUID = 0L;
        */
       public Builder mergeMapMetadata(com.beverly.hills.money.gang.proto.MapMetadata value) {
         if (mapMetadataBuilder_ == null) {
-          if (((bitField0_ & 0x00000400) != 0) &&
+          if (((bitField0_ & 0x00000200) != 0) &&
             mapMetadata_ != null &&
             mapMetadata_ != com.beverly.hills.money.gang.proto.MapMetadata.getDefaultInstance()) {
             getMapMetadataBuilder().mergeFrom(value);
@@ -9042,7 +8943,7 @@ private static final long serialVersionUID = 0L;
           mapMetadataBuilder_.mergeFrom(value);
         }
         if (mapMetadata_ != null) {
-          bitField0_ |= 0x00000400;
+          bitField0_ |= 0x00000200;
           onChanged();
         }
         return this;
@@ -9051,7 +8952,7 @@ private static final long serialVersionUID = 0L;
        * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
        */
       public Builder clearMapMetadata() {
-        bitField0_ = (bitField0_ & ~0x00000400);
+        bitField0_ = (bitField0_ & ~0x00000200);
         mapMetadata_ = null;
         if (mapMetadataBuilder_ != null) {
           mapMetadataBuilder_.dispose();
@@ -9064,7 +8965,7 @@ private static final long serialVersionUID = 0L;
        * <code>optional .daikombat.dto.MapMetadata mapMetadata = 11;</code>
        */
       public com.beverly.hills.money.gang.proto.MapMetadata.Builder getMapMetadataBuilder() {
-        bitField0_ |= 0x00000400;
+        bitField0_ |= 0x00000200;
         onChanged();
         return getMapMetadataFieldBuilder().getBuilder();
       }

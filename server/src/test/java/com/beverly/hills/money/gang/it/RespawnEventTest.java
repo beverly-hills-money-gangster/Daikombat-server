@@ -80,7 +80,7 @@ public class RespawnEventTest extends AbstractGameServerTest {
       killerConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(shooterPlayerId)
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-          .setMatchId(0).setGameId(gameIdToConnectTo)
+         .setGameId(gameIdToConnectTo)
           .setEventType(GameEventType.ATTACK)
           .setWeaponType(WeaponType.SHOTGUN)
           .setDirection(
@@ -108,7 +108,7 @@ public class RespawnEventTest extends AbstractGameServerTest {
     emptyQueue(deadConnection.getResponse());
 
     deadConnection.write(RespawnCommand.newBuilder()
-        .setPlayerId(shotPlayerId).setMatchId(0).setGameId(gameIdToConnectTo)
+        .setPlayerId(shotPlayerId).setGameId(gameIdToConnectTo)
         .build());
     waitUntilGetResponses(deadConnection.getResponse(), 2);
     ServerResponse respawnResponse = deadConnection.getResponse().poll()
@@ -189,7 +189,7 @@ public class RespawnEventTest extends AbstractGameServerTest {
       killerConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(shooterPlayerId)
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-          .setMatchId(0).setGameId(gameIdToConnectTo)
+         .setGameId(gameIdToConnectTo)
           .setEventType(GameEventType.ATTACK)
           .setWeaponType(WeaponType.SHOTGUN)
           .setDirection(
@@ -218,7 +218,7 @@ public class RespawnEventTest extends AbstractGameServerTest {
 
     deadConnection.write(RespawnCommand.newBuilder()
         .setPlayerId(shotPlayerId)
-        .setMatchId(123) // wrong match id
+        // TODO change it .setMatchId(123) // wrong match id
         .setGameId(gameIdToConnectTo).build());
     // we get nothing
     Thread.sleep(5_000);

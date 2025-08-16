@@ -182,7 +182,6 @@ public interface ServerResponseFactory {
                   .setName(game.getGameMapMetadata().getName())
                   .setHash(game.getGameMapMetadata().getHash())
                   .build())
-              .setMatchId(game.matchId())
               .setMaxVisibility(game.getGameConfig().getMaxVisibility())
               // TODO cover with a test
               .setPlayerSpeed(AntiCheat.getMaxSpeed(playerClass, game.getGameConfig()))

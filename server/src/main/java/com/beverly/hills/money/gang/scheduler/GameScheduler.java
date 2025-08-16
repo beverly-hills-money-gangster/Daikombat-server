@@ -45,7 +45,7 @@ public class GameScheduler {
             if (bufferedMoves.isEmpty()) {
               return;
             }
-            game.getPlayersRegistry().allJoinedPlayers().forEach(
+            game.getPlayersRegistry().allActivePlayers().forEach(
                 player -> Optional.of(
                         getPlayerBufferedMoves(bufferedMoves, player.getPlayerState(), game))
                     .filter(moves -> !moves.isEmpty())

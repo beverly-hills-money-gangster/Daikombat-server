@@ -88,6 +88,7 @@ public class InvisibilityPowerUpTest extends AbstractGameServerTest {
             .setX(playerSpawnEvent.getPlayer().getPosition().getX())
             .setY(playerSpawnEvent.getPlayer().getPosition().getY())
             .build())
+        .setGameId(gameIdToConnectTo)
         .setDirection(Vector.newBuilder().setX(0).setY(1).build())
         .setEventType(GameEventType.INVISIBILITY_POWER_UP)
         .build());

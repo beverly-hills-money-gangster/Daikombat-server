@@ -20,7 +20,6 @@ public class BeastPowerUp implements PowerUp {
   private final Vector position;
 
 
-  // TODO test it
   @Override
   public void apply(PlayerState playerState) {
     playerState.amplifyDamage(DAMAGE_AMPLIFIER);

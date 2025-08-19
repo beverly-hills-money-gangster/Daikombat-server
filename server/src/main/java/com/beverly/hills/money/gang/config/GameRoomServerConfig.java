@@ -37,9 +37,9 @@ public class GameRoomServerConfig {
     private final int defaultRailgunDamage = NumberUtils.toInt(
         getRoomEnv("GAME_SERVER_DEFAULT_RAILGUN_DAMAGE"), 75);
     private final int minigunMaxAmmo = NumberUtils.toInt(
-        getRoomEnv("GAME_SERVER_MINIGUN_MAX_AMMO"), 70);
+        getRoomEnv("GAME_SERVER_MINIGUN_MAX_AMMO"), 100);
     private final int defaultMinigunDamage = NumberUtils.toInt(
-        getRoomEnv("GAME_SERVER_DEFAULT_MINIGUN_DAMAGE"), 5);
+        getRoomEnv("GAME_SERVER_DEFAULT_MINIGUN_DAMAGE"), 7);
     private final int plasmagunMaxAmmo = NumberUtils.toInt(
         getRoomEnv("GAME_SERVER_PLASMAGUN_MAX_AMMO"), 50);
     private final int defaultPlasmaDamage = NumberUtils.toInt(

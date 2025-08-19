@@ -158,10 +158,16 @@ public class PlayerState implements PlayerStateReader {
   }
 
   public void amplifyDefence(double coefficient) {
+    if (coefficient < 0) {
+      throw new IllegalArgumentException("Coefficient can't be negative");
+    }
     ConcurrencyUtil.multiplyAtomic(defenceAmplifier, coefficient);
   }
 
   public void amplifyDamage(double coefficient) {
+    if (coefficient < 0) {
+      throw new IllegalArgumentException("Coefficient can't be negative");
+    }
     ConcurrencyUtil.multiplyAtomic(damageAmplifier, coefficient);
   }
 

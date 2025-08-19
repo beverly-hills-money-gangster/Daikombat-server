@@ -26,7 +26,6 @@ import com.beverly.hills.money.gang.proto.Vector;
 import com.beverly.hills.money.gang.proto.WeaponType;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.spawner.AbstractSpawner;
-import com.beverly.hills.money.gang.spawner.Spawner;
 import com.beverly.hills.money.gang.state.GameProjectileType;
 import com.beverly.hills.money.gang.state.GameWeaponType;
 import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
@@ -206,49 +205,6 @@ public class ShootingEventTest extends AbstractGameServerTest {
         "Nothing is expected because all ammo is wasted");
   }
 
-
-  /**
-   * @given a running server with 1 connected player
-   * @when player 1 shoots and misses using wrong match id
-   * @then nobody got shot and nobody get the shooting event either
-   */
-  @Test
-  public void testShootMissWrongMatchId() throws IOException, InterruptedException {
-    int gameIdToConnectTo = 0;
-    GameConnection shooterConnection = createGameConnection("localhost", port);
-    shooterConnection.write(
-        JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my player name")
-            .setGameId(gameIdToConnectTo).build());
-    GameConnection observerConnection = createGameConnection("localhost", port);
-    observerConnection.write(
-        JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my other player name")
-            .setGameId(gameIdToConnectTo).build());
-    waitUntilGetResponses(shooterConnection.getResponse(), 2);
-    waitUntilGetResponses(observerConnection.getResponse(), 2);
-    emptyQueue(observerConnection.getResponse());
-    ServerResponse mySpawn = shooterConnection.getResponse().poll().get();
-    int playerId = mySpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
-    var mySpawnEvent = mySpawn.getGameEvents().getEvents(0);
-    float newPositionX = mySpawnEvent.getPlayer().getPosition().getX() + 0.1f;
-    float newPositionY = mySpawnEvent.getPlayer().getPosition().getY() - 0.1f;
-    emptyQueue(shooterConnection.getResponse());
-    shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(playerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-       // TODO change test .setMatchId(123) // wrong match id
-        .setGameId(gameIdToConnectTo)
-        .setEventType(GameEventType.ATTACK).setWeaponType(getWeaponType(GameWeaponType.SHOTGUN))
-        .setDirection(
-            Vector.newBuilder().setX(mySpawnEvent.getPlayer().getDirection().getX())
-                .setY(mySpawnEvent.getPlayer().getDirection().getY()).build())
-        .setPosition(Vector.newBuilder().setX(newPositionX).setY(newPositionY).build()).build());
-    Thread.sleep(5_000);
-    assertTrue(observerConnection.getResponse().list().isEmpty(),
-        "Nobody should see the event because match id is wrong. Actual response "
-            + observerConnection.getResponse().list());
-
-  }
 
   /**
    * @given a running server with 2 connected player
@@ -1024,7 +980,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     for (int i = 0; i < shotsToKill - 1; i++) {
       killerConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-         .setGameId(gameIdToConnectTo).setEventType(GameEventType.ATTACK)
+          .setGameId(gameIdToConnectTo).setEventType(GameEventType.ATTACK)
           .setWeaponType(getWeaponType(weaponType)).setDirection(
               Vector.newBuilder().setX(shooterSpawnEvent.getPlayer().getDirection().getX())
                   .setY(shooterSpawnEvent.getPlayer().getDirection().getY()).build())
@@ -1051,7 +1007,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     // this one kills player 2
     killerConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
         .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-       .setGameId(gameIdToConnectTo)
+        .setGameId(gameIdToConnectTo)
         .setEventType(GameEventType.ATTACK).setWeaponType(getWeaponType(weaponType)).setDirection(
             Vector.newBuilder().setX(shooterSpawnEvent.getPlayer().getDirection().getX())
                 .setY(shooterSpawnEvent.getPlayer().getDirection().getY()).build())
@@ -1241,7 +1197,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
         JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
             .setPlayerClass(PlayerClass.WARRIOR).setPlayerName(observerPlayerName)
             .setGameId(gameIdToConnectTo).build());
-    waitUntilQueueNonEmpty(observerConnection.getResponse());
+    waitUntilGetResponses(observerConnection.getResponse(), 2);
 
     var observerPlayerSpawn = observerConnection.getResponse().poll().get().getGameEvents()
         .getEvents(0);
@@ -1258,7 +1214,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertTrue(observerPlayerSpawn.hasLeaderBoard(),
         "Newly connected players must have leader board");
     assertEquals(3, observerPlayerSpawn.getLeaderBoard().getItemsCount(),
-        "There must be 3 items in the board at this moment: killer, victim, and observer");
+        "There must be 3 items in the board at this moment: killer, victim, and observer. Current leaderboard: "
+            + observerPlayerSpawn.getLeaderBoard());
 
     assertEquals(newShooterPlayerId,
         observerPlayerSpawn.getLeaderBoard().getItems(0).getPlayerId());
@@ -1321,7 +1278,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     for (int i = 0; i < shotsToKill; i++) {
       shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-         .setGameId(gameIdToConnectTo).setEventType(GameEventType.ATTACK)
+          .setGameId(gameIdToConnectTo).setEventType(GameEventType.ATTACK)
           .setWeaponType(WeaponType.SHOTGUN).setDirection(
               Vector.newBuilder().setX(shooterSpawnEvent.getPlayer().getDirection().getX())
                   .setY(shooterSpawnEvent.getPlayer().getDirection().getY()).build())

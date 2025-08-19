@@ -31,15 +31,12 @@ public interface ServerConfig {
   int QUAD_DAMAGE_SPAWN_MLS = NumberUtils.toInt(
       System.getenv("GAME_SERVER_QUAD_DAMAGE_SPAWN_MLS"), 45_000);
 
-  // TODO readme
   int BEAST_SPAWN_MLS = NumberUtils.toInt(
       System.getenv("GAME_SERVER_BEAST_SPAWN_MLS"), 60_000);
 
-  // TODO readme
   int QUAD_DAMAGE_LASTS_FOR_MLS = NumberUtils.toInt(
       System.getenv("GAME_SERVER_QUAD_DAMAGE_LASTS_FOR_MLS"), 15_000);
 
-  // TODO readme
   int BEAST_LASTS_FOR_MLS = NumberUtils.toInt(
       System.getenv("GAME_SERVER_BEAST_LASTS_FOR_MLS"), 25_000);
 

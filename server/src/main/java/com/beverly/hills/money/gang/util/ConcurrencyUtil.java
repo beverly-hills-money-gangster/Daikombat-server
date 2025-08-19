@@ -5,13 +5,10 @@ import lombok.NonNull;
 
 public interface ConcurrencyUtil {
 
-  // TODO test it
-  static void multiplyAtomic(
-      final @NonNull AtomicInteger integer,
-      double coefficient) {
-    if (coefficient < 0) {
-      throw new IllegalArgumentException("Coefficient can't be negative");
-    }
+  /**
+   * Multiplies given integer by given coefficient. Mutates integer. Thread-safe.
+   */
+  static void multiplyAtomic(final @NonNull AtomicInteger integer, final double coefficient) {
     var current = integer.get();
     var expected = (int) (current * coefficient);
     if (integer.compareAndSet(current, expected)) {

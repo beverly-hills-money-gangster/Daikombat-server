@@ -67,7 +67,6 @@ public class PlayersRegistry implements Closeable {
     return new ArrayList<>(players.values());
   }
 
-  // TODO test it
   public List<PlayerStateChannel> allChatablePlayers(final int myPlayerId) {
     return getPlayerStateChannel(myPlayerId).map(
         myPlayer -> players.values().stream().filter(playerStateChannel -> {

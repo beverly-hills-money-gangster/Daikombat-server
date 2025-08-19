@@ -3,7 +3,7 @@ package com.beverly.hills.money.gang.runner;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.initializer.GameServerInitializer;
-import com.beverly.hills.money.gang.scheduler.GameScheduler;
+import com.beverly.hills.money.gang.scheduler.GameMovementScheduler;
 import com.beverly.hills.money.gang.transport.ServerTransport;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
@@ -26,7 +26,7 @@ public class GameServerRunner extends AbstractServerRunner {
 
   private final GameServerInitializer gameServerInitializer;
 
-  private final GameScheduler gameScheduler;
+  private final GameMovementScheduler gameMovementScheduler;
 
   @Override
   public void runServer(int port) throws InterruptedException {
@@ -54,7 +54,7 @@ public class GameServerRunner extends AbstractServerRunner {
       if (!stateRef.compareAndSet(ServerState.STARTING, ServerState.RUNNING)) {
         throw new IllegalStateException("Can't run!");
       }
-      gameScheduler.init();
+      gameMovementScheduler.init();
       startWaitingLatch.countDown();
       serverChannel.closeFuture().sync();
       LOG.info("Server channel closed");

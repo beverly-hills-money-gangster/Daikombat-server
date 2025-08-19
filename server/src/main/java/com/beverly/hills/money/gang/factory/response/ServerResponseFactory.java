@@ -168,7 +168,6 @@ public interface ServerResponseFactory {
     serverInfo.setVersion(ServerConfig.VERSION);
     games.forEach(game -> {
       var rpgWeaponInfo = game.getRpgWeaponInfo();
-      // TODO test it
       var weaponsInfo = rpgWeaponInfo.getWeaponsInfo(playerClass);
       var projectilesInfo = rpgWeaponInfo.getProjectilesInfo(playerClass);
       serverInfo.addGames(
@@ -183,7 +182,6 @@ public interface ServerResponseFactory {
                   .setHash(game.getGameMapMetadata().getHash())
                   .build())
               .setMaxVisibility(game.getGameConfig().getMaxVisibility())
-              // TODO cover with a test
               .setPlayerSpeed(AntiCheat.getMaxSpeed(playerClass, game.getGameConfig()))
               .addAllWeaponsInfo(weaponsInfo.stream().map(gameWeaponInfo -> {
                 var builder = WeaponInfo.newBuilder()

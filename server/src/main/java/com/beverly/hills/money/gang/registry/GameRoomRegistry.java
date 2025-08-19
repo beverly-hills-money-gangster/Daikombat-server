@@ -39,7 +39,7 @@ public class GameRoomRegistry implements Closeable {
   // TODO rename getAllPlayingPlayer to getAllActivePlayers
   public Optional<PlayerStateChannel> getActivePlayer(
       final int gameId, final Channel channel, final int playerId) {
-    return getActivePlayer(gameId, channel, playerId).filter(
+    return getPlayer(gameId, channel, playerId).filter(
         playerStateChannel -> playerStateChannel.getPlayerState().getActivityStatus()
             == PlayerActivityStatus.ACTIVE);
   }

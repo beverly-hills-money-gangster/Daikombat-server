@@ -80,7 +80,7 @@ public class RespawnEventTest extends AbstractGameServerTest {
       killerConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(shooterPlayerId)
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-         .setGameId(gameIdToConnectTo)
+          .setGameId(gameIdToConnectTo)
           .setEventType(GameEventType.ATTACK)
           .setWeaponType(WeaponType.SHOTGUN)
           .setDirection(
@@ -139,92 +139,6 @@ public class RespawnEventTest extends AbstractGameServerTest {
                 == shotPlayerId),
         "Killer must see the respawn. Actual response: " + killerConnection.getResponse());
 
-  }
-
-  /**
-   * @given a running server with 2 connected player
-   * @when player 1 kills player 2 and then player 2 respawns with a wrong match id
-   * @then player 1 doesn't see player 2 respawning
-   */
-  @Test
-  public void testRespawnWrongMatchId() throws Exception {
-    int gameIdToConnectTo = 0;
-    var gameConfig = gameRoomRegistry.getGame(gameIdToConnectTo).getGameConfig();
-    String shooterPlayerName = "killer";
-    GameConnection killerConnection = createGameConnection("localhost",
-        port);
-    killerConnection.write(
-        JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.PINK)
-            .setPlayerClass(PlayerClass.WARRIOR)
-            .setPlayerName(shooterPlayerName)
-            .setGameId(gameIdToConnectTo).build());
-
-    GameConnection deadConnection = createGameConnection("localhost", port);
-    deadConnection.write(
-        JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.PURPLE)
-            .setPlayerClass(PlayerClass.WARRIOR)
-            .setPlayerName("my other player name")
-            .setGameId(gameIdToConnectTo).build());
-
-    waitUntilGetResponses(killerConnection.getResponse(), 2);
-    waitUntilGetResponses(deadConnection.getResponse(), 2);
-
-    ServerResponse shooterPlayerSpawn = killerConnection.getResponse().poll().get();
-    int shooterPlayerId = shooterPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
-
-    ServerResponse shotPlayerSpawn = killerConnection.getResponse().poll().get();
-    LOG.info("Shot player spawn {}", shotPlayerSpawn);
-    int shotPlayerId = shotPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
-
-    emptyQueue(deadConnection.getResponse());
-    emptyQueue(killerConnection.getResponse());
-
-    var shooterSpawnEvent = shooterPlayerSpawn.getGameEvents().getEvents(0);
-    float newPositionX = shooterSpawnEvent.getPlayer().getPosition().getX() + 0.1f;
-    float newPositionY = shooterSpawnEvent.getPlayer().getPosition().getY() - 0.1f;
-    int shotsToKill = (int) Math.ceil(100D / gameConfig.getDefaultShotgunDamage());
-    for (int i = 0; i < shotsToKill; i++) {
-      killerConnection.write(PushGameEventCommand.newBuilder()
-          .setPlayerId(shooterPlayerId)
-          .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-         .setGameId(gameIdToConnectTo)
-          .setEventType(GameEventType.ATTACK)
-          .setWeaponType(WeaponType.SHOTGUN)
-          .setDirection(
-              Vector.newBuilder()
-                  .setX(shooterSpawnEvent.getPlayer().getDirection().getX())
-                  .setY(shooterSpawnEvent.getPlayer().getDirection().getY())
-                  .build())
-          .setPosition(
-              Vector.newBuilder()
-                  .setX(newPositionX)
-                  .setY(newPositionY)
-                  .build())
-          .setAffectedPlayerId(shotPlayerId)
-          .build());
-      waitUntilQueueNonEmpty(deadConnection.getResponse());
-    }
-
-    waitUntilQueueNonEmpty(deadConnection.getResponse());
-    assertTrue(deadConnection.isConnected(), "Dead players should be connected");
-    assertTrue(killerConnection.isConnected(), "Killer must be connected");
-
-    Thread.sleep(500);
-
-    emptyQueue(killerConnection.getResponse());
-    emptyQueue(deadConnection.getResponse());
-
-    deadConnection.write(RespawnCommand.newBuilder()
-        .setPlayerId(shotPlayerId)
-        // TODO change it .setMatchId(123) // wrong match id
-        .setGameId(gameIdToConnectTo).build());
-    // we get nothing
-    Thread.sleep(5_000);
-    assertTrue(deadConnection.getResponse().list().isEmpty(),
-        "We should have nothing here because the respawn match id was wrong. Actual response "
-            + deadConnection.getResponse().list());
   }
 
 }

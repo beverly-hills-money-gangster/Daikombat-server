@@ -93,7 +93,8 @@ public class AllPowerUpTest extends AbstractGameServerTest {
         GameEventType.QUAD_DAMAGE_POWER_UP,
         GameEventType.BIG_AMMO_POWER_UP,
         GameEventType.HEALTH_POWER_UP,
-        GameEventType.MEDIUM_AMMO_POWER_UP);
+        GameEventType.MEDIUM_AMMO_POWER_UP,
+        GameEventType.BEAST_POWER_UP);
 
     powerUpsToPick.forEach(gameEventType -> playerConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(playerId)

@@ -221,7 +221,6 @@ public class Game implements Closeable, GameReader {
       LOG.warn("Not supported weapon type for player class");
       return null;
     } else if (!attackingPlayerState.wasteAmmo(weaponType)) {
-      // TODO make sure I don't create ammo for not-supported weapons
       LOG.warn("Player wasted all ammo");
       return null;
     }
@@ -243,6 +242,8 @@ public class Game implements Closeable, GameReader {
       final GameProjectileType projectileType,
       final int eventSequence,
       final int pingMls) {
+    // TODO check related weapon ammo
+    // TODO check trajectory
     return attack(
         playerCoordinates,
         attackPosition,
@@ -306,11 +307,11 @@ public class Game implements Closeable, GameReader {
       gameOverState = GameOverGameState.builder().leaderBoardItems(getLeaderBoard()).build();
       // clearing all stats because the game is over
       playerStatsRecoveryRegistry.clearAllStats();
-      var allPlayingPlayers = playersRegistry.allActivePlayers();
-      allPlayingPlayers.forEach(
+      var allActivePlayers = playersRegistry.allActivePlayers();
+      allActivePlayers.forEach(
           playerStateChannel -> playerStateChannel.getPlayerState().clearStats());
-      // TODO test it
-      allPlayingPlayers.forEach(playerStateChannel -> playerStateChannel.getPlayerState()
+      // it's important that we get leaderboard before marking all players as 'GAME_OVER'
+      playersRegistry.allPlayers().forEach(playerStateChannel -> playerStateChannel.getPlayerState()
           .setStatus(PlayerActivityStatus.GAME_OVER));
       matchId.incrementAndGet();
     }
@@ -322,7 +323,9 @@ public class Game implements Closeable, GameReader {
   }
 
   protected List<GameLeaderBoardItem> getLeaderBoard() {
-    return playersRegistry.allActivePlayers().stream()
+    return playersRegistry.allPlayers().stream().filter(
+            playerStateChannel -> playerStateChannel.getPlayerState().getActivityStatus()
+                != PlayerActivityStatus.GAME_OVER)
         .sorted((player1, player2) -> {
           int killsCompare = -Integer.compare(
               player1.getPlayerState().getGameStats().getKills(),

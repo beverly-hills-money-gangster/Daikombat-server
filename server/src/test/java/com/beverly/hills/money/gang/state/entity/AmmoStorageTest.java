@@ -20,28 +20,36 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 public class AmmoStorageTest {
 
-  private AmmoStorage ammoStorage;
+  private AmmoStorage warriorAmmoStorage;
+
+  private AmmoStorage skeletonAmmoStorage;
 
   @BeforeEach
   public void setUp() throws IOException {
-    // TODO test that ammo is not crated for non-supported weapon type
-    ammoStorage = new AmmoStorage(
+    warriorAmmoStorage = new AmmoStorage(
         new Game(new LocalMapRegistry(),
             mock(), mock(), mock(),
             new ProdSpawnerFactory(), mock(),
             mock(), mock()), RPGPlayerClass.WARRIOR);
+
+    skeletonAmmoStorage = new AmmoStorage(
+        new Game(new LocalMapRegistry(),
+            mock(), mock(), mock(),
+            new ProdSpawnerFactory(), mock(),
+            mock(), mock()), RPGPlayerClass.ANGRY_SKELETON);
   }
+
 
   @ParameterizedTest
   @EnumSource(GameWeaponType.class)
   public void testRestoreZeroPercent(GameWeaponType gameWeaponType) {
-    var ammoBefore = ammoStorage.getCurrentAmmo(gameWeaponType);
+    var ammoBefore = warriorAmmoStorage.getCurrentAmmo(gameWeaponType);
     if (ammoBefore == null) {
       // skip
       return;
     }
-    ammoStorage.restore(gameWeaponType, 0);
-    var ammoAfter = ammoStorage.getCurrentAmmo(gameWeaponType);
+    warriorAmmoStorage.restore(gameWeaponType, 0);
+    var ammoAfter = warriorAmmoStorage.getCurrentAmmo(gameWeaponType);
     assertEquals(ammoBefore, ammoAfter,
         "Ammo shouldn't change because we effectively didn't increase it");
   }
@@ -49,17 +57,17 @@ public class AmmoStorageTest {
   @ParameterizedTest
   @EnumSource(GameWeaponType.class)
   public void testRestore50Percent(GameWeaponType gameWeaponType) {
-    var ammoBefore = ammoStorage.getCurrentAmmo(gameWeaponType);
+    var ammoBefore = warriorAmmoStorage.getCurrentAmmo(gameWeaponType);
     if (ammoBefore == null) {
       // skip
       return;
     }
     for (int i = 0; i < ammoBefore; i++) {
-      assertTrue(ammoStorage.wasteAmmo(gameWeaponType));
+      assertTrue(warriorAmmoStorage.wasteAmmo(gameWeaponType));
     }
 
-    ammoStorage.restore(gameWeaponType, 0.5f);
-    var ammoAfter = ammoStorage.getCurrentAmmo(gameWeaponType);
+    warriorAmmoStorage.restore(gameWeaponType, 0.5f);
+    var ammoAfter = warriorAmmoStorage.getCurrentAmmo(gameWeaponType);
 
     assertEquals(ammoBefore / 2, ammoAfter, "Only half of ammo should be restored");
   }
@@ -67,17 +75,17 @@ public class AmmoStorageTest {
   @ParameterizedTest
   @EnumSource(GameWeaponType.class)
   public void testRestore100Percent(GameWeaponType gameWeaponType) {
-    var ammoBefore = ammoStorage.getCurrentAmmo(gameWeaponType);
+    var ammoBefore = warriorAmmoStorage.getCurrentAmmo(gameWeaponType);
     if (ammoBefore == null) {
       // skip
       return;
     }
     for (int i = 0; i < ammoBefore; i++) {
-      assertTrue(ammoStorage.wasteAmmo(gameWeaponType));
+      assertTrue(warriorAmmoStorage.wasteAmmo(gameWeaponType));
     }
 
-    ammoStorage.restore(gameWeaponType, 1f);
-    var ammoAfter = ammoStorage.getCurrentAmmo(gameWeaponType);
+    warriorAmmoStorage.restore(gameWeaponType, 1f);
+    var ammoAfter = warriorAmmoStorage.getCurrentAmmo(gameWeaponType);
 
     assertEquals(ammoBefore, ammoAfter, "All ammo should be restored");
   }
@@ -86,19 +94,19 @@ public class AmmoStorageTest {
   @ParameterizedTest
   @EnumSource(GameWeaponType.class)
   public void testRestore100PercentTwice(GameWeaponType gameWeaponType) {
-    var ammoBefore = ammoStorage.getCurrentAmmo(gameWeaponType);
+    var ammoBefore = warriorAmmoStorage.getCurrentAmmo(gameWeaponType);
     if (ammoBefore == null) {
       // skip
       return;
     }
     for (int i = 0; i < ammoBefore; i++) {
-      assertTrue(ammoStorage.wasteAmmo(gameWeaponType));
+      assertTrue(warriorAmmoStorage.wasteAmmo(gameWeaponType));
     }
 
-    ammoStorage.restore(gameWeaponType, 1f);
-    ammoStorage.restore(gameWeaponType, 1f); // restore again
+    warriorAmmoStorage.restore(gameWeaponType, 1f);
+    warriorAmmoStorage.restore(gameWeaponType, 1f); // restore again
 
-    var ammoAfter = ammoStorage.getCurrentAmmo(gameWeaponType);
+    var ammoAfter = warriorAmmoStorage.getCurrentAmmo(gameWeaponType);
 
     assertEquals(ammoBefore, ammoAfter, "All ammo should be restored");
   }
@@ -106,26 +114,56 @@ public class AmmoStorageTest {
   @ParameterizedTest
   @EnumSource(GameWeaponType.class)
   public void testWasteAllAmmo(GameWeaponType gameWeaponType) {
-    var ammoBefore = ammoStorage.getCurrentAmmo(gameWeaponType);
+    var ammoBefore = warriorAmmoStorage.getCurrentAmmo(gameWeaponType);
     if (ammoBefore == null) {
       // skip
       return;
     }
     for (int i = 0; i < ammoBefore; i++) {
-      assertTrue(ammoStorage.wasteAmmo(gameWeaponType));
+      assertTrue(warriorAmmoStorage.wasteAmmo(gameWeaponType));
     }
 
-    assertFalse(ammoStorage.wasteAmmo(gameWeaponType),
+    assertFalse(warriorAmmoStorage.wasteAmmo(gameWeaponType),
         "No ammo can be wasted because we have wasted it all before");
 
-    var ammoAfter = ammoStorage.getCurrentAmmo(gameWeaponType);
+    var ammoAfter = warriorAmmoStorage.getCurrentAmmo(gameWeaponType);
     assertEquals(0, ammoAfter);
+  }
+
+
+  @ParameterizedTest
+  @EnumSource(GameWeaponType.class)
+  public void testWasteAmmoNotSupported(GameWeaponType gameWeaponType) {
+    if (RPGPlayerClass.ANGRY_SKELETON.getWeapons().contains(gameWeaponType)) {
+      // ignore supported weapons
+      return;
+    } else if (gameWeaponType == GameWeaponType.PUNCH) {
+      // ignore melee weapons
+      return;
+    }
+    assertFalse(skeletonAmmoStorage.wasteAmmo(gameWeaponType),
+        "Should be no ammo because this weapon is not supported");
+  }
+
+  @ParameterizedTest
+  @EnumSource(GameWeaponType.class)
+  public void testRestoreAmmoNotSupported(GameWeaponType gameWeaponType) {
+    if (RPGPlayerClass.ANGRY_SKELETON.getWeapons().contains(gameWeaponType)) {
+      // ignore supported weapons
+      return;
+    } else if (gameWeaponType == GameWeaponType.PUNCH) {
+      // ignore melee weapons
+      return;
+    }
+    skeletonAmmoStorage.restore(gameWeaponType, 1);
+    assertFalse(skeletonAmmoStorage.wasteAmmo(gameWeaponType),
+        "Should be no ammo after restoring anyway because this weapon is not supported");
   }
 
   @ParameterizedTest
   @EnumSource(GameWeaponType.class)
   public void testWasteAllAmmoMultiThread(GameWeaponType gameWeaponType) {
-    var ammoBefore = ammoStorage.getCurrentAmmo(gameWeaponType);
+    var ammoBefore = warriorAmmoStorage.getCurrentAmmo(gameWeaponType);
     if (ammoBefore == null) {
       // skip
       return;
@@ -134,7 +172,7 @@ public class AmmoStorageTest {
     try {
       var futures = new ArrayList<Future<Boolean>>();
       for (int i = 0; i < ammoBefore; i++) {
-        futures.add(executorService.submit(() -> ammoStorage.wasteAmmo(gameWeaponType)));
+        futures.add(executorService.submit(() -> warriorAmmoStorage.wasteAmmo(gameWeaponType)));
       }
 
       futures.forEach(future -> {
@@ -146,10 +184,10 @@ public class AmmoStorageTest {
         }
       });
 
-      assertFalse(ammoStorage.wasteAmmo(gameWeaponType),
+      assertFalse(warriorAmmoStorage.wasteAmmo(gameWeaponType),
           "No ammo can be wasted because we have wasted it all before");
 
-      var ammoAfter = ammoStorage.getCurrentAmmo(gameWeaponType);
+      var ammoAfter = warriorAmmoStorage.getCurrentAmmo(gameWeaponType);
       assertEquals(0, ammoAfter);
     } finally {
       executorService.shutdownNow();

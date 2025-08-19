@@ -20,9 +20,9 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class GameScheduler {
+public class GameMovementScheduler {
 
-  private static final Logger LOG = LoggerFactory.getLogger(GameScheduler.class);
+  private static final Logger LOG = LoggerFactory.getLogger(GameMovementScheduler.class);
 
   private final GameRoomRegistry gameRoomRegistry;
 

@@ -14,7 +14,6 @@ import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.Vector;
 import com.beverly.hills.money.gang.proto.WeaponType;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -98,7 +97,7 @@ public class ConcurrentKillTest extends AbstractGameServerTest {
           gameConnection.write(PushGameEventCommand.newBuilder()
               .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
               .setPlayerId(mySpawn.getPlayer().getPlayerId())
-              .setMatchId(0).setGameId(0)
+              .setGameId(0)
               .setEventType(GameEventType.ATTACK)
               .setWeaponType(WeaponType.SHOTGUN)
               .setDirection(

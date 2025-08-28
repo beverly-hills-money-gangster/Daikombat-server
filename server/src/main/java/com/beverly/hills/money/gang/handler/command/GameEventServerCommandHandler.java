@@ -45,33 +45,32 @@ public class GameEventServerCommandHandler extends ServerCommandHandler {
     return gameCommand.hasGameId()
         && gameCommand.hasPlayerId()
         && (gameCommand.hasPosition() && gameCommand.hasDirection() && gameCommand.hasEventType())
-        && gameCommand.hasSequence() && gameCommand.hasPingMls()
-        && gameCommand.hasMatchId();
+        && gameCommand.hasSequence() && gameCommand.hasPingMls();
   }
 
   @Override
   protected void handleInternal(ServerCommand msg, Channel currentChannel) throws GameLogicError {
     Game game = gameRoomRegistry.getGame(msg.getGameCommand().getGameId());
     PushGameEventCommand gameCommand = msg.getGameCommand();
-    if (!game.isCurrentMatch(gameCommand.getMatchId())) {
-      LOG.warn("Wrong match id {}. Ignore command", gameCommand.getMatchId());
-      return;
-    }
-    gameRoomRegistry.getJoinedPlayer(
-        gameCommand.getGameId(),
-        currentChannel, gameCommand.getPlayerId()).ifPresent(
-        playerStateChannel -> playerStateChannel.executeInPrimaryEventLoop(() -> {
-          try {
-            handleGameEvents(game, msg.getGameCommand(), playerStateChannel);
-          } catch (GameLogicError e) {
-            LOG.error("Game logic error", e);
-            currentChannel.writeAndFlush(createErrorEvent(e))
-                .addListener(ChannelFutureListener.CLOSE);
-          } catch (Exception e) {
-            LOG.error("Exception occurred", e);
-            currentChannel.close();
-          }
-        }));
+
+    gameRoomRegistry.getActivePlayer(
+            gameCommand.getGameId(),
+            currentChannel, gameCommand.getPlayerId())
+        .filter(playerStateChannel ->
+            playerStateChannel.getPlayerState().getMatchId() == game.getMatchId())
+        .ifPresent(
+            playerStateChannel -> playerStateChannel.executeInPrimaryEventLoop(() -> {
+              try {
+                handleGameEvents(game, msg.getGameCommand(), playerStateChannel);
+              } catch (GameLogicError e) {
+                LOG.error("Game logic error", e);
+                currentChannel.writeAndFlush(createErrorEvent(e))
+                    .addListener(ChannelFutureListener.CLOSE);
+              } catch (Exception e) {
+                LOG.error("Exception occurred", e);
+                currentChannel.close();
+              }
+            }));
 
   }
 

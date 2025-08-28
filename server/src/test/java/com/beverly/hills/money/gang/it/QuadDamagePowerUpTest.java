@@ -85,7 +85,7 @@ public class QuadDamagePowerUpTest extends AbstractGameServerTest {
     playerConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(playerId)
         .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-        .setMatchId(0).setGameId(gameIdToConnectTo)
+       .setGameId(gameIdToConnectTo)
         .setPosition(Vector.newBuilder()
             .setX(playerSpawnEvent.getPlayer().getPosition().getX())
             .setY(playerSpawnEvent.getPlayer().getPosition().getY())

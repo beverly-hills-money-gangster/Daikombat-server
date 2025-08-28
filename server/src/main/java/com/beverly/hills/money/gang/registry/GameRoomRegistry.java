@@ -6,6 +6,7 @@ import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerStateChannel;
+import com.beverly.hills.money.gang.state.entity.PlayerActivityStatus;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
 import io.netty.channel.Channel;
 import java.io.Closeable;
@@ -34,8 +35,16 @@ public class GameRoomRegistry implements Closeable {
   public Stream<Game> getGames() {
     return games.values().stream();
   }
+  
+  public Optional<PlayerStateChannel> getActivePlayer(
+      final int gameId, final Channel channel, final int playerId) {
+    return getPlayer(gameId, channel, playerId).filter(
+        playerStateChannel -> playerStateChannel.getPlayerState().getActivityStatus()
+            == PlayerActivityStatus.ACTIVE);
+  }
 
-  public Optional<PlayerStateChannel> getJoinedPlayer(int gameId, Channel channel, int playerId) {
+
+  public Optional<PlayerStateChannel> getPlayer(int gameId, Channel channel, int playerId) {
     return Optional.ofNullable(games.get(gameId))
         .flatMap(game -> game.getPlayersRegistry().findPlayer(channel, playerId));
   }
@@ -44,7 +53,7 @@ public class GameRoomRegistry implements Closeable {
     boolean playerFound = false;
     for (Game game : games.values()) {
       var playerToRemove = game.getPlayersRegistry()
-          .allPlayers()
+          .allPlayers().stream()
           .filter(playerStateChannel -> playerStateChannel.isOurChannel(channel))
           .findFirst();
       if (playerToRemove.isPresent()) {

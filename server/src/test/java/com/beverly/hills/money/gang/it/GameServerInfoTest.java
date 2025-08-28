@@ -1,9 +1,11 @@
 package com.beverly.hills.money.gang.it;
 
+import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createPlayerClass;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.beverly.hills.money.gang.cheat.AntiCheat;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.network.GameConnection;
@@ -15,9 +17,12 @@ import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.state.GameProjectileType;
 import com.beverly.hills.money.gang.state.GameWeaponType;
+import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
 import java.io.IOException;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -39,12 +44,15 @@ public class GameServerInfoTest extends AbstractGameServerTest {
    * @when player 1 requests server info
    * @then player 1 gets server info for all games
    */
-  @Test
-  public void testGetServerInfo() throws IOException, GameLogicError {
+  @ParameterizedTest
+  @EnumSource(RPGPlayerClass.class)
+  public void testGetServerInfo(final RPGPlayerClass playerClass)
+      throws IOException, GameLogicError {
+    var protoClass = createPlayerClass(playerClass);
     GameConnection gameConnection = createGameConnection("localhost", port);
 
     gameConnection.write(GetServerInfoCommand.newBuilder()
-        .setPlayerClass(PlayerClass.WARRIOR).build());
+        .setPlayerClass(protoClass).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
     assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
     assertEquals(1, gameConnection.getResponse().size(), "Should be exactly one response");
@@ -60,13 +68,13 @@ public class GameServerInfoTest extends AbstractGameServerTest {
       var game = gameRoomRegistry.getGame(gameInfo.getGameId());
       assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, gameInfo.getMaxGamePlayers());
       assertEquals(0, gameInfo.getPlayersOnline(), "Should be no connected players yet");
-      assertEquals(0, gameInfo.getMatchId());
       assertEquals("classic", gameInfo.getMapMetadata().getName());
-      assertEquals(GameWeaponType.values().length, gameInfo.getWeaponsInfoList().size(),
+      assertEquals(playerClass.getWeapons().size(), gameInfo.getWeaponsInfoList().size(),
           "All attack weapons should have info");
       assertEquals(GameProjectileType.values().length, gameInfo.getProjectileInfoList().size(),
           "All attack projectiles should have info");
-      assertEquals(game.getGameConfig().getPlayerSpeed(), gameInfo.getPlayerSpeed());
+      assertEquals(AntiCheat.getMaxSpeed(playerClass, game.getGameConfig()),
+          gameInfo.getPlayerSpeed());
       assertEquals(game.getGameConfig().getMaxVisibility(), gameInfo.getMaxVisibility());
     }
     assertEquals(1, gameConnection.getGameNetworkStats().getReceivedMessages());
@@ -119,7 +127,6 @@ public class GameServerInfoTest extends AbstractGameServerTest {
       } else {
         assertEquals(0, gameInfo.getPlayersOnline(), "Should be no connected players yet");
       }
-      assertEquals(0, gameInfo.getMatchId());
       assertEquals(GameWeaponType.values().length, gameInfo.getWeaponsInfoList().size(),
           "All attack weapons should have info");
       gameInfo.getWeaponsInfoList().forEach(weaponInfo -> {

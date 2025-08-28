@@ -36,8 +36,8 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 @SetEnvironmentVariable(key = "GAME_SERVER_SPAWN_IMMORTAL_MLS", value = "0")
 @SetEnvironmentVariable(key = "GAME_SERVER_BLACKLISTED_WORDS",
     value = "leonardo, raphael, donatello, michelangelo")
+@SetEnvironmentVariable(key = "GAME_SERVER_GAMES_TO_CREATE", value = "2")
 public class ChatEventTest extends AbstractGameServerTest {
-
 
   /**
    * @given a running game server
@@ -140,6 +140,61 @@ public class ChatEventTest extends AbstractGameServerTest {
         assertEquals("Message from player id " + chatEvent.getPlayerId(), chatEvent.getMessage());
       });
     });
+  }
+
+  /**
+   * @given a running game server with 2 players connected to 2 different games
+   * @when both players send a chat message
+   * @then none of them get it because you can only see messages from YOUR game
+   */
+  @Test
+  public void testChatDifferentGame() throws IOException, InterruptedException {
+
+    GameConnection gameConnectionPlayer1 = createGameConnection("localhost",
+        port);
+    gameConnectionPlayer1.write(
+        JoinGameCommand.newBuilder()
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.WARRIOR)
+            .setPlayerName("player")
+            .setGameId(0).build());
+    waitUntilGetResponses(gameConnectionPlayer1.getResponse(), 1);
+
+    ServerResponse player1Spawn = gameConnectionPlayer1.getResponse().poll().get();
+    int player1Id = player1Spawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
+
+    GameConnection gameConnectionPlayer2 = createGameConnection("localhost",
+        port);
+    gameConnectionPlayer2.write(
+        JoinGameCommand.newBuilder()
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.WARRIOR)
+            .setPlayerName("player")
+            .setGameId(1).build()); // diff game
+    waitUntilGetResponses(gameConnectionPlayer2.getResponse(), 1);
+
+    ServerResponse player2Spawn = gameConnectionPlayer2.getResponse().poll().get();
+    int player2Id = player2Spawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
+
+    Thread.sleep(2_500);
+
+    gameConnectionPlayer1.write(PushChatEventCommand.newBuilder()
+        .setGameId(0)
+        .setPlayerId(player1Id)
+        .setMessage("Test message").build());
+
+    gameConnectionPlayer2.write(PushChatEventCommand.newBuilder()
+        .setGameId(1)
+        .setPlayerId(player2Id)
+        .setMessage("Test message").build());
+
+    Thread.sleep(2_500);
+
+    assertEquals(0, gameConnectionPlayer1.getResponse().size(),
+        "Nobody gets any messages because players are from different games");
+
+    assertEquals(0, gameConnectionPlayer2.getResponse().size(),
+        "Nobody gets any messages because players are from different games");
   }
 
   /**

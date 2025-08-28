@@ -3,6 +3,7 @@ package com.beverly.hills.money.gang.handler.command.event;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createCoordinates;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createPowerUpPlayerServerResponse;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createPowerUpSpawn;
+import static com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType.BEAST_POWER_UP;
 import static com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType.BIG_AMMO_POWER_UP;
 import static com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType.DEFENCE_POWER_UP;
 import static com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType.HEALTH_POWER_UP;
@@ -36,7 +37,7 @@ public class PowerUpPickGameEventHandler implements GameEventHandler {
   private final Set<GameEventType> eventTypes = Set.of(
       QUAD_DAMAGE_POWER_UP, INVISIBILITY_POWER_UP,
       DEFENCE_POWER_UP, HEALTH_POWER_UP,
-      BIG_AMMO_POWER_UP, MEDIUM_AMMO_POWER_UP);
+      BIG_AMMO_POWER_UP, MEDIUM_AMMO_POWER_UP, BEAST_POWER_UP);
 
   @Override
   public void handle(Game game, PushGameEventCommand gameCommand) {
@@ -49,7 +50,7 @@ public class PowerUpPickGameEventHandler implements GameEventHandler {
       return;
     }
     var serverResponse = createPowerUpPlayerServerResponse(result.getPlayerState());
-    game.getPlayersRegistry().allJoinedPlayers()
+    game.getPlayersRegistry().allActivePlayers()
         .forEach(stateChannel -> stateChannel.writeFlushPrimaryChannel(serverResponse));
     scheduler.schedule(result.getPowerUp().getLastsForMls(), () -> {
       if (!result.getPlayerState().isDead()) {
@@ -68,7 +69,7 @@ public class PowerUpPickGameEventHandler implements GameEventHandler {
       }
       // TODO object can be reused
       ServerResponse serverResponse = createPowerUpSpawn(powerUp);
-      game.getPlayersRegistry().allJoinedPlayers().forEach(
+      game.getPlayersRegistry().allActivePlayers().forEach(
           playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(serverResponse));
     });
   }
@@ -81,6 +82,7 @@ public class PowerUpPickGameEventHandler implements GameEventHandler {
       case HEALTH_POWER_UP -> PowerUpType.HEALTH;
       case BIG_AMMO_POWER_UP -> PowerUpType.BIG_AMMO;
       case MEDIUM_AMMO_POWER_UP -> PowerUpType.MEDIUM_AMMO;
+      case BEAST_POWER_UP -> PowerUpType.BEAST;
       default -> throw new IllegalArgumentException("Not-supported power-up " + gameEventType);
     };
   }

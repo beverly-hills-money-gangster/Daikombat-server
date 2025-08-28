@@ -55,7 +55,6 @@ message MergeConnectionCommand {
 message RespawnCommand {
   optional int32 gameId = 1;
   optional int32 playerId = 2;
-  optional int32 matchId = 3;
 }
 
 message PushGameEventCommand {
@@ -70,7 +69,6 @@ message PushGameEventCommand {
   optional int32 teleportId = 9;
   optional WeaponType weaponType = 10;
   optional ProjectileStats projectile = 11;
-  optional int32 matchId = 12;
 
   enum GameEventType {
     MOVE = 0;
@@ -82,5 +80,6 @@ message PushGameEventCommand {
     HEALTH_POWER_UP = 6;
     BIG_AMMO_POWER_UP = 7;
     MEDIUM_AMMO_POWER_UP = 8;
+    BEAST_POWER_UP = 9;
   }
 }

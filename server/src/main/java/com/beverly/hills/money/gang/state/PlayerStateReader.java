@@ -1,6 +1,7 @@
 package com.beverly.hills.money.gang.state;
 
 import com.beverly.hills.money.gang.state.entity.AmmoStorageReader;
+import com.beverly.hills.money.gang.state.entity.PlayerActivityStatus;
 import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.PlayerState.PowerUpInEffect;
 import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
@@ -11,11 +12,13 @@ public interface PlayerStateReader {
 
   List<PowerUpInEffect> getActivePowerUps();
 
+  int getMatchId();
+
   Coordinates getCoordinates();
 
   PlayerStateColor getColor();
 
-  boolean isFullyJoined();
+  PlayerActivityStatus getActivityStatus();
 
   int getNextEventId();
 

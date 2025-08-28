@@ -29,15 +29,4 @@ public interface RespawnCommandOrBuilder extends
    * @return The playerId.
    */
   int getPlayerId();
-
-  /**
-   * <code>optional int32 matchId = 3;</code>
-   * @return Whether the matchId field is set.
-   */
-  boolean hasMatchId();
-  /**
-   * <code>optional int32 matchId = 3;</code>
-   * @return The matchId.
-   */
-  int getMatchId();
 }

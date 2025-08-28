@@ -93,12 +93,13 @@ public class AllPowerUpTest extends AbstractGameServerTest {
         GameEventType.QUAD_DAMAGE_POWER_UP,
         GameEventType.BIG_AMMO_POWER_UP,
         GameEventType.HEALTH_POWER_UP,
-        GameEventType.MEDIUM_AMMO_POWER_UP);
+        GameEventType.MEDIUM_AMMO_POWER_UP,
+        GameEventType.BEAST_POWER_UP);
 
     powerUpsToPick.forEach(gameEventType -> playerConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(playerId)
         .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-        .setMatchId(0).setGameId(gameIdToConnectTo)
+       .setGameId(gameIdToConnectTo)
         .setPosition(Vector.newBuilder()
             .setX(playerSpawnEvent.getPlayer().getPosition().getX())
             .setY(playerSpawnEvent.getPlayer().getPosition().getY())

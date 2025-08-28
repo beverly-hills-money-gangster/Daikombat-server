@@ -1,5 +1,6 @@
 package com.beverly.hills.money.gang.factory.response;
 
+import com.beverly.hills.money.gang.cheat.AntiCheat;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.powerup.PowerUp;
@@ -165,7 +166,6 @@ public interface ServerResponseFactory {
     serverInfo.setFragsToWin(ServerConfig.FRAGS_PER_GAME);
     serverInfo.setMovesUpdateFreqMls(ServerConfig.MOVES_UPDATE_FREQUENCY_MLS);
     serverInfo.setVersion(ServerConfig.VERSION);
-
     games.forEach(game -> {
       var rpgWeaponInfo = game.getRpgWeaponInfo();
       var weaponsInfo = rpgWeaponInfo.getWeaponsInfo(playerClass);
@@ -181,9 +181,8 @@ public interface ServerResponseFactory {
                   .setName(game.getGameMapMetadata().getName())
                   .setHash(game.getGameMapMetadata().getHash())
                   .build())
-              .setMatchId(game.matchId())
               .setMaxVisibility(game.getGameConfig().getMaxVisibility())
-              .setPlayerSpeed(game.getGameConfig().getPlayerSpeed())
+              .setPlayerSpeed(AntiCheat.getMaxSpeed(playerClass, game.getGameConfig()))
               .addAllWeaponsInfo(weaponsInfo.stream().map(gameWeaponInfo -> {
                 var builder = WeaponInfo.newBuilder()
                     .setWeaponType(getWeaponType(gameWeaponInfo.getGameWeaponType()))
@@ -329,6 +328,7 @@ public interface ServerResponseFactory {
       case HEALTH -> GamePowerUpType.HEALTH;
       case BIG_AMMO -> GamePowerUpType.BIG_AMMO;
       case MEDIUM_AMMO -> GamePowerUpType.MEDIUM_AMMO;
+      case BEAST -> GamePowerUpType.BEAST;
     };
   }
 

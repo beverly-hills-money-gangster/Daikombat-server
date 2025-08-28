@@ -51,7 +51,7 @@ Game server can be configured using the following environment variables:
 - `GAME_SERVER_DEFAULT_RAILGUN_DAMAGE` Railgun damage. Default - `75`.
 - `GAME_SERVER_DEFAULT_PUNCH_DAMAGE` Punch damage. Default - `50`.
 - `GAME_SERVER_DEFAULT_ROCKET_DAMAGE` Rocket damage. Default - `75`.
-- `GAME_SERVER_DEFAULT_MINIGUN_DAMAGE` Minigun damage. Default - `5`.
+- `GAME_SERVER_DEFAULT_MINIGUN_DAMAGE` Minigun damage. Default - `7`.
 - `GAME_SERVER_DEFAULT_PLASMA_DAMAGE` Plasma damage. Default - `10`.
 - `GAME_SERVER_FAST_TCP` Enables fast TCP configurations(used mostly for testing, not recommended to
   be set to `false` in prod). Default - `true`.
@@ -61,7 +61,7 @@ Game server can be configured using the following environment variables:
 - `GAME_SERVER_QUAD_DAMAGE_SPAWN_MLS` Time (in millisecond) it takes to spawn a quad damage power-up
   orb. Default - `45_000`.
 - `GAME_SERVER_QUAD_DAMAGE_LASTS_FOR_MLS` Time (in millisecond) quad damage lasts for.
-  Default - `10_000`.
+  Default - `15_000`.
 - `GAME_SERVER_DEFENCE_SPAWN_MLS` Time (in millisecond) it takes to spawn a defence power-up orb.
   Default - `35_000`.
 - `GAME_SERVER_DEFENCE_LASTS_FOR_MLS` Time (in millisecond) defence lasts for. Default - `10_000`.
@@ -86,10 +86,13 @@ Game server can be configured using the following environment variables:
 - `GAME_SERVER_RAILGUN_DELAY_MLS` Railgun attack delay(in milliseconds). Default - `1_700`
 - `GAME_SERVER_MINIGUN_DELAY_MLS` Minigun attack delay(in milliseconds). Default - `155`
 - `GAME_SERVER_SHOTGUN_MAX_AMMO` Shotgun max ammo. Default - `20`
-- `GAME_SERVER_RAILGUN_MAX_AMMO` Railgun max ammo. Default - `10`
-- `GAME_SERVER_MINIGUN_MAX_AMMO` Minigun max ammo. Default - `70`
-- `GAME_SERVER_PLASMAGUN_MAX_AMMO` Plasmagun max ammo. Default - `35`
-- `GAME_SERVER_ROCKET_LAUNCHER_MAX_AMMO` Rocket launcher max ammo. Default - `5`
+- `GAME_SERVER_RAILGUN_MAX_AMMO` Railgun max ammo. Default - `15`
+- `GAME_SERVER_MINIGUN_MAX_AMMO` Minigun max ammo. Default - `100`
+- `GAME_SERVER_PLASMAGUN_MAX_AMMO` Plasmagun max ammo. Default - `50`
+- `GAME_SERVER_ROCKET_LAUNCHER_MAX_AMMO` Rocket launcher max ammo. Default - `10`
+- `GAME_SERVER_BEAST_SPAWN_MLS` Time (in millisecond) it takes to spawn a beast power-up
+  orb. Default - `60_000`.
+- `GAME_SERVER_BEAST_LASTS_FOR_MLS` Time (in millisecond) defence lasts for. Default - `25_000`.
 - `SENTRY_DSN` Sentry DSN. Not specified by default.
 
 Some environment variables can be overridden for a specific game room. The format

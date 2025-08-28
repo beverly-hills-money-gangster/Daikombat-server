@@ -33,7 +33,7 @@ public class SpawnerTest {
 
   private final Map<String, ExpectedMapValues> EXPECTED = Map.of(
       "classic", ExpectedMapValues
-          .builder().teleports(4).spawns(12).powerUps(6).build(),
+          .builder().teleports(7).spawns(12).powerUps(7).build(),
       "crazy", ExpectedMapValues
           .builder().teleports(4).spawns(4).powerUps(6).build(),
       "horror", ExpectedMapValues
@@ -48,11 +48,11 @@ public class SpawnerTest {
       String mapName = expectedMapValues.getKey();
       Spawner spawner = new Spawner(
           mapRegistry.getMap(expectedMapValues.getKey()).orElseThrow().getMapData());
-      assertEquals(spawner.getPowerUps().size(), expectedMapValues.getValue().powerUps,
+      assertEquals(expectedMapValues.getValue().powerUps, spawner.getPowerUps().size(),
           "Power-ups mismatch in map " + mapName);
-      assertEquals(spawner.getTeleports().size(), expectedMapValues.getValue().teleports,
+      assertEquals(expectedMapValues.getValue().teleports, spawner.getTeleports().size(),
           "Teleports mismatch in map " + mapName);
-      assertEquals(spawner.getPlayerSpawns().size(), expectedMapValues.getValue().spawns,
+      assertEquals(expectedMapValues.getValue().spawns, spawner.getPlayerSpawns().size(),
           "Spawns mismatch in map " + mapName);
     }
   }

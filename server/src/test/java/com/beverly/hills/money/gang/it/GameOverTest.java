@@ -7,11 +7,14 @@ import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PlayerSkinColor;
+import com.beverly.hills.money.gang.proto.PushChatEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType;
 import com.beverly.hills.money.gang.proto.Vector;
 import com.beverly.hills.money.gang.proto.WeaponType;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -49,10 +52,11 @@ public class GameOverTest extends AbstractGameServerTest {
     ServerResponse shooterPlayerSpawn = killerConnection.getResponse().poll().get();
     int shooterPlayerId = shooterPlayerSpawn.getGameEvents().getEvents(0).getPlayer()
         .getPlayerId();
-
+    List<GameConnection> deadPlayerConnections = new ArrayList<>();
     for (int i = 0; i < deadConnectionsToCreate; i++) {
       GameConnection deadConnection = createGameConnection("localhost",
           port);
+      deadPlayerConnections.add(deadConnection);
       deadConnection.write(
           JoinGameCommand.newBuilder()
               .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
@@ -76,7 +80,7 @@ public class GameOverTest extends AbstractGameServerTest {
       killerConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(shooterPlayerId)
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-          .setMatchId(0).setGameId(gameIdToConnectTo)
+          .setGameId(gameIdToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.ATTACK)
           .setWeaponType(WeaponType.SHOTGUN)
           .setDirection(
@@ -126,6 +130,49 @@ public class GameOverTest extends AbstractGameServerTest {
         assertEquals(PlayerSkinColor.GREEN,
             gameOverResponse.getGameOver().getLeaderBoard().getItems(i).getSkinColor());
       }
+    });
+
+    Thread.sleep(2_500);
+
+    GameConnection newGameConnection = createGameConnection("localhost", port);
+    newGameConnection.write(
+        JoinGameCommand.newBuilder()
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.WARRIOR)
+            .setPlayerName("new game connection")
+            .setGameId(gameIdToConnectTo).build());
+    waitUntilGetResponses(newGameConnection.getResponse(), 1);
+
+    var newPlayerSpawn = newGameConnection.getResponse().poll().get();
+    int newPlayerId = newPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
+
+    gameConnections.forEach(gameConnection -> emptyQueue(gameConnection.getResponse()));
+
+    killerConnection.write(PushChatEventCommand.newBuilder()
+        .setGameId(0)
+        .setPlayerId(shooterPlayerId)
+        .setMessage("Good game").build());
+
+    // game over players should be able to communicate still
+    deadPlayerConnections.forEach(gameConnection -> {
+      waitUntilQueueNonEmpty(gameConnection.getResponse());
+      var chatEvent = gameConnection.getResponse().poll().get().getChatEvents();
+      assertEquals(shooterPlayerId, chatEvent.getPlayerId());
+      assertEquals("Good game", chatEvent.getMessage());
+    });
+    Thread.sleep(2_500);
+    assertEquals(0, newGameConnection.getResponse().size(),
+        "New player doesn't get any chat messages because he joined a different match");
+
+    newGameConnection.write(PushChatEventCommand.newBuilder()
+        .setGameId(0)
+        .setPlayerId(newPlayerId)
+        .setMessage("Hello guys").build());
+    Thread.sleep(2_500);
+
+    deadPlayerConnections.forEach(gameConnection -> {
+      assertEquals(0, gameConnection.getResponse().size(),
+          "Nobody should get a new player's message because it was coming from a different match");
     });
   }
 }

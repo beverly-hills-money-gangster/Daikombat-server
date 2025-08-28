@@ -21,6 +21,7 @@ import com.beverly.hills.money.gang.spawner.factory.AbstractTeleportRegistryFact
 import com.beverly.hills.money.gang.spawner.map.GameMapMetadata;
 import com.beverly.hills.money.gang.state.entity.GameLeaderBoardItem;
 import com.beverly.hills.money.gang.state.entity.GameOverGameState;
+import com.beverly.hills.money.gang.state.entity.PlayerActivityStatus;
 import com.beverly.hills.money.gang.state.entity.PlayerAttackingGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerJoinedGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerPowerUpGameState;
@@ -37,7 +38,9 @@ import java.io.Closeable;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -131,8 +134,8 @@ public class Game implements Closeable, GameReader {
       Integer recoveryPlayerId,
       RPGPlayerClass rpgPlayerClass) throws GameLogicError {
     int playerId = playerSequenceGenerator.getNext();
-    Coordinates spawn = spawner.getPlayerSpawn(getPlayersRegistry().allPlayers()
-        .map(PlayerStateChannel::getPlayerState).collect(Collectors.toList()));
+    Coordinates spawn = spawner.getPlayerSpawn(getPlayersRegistry().allActivePlayers()
+        .stream().map(PlayerStateChannel::getPlayerState).collect(Collectors.toList()));
     PlayerState connectedPlayerState = new PlayerState(
         playerName, spawn, playerId, color, rpgPlayerClass, this);
     // recover game stats if we can
@@ -150,16 +153,20 @@ public class Game implements Closeable, GameReader {
         .playerStateChannel(playerStateChannel).build();
   }
 
+  @Nullable
   public PlayerRespawnedGameState respawnPlayer(final int playerId) throws GameLogicError {
     var player = playersRegistry.findPlayer(playerId)
         .orElseThrow(
             () -> new GameLogicError("Player doesn't exist", GameErrorCode.PLAYER_DOES_NOT_EXIST));
     if (!player.getPlayerState().isDead()) {
       throw new GameLogicError("Can't respawn live player", GameErrorCode.COMMON_ERROR);
+    } else if (player.getPlayerState().getMatchId() != getMatchId()) {
+      LOG.warn("Can't respawn player from old match id");
+      return null;
     }
     LOG.debug("Respawn player {}", playerId);
-    player.getPlayerState().respawn(spawner.getPlayerSpawn(getPlayersRegistry().allPlayers()
-        .map(PlayerStateChannel::getPlayerState).collect(Collectors.toList())));
+    player.getPlayerState().respawn(spawner.getPlayerSpawn(getPlayersRegistry().allActivePlayers()
+        .stream().map(PlayerStateChannel::getPlayerState).collect(Collectors.toList())));
     return PlayerRespawnedGameState.builder()
         .spawnedPowerUps(powerUpRegistry.getAvailable())
         .teleports(teleportRegistry.getAllTeleports())
@@ -211,6 +218,9 @@ public class Game implements Closeable, GameReader {
     if (attackingPlayerState == null) {
       LOG.warn("Non-existing player can't attack");
       return null;
+    } else if (!attackingPlayerState.getRpgPlayerClass().getWeapons().contains(weaponType)) {
+      LOG.warn("Not supported weapon type for player class");
+      return null;
     } else if (!attackingPlayerState.wasteAmmo(weaponType)) {
       LOG.warn("Player wasted all ammo");
       return null;
@@ -233,6 +243,8 @@ public class Game implements Closeable, GameReader {
       final GameProjectileType projectileType,
       final int eventSequence,
       final int pingMls) {
+    // TODO check related weapon ammo
+    // TODO check trajectory
     return attack(
         playerCoordinates,
         attackPosition,
@@ -296,8 +308,12 @@ public class Game implements Closeable, GameReader {
       gameOverState = GameOverGameState.builder().leaderBoardItems(getLeaderBoard()).build();
       // clearing all stats because the game is over
       playerStatsRecoveryRegistry.clearAllStats();
-      playersRegistry.allJoinedPlayers().forEach(
+      var allActivePlayers = playersRegistry.allActivePlayers();
+      allActivePlayers.forEach(
           playerStateChannel -> playerStateChannel.getPlayerState().clearStats());
+      // it's important that we get leaderboard before marking all players as 'GAME_OVER'
+      playersRegistry.allPlayers().forEach(playerStateChannel -> playerStateChannel.getPlayerState()
+          .setStatus(PlayerActivityStatus.GAME_OVER));
       matchId.incrementAndGet();
     }
     return PlayerAttackingGameState.builder()
@@ -308,7 +324,11 @@ public class Game implements Closeable, GameReader {
   }
 
   protected List<GameLeaderBoardItem> getLeaderBoard() {
-    return playersRegistry.allPlayers()
+    return playersRegistry.allPlayers().stream().filter(
+            playerStateChannel -> playerStateChannel.getPlayerState().getActivityStatus()
+                != PlayerActivityStatus.GAME_OVER)
+        .filter(playerStateChannel -> playerStateChannel.getPlayerState().getMatchId()
+                == matchId.get())
         .sorted((player1, player2) -> {
           int killsCompare = -Integer.compare(
               player1.getPlayerState().getGameStats().getKills(),
@@ -340,14 +360,14 @@ public class Game implements Closeable, GameReader {
   }
 
   public List<PlayerStateReader> getBufferedMoves() {
-    return playersRegistry.allJoinedPlayers().map(PlayerStateChannel::getPlayerState)
+    return playersRegistry.allActivePlayers().stream().map(PlayerStateChannel::getPlayerState)
         .filter(PlayerState::hasMoved)
         .collect(Collectors.toList());
   }
 
 
   public void flushBufferedMoves() {
-    playersRegistry.allPlayers().map(PlayerStateChannel::getPlayerState)
+    playersRegistry.allActivePlayers().stream().map(PlayerStateChannel::getPlayerState)
         .forEach(PlayerState::flushMove);
   }
 
@@ -382,7 +402,7 @@ public class Game implements Closeable, GameReader {
   public Optional<PlayerStateReader> getPlayerWithinDamageRadius(
       final Vector projectileBoomPosition,
       final double radius) {
-    return playersRegistry.allJoinedPlayers()
+    return playersRegistry.allActivePlayers().stream()
         .filter(playerStateChannel -> !playerStateChannel.getPlayerState().isDead())
         .map(player -> Pair.of(
             Vector.getDistance(player.getPlayerState().getCoordinates().getPosition(),
@@ -449,7 +469,7 @@ public class Game implements Closeable, GameReader {
   }
 
   @Override
-  public int matchId() {
+  public int getMatchId() {
     return matchId.get();
   }
 }

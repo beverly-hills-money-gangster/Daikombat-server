@@ -45,17 +45,15 @@ public class ChatServerCommandHandler extends ServerCommandHandler {
       return;
     }
     Game game = gameRoomRegistry.getGame(chatCommand.getGameId());
-    gameRoomRegistry.getJoinedPlayer(
+    gameRoomRegistry.getPlayer(
             chatCommand.getGameId(), currentChannel, chatCommand.getPlayerId())
-        .ifPresent(playerStateReader -> {
+        .ifPresent(sender -> {
           var chatMsgToSend = createChatEvent(
               chatCommand.getMessage(),
-              playerStateReader.getPlayerState().getPlayerId(),
-              playerStateReader.getPlayerState().getPlayerName(),
+              sender.getPlayerState().getPlayerId(),
+              sender.getPlayerState().getPlayerName(),
               chatCommand.hasTaunt() ? chatCommand.getTaunt() : null);
-          game.getPlayersRegistry().allJoinedPlayers()
-              .filter(
-                  playerStateChannel -> !playerStateChannel.isOurChannel(currentChannel))
+          game.getPlayersRegistry().allChatablePlayers(sender.getPlayerState().getPlayerId())
               .forEach(playerChannel -> playerChannel.writeFlushPrimaryChannel(chatMsgToSend));
         });
   }

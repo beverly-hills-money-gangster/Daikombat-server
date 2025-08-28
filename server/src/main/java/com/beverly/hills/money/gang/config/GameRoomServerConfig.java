@@ -33,19 +33,19 @@ public class GameRoomServerConfig {
     private final int shotgunMaxAmmo = NumberUtils.toInt(
         getRoomEnv("GAME_SERVER_SHOTGUN_MAX_AMMO"), 20);
     private final int railgunMaxAmmo = NumberUtils.toInt(
-        getRoomEnv("GAME_SERVER_RAILGUN_MAX_AMMO"), 10);
+        getRoomEnv("GAME_SERVER_RAILGUN_MAX_AMMO"), 15);
     private final int defaultRailgunDamage = NumberUtils.toInt(
         getRoomEnv("GAME_SERVER_DEFAULT_RAILGUN_DAMAGE"), 75);
     private final int minigunMaxAmmo = NumberUtils.toInt(
-        getRoomEnv("GAME_SERVER_MINIGUN_MAX_AMMO"), 70);
+        getRoomEnv("GAME_SERVER_MINIGUN_MAX_AMMO"), 100);
     private final int defaultMinigunDamage = NumberUtils.toInt(
-        getRoomEnv("GAME_SERVER_DEFAULT_MINIGUN_DAMAGE"), 5);
+        getRoomEnv("GAME_SERVER_DEFAULT_MINIGUN_DAMAGE"), 7);
     private final int plasmagunMaxAmmo = NumberUtils.toInt(
-        getRoomEnv("GAME_SERVER_PLASMAGUN_MAX_AMMO"), 35);
+        getRoomEnv("GAME_SERVER_PLASMAGUN_MAX_AMMO"), 50);
     private final int defaultPlasmaDamage = NumberUtils.toInt(
         getRoomEnv("GAME_SERVER_DEFAULT_PLASMA_DAMAGE"), 10);
     private final int rocketLauncherMaxAmmo = NumberUtils.toInt(
-        getRoomEnv("GAME_SERVER_ROCKET_LAUNCHER_MAX_AMMO"), 5);
+        getRoomEnv("GAME_SERVER_ROCKET_LAUNCHER_MAX_AMMO"), 10);
     private final int defaultRocketDamage = NumberUtils.toInt(
         getRoomEnv("GAME_SERVER_DEFAULT_ROCKET_DAMAGE"), 75);
     private final int defaultPunchDamage = NumberUtils.toInt(

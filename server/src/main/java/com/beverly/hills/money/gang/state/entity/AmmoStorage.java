@@ -5,6 +5,7 @@ import com.beverly.hills.money.gang.state.GameWeaponType;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AmmoStorage implements AmmoStorageReader {
@@ -13,9 +14,17 @@ public class AmmoStorage implements AmmoStorageReader {
 
   private final GameReader gameReader;
 
-  public AmmoStorage(final GameReader gameReader) {
+  private final Set<GameWeaponType> availableWeapons;
+
+  public AmmoStorage(final GameReader gameReader, final RPGPlayerClass playerClass) {
     this.gameReader = gameReader;
+    this.availableWeapons = playerClass.getWeapons();
     for (GameWeaponType weaponType : GameWeaponType.values()) {
+      if (!availableWeapons.contains(weaponType)) {
+        // if weapon is not supported, then it's 0 ammo
+        storage.put(weaponType, new WeaponAmmo(0));
+        continue;
+      }
       Optional.ofNullable(weaponType.getDamageFactory().getDamage(gameReader).getMaxAmmo())
           .ifPresent(
               maxAmmo -> storage.put(weaponType, new WeaponAmmo(maxAmmo)));
@@ -24,6 +33,9 @@ public class AmmoStorage implements AmmoStorageReader {
 
   public void restore(final GameWeaponType weaponType, final float ratio) {
     if (ratio <= 0) {
+      return;
+    }
+    if (!availableWeapons.contains(weaponType)) {
       return;
     }
     Optional.ofNullable(storage.get(weaponType)).ifPresent(weaponAmmo -> {

@@ -31,8 +31,14 @@ public interface ServerConfig {
   int QUAD_DAMAGE_SPAWN_MLS = NumberUtils.toInt(
       System.getenv("GAME_SERVER_QUAD_DAMAGE_SPAWN_MLS"), 45_000);
 
+  int BEAST_SPAWN_MLS = NumberUtils.toInt(
+      System.getenv("GAME_SERVER_BEAST_SPAWN_MLS"), 60_000);
+
   int QUAD_DAMAGE_LASTS_FOR_MLS = NumberUtils.toInt(
-      System.getenv("GAME_SERVER_QUAD_DAMAGE_LASTS_FOR_MLS"), 10_000);
+      System.getenv("GAME_SERVER_QUAD_DAMAGE_LASTS_FOR_MLS"), 15_000);
+
+  int BEAST_LASTS_FOR_MLS = NumberUtils.toInt(
+      System.getenv("GAME_SERVER_BEAST_LASTS_FOR_MLS"), 25_000);
 
   int DEFENCE_SPAWN_MLS = NumberUtils.toInt(
       System.getenv("GAME_SERVER_DEFENCE_SPAWN_MLS"), 35_000);

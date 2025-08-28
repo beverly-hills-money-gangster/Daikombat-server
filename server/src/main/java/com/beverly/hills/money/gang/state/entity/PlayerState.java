@@ -14,6 +14,7 @@ import com.beverly.hills.money.gang.state.PlayerGameStatsReader;
 import com.beverly.hills.money.gang.state.PlayerRPGStatType;
 import com.beverly.hills.money.gang.state.PlayerRPGStats;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
+import com.beverly.hills.money.gang.util.ConcurrencyUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,8 @@ public class PlayerState implements PlayerStateReader {
 
   private static final Logger LOG = LoggerFactory.getLogger(PlayerState.class);
 
-  private final AtomicBoolean fullyJoined = new AtomicBoolean(false);
+  private final AtomicReference<PlayerActivityStatus>
+      status = new AtomicReference<>(PlayerActivityStatus.JOINING);
   @Getter
   private final PlayerRPGStats rpgStats;
   public static final int DEFAULT_VAMPIRE_HP_BOOST = 30;
@@ -50,22 +52,20 @@ public class PlayerState implements PlayerStateReader {
   private final AtomicLong immortalUntilMls = new AtomicLong();
   private final AtomicInteger lastReceivedEventSequence = new AtomicInteger(-1);
   private final AmmoStorage ammoStorage;
-
   @Getter
   private final PlayerStateColor color;
   private final Map<PowerUpType, PowerUpInEffect> powerUps = new ConcurrentHashMap<>();
-
   @Getter
   private final int playerId;
-
   @Getter
   private final float speed;
-
   @Getter
   private final String playerName;
   @Getter
   private final RPGPlayerClass rpgPlayerClass;
   private final AtomicReference<Coordinates> playerCoordinatesRef;
+  @Getter
+  private final int matchId;
 
   public PlayerState(
       String name, Coordinates coordinates, int id, PlayerStateColor color,
@@ -77,11 +77,15 @@ public class PlayerState implements PlayerStateReader {
     this.color = color;
     this.playerCoordinatesRef = new AtomicReference<>(coordinates);
     this.playerId = id;
-    defaultDamage();
-    defaultDefence();
     speed = AntiCheat.getMaxSpeed(rpgPlayerClass, gameReader.getGameConfig());
-    ammoStorage = new AmmoStorage(gameReader);
+    ammoStorage = new AmmoStorage(gameReader, rpgPlayerClass);
     initImmortality();
+    this.matchId = gameReader.getMatchId();
+  }
+
+  @Override
+  public PlayerActivityStatus getActivityStatus() {
+    return status.get();
   }
 
   private void initImmortality() {
@@ -111,12 +115,9 @@ public class PlayerState implements PlayerStateReader {
     pingMls.set(mls);
   }
 
-  public boolean isFullyJoined() {
-    return fullyJoined.get();
-  }
 
-  public void fullyJoined() {
-    fullyJoined.set(true);
+  public void setStatus(final PlayerActivityStatus status) {
+    this.status.set(status);
   }
 
   @Override
@@ -147,7 +148,7 @@ public class PlayerState implements PlayerStateReader {
   }
 
   public void restoreAllAmmo(float ratio) {
-    for (GameWeaponType weaponType : GameWeaponType.values()) {
+    for (GameWeaponType weaponType : rpgPlayerClass.getWeapons()) {
       ammoStorage.restore(weaponType, ratio);
     }
   }
@@ -156,23 +157,18 @@ public class PlayerState implements PlayerStateReader {
     return ammoStorage.wasteAmmo(gameWeaponType);
   }
 
-  public void quadDamage() {
-    damageAmplifier.set(4);
-  }
-
-  public void defaultDamage() {
-    damageAmplifier.set(1);
-  }
-
-  public void defaultDefence() {
-    defenceAmplifier.set(1);
-  }
-
-  public void setDefenceAmplifier(int ampl) {
-    if (ampl < 1) {
-      throw new IllegalArgumentException("Amplifier can't be negative");
+  public void amplifyDefence(double coefficient) {
+    if (coefficient < 0) {
+      throw new IllegalArgumentException("Coefficient can't be negative");
     }
-    defenceAmplifier.set(ampl);
+    ConcurrencyUtil.multiplyAtomic(defenceAmplifier, coefficient);
+  }
+
+  public void amplifyDamage(double coefficient) {
+    if (coefficient < 0) {
+      throw new IllegalArgumentException("Coefficient can't be negative");
+    }
+    ConcurrencyUtil.multiplyAtomic(damageAmplifier, coefficient);
   }
 
   public double getDamageAmplifier(

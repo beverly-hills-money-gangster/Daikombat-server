@@ -30,20 +30,20 @@ public class RespawnCommandHandler extends JoinGameServerCommandHandler {
   @Override
   protected boolean isValidCommand(ServerCommand msg, Channel currentChannel) {
     var respawnCommand = msg.getRespawnCommand();
-    return respawnCommand.hasGameId() && respawnCommand.hasPlayerId()
-        && respawnCommand.hasMatchId();
+    return respawnCommand.hasGameId() && respawnCommand.hasPlayerId();
   }
 
   @Override
   protected void handleInternal(ServerCommand msg, Channel currentChannel) throws GameLogicError {
     var respawnCommand = msg.getRespawnCommand();
     Game game = gameRoomRegistry.getGame(respawnCommand.getGameId());
-    if (!game.isCurrentMatch(respawnCommand.getMatchId())) {
-      LOG.warn("Wrong match id {}. Ignore command", respawnCommand.getMatchId());
-      return;
-    }
+
     PlayerRespawnedGameState playerRespawnedGameState = game.respawnPlayer(
         respawnCommand.getPlayerId());
+    if (playerRespawnedGameState == null) {
+      LOG.warn("Can't respawn. Ignore.");
+      return;
+    }
     ServerResponse playerSpawnEvent = createRespawnEventSinglePlayer(
         game.playersOnline(), playerRespawnedGameState);
 

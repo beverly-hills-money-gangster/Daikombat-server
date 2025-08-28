@@ -35,8 +35,7 @@ public class GameRoomRegistry implements Closeable {
   public Stream<Game> getGames() {
     return games.values().stream();
   }
-
-  // TODO rename getAllPlayingPlayer to getAllActivePlayers
+  
   public Optional<PlayerStateChannel> getActivePlayer(
       final int gameId, final Channel channel, final int playerId) {
     return getPlayer(gameId, channel, playerId).filter(

@@ -38,6 +38,7 @@ import java.io.Closeable;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import lombok.Getter;
@@ -326,6 +327,8 @@ public class Game implements Closeable, GameReader {
     return playersRegistry.allPlayers().stream().filter(
             playerStateChannel -> playerStateChannel.getPlayerState().getActivityStatus()
                 != PlayerActivityStatus.GAME_OVER)
+        .filter(playerStateChannel -> playerStateChannel.getPlayerState().getMatchId()
+                == matchId.get())
         .sorted((player1, player2) -> {
           int killsCompare = -Integer.compare(
               player1.getPlayerState().getGameStats().getKills(),

@@ -121,11 +121,7 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
       joinedPlayerStateChannel.writeFlushPrimaryChannel(allPlayersSpawnEvent);
     }
     sendMapItems(joinedPlayerStateChannel, spawnedPowerUps, teleports);
-    otherPlayers.stream().filter(
-            playerStateChannel
-                -> playerStateChannel.getPlayerState().getActivityStatus()
-                == PlayerActivityStatus.ACTIVE)
-        .forEach(playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(
+    otherPlayers.forEach(playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(
             playerSpawnEventToSendOtherPlayers));
 
   }

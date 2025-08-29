@@ -3,9 +3,9 @@ package com.beverly.hills.money.gang.state.entity;
 import com.beverly.hills.money.gang.state.GameWeaponType;
 import java.util.Set;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NonNull;
 
-@RequiredArgsConstructor
+
 public enum RPGPlayerClass {
   WARRIOR(Set.of(GameWeaponType.values())),
   ANGRY_SKELETON(Set.of(GameWeaponType.PUNCH, GameWeaponType.RAILGUN, GameWeaponType.PLASMAGUN)),
@@ -14,4 +14,11 @@ public enum RPGPlayerClass {
   @Getter
   private final Set<GameWeaponType> weapons;
 
+
+  RPGPlayerClass(final @NonNull Set<GameWeaponType> weapons) {
+    if (weapons.isEmpty()) {
+      throw new IllegalStateException("At least one weapon should be available");
+    }
+    this.weapons = weapons;
+  }
 }

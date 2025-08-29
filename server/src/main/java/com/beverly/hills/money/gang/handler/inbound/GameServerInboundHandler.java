@@ -9,6 +9,8 @@ import com.beverly.hills.money.gang.handler.command.ServerCommandHandler;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.proto.ServerCommand.CommandCase;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
+import com.beverly.hills.money.gang.state.PlayerStateChannel;
+import com.beverly.hills.money.gang.state.entity.PlayerActivityStatus;
 import com.beverly.hills.money.gang.transport.ServerTransport;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -20,6 +22,7 @@ import io.netty.handler.timeout.IdleStateEvent;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -98,7 +101,11 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
     boolean playerWasFound = gameRoomRegistry.removeChannel(channelToRemove,
         (game, playerState) -> {
           var disconnectEvent = createExitEvent(game.playersOnline(), playerState);
-          game.getPlayersRegistry().allActivePlayers()
+          game.getPlayersRegistry().allPlayers().stream().filter(
+                  otherPlayerStateChannel -> otherPlayerStateChannel.getPlayerState().getMatchId()
+                      == playerState.getMatchId()
+                      && otherPlayerStateChannel.getPlayerState().getActivityStatus()
+                      != PlayerActivityStatus.JOINING)
               .forEach(
                   playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(disconnectEvent,
                       ChannelFutureListener.CLOSE_ON_FAILURE));

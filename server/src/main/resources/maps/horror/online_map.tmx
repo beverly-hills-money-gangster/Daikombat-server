@@ -240,6 +240,5 @@
   <object id="330" name="skull_column" gid="16" x="320" y="368" width="16" height="16"/>
   <object id="331" name="skull_column" gid="16" x="320" y="336" width="16" height="16"/>
   <object id="332" name="column_bleeding" gid="16" x="336" y="128" width="16" height="16"/>
-  <object id="333" name="statue" gid="16" x="256" y="176" width="16" height="16"/>
  </objectgroup>
 </map>

@@ -131,6 +131,7 @@ public class GameOverTest extends AbstractGameServerTest {
             gameOverResponse.getGameOver().getLeaderBoard().getItems(i).getSkinColor());
       }
     });
+    gameConnections.forEach(gameConnection -> emptyQueue(gameConnection.getResponse()));
 
     Thread.sleep(2_500);
 
@@ -145,6 +146,12 @@ public class GameOverTest extends AbstractGameServerTest {
 
     var newPlayerSpawn = newGameConnection.getResponse().poll().get();
     int newPlayerId = newPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
+    assertEquals(1, newPlayerSpawn.getGameEvents().getPlayersOnline(),
+        "Should be 1 player because all other players are 'game-over'");
+
+    deadPlayerConnections.forEach(
+        gameConnection -> assertEquals(0, gameConnection.getResponse().size(),
+            "Game-over player shouldn't get any new events"));
 
     gameConnections.forEach(gameConnection -> emptyQueue(gameConnection.getResponse()));
 
@@ -173,6 +180,19 @@ public class GameOverTest extends AbstractGameServerTest {
     deadPlayerConnections.forEach(gameConnection -> {
       assertEquals(0, gameConnection.getResponse().size(),
           "Nobody should get a new player's message because it was coming from a different match");
+    });
+
+    killerConnection.disconnect();
+    Thread.sleep(2_500);
+
+    deadPlayerConnections.forEach(gameConnection -> {
+      waitUntilQueueNonEmpty(gameConnection.getResponse());
+      var exitResponse = gameConnection.getResponse().poll().get();
+      var exitEvent = exitResponse.getGameEvents().getEvents(0);
+      assertEquals(GameEventType.EXIT, exitEvent.getEventType(),
+          "Only 1 exit event should be received");
+      assertEquals(shooterPlayerId, exitEvent.getPlayer().getPlayerId());
+      assertEquals(deadPlayerConnections.size(), exitResponse.getGameEvents().getPlayersOnline());
     });
   }
 }

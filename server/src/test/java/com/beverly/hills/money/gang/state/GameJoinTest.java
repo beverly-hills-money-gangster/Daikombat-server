@@ -39,13 +39,13 @@ public class GameJoinTest extends GameTest {
    **/
   @Test
   public void testConnectPlayerOnce() throws Throwable {
-    assertEquals(0, game.getPlayersRegistry().playersOnline(),
+    assertEquals(0, game.playersOnline(),
         "No online players as nobody connected yet");
     String playerName = "some player";
     Channel channel = mock(Channel.class);
     PlayerJoinedGameState playerConnectedGameState = fullyJoin(playerName, channel,
         PlayerStateColor.GREEN);
-    assertEquals(1, game.getPlayersRegistry().playersOnline(), "We connected 1 player only");
+    assertEquals(1, game.playersOnline(), "We connected 1 player only");
     assertEquals(0, game.getBufferedMoves().size(), "Nobody moved");
     assertEquals(1, game.getPlayersRegistry().allPlayers().size(), "We connected 1 player only");
     PlayerState playerState = game.getPlayersRegistry()
@@ -119,7 +119,7 @@ public class GameJoinTest extends GameTest {
         "Second try should fail because it's the same player");
     assertEquals(GameErrorCode.PLAYER_EXISTS, gameLogicError.getErrorCode());
 
-    assertEquals(1, game.getPlayersRegistry().playersOnline(), "We connected 1 player only");
+    assertEquals(1, game.playersOnline(), "We connected 1 player only");
     assertEquals(0, game.getBufferedMoves().size(), "Nobody moved");
     assertEquals(1, game.getPlayersRegistry().allPlayers().size(), "We connected 1 player only");
     PlayerState playerState = game.getPlayersRegistry()
@@ -146,7 +146,7 @@ public class GameJoinTest extends GameTest {
     for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
       fullyJoin(playerName + " " + i, channel, PlayerStateColor.GREEN);
     }
-    assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, game.getPlayersRegistry().playersOnline());
+    assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, game.playersOnline());
   }
 
   /**
@@ -167,7 +167,7 @@ public class GameJoinTest extends GameTest {
         "We can't connect so many players");
     assertEquals(GameErrorCode.SERVER_FULL, gameLogicError.getErrorCode());
 
-    assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, game.getPlayersRegistry().playersOnline());
+    assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, game.playersOnline());
   }
 
   /**
@@ -205,6 +205,6 @@ public class GameJoinTest extends GameTest {
       }
     });
     assertEquals(0, failures.get());
-    assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, game.getPlayersRegistry().playersOnline());
+    assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, game.playersOnline());
   }
 }

@@ -38,7 +38,6 @@ import java.io.Closeable;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import lombok.Getter;
@@ -328,7 +327,7 @@ public class Game implements Closeable, GameReader {
             playerStateChannel -> playerStateChannel.getPlayerState().getActivityStatus()
                 != PlayerActivityStatus.GAME_OVER)
         .filter(playerStateChannel -> playerStateChannel.getPlayerState().getMatchId()
-                == matchId.get())
+            == matchId.get())
         .sorted((player1, player2) -> {
           int killsCompare = -Integer.compare(
               player1.getPlayerState().getGameStats().getKills(),
@@ -377,8 +376,13 @@ public class Game implements Closeable, GameReader {
   }
 
   public int playersOnline() {
-    return playersRegistry.playersOnline();
+    return playersOnline(getMatchId());
   }
+
+  public int playersOnline(int matchId) {
+    return playersRegistry.getPlayersOnline(matchId);
+  }
+
 
   @Override
   public int maxPlayersAvailable() {

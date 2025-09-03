@@ -89,8 +89,9 @@ public class PlayersRegistry implements Closeable {
     return Optional.ofNullable(players.get(playerId));
   }
 
-  public int playersOnline() {
-    return players.size();
+  public int getPlayersOnline(int matchId) {
+    return (int) players.values().stream().filter(
+        playerStateChannel -> playerStateChannel.getPlayerState().getMatchId() == matchId).count();
   }
 
   public Optional<PlayerStateChannel> findPlayer(Channel channel, int playerId) {

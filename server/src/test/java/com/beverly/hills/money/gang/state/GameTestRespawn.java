@@ -92,7 +92,7 @@ public class GameTestRespawn extends GameTest {
 
     PlayerJoinedGameState observerPlayerConnectedGameState = fullyJoin("observer",
         mock(Channel.class), PlayerStateColor.GREEN);
-    assertEquals(4, game.getPlayersRegistry().playersOnline(),
+    assertEquals(4, game.playersOnline(),
         "4 players must be online: respawned, victim, killer, and observer");
     assertEquals(4, observerPlayerConnectedGameState.getLeaderBoard().size(),
         "4 players must be in the board: respawned, victim, killer, and observer");

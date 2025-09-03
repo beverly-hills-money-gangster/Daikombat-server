@@ -38,7 +38,7 @@ public class GameMovementScheduler {
     scheduler.scheduleAtFixedRate(ServerConfig.MOVES_UPDATE_FREQUENCY_MLS,
         ServerConfig.MOVES_UPDATE_FREQUENCY_MLS, () -> gameRoomRegistry.getGames().forEach(game -> {
           try {
-            if (game.getPlayersRegistry().playersOnline() == 0) {
+            if (game.playersOnline() == 0) {
               return;
             }
             var bufferedMoves = game.getBufferedMoves();
@@ -51,7 +51,7 @@ public class GameMovementScheduler {
                     .filter(moves -> !moves.isEmpty())
                     .ifPresent(moves -> player.executeInPrimaryEventLoop(
                         () -> player.writeFlushBalanced(createMovesEventAllPlayers
-                            (game.getPlayersRegistry().playersOnline(), moves)))));
+                            (game.playersOnline(), moves)))));
 
           } catch (Exception e) {
             LOG.error("Error while scheduling", e);

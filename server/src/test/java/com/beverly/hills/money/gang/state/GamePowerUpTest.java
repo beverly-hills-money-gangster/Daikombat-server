@@ -204,6 +204,73 @@ public class GamePowerUpTest extends GameTest {
   }
 
   /**
+   * @given 1 player
+   * @when the player picks up quad damage and reverts it twice
+   * @then damage amplifier goes back to 1
+   */
+  @Test
+  public void testPickupQuadDamageRevertTwice() throws GameLogicError {
+    doReturn(false).when(antiCheat).isPowerUpTooFar(any(), any());
+    PlayerJoinedGameState playerGameState = fullyJoin("some player",
+        mock(Channel.class), PlayerStateColor.GREEN);
+
+    var result = game.pickupPowerUp(
+        playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        QUAD_DAMAGE,
+        playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        testSequenceGenerator.getNext(),
+        PING_MLS);
+
+    PlayerJoinedGameState victimGameState = fullyJoin("victim",
+        mock(Channel.class), PlayerStateColor.GREEN);
+
+    result.getPlayerState().revertPowerUp(quadDamagePowerUp); // first call
+    result.getPlayerState().revertPowerUp(quadDamagePowerUp); // second call
+
+    assertEquals(1, playerGameState.getPlayerStateChannel().getPlayerState()
+            .getDamageAmplifier(
+                playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
+                victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+                GameWeaponType.PUNCH.getDamageFactory().getDamage(game)),
+        0.001,
+        "Damage should get back to 1 after reverting");
+  }
+
+  /**
+   * @given 1 player
+   * @when the player picks up quad damage and reverts all power-ups it twice
+   * @then damage amplifier goes back to 1
+   */
+  @Test
+  public void testPickupQuadDamageRevertAllTwice() throws GameLogicError {
+    doReturn(false).when(antiCheat).isPowerUpTooFar(any(), any());
+    PlayerJoinedGameState playerGameState = fullyJoin("some player",
+        mock(Channel.class), PlayerStateColor.GREEN);
+
+    var result = game.pickupPowerUp(
+        playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        QUAD_DAMAGE,
+        playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        testSequenceGenerator.getNext(),
+        PING_MLS);
+
+    PlayerJoinedGameState victimGameState = fullyJoin("victim",
+        mock(Channel.class), PlayerStateColor.GREEN);
+
+    result.getPlayerState().revertAllPowerUps(); // first call
+    result.getPlayerState().revertAllPowerUps(); // second call
+
+    assertEquals(1, playerGameState.getPlayerStateChannel().getPlayerState()
+            .getDamageAmplifier(
+                playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
+                victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+                GameWeaponType.PUNCH.getDamageFactory().getDamage(game)),
+        0.001,
+        "Damage should get back to 1 after reverting");
+  }
+
+
+  /**
    * @given 2 players: attacker and victim
    * @when attacker picks up beast powerup and punches victim
    * @then victim dies

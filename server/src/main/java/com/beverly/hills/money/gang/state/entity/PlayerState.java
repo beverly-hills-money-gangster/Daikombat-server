@@ -136,12 +136,14 @@ public class PlayerState implements PlayerStateReader {
     power.apply(this);
   }
 
-  public void revertPowerUp(PowerUp power) {
-    power.revert(this);
-    powerUps.remove(power.getType());
+  public synchronized void revertPowerUp(PowerUp power) {
+    var removedPowerUp = powerUps.remove(power.getType());
+    if (removedPowerUp != null) {
+      power.revert(this);
+    }
   }
 
-  public void revertAllPowerUps() {
+  public synchronized void revertAllPowerUps() {
     powerUps.forEach((powerUpType, power)
         -> power.getPowerUp().revert(PlayerState.this));
     powerUps.clear();

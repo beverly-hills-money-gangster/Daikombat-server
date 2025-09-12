@@ -103,8 +103,12 @@ jobs:
             cd prod
             docker stop $(docker ps -a -q -f "name=daikombat-game-server-prod")
             rm -rf Daikombat-server-configs/
-            git clone --depth 1 git@github.com:beverly-hills-money-gangster/Daikombat-server-configs.git
-            docker compose -f Daikombat-server-configs/prod/docker-compose.yml up -d'
+            git clone --no-checkout --depth 1 git@github.com:beverly-hills-money-gangster/Daikombat-server-configs.git
+            cd Daikombat-server-configs
+            git sparse-checkout init --cone
+            git sparse-checkout set prod
+            git checkout main
+            docker compose -f prod/docker-compose.yml up -d'
   update-beta-docker-compose:
     machine:
       image: ubuntu-2204:2024.05.1
@@ -120,8 +124,12 @@ jobs:
             cd beta
             docker stop $(docker ps -a -q -f "name=daikombat-game-server-beta")
             rm -rf Daikombat-server-configs/
-            git clone --depth 1 git@github.com:beverly-hills-money-gangster/Daikombat-server-configs.git
-            docker compose -f Daikombat-server-configs/beta/docker-compose.yml up -d'
+            git clone --no-checkout --depth 1 git@github.com:beverly-hills-money-gangster/Daikombat-server-configs.git
+            cd Daikombat-server-configs
+            git sparse-checkout init --cone
+            git sparse-checkout set beta
+            git checkout main
+            docker compose -f beta/docker-compose.yml up -d'
 workflows:
   test:
     jobs:

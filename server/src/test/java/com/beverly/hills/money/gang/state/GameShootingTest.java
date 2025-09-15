@@ -240,6 +240,12 @@ public class GameShootingTest extends GameTest {
     assertTrue(game.getLeaderBoard().isEmpty(),
         "Should be nothing because the game is over");
     verify(playerStatsRecoveryRegistry).clearAllStats();
+
+    for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
+      // not expected to fail
+      fullyJoin("new player after game over " + i, channel, PlayerStateColor.GREEN);
+    }
+
   }
 
   /**

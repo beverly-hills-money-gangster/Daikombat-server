@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,7 @@ public class PlayersRegistry implements Closeable {
       throws GameLogicError {
     LOG.debug("Add player {}", playerState);
     // not thread-safe
-    if (players.size() >= MAX_PLAYERS_PER_GAME) {
+    if (countAllActivePlayers() >= MAX_PLAYERS_PER_GAME) {
       throw new GameLogicError("Can't connect player. Server is full.", GameErrorCode.SERVER_FULL);
     } else if (players.values().stream()
         .anyMatch(playerStateChannel -> playerStateChannel.getPlayerState().getPlayerName()
@@ -79,9 +80,17 @@ public class PlayersRegistry implements Closeable {
 
 
   public List<PlayerStateChannel> allActivePlayers() {
+    return allActivePlayersStream().collect(Collectors.toList());
+  }
+
+  public int countAllActivePlayers() {
+    return (int) allActivePlayersStream().count();
+  }
+
+  private Stream<PlayerStateChannel> allActivePlayersStream() {
     return players.values().stream().filter(
         playerStateChannel -> playerStateChannel.getPlayerState().getActivityStatus()
-            == PlayerActivityStatus.ACTIVE).collect(Collectors.toList());
+            == PlayerActivityStatus.ACTIVE);
   }
 
 

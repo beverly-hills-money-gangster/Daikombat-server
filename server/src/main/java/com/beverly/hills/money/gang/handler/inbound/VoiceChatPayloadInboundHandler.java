@@ -31,7 +31,7 @@ public class VoiceChatPayloadInboundHandler extends SimpleChannelInboundHandler<
         .allChatablePlayers(playerId)
         .forEach(playerStateChannel -> playerStateChannel.getDataGramSocketAddress()
             .ifPresent(sender -> {
-              var forwardedPacket = new DatagramPacket(packet.content().retain(), sender);
+              var forwardedPacket = new DatagramPacket(packet.content().retainedDuplicate(), sender);
               ctx.writeAndFlush(forwardedPacket);
             }));
   }

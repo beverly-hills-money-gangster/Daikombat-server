@@ -136,7 +136,7 @@ public final class ServerResponseOuterClass {
     java.lang.String[] descriptorData = {
       "\n/schema/src/main/resources/server-respo" +
       "nse.proto\022\rdaikombat.dto\032-schema/src/mai" +
-      "n/resources/server-common.proto\"\266%\n\016Serv" +
+      "n/resources/server-common.proto\"\274%\n\016Serv" +
       "erResponse\022>\n\nerrorEvent\030\001 \001(\0132(.daikomb" +
       "at.dto.ServerResponse.ErrorEventH\000\022=\n\nch" +
       "atEvents\030\002 \001(\0132\'.daikombat.dto.ServerRes" +
@@ -201,7 +201,7 @@ public final class ServerResponseOuterClass {
       "\025\n\010playerId\030\001 \001(\005H\000\210\001\001\022\024\n\007message\030\002 \001(\tH" +
       "\001\210\001\001\022\021\n\004name\030\003 \001(\tH\002\210\001\001\022(\n\005taunt\030\004 \001(\0162\024" +
       ".daikombat.dto.TauntH\003\210\001\001B\013\n\t_playerIdB\n" +
-      "\n\010_messageB\007\n\005_nameB\010\n\006_taunt\032\216\005\n\tGameEv" +
+      "\n\010_messageB\007\n\005_nameB\010\n\006_taunt\032\224\005\n\tGameEv" +
       "ent\022G\n\006player\030\001 \001(\01322.daikombat.dto.Serv" +
       "erResponse.GameEventPlayerStatsH\000\210\001\001\022O\n\016" +
       "affectedPlayer\030\002 \001(\01322.daikombat.dto.Ser" +
@@ -211,53 +211,53 @@ public final class ServerResponseOuterClass {
       "rBoard\030\004 \001(\0132).daikombat.dto.ServerRespo" +
       "nse.LeaderBoardH\002\210\001\001\022\025\n\010sequence\030\005 \001(\005H\003" +
       "\210\001\001\0222\n\nweaponType\030\006 \001(\0162\031.daikombat.dto." +
-      "WeaponTypeH\004\210\001\001\0227\n\nprojectile\030\007 \001(\0132\036.da" +
-      "ikombat.dto.ProjectileStatsH\005\210\001\001\"{\n\rGame" +
-      "EventType\022\010\n\004MOVE\020\000\022\n\n\006ATTACK\020\001\022\020\n\014GET_A" +
-      "TTACKED\020\002\022\010\n\004KILL\020\003\022\t\n\005SPAWN\020\004\022\010\n\004EXIT\020\005" +
-      "\022\014\n\010TELEPORT\020\006\022\010\n\004JOIN\020\007\022\013\n\007RESPAWN\020\010B\t\n" +
-      "\007_playerB\021\n\017_affectedPlayerB\016\n\014_leaderBo" +
-      "ardB\013\n\t_sequenceB\r\n\013_weaponTypeB\r\n\013_proj" +
-      "ectile\032K\n\013LeaderBoard\022<\n\005items\030\001 \003(\0132-.d" +
-      "aikombat.dto.ServerResponse.LeaderBoardI" +
-      "tem\032\311\002\n\017LeaderBoardItem\022\025\n\010playerId\030\001 \001(" +
-      "\005H\000\210\001\001\022\022\n\005kills\030\002 \001(\005H\001\210\001\001\022\027\n\nplayerName" +
-      "\030\003 \001(\tH\002\210\001\001\022\023\n\006deaths\030\004 \001(\005H\003\210\001\001\022\024\n\007ping" +
-      "Mls\030\005 \001(\005H\004\210\001\001\0224\n\013playerClass\030\006 \001(\0162\032.da" +
-      "ikombat.dto.PlayerClassH\005\210\001\001\0226\n\tskinColo" +
-      "r\030\007 \001(\0162\036.daikombat.dto.PlayerSkinColorH" +
-      "\006\210\001\001B\013\n\t_playerIdB\010\n\006_killsB\r\n\013_playerNa" +
-      "meB\t\n\007_deathsB\n\n\010_pingMlsB\016\n\014_playerClas" +
-      "sB\014\n\n_skinColor\032\224\005\n\024GameEventPlayerStats" +
-      "\022\025\n\010playerId\030\001 \001(\005H\000\210\001\001\022\027\n\nplayerName\030\002 " +
-      "\001(\tH\001\210\001\001\022\'\n\010position\030\003 \001(\0132\025.daikombat.d" +
-      "to.Vector\022(\n\tdirection\030\004 \001(\0132\025.daikombat" +
-      ".dto.Vector\022\023\n\006health\030\005 \001(\005H\002\210\001\001\022A\n\016acti" +
-      "vePowerUps\030\006 \003(\0132).daikombat.dto.ServerR" +
-      "esponse.GamePowerUp\0226\n\tskinColor\030\007 \001(\0162\036" +
-      ".daikombat.dto.PlayerSkinColorH\003\210\001\001\022O\n\016g" +
-      "ameMatchStats\030\010 \001(\01322.daikombat.dto.Serv" +
-      "erResponse.PlayerGameMatchStatsH\004\210\001\001\022\024\n\007" +
-      "pingMls\030\t \001(\005H\005\210\001\001\0224\n\013playerClass\030\n \001(\0162" +
-      "\032.daikombat.dto.PlayerClassH\006\210\001\001\022\022\n\005spee" +
-      "d\030\013 \001(\002H\007\210\001\001\022J\n\013currentAmmo\030\014 \003(\01325.daik" +
-      "ombat.dto.ServerResponse.PlayerCurrentWe" +
-      "aponAmmoB\013\n\t_playerIdB\r\n\013_playerNameB\t\n\007" +
-      "_healthB\014\n\n_skinColorB\021\n\017_gameMatchStats" +
-      "B\n\n\010_pingMlsB\016\n\014_playerClassB\010\n\006_speed\032p" +
-      "\n\027PlayerCurrentWeaponAmmo\022.\n\006weapon\030\001 \001(" +
-      "\0162\031.daikombat.dto.WeaponTypeH\000\210\001\001\022\021\n\004amm" +
-      "o\030\002 \001(\005H\001\210\001\001B\t\n\007_weaponB\007\n\005_ammo\032T\n\024Play" +
-      "erGameMatchStats\022\022\n\005kills\030\001 \001(\005H\000\210\001\001\022\023\n\006" +
-      "deaths\030\002 \001(\005H\001\210\001\001B\010\n\006_killsB\t\n\007_deaths\032\202" +
-      "\001\n\013GamePowerUp\022@\n\004type\030\001 \001(\0162-.daikombat" +
-      ".dto.ServerResponse.GamePowerUpTypeH\000\210\001\001" +
-      "\022\030\n\013lastsForMls\030\002 \001(\005H\001\210\001\001B\007\n\005_typeB\016\n\014_" +
-      "lastsForMls\"w\n\017GamePowerUpType\022\017\n\013QUAD_D" +
-      "AMAGE\020\000\022\020\n\014INVISIBILITY\020\001\022\013\n\007DEFENCE\020\002\022\n" +
-      "\n\006HEALTH\020\003\022\017\n\013MEDIUM_AMMO\020\004\022\014\n\010BIG_AMMO\020" +
-      "\005\022\t\n\005BEAST\020\006B\n\n\010responseB&\n\"com.beverly." +
-      "hills.money.gang.protoP\001b\006proto3"
+      "WeaponTypeH\004\210\001\001\022=\n\nprojectile\030\007 \001(\0132$.da" +
+      "ikombat.dto.ProjectileCoordinatesH\005\210\001\001\"{" +
+      "\n\rGameEventType\022\010\n\004MOVE\020\000\022\n\n\006ATTACK\020\001\022\020\n" +
+      "\014GET_ATTACKED\020\002\022\010\n\004KILL\020\003\022\t\n\005SPAWN\020\004\022\010\n\004" +
+      "EXIT\020\005\022\014\n\010TELEPORT\020\006\022\010\n\004JOIN\020\007\022\013\n\007RESPAW" +
+      "N\020\010B\t\n\007_playerB\021\n\017_affectedPlayerB\016\n\014_le" +
+      "aderBoardB\013\n\t_sequenceB\r\n\013_weaponTypeB\r\n" +
+      "\013_projectile\032K\n\013LeaderBoard\022<\n\005items\030\001 \003" +
+      "(\0132-.daikombat.dto.ServerResponse.Leader" +
+      "BoardItem\032\311\002\n\017LeaderBoardItem\022\025\n\010playerI" +
+      "d\030\001 \001(\005H\000\210\001\001\022\022\n\005kills\030\002 \001(\005H\001\210\001\001\022\027\n\nplay" +
+      "erName\030\003 \001(\tH\002\210\001\001\022\023\n\006deaths\030\004 \001(\005H\003\210\001\001\022\024" +
+      "\n\007pingMls\030\005 \001(\005H\004\210\001\001\0224\n\013playerClass\030\006 \001(" +
+      "\0162\032.daikombat.dto.PlayerClassH\005\210\001\001\0226\n\tsk" +
+      "inColor\030\007 \001(\0162\036.daikombat.dto.PlayerSkin" +
+      "ColorH\006\210\001\001B\013\n\t_playerIdB\010\n\006_killsB\r\n\013_pl" +
+      "ayerNameB\t\n\007_deathsB\n\n\010_pingMlsB\016\n\014_play" +
+      "erClassB\014\n\n_skinColor\032\224\005\n\024GameEventPlaye" +
+      "rStats\022\025\n\010playerId\030\001 \001(\005H\000\210\001\001\022\027\n\nplayerN" +
+      "ame\030\002 \001(\tH\001\210\001\001\022\'\n\010position\030\003 \001(\0132\025.daiko" +
+      "mbat.dto.Vector\022(\n\tdirection\030\004 \001(\0132\025.dai" +
+      "kombat.dto.Vector\022\023\n\006health\030\005 \001(\005H\002\210\001\001\022A" +
+      "\n\016activePowerUps\030\006 \003(\0132).daikombat.dto.S" +
+      "erverResponse.GamePowerUp\0226\n\tskinColor\030\007" +
+      " \001(\0162\036.daikombat.dto.PlayerSkinColorH\003\210\001" +
+      "\001\022O\n\016gameMatchStats\030\010 \001(\01322.daikombat.dt" +
+      "o.ServerResponse.PlayerGameMatchStatsH\004\210" +
+      "\001\001\022\024\n\007pingMls\030\t \001(\005H\005\210\001\001\0224\n\013playerClass\030" +
+      "\n \001(\0162\032.daikombat.dto.PlayerClassH\006\210\001\001\022\022" +
+      "\n\005speed\030\013 \001(\002H\007\210\001\001\022J\n\013currentAmmo\030\014 \003(\0132" +
+      "5.daikombat.dto.ServerResponse.PlayerCur" +
+      "rentWeaponAmmoB\013\n\t_playerIdB\r\n\013_playerNa" +
+      "meB\t\n\007_healthB\014\n\n_skinColorB\021\n\017_gameMatc" +
+      "hStatsB\n\n\010_pingMlsB\016\n\014_playerClassB\010\n\006_s" +
+      "peed\032p\n\027PlayerCurrentWeaponAmmo\022.\n\006weapo" +
+      "n\030\001 \001(\0162\031.daikombat.dto.WeaponTypeH\000\210\001\001\022" +
+      "\021\n\004ammo\030\002 \001(\005H\001\210\001\001B\t\n\007_weaponB\007\n\005_ammo\032T" +
+      "\n\024PlayerGameMatchStats\022\022\n\005kills\030\001 \001(\005H\000\210" +
+      "\001\001\022\023\n\006deaths\030\002 \001(\005H\001\210\001\001B\010\n\006_killsB\t\n\007_de" +
+      "aths\032\202\001\n\013GamePowerUp\022@\n\004type\030\001 \001(\0162-.dai" +
+      "kombat.dto.ServerResponse.GamePowerUpTyp" +
+      "eH\000\210\001\001\022\030\n\013lastsForMls\030\002 \001(\005H\001\210\001\001B\007\n\005_typ" +
+      "eB\016\n\014_lastsForMls\"w\n\017GamePowerUpType\022\017\n\013" +
+      "QUAD_DAMAGE\020\000\022\020\n\014INVISIBILITY\020\001\022\013\n\007DEFEN" +
+      "CE\020\002\022\n\n\006HEALTH\020\003\022\017\n\013MEDIUM_AMMO\020\004\022\014\n\010BIG" +
+      "_AMMO\020\005\022\t\n\005BEAST\020\006B\n\n\010responseB&\n\"com.be" +
+      "verly.hills.money.gang.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

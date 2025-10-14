@@ -106,7 +106,7 @@ message ServerResponse {
     optional LeaderBoard leaderBoard = 4;
     optional int32 sequence = 5;
     optional WeaponType weaponType = 6;
-    optional ProjectileStats projectile = 7;
+    optional ProjectileCoordinates projectile = 7;
 
     enum GameEventType {
       MOVE = 0;

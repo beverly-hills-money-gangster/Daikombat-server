@@ -68,7 +68,7 @@ message PushGameEventCommand {
   optional int32 pingMls = 8;
   optional int32 teleportId = 9;
   optional WeaponType weaponType = 10;
-  optional ProjectileStats projectile = 11;
+  optional ProjectileCoordinates projectile = 11;
 
   enum GameEventType {
     MOVE = 0;

@@ -41,9 +41,9 @@ message Vector {
 }
 
 
-message ProjectileStats {
+message ProjectileCoordinates{
   optional ProjectileType projectileType = 1;
-  optional Vector position = 2;
+  optional Vector blowUpPosition = 2;
 
 }
 

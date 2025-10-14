@@ -15,7 +15,7 @@ import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PlayerSkinColor;
-import com.beverly.hills.money.gang.proto.ProjectileStats;
+import com.beverly.hills.money.gang.proto.ProjectileCoordinates;
 import com.beverly.hills.money.gang.proto.ProjectileType;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
@@ -116,7 +116,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(mySpawnEvent.getPlayer().getDirection().getY(),
         shootingEvent.getPlayer().getDirection().getY(), "Direction shouldn't change");
 
-    if (currentAmmo != null) {
+    if (currentAmmo != null && gameWeaponType.getProjectileType() == null) {
       var ammoAfterShooting = shootingEvent.getPlayer().getCurrentAmmoList().stream()
           .filter(playerCurrentWeaponAmmo -> playerCurrentWeaponAmmo.getWeapon()
               .equals(getWeaponType(gameWeaponType)))
@@ -147,6 +147,9 @@ public class ShootingEventTest extends AbstractGameServerTest {
   @ParameterizedTest
   public void testShootMissWasteAllAmmo(GameWeaponType gameWeaponType)
       throws IOException, GameLogicError, InterruptedException {
+    if (gameWeaponType.getProjectileType() != null) {
+      return;
+    }
     int gameIdToConnectTo = 0;
     var weaponInfo = gameRoomRegistry.getGame(gameIdToConnectTo)
         .getRpgWeaponInfo().getWeaponInfo(RPGPlayerClass.WARRIOR, gameWeaponType)
@@ -374,8 +377,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
         .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
         .setGameId(gameIdToConnectTo)
         .setEventType(GameEventType.ATTACK)
-        .setProjectile(ProjectileStats.newBuilder()
-            .setPosition(Vector.newBuilder().setX(shotPositionX).setY(shotPositionY).build())
+        .setProjectile(ProjectileCoordinates.newBuilder()
+            .setBlowUpPosition(Vector.newBuilder().setX(shotPositionX).setY(shotPositionY).build())
             .setProjectileType(ProjectileType.ROCKET).build())
         .setDirection(
             Vector.newBuilder().setX(shooterSpawnEvent.getPlayer().getDirection().getX())
@@ -505,8 +508,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
         .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
         .setGameId(gameIdToConnectTo)
         .setEventType(GameEventType.ATTACK)
-        .setProjectile(ProjectileStats.newBuilder()
-            .setPosition(Vector.newBuilder().setX(shotPositionX).setY(shotPositionY).build())
+        .setProjectile(ProjectileCoordinates.newBuilder()
+            .setBlowUpPosition(Vector.newBuilder().setX(shotPositionX).setY(shotPositionY).build())
             .setProjectileType(ProjectileType.PLASMA).build())
         .setDirection(
             Vector.newBuilder().setX(shooterSpawnEvent.getPlayer().getDirection().getX())

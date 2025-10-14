@@ -5,18 +5,18 @@
 package com.beverly.hills.money.gang.proto;
 
 /**
- * Protobuf type {@code daikombat.dto.ProjectileStats}
+ * Protobuf type {@code daikombat.dto.ProjectileCoordinates}
  */
-public final class ProjectileStats extends
+public final class ProjectileCoordinates extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:daikombat.dto.ProjectileStats)
-    ProjectileStatsOrBuilder {
+    // @@protoc_insertion_point(message_implements:daikombat.dto.ProjectileCoordinates)
+    ProjectileCoordinatesOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use ProjectileStats.newBuilder() to construct.
-  private ProjectileStats(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use ProjectileCoordinates.newBuilder() to construct.
+  private ProjectileCoordinates(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private ProjectileStats() {
+  private ProjectileCoordinates() {
     projectileType_ = 0;
   }
 
@@ -24,20 +24,20 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new ProjectileStats();
+    return new ProjectileCoordinates();
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return com.beverly.hills.money.gang.proto.ServerCommon.internal_static_daikombat_dto_ProjectileStats_descriptor;
+    return com.beverly.hills.money.gang.proto.ServerCommon.internal_static_daikombat_dto_ProjectileCoordinates_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return com.beverly.hills.money.gang.proto.ServerCommon.internal_static_daikombat_dto_ProjectileStats_fieldAccessorTable
+    return com.beverly.hills.money.gang.proto.ServerCommon.internal_static_daikombat_dto_ProjectileCoordinates_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            com.beverly.hills.money.gang.proto.ProjectileStats.class, com.beverly.hills.money.gang.proto.ProjectileStats.Builder.class);
+            com.beverly.hills.money.gang.proto.ProjectileCoordinates.class, com.beverly.hills.money.gang.proto.ProjectileCoordinates.Builder.class);
   }
 
   private int bitField0_;
@@ -66,30 +66,30 @@ private static final long serialVersionUID = 0L;
     return result == null ? com.beverly.hills.money.gang.proto.ProjectileType.UNRECOGNIZED : result;
   }
 
-  public static final int POSITION_FIELD_NUMBER = 2;
-  private com.beverly.hills.money.gang.proto.Vector position_;
+  public static final int BLOWUPPOSITION_FIELD_NUMBER = 2;
+  private com.beverly.hills.money.gang.proto.Vector blowUpPosition_;
   /**
-   * <code>optional .daikombat.dto.Vector position = 2;</code>
-   * @return Whether the position field is set.
+   * <code>optional .daikombat.dto.Vector blowUpPosition = 2;</code>
+   * @return Whether the blowUpPosition field is set.
    */
   @java.lang.Override
-  public boolean hasPosition() {
+  public boolean hasBlowUpPosition() {
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
-   * <code>optional .daikombat.dto.Vector position = 2;</code>
-   * @return The position.
+   * <code>optional .daikombat.dto.Vector blowUpPosition = 2;</code>
+   * @return The blowUpPosition.
    */
   @java.lang.Override
-  public com.beverly.hills.money.gang.proto.Vector getPosition() {
-    return position_ == null ? com.beverly.hills.money.gang.proto.Vector.getDefaultInstance() : position_;
+  public com.beverly.hills.money.gang.proto.Vector getBlowUpPosition() {
+    return blowUpPosition_ == null ? com.beverly.hills.money.gang.proto.Vector.getDefaultInstance() : blowUpPosition_;
   }
   /**
-   * <code>optional .daikombat.dto.Vector position = 2;</code>
+   * <code>optional .daikombat.dto.Vector blowUpPosition = 2;</code>
    */
   @java.lang.Override
-  public com.beverly.hills.money.gang.proto.VectorOrBuilder getPositionOrBuilder() {
-    return position_ == null ? com.beverly.hills.money.gang.proto.Vector.getDefaultInstance() : position_;
+  public com.beverly.hills.money.gang.proto.VectorOrBuilder getBlowUpPositionOrBuilder() {
+    return blowUpPosition_ == null ? com.beverly.hills.money.gang.proto.Vector.getDefaultInstance() : blowUpPosition_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -110,7 +110,7 @@ private static final long serialVersionUID = 0L;
       output.writeEnum(1, projectileType_);
     }
     if (((bitField0_ & 0x00000002) != 0)) {
-      output.writeMessage(2, getPosition());
+      output.writeMessage(2, getBlowUpPosition());
     }
     getUnknownFields().writeTo(output);
   }
@@ -127,7 +127,7 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, getPosition());
+        .computeMessageSize(2, getBlowUpPosition());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -139,19 +139,19 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof com.beverly.hills.money.gang.proto.ProjectileStats)) {
+    if (!(obj instanceof com.beverly.hills.money.gang.proto.ProjectileCoordinates)) {
       return super.equals(obj);
     }
-    com.beverly.hills.money.gang.proto.ProjectileStats other = (com.beverly.hills.money.gang.proto.ProjectileStats) obj;
+    com.beverly.hills.money.gang.proto.ProjectileCoordinates other = (com.beverly.hills.money.gang.proto.ProjectileCoordinates) obj;
 
     if (hasProjectileType() != other.hasProjectileType()) return false;
     if (hasProjectileType()) {
       if (projectileType_ != other.projectileType_) return false;
     }
-    if (hasPosition() != other.hasPosition()) return false;
-    if (hasPosition()) {
-      if (!getPosition()
-          .equals(other.getPosition())) return false;
+    if (hasBlowUpPosition() != other.hasBlowUpPosition()) return false;
+    if (hasBlowUpPosition()) {
+      if (!getBlowUpPosition()
+          .equals(other.getBlowUpPosition())) return false;
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -168,53 +168,53 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + PROJECTILETYPE_FIELD_NUMBER;
       hash = (53 * hash) + projectileType_;
     }
-    if (hasPosition()) {
-      hash = (37 * hash) + POSITION_FIELD_NUMBER;
-      hash = (53 * hash) + getPosition().hashCode();
+    if (hasBlowUpPosition()) {
+      hash = (37 * hash) + BLOWUPPOSITION_FIELD_NUMBER;
+      hash = (53 * hash) + getBlowUpPosition().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static com.beverly.hills.money.gang.proto.ProjectileStats parseFrom(
+  public static com.beverly.hills.money.gang.proto.ProjectileCoordinates parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static com.beverly.hills.money.gang.proto.ProjectileStats parseFrom(
+  public static com.beverly.hills.money.gang.proto.ProjectileCoordinates parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static com.beverly.hills.money.gang.proto.ProjectileStats parseFrom(
+  public static com.beverly.hills.money.gang.proto.ProjectileCoordinates parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static com.beverly.hills.money.gang.proto.ProjectileStats parseFrom(
+  public static com.beverly.hills.money.gang.proto.ProjectileCoordinates parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static com.beverly.hills.money.gang.proto.ProjectileStats parseFrom(byte[] data)
+  public static com.beverly.hills.money.gang.proto.ProjectileCoordinates parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static com.beverly.hills.money.gang.proto.ProjectileStats parseFrom(
+  public static com.beverly.hills.money.gang.proto.ProjectileCoordinates parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static com.beverly.hills.money.gang.proto.ProjectileStats parseFrom(java.io.InputStream input)
+  public static com.beverly.hills.money.gang.proto.ProjectileCoordinates parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static com.beverly.hills.money.gang.proto.ProjectileStats parseFrom(
+  public static com.beverly.hills.money.gang.proto.ProjectileCoordinates parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -222,26 +222,26 @@ private static final long serialVersionUID = 0L;
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
-  public static com.beverly.hills.money.gang.proto.ProjectileStats parseDelimitedFrom(java.io.InputStream input)
+  public static com.beverly.hills.money.gang.proto.ProjectileCoordinates parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
 
-  public static com.beverly.hills.money.gang.proto.ProjectileStats parseDelimitedFrom(
+  public static com.beverly.hills.money.gang.proto.ProjectileCoordinates parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static com.beverly.hills.money.gang.proto.ProjectileStats parseFrom(
+  public static com.beverly.hills.money.gang.proto.ProjectileCoordinates parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static com.beverly.hills.money.gang.proto.ProjectileStats parseFrom(
+  public static com.beverly.hills.money.gang.proto.ProjectileCoordinates parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -254,7 +254,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(com.beverly.hills.money.gang.proto.ProjectileStats prototype) {
+  public static Builder newBuilder(com.beverly.hills.money.gang.proto.ProjectileCoordinates prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -270,26 +270,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code daikombat.dto.ProjectileStats}
+   * Protobuf type {@code daikombat.dto.ProjectileCoordinates}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:daikombat.dto.ProjectileStats)
-      com.beverly.hills.money.gang.proto.ProjectileStatsOrBuilder {
+      // @@protoc_insertion_point(builder_implements:daikombat.dto.ProjectileCoordinates)
+      com.beverly.hills.money.gang.proto.ProjectileCoordinatesOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.beverly.hills.money.gang.proto.ServerCommon.internal_static_daikombat_dto_ProjectileStats_descriptor;
+      return com.beverly.hills.money.gang.proto.ServerCommon.internal_static_daikombat_dto_ProjectileCoordinates_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.beverly.hills.money.gang.proto.ServerCommon.internal_static_daikombat_dto_ProjectileStats_fieldAccessorTable
+      return com.beverly.hills.money.gang.proto.ServerCommon.internal_static_daikombat_dto_ProjectileCoordinates_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.beverly.hills.money.gang.proto.ProjectileStats.class, com.beverly.hills.money.gang.proto.ProjectileStats.Builder.class);
+              com.beverly.hills.money.gang.proto.ProjectileCoordinates.class, com.beverly.hills.money.gang.proto.ProjectileCoordinates.Builder.class);
     }
 
-    // Construct using com.beverly.hills.money.gang.proto.ProjectileStats.newBuilder()
+    // Construct using com.beverly.hills.money.gang.proto.ProjectileCoordinates.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -302,7 +302,7 @@ private static final long serialVersionUID = 0L;
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
-        getPositionFieldBuilder();
+        getBlowUpPositionFieldBuilder();
       }
     }
     @java.lang.Override
@@ -310,10 +310,10 @@ private static final long serialVersionUID = 0L;
       super.clear();
       bitField0_ = 0;
       projectileType_ = 0;
-      position_ = null;
-      if (positionBuilder_ != null) {
-        positionBuilder_.dispose();
-        positionBuilder_ = null;
+      blowUpPosition_ = null;
+      if (blowUpPositionBuilder_ != null) {
+        blowUpPositionBuilder_.dispose();
+        blowUpPositionBuilder_ = null;
       }
       return this;
     }
@@ -321,17 +321,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return com.beverly.hills.money.gang.proto.ServerCommon.internal_static_daikombat_dto_ProjectileStats_descriptor;
+      return com.beverly.hills.money.gang.proto.ServerCommon.internal_static_daikombat_dto_ProjectileCoordinates_descriptor;
     }
 
     @java.lang.Override
-    public com.beverly.hills.money.gang.proto.ProjectileStats getDefaultInstanceForType() {
-      return com.beverly.hills.money.gang.proto.ProjectileStats.getDefaultInstance();
+    public com.beverly.hills.money.gang.proto.ProjectileCoordinates getDefaultInstanceForType() {
+      return com.beverly.hills.money.gang.proto.ProjectileCoordinates.getDefaultInstance();
     }
 
     @java.lang.Override
-    public com.beverly.hills.money.gang.proto.ProjectileStats build() {
-      com.beverly.hills.money.gang.proto.ProjectileStats result = buildPartial();
+    public com.beverly.hills.money.gang.proto.ProjectileCoordinates build() {
+      com.beverly.hills.money.gang.proto.ProjectileCoordinates result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -339,14 +339,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public com.beverly.hills.money.gang.proto.ProjectileStats buildPartial() {
-      com.beverly.hills.money.gang.proto.ProjectileStats result = new com.beverly.hills.money.gang.proto.ProjectileStats(this);
+    public com.beverly.hills.money.gang.proto.ProjectileCoordinates buildPartial() {
+      com.beverly.hills.money.gang.proto.ProjectileCoordinates result = new com.beverly.hills.money.gang.proto.ProjectileCoordinates(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(com.beverly.hills.money.gang.proto.ProjectileStats result) {
+    private void buildPartial0(com.beverly.hills.money.gang.proto.ProjectileCoordinates result) {
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -354,9 +354,9 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000001;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.position_ = positionBuilder_ == null
-            ? position_
-            : positionBuilder_.build();
+        result.blowUpPosition_ = blowUpPositionBuilder_ == null
+            ? blowUpPosition_
+            : blowUpPositionBuilder_.build();
         to_bitField0_ |= 0x00000002;
       }
       result.bitField0_ |= to_bitField0_;
@@ -396,21 +396,21 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof com.beverly.hills.money.gang.proto.ProjectileStats) {
-        return mergeFrom((com.beverly.hills.money.gang.proto.ProjectileStats)other);
+      if (other instanceof com.beverly.hills.money.gang.proto.ProjectileCoordinates) {
+        return mergeFrom((com.beverly.hills.money.gang.proto.ProjectileCoordinates)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(com.beverly.hills.money.gang.proto.ProjectileStats other) {
-      if (other == com.beverly.hills.money.gang.proto.ProjectileStats.getDefaultInstance()) return this;
+    public Builder mergeFrom(com.beverly.hills.money.gang.proto.ProjectileCoordinates other) {
+      if (other == com.beverly.hills.money.gang.proto.ProjectileCoordinates.getDefaultInstance()) return this;
       if (other.hasProjectileType()) {
         setProjectileType(other.getProjectileType());
       }
-      if (other.hasPosition()) {
-        mergePosition(other.getPosition());
+      if (other.hasBlowUpPosition()) {
+        mergeBlowUpPosition(other.getBlowUpPosition());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -445,7 +445,7 @@ private static final long serialVersionUID = 0L;
             } // case 8
             case 18: {
               input.readMessage(
-                  getPositionFieldBuilder().getBuilder(),
+                  getBlowUpPositionFieldBuilder().getBuilder(),
                   extensionRegistry);
               bitField0_ |= 0x00000002;
               break;
@@ -527,125 +527,125 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private com.beverly.hills.money.gang.proto.Vector position_;
+    private com.beverly.hills.money.gang.proto.Vector blowUpPosition_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        com.beverly.hills.money.gang.proto.Vector, com.beverly.hills.money.gang.proto.Vector.Builder, com.beverly.hills.money.gang.proto.VectorOrBuilder> positionBuilder_;
+        com.beverly.hills.money.gang.proto.Vector, com.beverly.hills.money.gang.proto.Vector.Builder, com.beverly.hills.money.gang.proto.VectorOrBuilder> blowUpPositionBuilder_;
     /**
-     * <code>optional .daikombat.dto.Vector position = 2;</code>
-     * @return Whether the position field is set.
+     * <code>optional .daikombat.dto.Vector blowUpPosition = 2;</code>
+     * @return Whether the blowUpPosition field is set.
      */
-    public boolean hasPosition() {
+    public boolean hasBlowUpPosition() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>optional .daikombat.dto.Vector position = 2;</code>
-     * @return The position.
+     * <code>optional .daikombat.dto.Vector blowUpPosition = 2;</code>
+     * @return The blowUpPosition.
      */
-    public com.beverly.hills.money.gang.proto.Vector getPosition() {
-      if (positionBuilder_ == null) {
-        return position_ == null ? com.beverly.hills.money.gang.proto.Vector.getDefaultInstance() : position_;
+    public com.beverly.hills.money.gang.proto.Vector getBlowUpPosition() {
+      if (blowUpPositionBuilder_ == null) {
+        return blowUpPosition_ == null ? com.beverly.hills.money.gang.proto.Vector.getDefaultInstance() : blowUpPosition_;
       } else {
-        return positionBuilder_.getMessage();
+        return blowUpPositionBuilder_.getMessage();
       }
     }
     /**
-     * <code>optional .daikombat.dto.Vector position = 2;</code>
+     * <code>optional .daikombat.dto.Vector blowUpPosition = 2;</code>
      */
-    public Builder setPosition(com.beverly.hills.money.gang.proto.Vector value) {
-      if (positionBuilder_ == null) {
+    public Builder setBlowUpPosition(com.beverly.hills.money.gang.proto.Vector value) {
+      if (blowUpPositionBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        position_ = value;
+        blowUpPosition_ = value;
       } else {
-        positionBuilder_.setMessage(value);
+        blowUpPositionBuilder_.setMessage(value);
       }
       bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>optional .daikombat.dto.Vector position = 2;</code>
+     * <code>optional .daikombat.dto.Vector blowUpPosition = 2;</code>
      */
-    public Builder setPosition(
+    public Builder setBlowUpPosition(
         com.beverly.hills.money.gang.proto.Vector.Builder builderForValue) {
-      if (positionBuilder_ == null) {
-        position_ = builderForValue.build();
+      if (blowUpPositionBuilder_ == null) {
+        blowUpPosition_ = builderForValue.build();
       } else {
-        positionBuilder_.setMessage(builderForValue.build());
+        blowUpPositionBuilder_.setMessage(builderForValue.build());
       }
       bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>optional .daikombat.dto.Vector position = 2;</code>
+     * <code>optional .daikombat.dto.Vector blowUpPosition = 2;</code>
      */
-    public Builder mergePosition(com.beverly.hills.money.gang.proto.Vector value) {
-      if (positionBuilder_ == null) {
+    public Builder mergeBlowUpPosition(com.beverly.hills.money.gang.proto.Vector value) {
+      if (blowUpPositionBuilder_ == null) {
         if (((bitField0_ & 0x00000002) != 0) &&
-          position_ != null &&
-          position_ != com.beverly.hills.money.gang.proto.Vector.getDefaultInstance()) {
-          getPositionBuilder().mergeFrom(value);
+          blowUpPosition_ != null &&
+          blowUpPosition_ != com.beverly.hills.money.gang.proto.Vector.getDefaultInstance()) {
+          getBlowUpPositionBuilder().mergeFrom(value);
         } else {
-          position_ = value;
+          blowUpPosition_ = value;
         }
       } else {
-        positionBuilder_.mergeFrom(value);
+        blowUpPositionBuilder_.mergeFrom(value);
       }
-      if (position_ != null) {
+      if (blowUpPosition_ != null) {
         bitField0_ |= 0x00000002;
         onChanged();
       }
       return this;
     }
     /**
-     * <code>optional .daikombat.dto.Vector position = 2;</code>
+     * <code>optional .daikombat.dto.Vector blowUpPosition = 2;</code>
      */
-    public Builder clearPosition() {
+    public Builder clearBlowUpPosition() {
       bitField0_ = (bitField0_ & ~0x00000002);
-      position_ = null;
-      if (positionBuilder_ != null) {
-        positionBuilder_.dispose();
-        positionBuilder_ = null;
+      blowUpPosition_ = null;
+      if (blowUpPositionBuilder_ != null) {
+        blowUpPositionBuilder_.dispose();
+        blowUpPositionBuilder_ = null;
       }
       onChanged();
       return this;
     }
     /**
-     * <code>optional .daikombat.dto.Vector position = 2;</code>
+     * <code>optional .daikombat.dto.Vector blowUpPosition = 2;</code>
      */
-    public com.beverly.hills.money.gang.proto.Vector.Builder getPositionBuilder() {
+    public com.beverly.hills.money.gang.proto.Vector.Builder getBlowUpPositionBuilder() {
       bitField0_ |= 0x00000002;
       onChanged();
-      return getPositionFieldBuilder().getBuilder();
+      return getBlowUpPositionFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .daikombat.dto.Vector position = 2;</code>
+     * <code>optional .daikombat.dto.Vector blowUpPosition = 2;</code>
      */
-    public com.beverly.hills.money.gang.proto.VectorOrBuilder getPositionOrBuilder() {
-      if (positionBuilder_ != null) {
-        return positionBuilder_.getMessageOrBuilder();
+    public com.beverly.hills.money.gang.proto.VectorOrBuilder getBlowUpPositionOrBuilder() {
+      if (blowUpPositionBuilder_ != null) {
+        return blowUpPositionBuilder_.getMessageOrBuilder();
       } else {
-        return position_ == null ?
-            com.beverly.hills.money.gang.proto.Vector.getDefaultInstance() : position_;
+        return blowUpPosition_ == null ?
+            com.beverly.hills.money.gang.proto.Vector.getDefaultInstance() : blowUpPosition_;
       }
     }
     /**
-     * <code>optional .daikombat.dto.Vector position = 2;</code>
+     * <code>optional .daikombat.dto.Vector blowUpPosition = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         com.beverly.hills.money.gang.proto.Vector, com.beverly.hills.money.gang.proto.Vector.Builder, com.beverly.hills.money.gang.proto.VectorOrBuilder> 
-        getPositionFieldBuilder() {
-      if (positionBuilder_ == null) {
-        positionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+        getBlowUpPositionFieldBuilder() {
+      if (blowUpPositionBuilder_ == null) {
+        blowUpPositionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
             com.beverly.hills.money.gang.proto.Vector, com.beverly.hills.money.gang.proto.Vector.Builder, com.beverly.hills.money.gang.proto.VectorOrBuilder>(
-                getPosition(),
+                getBlowUpPosition(),
                 getParentForChildren(),
                 isClean());
-        position_ = null;
+        blowUpPosition_ = null;
       }
-      return positionBuilder_;
+      return blowUpPositionBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
@@ -660,23 +660,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:daikombat.dto.ProjectileStats)
+    // @@protoc_insertion_point(builder_scope:daikombat.dto.ProjectileCoordinates)
   }
 
-  // @@protoc_insertion_point(class_scope:daikombat.dto.ProjectileStats)
-  private static final com.beverly.hills.money.gang.proto.ProjectileStats DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:daikombat.dto.ProjectileCoordinates)
+  private static final com.beverly.hills.money.gang.proto.ProjectileCoordinates DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new com.beverly.hills.money.gang.proto.ProjectileStats();
+    DEFAULT_INSTANCE = new com.beverly.hills.money.gang.proto.ProjectileCoordinates();
   }
 
-  public static com.beverly.hills.money.gang.proto.ProjectileStats getDefaultInstance() {
+  public static com.beverly.hills.money.gang.proto.ProjectileCoordinates getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<ProjectileStats>
-      PARSER = new com.google.protobuf.AbstractParser<ProjectileStats>() {
+  private static final com.google.protobuf.Parser<ProjectileCoordinates>
+      PARSER = new com.google.protobuf.AbstractParser<ProjectileCoordinates>() {
     @java.lang.Override
-    public ProjectileStats parsePartialFrom(
+    public ProjectileCoordinates parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -695,17 +695,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<ProjectileStats> parser() {
+  public static com.google.protobuf.Parser<ProjectileCoordinates> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<ProjectileStats> getParserForType() {
+  public com.google.protobuf.Parser<ProjectileCoordinates> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.beverly.hills.money.gang.proto.ProjectileStats getDefaultInstanceForType() {
+  public com.beverly.hills.money.gang.proto.ProjectileCoordinates getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

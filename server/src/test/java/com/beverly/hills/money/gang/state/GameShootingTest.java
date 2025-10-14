@@ -27,6 +27,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 public class GameShootingTest extends GameTest {
 
@@ -825,4 +827,182 @@ public class GameShootingTest extends GameTest {
     assertEquals(1, game.playersOnline());
   }
 
+
+  /**
+   * @given a player with no ammo
+   * @when the player shoots again
+   * @then no shots actually fired because the player has no ammo
+   */
+  @ParameterizedTest
+  @EnumSource(GameWeaponType.class)
+  public void testShootMissOutOfAmmo(GameWeaponType gameWeaponType) throws Throwable {
+    if (gameWeaponType.getProjectileType() != null) {
+      return;
+    }
+    String playerName = "some player";
+    Channel channel = mock(Channel.class);
+    PlayerJoinedGameState playerConnectedGameState = fullyJoin(playerName, channel,
+        PlayerStateColor.GREEN);
+
+    var ammo = playerConnectedGameState.getPlayerStateChannel().getPlayerState()
+        .getAmmoStorageReader().getCurrentAmmo().get(gameWeaponType);
+    if (ammo == null) {
+      return;
+    }
+
+    for (int i = 0; i < ammo; i++) {
+      PlayerAttackingGameState playerAttackingGameState = game.attackWeapon(
+          playerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          playerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+              .getPosition(),
+          playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), null,
+          gameWeaponType,
+          testSequenceGenerator.getNext(),
+          PING_MLS);
+      assertNull(playerAttackingGameState.getPlayerAttacked(), "Nobody is shot");
+    }
+
+    // attack when no ammo left
+
+    var state = game.attackWeapon(
+        playerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        playerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+            .getPosition(),
+        playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), null,
+        gameWeaponType,
+        testSequenceGenerator.getNext(),
+        PING_MLS);
+    assertNull(state, "No state expected because we should be out of ammo");
+
+    PlayerState shooterState = game.getPlayersRegistry()
+        .getPlayerState(
+            playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
+        .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
+            "A connected player must have a state!"));
+    assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
+    assertEquals(0, shooterState.getGameStats().getKills(), "Nobody was killed");
+    assertEquals(0, shooterState.getAmmoStorageReader().getCurrentAmmo().get(gameWeaponType));
+    assertEquals(1, game.playersOnline());
+  }
+
+  /**
+   * @given a skeleton player
+   * @when the player shoots a weapon that is not supported for the class
+   * @then no shots actually fired
+   */
+  @ParameterizedTest
+  @EnumSource(GameWeaponType.class)
+  public void testShootMissNotSupportedWeapon(GameWeaponType gameWeaponType) throws Throwable {
+    var rpgClass = RPGPlayerClass.ANGRY_SKELETON;
+    if (rpgClass.getWeapons().contains(gameWeaponType)) {
+      return;
+    }
+    if (gameWeaponType.getProjectileType() != null) {
+      return;
+    }
+    String playerName = "some player";
+    Channel channel = mock(Channel.class);
+    PlayerJoinedGameState playerConnectedGameState = fullyJoin(playerName, channel,
+        PlayerStateColor.GREEN, rpgClass);
+
+    PlayerAttackingGameState playerAttackingGameState = game.attackWeapon(
+        playerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        playerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+            .getPosition(),
+        playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), null,
+        gameWeaponType,
+        testSequenceGenerator.getNext(),
+        PING_MLS);
+    assertNull(playerAttackingGameState,
+        "No shots should be fired because the weapon is not supported");
+  }
+
+  /**
+   * @given a skeleton player
+   * @when the player shoots a projectile weapon that is not supported for the class
+   * @then no shots actually fired
+   */
+  @ParameterizedTest
+  @EnumSource(GameWeaponType.class)
+  public void testShootMissNotSupportedProjectileWeapon(GameWeaponType gameWeaponType)
+      throws Throwable {
+    var rpgClass = RPGPlayerClass.ANGRY_SKELETON;
+    if (rpgClass.getWeapons().contains(gameWeaponType)) {
+      return;
+    }
+    if (gameWeaponType.getProjectileType() == null) {
+      return;
+    }
+    String playerName = "some player";
+    Channel channel = mock(Channel.class);
+    PlayerJoinedGameState playerConnectedGameState = fullyJoin(playerName, channel,
+        PlayerStateColor.GREEN, rpgClass);
+
+    PlayerAttackingGameState playerAttackingGameState = game.attackProjectile(
+        playerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        playerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+            .getPosition(),
+        playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), null,
+        gameWeaponType.getProjectileType(),
+        testSequenceGenerator.getNext(),
+        PING_MLS);
+    assertNull(playerAttackingGameState,
+        "No shots should be fired because the weapon is not supported");
+  }
+
+  /**
+   * @given a player with no projectile weapon ammo
+   * @when the player shoots a projectile again
+   * @then no shots actually fired because the player has no ammo
+   */
+  @ParameterizedTest
+  @EnumSource(GameWeaponType.class)
+  public void testShootMissOutOfAmmoProjectile(GameWeaponType gameWeaponType) throws Throwable {
+    if (gameWeaponType.getProjectileType() == null) {
+      return;
+    }
+    String playerName = "some player";
+    Channel channel = mock(Channel.class);
+    PlayerJoinedGameState playerConnectedGameState = fullyJoin(playerName, channel,
+        PlayerStateColor.GREEN);
+
+    var ammo = playerConnectedGameState.getPlayerStateChannel().getPlayerState()
+        .getAmmoStorageReader().getCurrentAmmo().get(gameWeaponType);
+    if (ammo == null) {
+      return;
+    }
+
+    for (int i = 0; i < ammo; i++) {
+      PlayerAttackingGameState playerAttackingGameState = game.attackProjectile(
+          playerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          playerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+              .getPosition(),
+          playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), null,
+          gameWeaponType.getProjectileType(),
+          testSequenceGenerator.getNext(),
+          PING_MLS);
+      assertNull(playerAttackingGameState.getPlayerAttacked(), "Nobody is shot");
+    }
+
+    // attack when no ammo left
+    var state = game.attackProjectile(
+        playerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        playerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+            .getPosition(),
+        playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), null,
+        gameWeaponType.getProjectileType(),
+        testSequenceGenerator.getNext(),
+        PING_MLS);
+    assertNull(state, "No state expected because we should be out of ammo");
+
+    PlayerState shooterState = game.getPlayersRegistry()
+        .getPlayerState(
+            playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
+        .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
+            "A connected player must have a state!"));
+    assertEquals(100, shooterState.getHealth(), "Shooter hasn't been hit");
+    assertEquals(0, shooterState.getGameStats().getKills(), "Nobody was killed");
+    assertEquals(0, shooterState.getAmmoStorageReader().getCurrentAmmo().get(gameWeaponType));
+    assertEquals(1, game.playersOnline());
+  }
 }

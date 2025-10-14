@@ -137,17 +137,17 @@ public interface PushGameEventCommandOrBuilder extends
   com.beverly.hills.money.gang.proto.WeaponType getWeaponType();
 
   /**
-   * <code>optional .daikombat.dto.ProjectileStats projectile = 11;</code>
+   * <code>optional .daikombat.dto.ProjectileCoordinates projectile = 11;</code>
    * @return Whether the projectile field is set.
    */
   boolean hasProjectile();
   /**
-   * <code>optional .daikombat.dto.ProjectileStats projectile = 11;</code>
+   * <code>optional .daikombat.dto.ProjectileCoordinates projectile = 11;</code>
    * @return The projectile.
    */
-  com.beverly.hills.money.gang.proto.ProjectileStats getProjectile();
+  com.beverly.hills.money.gang.proto.ProjectileCoordinates getProjectile();
   /**
-   * <code>optional .daikombat.dto.ProjectileStats projectile = 11;</code>
+   * <code>optional .daikombat.dto.ProjectileCoordinates projectile = 11;</code>
    */
-  com.beverly.hills.money.gang.proto.ProjectileStatsOrBuilder getProjectileOrBuilder();
+  com.beverly.hills.money.gang.proto.ProjectileCoordinatesOrBuilder getProjectileOrBuilder();
 }

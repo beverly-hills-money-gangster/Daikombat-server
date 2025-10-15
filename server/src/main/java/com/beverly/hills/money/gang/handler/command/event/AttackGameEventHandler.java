@@ -57,7 +57,7 @@ public class AttackGameEventHandler implements GameEventHandler {
       var projectile = getGameProjectileType(gameCommand.getProjectile().getProjectileType());
       attackGameState = game.attackProjectile(
           createCoordinates(gameCommand),
-          createVector(gameCommand.getProjectile().getPosition()),
+          createVector(gameCommand.getProjectile().getBlowUpPosition()),
           gameCommand.getPlayerId(),
           getProjectileAffectedPlayerId(
               gameCommand, projectile.getDamageFactory().getDamage(game), game),
@@ -118,7 +118,7 @@ public class AttackGameEventHandler implements GameEventHandler {
   private Integer getProjectileAffectedPlayerId(PushGameEventCommand gameCommand, Damage damage,
       Game game) {
     return game.getPlayerWithinDamageRadius(
-            createVector(gameCommand.getProjectile().getPosition()), damage.getMaxDistance())
+            createVector(gameCommand.getProjectile().getBlowUpPosition()), damage.getMaxDistance())
         .map(PlayerStateReader::getPlayerId).orElse(null);
   }
 

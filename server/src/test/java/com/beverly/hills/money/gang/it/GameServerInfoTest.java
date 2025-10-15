@@ -71,7 +71,9 @@ public class GameServerInfoTest extends AbstractGameServerTest {
       assertEquals("classic", gameInfo.getMapMetadata().getName());
       assertEquals(playerClass.getWeapons().size(), gameInfo.getWeaponsInfoList().size(),
           "All attack weapons should have info");
-      assertEquals(GameProjectileType.values().length, gameInfo.getProjectileInfoList().size(),
+      assertEquals(playerClass.getWeapons().stream().filter(
+              gameWeaponType -> gameWeaponType.getProjectileType() != null).count(),
+          gameInfo.getProjectileInfoList().size(),
           "All attack projectiles should have info");
       assertEquals(AntiCheat.getMaxSpeed(playerClass, game.getGameConfig()),
           gameInfo.getPlayerSpeed());

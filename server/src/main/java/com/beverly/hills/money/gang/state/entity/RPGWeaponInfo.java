@@ -1,7 +1,6 @@
 package com.beverly.hills.money.gang.state.entity;
 
 import com.beverly.hills.money.gang.factory.rpg.RPGStatsFactory;
-import com.beverly.hills.money.gang.state.GameProjectileType;
 import com.beverly.hills.money.gang.state.GameReader;
 import com.beverly.hills.money.gang.state.GameWeaponType;
 import com.beverly.hills.money.gang.state.PlayerRPGStatType;
@@ -9,6 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,7 +36,8 @@ public class RPGWeaponInfo {
                     .build();
               })
           .collect(Collectors.toList());
-      var projectileInfo = Arrays.stream(GameProjectileType.values()).map(
+      var projectileInfo = playerClass.getWeapons().stream().map(
+              GameWeaponType::getProjectileType).filter(Objects::nonNull).map(
               projectile -> {
                 var damage = projectile.getDamageFactory().getDamage(gameReader);
                 return GameProjectileInfo

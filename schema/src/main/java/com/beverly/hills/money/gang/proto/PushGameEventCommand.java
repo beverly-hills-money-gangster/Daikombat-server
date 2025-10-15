@@ -439,9 +439,9 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int PROJECTILE_FIELD_NUMBER = 11;
-  private com.beverly.hills.money.gang.proto.ProjectileStats projectile_;
+  private com.beverly.hills.money.gang.proto.ProjectileCoordinates projectile_;
   /**
-   * <code>optional .daikombat.dto.ProjectileStats projectile = 11;</code>
+   * <code>optional .daikombat.dto.ProjectileCoordinates projectile = 11;</code>
    * @return Whether the projectile field is set.
    */
   @java.lang.Override
@@ -449,19 +449,19 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000400) != 0);
   }
   /**
-   * <code>optional .daikombat.dto.ProjectileStats projectile = 11;</code>
+   * <code>optional .daikombat.dto.ProjectileCoordinates projectile = 11;</code>
    * @return The projectile.
    */
   @java.lang.Override
-  public com.beverly.hills.money.gang.proto.ProjectileStats getProjectile() {
-    return projectile_ == null ? com.beverly.hills.money.gang.proto.ProjectileStats.getDefaultInstance() : projectile_;
+  public com.beverly.hills.money.gang.proto.ProjectileCoordinates getProjectile() {
+    return projectile_ == null ? com.beverly.hills.money.gang.proto.ProjectileCoordinates.getDefaultInstance() : projectile_;
   }
   /**
-   * <code>optional .daikombat.dto.ProjectileStats projectile = 11;</code>
+   * <code>optional .daikombat.dto.ProjectileCoordinates projectile = 11;</code>
    */
   @java.lang.Override
-  public com.beverly.hills.money.gang.proto.ProjectileStatsOrBuilder getProjectileOrBuilder() {
-    return projectile_ == null ? com.beverly.hills.money.gang.proto.ProjectileStats.getDefaultInstance() : projectile_;
+  public com.beverly.hills.money.gang.proto.ProjectileCoordinatesOrBuilder getProjectileOrBuilder() {
+    return projectile_ == null ? com.beverly.hills.money.gang.proto.ProjectileCoordinates.getDefaultInstance() : projectile_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -1719,31 +1719,31 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private com.beverly.hills.money.gang.proto.ProjectileStats projectile_;
+    private com.beverly.hills.money.gang.proto.ProjectileCoordinates projectile_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        com.beverly.hills.money.gang.proto.ProjectileStats, com.beverly.hills.money.gang.proto.ProjectileStats.Builder, com.beverly.hills.money.gang.proto.ProjectileStatsOrBuilder> projectileBuilder_;
+        com.beverly.hills.money.gang.proto.ProjectileCoordinates, com.beverly.hills.money.gang.proto.ProjectileCoordinates.Builder, com.beverly.hills.money.gang.proto.ProjectileCoordinatesOrBuilder> projectileBuilder_;
     /**
-     * <code>optional .daikombat.dto.ProjectileStats projectile = 11;</code>
+     * <code>optional .daikombat.dto.ProjectileCoordinates projectile = 11;</code>
      * @return Whether the projectile field is set.
      */
     public boolean hasProjectile() {
       return ((bitField0_ & 0x00000400) != 0);
     }
     /**
-     * <code>optional .daikombat.dto.ProjectileStats projectile = 11;</code>
+     * <code>optional .daikombat.dto.ProjectileCoordinates projectile = 11;</code>
      * @return The projectile.
      */
-    public com.beverly.hills.money.gang.proto.ProjectileStats getProjectile() {
+    public com.beverly.hills.money.gang.proto.ProjectileCoordinates getProjectile() {
       if (projectileBuilder_ == null) {
-        return projectile_ == null ? com.beverly.hills.money.gang.proto.ProjectileStats.getDefaultInstance() : projectile_;
+        return projectile_ == null ? com.beverly.hills.money.gang.proto.ProjectileCoordinates.getDefaultInstance() : projectile_;
       } else {
         return projectileBuilder_.getMessage();
       }
     }
     /**
-     * <code>optional .daikombat.dto.ProjectileStats projectile = 11;</code>
+     * <code>optional .daikombat.dto.ProjectileCoordinates projectile = 11;</code>
      */
-    public Builder setProjectile(com.beverly.hills.money.gang.proto.ProjectileStats value) {
+    public Builder setProjectile(com.beverly.hills.money.gang.proto.ProjectileCoordinates value) {
       if (projectileBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1757,10 +1757,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .daikombat.dto.ProjectileStats projectile = 11;</code>
+     * <code>optional .daikombat.dto.ProjectileCoordinates projectile = 11;</code>
      */
     public Builder setProjectile(
-        com.beverly.hills.money.gang.proto.ProjectileStats.Builder builderForValue) {
+        com.beverly.hills.money.gang.proto.ProjectileCoordinates.Builder builderForValue) {
       if (projectileBuilder_ == null) {
         projectile_ = builderForValue.build();
       } else {
@@ -1771,13 +1771,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .daikombat.dto.ProjectileStats projectile = 11;</code>
+     * <code>optional .daikombat.dto.ProjectileCoordinates projectile = 11;</code>
      */
-    public Builder mergeProjectile(com.beverly.hills.money.gang.proto.ProjectileStats value) {
+    public Builder mergeProjectile(com.beverly.hills.money.gang.proto.ProjectileCoordinates value) {
       if (projectileBuilder_ == null) {
         if (((bitField0_ & 0x00000400) != 0) &&
           projectile_ != null &&
-          projectile_ != com.beverly.hills.money.gang.proto.ProjectileStats.getDefaultInstance()) {
+          projectile_ != com.beverly.hills.money.gang.proto.ProjectileCoordinates.getDefaultInstance()) {
           getProjectileBuilder().mergeFrom(value);
         } else {
           projectile_ = value;
@@ -1792,7 +1792,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .daikombat.dto.ProjectileStats projectile = 11;</code>
+     * <code>optional .daikombat.dto.ProjectileCoordinates projectile = 11;</code>
      */
     public Builder clearProjectile() {
       bitField0_ = (bitField0_ & ~0x00000400);
@@ -1805,33 +1805,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .daikombat.dto.ProjectileStats projectile = 11;</code>
+     * <code>optional .daikombat.dto.ProjectileCoordinates projectile = 11;</code>
      */
-    public com.beverly.hills.money.gang.proto.ProjectileStats.Builder getProjectileBuilder() {
+    public com.beverly.hills.money.gang.proto.ProjectileCoordinates.Builder getProjectileBuilder() {
       bitField0_ |= 0x00000400;
       onChanged();
       return getProjectileFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .daikombat.dto.ProjectileStats projectile = 11;</code>
+     * <code>optional .daikombat.dto.ProjectileCoordinates projectile = 11;</code>
      */
-    public com.beverly.hills.money.gang.proto.ProjectileStatsOrBuilder getProjectileOrBuilder() {
+    public com.beverly.hills.money.gang.proto.ProjectileCoordinatesOrBuilder getProjectileOrBuilder() {
       if (projectileBuilder_ != null) {
         return projectileBuilder_.getMessageOrBuilder();
       } else {
         return projectile_ == null ?
-            com.beverly.hills.money.gang.proto.ProjectileStats.getDefaultInstance() : projectile_;
+            com.beverly.hills.money.gang.proto.ProjectileCoordinates.getDefaultInstance() : projectile_;
       }
     }
     /**
-     * <code>optional .daikombat.dto.ProjectileStats projectile = 11;</code>
+     * <code>optional .daikombat.dto.ProjectileCoordinates projectile = 11;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        com.beverly.hills.money.gang.proto.ProjectileStats, com.beverly.hills.money.gang.proto.ProjectileStats.Builder, com.beverly.hills.money.gang.proto.ProjectileStatsOrBuilder> 
+        com.beverly.hills.money.gang.proto.ProjectileCoordinates, com.beverly.hills.money.gang.proto.ProjectileCoordinates.Builder, com.beverly.hills.money.gang.proto.ProjectileCoordinatesOrBuilder> 
         getProjectileFieldBuilder() {
       if (projectileBuilder_ == null) {
         projectileBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            com.beverly.hills.money.gang.proto.ProjectileStats, com.beverly.hills.money.gang.proto.ProjectileStats.Builder, com.beverly.hills.money.gang.proto.ProjectileStatsOrBuilder>(
+            com.beverly.hills.money.gang.proto.ProjectileCoordinates, com.beverly.hills.money.gang.proto.ProjectileCoordinates.Builder, com.beverly.hills.money.gang.proto.ProjectileCoordinatesOrBuilder>(
                 getProjectile(),
                 getParentForChildren(),
                 isClean());

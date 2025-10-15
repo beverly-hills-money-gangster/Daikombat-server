@@ -4,8 +4,8 @@
 // Protobuf Java Version: 3.25.0
 package com.beverly.hills.money.gang.proto;
 
-public interface ProjectileStatsOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:daikombat.dto.ProjectileStats)
+public interface ProjectileCoordinatesOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:daikombat.dto.ProjectileCoordinates)
     com.google.protobuf.MessageOrBuilder {
 
   /**
@@ -25,17 +25,17 @@ public interface ProjectileStatsOrBuilder extends
   com.beverly.hills.money.gang.proto.ProjectileType getProjectileType();
 
   /**
-   * <code>optional .daikombat.dto.Vector position = 2;</code>
-   * @return Whether the position field is set.
+   * <code>optional .daikombat.dto.Vector blowUpPosition = 2;</code>
+   * @return Whether the blowUpPosition field is set.
    */
-  boolean hasPosition();
+  boolean hasBlowUpPosition();
   /**
-   * <code>optional .daikombat.dto.Vector position = 2;</code>
-   * @return The position.
+   * <code>optional .daikombat.dto.Vector blowUpPosition = 2;</code>
+   * @return The blowUpPosition.
    */
-  com.beverly.hills.money.gang.proto.Vector getPosition();
+  com.beverly.hills.money.gang.proto.Vector getBlowUpPosition();
   /**
-   * <code>optional .daikombat.dto.Vector position = 2;</code>
+   * <code>optional .daikombat.dto.Vector blowUpPosition = 2;</code>
    */
-  com.beverly.hills.money.gang.proto.VectorOrBuilder getPositionOrBuilder();
+  com.beverly.hills.money.gang.proto.VectorOrBuilder getBlowUpPositionOrBuilder();
 }

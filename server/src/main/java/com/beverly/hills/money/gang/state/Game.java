@@ -220,7 +220,9 @@ public class Game implements Closeable, GameReader {
     } else if (!attackingPlayerState.getRpgPlayerClass().getWeapons().contains(weaponType)) {
       LOG.warn("Not supported weapon type for player class");
       return null;
-    } else if (!attackingPlayerState.wasteAmmo(weaponType)) {
+    } else if (weaponType.getProjectileType() == null
+        && !attackingPlayerState.wasteAmmo(weaponType)) {
+      // for projectile-based weapons, we waste ammo only when the projectile hits the target
       LOG.warn("Player wasted all ammo");
       return null;
     }
@@ -242,7 +244,23 @@ public class Game implements Closeable, GameReader {
       final GameProjectileType projectileType,
       final int eventSequence,
       final int pingMls) {
-    // TODO check related weapon ammo
+
+    var attackingPlayerState = getPlayer(attackingPlayerId).orElse(null);
+    if (attackingPlayerState == null) {
+      LOG.warn("Non-existing player can't attack");
+      return null;
+    }
+    var weaponType = attackingPlayerState.getRpgPlayerClass().getWeapons().stream()
+        .filter(gameWeaponType -> gameWeaponType.getProjectileType() == projectileType).findFirst()
+        .orElse(null);
+
+    if (weaponType == null) {
+      LOG.warn("Not supported weapon type for player class");
+      return null;
+    } else if (!attackingPlayerState.wasteAmmo(weaponType)) {
+      LOG.warn("Player wasted all ammo");
+      return null;
+    }
     // TODO check trajectory
     return attack(
         playerCoordinates,
@@ -253,6 +271,7 @@ public class Game implements Closeable, GameReader {
         eventSequence,
         pingMls);
   }
+
 
   PlayerAttackingGameState attack(
       final Coordinates playerCoordinates,

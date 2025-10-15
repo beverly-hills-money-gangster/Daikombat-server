@@ -853,8 +853,6 @@ public class GameShootingTest extends GameTest {
     for (int i = 0; i < ammo; i++) {
       PlayerAttackingGameState playerAttackingGameState = game.attackWeapon(
           playerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
-          playerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
-              .getPosition(),
           playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), null,
           gameWeaponType,
           testSequenceGenerator.getNext(),
@@ -866,8 +864,6 @@ public class GameShootingTest extends GameTest {
 
     var state = game.attackWeapon(
         playerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
-        playerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
-            .getPosition(),
         playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), null,
         gameWeaponType,
         testSequenceGenerator.getNext(),
@@ -907,8 +903,6 @@ public class GameShootingTest extends GameTest {
 
     PlayerAttackingGameState playerAttackingGameState = game.attackWeapon(
         playerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
-        playerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
-            .getPosition(),
         playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(), null,
         gameWeaponType,
         testSequenceGenerator.getNext(),

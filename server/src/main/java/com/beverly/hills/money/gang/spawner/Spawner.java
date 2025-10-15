@@ -15,6 +15,7 @@ import com.beverly.hills.money.gang.state.PlayerStateReader;
 import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.Vector;
 import com.beverly.hills.money.gang.state.entity.VectorDirection;
+import com.beverly.hills.money.gang.state.entity.Wall;
 import com.beverly.hills.money.gang.teleport.Teleport;
 import com.beverly.hills.money.gang.validator.MapValidator;
 import java.util.ArrayList;
@@ -28,7 +29,6 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO make map-aware anti-cheat
 public class Spawner extends AbstractSpawner {
 
   private static final Random RANDOM = new Random();
@@ -46,6 +46,7 @@ public class Spawner extends AbstractSpawner {
 
   private final List<PowerUp> availablePowerUps = new ArrayList<>();
 
+  private final List<Wall> walls = new ArrayList<>();
 
   public Spawner(final MapData map) {
     MAP_VALIDATOR.validate(map);
@@ -55,6 +56,33 @@ public class Spawner extends AbstractSpawner {
         .filter(group -> group.getName().equals("teleports")).findFirst();
     var powerUpsGroup = map.getObjectgroup().stream()
         .filter(group -> group.getName().equals("powerups")).findFirst();
+
+    var wallsGroup = map.getObjectgroup().stream()
+        .filter(group -> group.getName().equals("rects")).findFirst();
+
+    // TODO check that teleports, spawns, and power-ups ARE not inside walls
+    wallsGroup.ifPresent(wallGroup -> {
+      if (wallGroup.getObject() == null) {
+        return;
+      }
+      for (MapObject wallObj : wallGroup.getObject()) {
+        Wall wall = new Wall(
+            String.valueOf(wallObj.getId()),
+            Vector.builder()
+                .x(normalizeCoordinate(wallObj.getX(), map.getTilewidth(), map.getWidth()))
+                .y(-normalizeCoordinate(wallObj.getY() + wallObj.getHeight(),
+                    map.getTileheight(), map.getHeight()))
+                .build(),
+            Vector.builder()
+                .x(normalizeCoordinate(wallObj.getX() + wallObj.getWidth(),
+                    map.getTilewidth(), map.getWidth()))
+                .y(-normalizeCoordinate(wallObj.getY(), map.getTileheight(), map.getHeight()))
+                .build());
+        walls.add(wall);
+      }
+    });
+
+    LOG.info("Registered {} walls", walls.size());
 
     powerUpsGroup.ifPresent(powerUpGroup -> {
       if (powerUpGroup.getObject() == null) {
@@ -151,6 +179,11 @@ public class Spawner extends AbstractSpawner {
       playersAroundSpawn.put(playersAround, spawn);
     });
     return playersAroundSpawn.values().stream().findFirst().get();
+  }
+
+  @Override
+  public List<Wall> getAllWalls() {
+    return new ArrayList<>(walls);
   }
 
   public List<Coordinates> getRandomSpawns() {

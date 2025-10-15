@@ -207,33 +207,53 @@ public class Game implements Closeable, GameReader {
 
   public PlayerAttackingGameState attackWeapon(
       final Coordinates playerCoordinates,
-      final Vector attackPosition,
       final int attackingPlayerId,
       final Integer attackedPlayerId,
       final GameWeaponType weaponType,
       final int eventSequence,
       final int pingMls) {
-    var attackingPlayerState = getPlayer(attackingPlayerId).orElse(null);
-    if (attackingPlayerState == null) {
-      LOG.warn("Non-existing player can't attack");
-      return null;
-    } else if (!attackingPlayerState.getRpgPlayerClass().getWeapons().contains(weaponType)) {
-      LOG.warn("Not supported weapon type for player class");
-      return null;
-    } else if (weaponType.getProjectileType() == null
-        && !attackingPlayerState.wasteAmmo(weaponType)) {
-      // for projectile-based weapons, we waste ammo only when the projectile hits the target
-      LOG.warn("Player wasted all ammo");
+    if (!isValidWeaponAttack(playerCoordinates, attackingPlayerId, attackedPlayerId, weaponType)) {
       return null;
     }
     return attack(
         playerCoordinates,
-        attackPosition,
+        playerCoordinates.getPosition(),
         attackingPlayerId,
         attackedPlayerId,
         weaponType.getDamageFactory().getDamage(this),
         eventSequence,
         pingMls);
+  }
+
+  private boolean isValidWeaponAttack(
+      final Coordinates playerCoordinates,
+      final int attackingPlayerId,
+      final Integer attackedPlayerId,
+      final GameWeaponType weaponType) {
+    var validAttack = getPlayer(attackingPlayerId).map(
+        attackingPlayer -> {
+          if (!attackingPlayer.getRpgPlayerClass().getWeapons().contains(weaponType)) {
+            return false;
+          }
+          if (weaponType.getProjectileType() == null) {
+            return attackingPlayer.wasteAmmo(weaponType);
+          } else {
+            return true;
+          }
+        }).orElse(false);
+
+    if (!validAttack) {
+      return false;
+    }
+    if (attackedPlayerId == null) {
+      return true;
+    }
+    return playersRegistry.getPlayerState(attackedPlayerId)
+        .filter(playerState -> !playerState.isDead())
+        .map(attackedPlayer -> !antiCheat.isCrossingWalls(
+            playerCoordinates.getPosition(),
+            attackedPlayer.getCoordinates().getPosition(),
+            spawner.getAllWalls())).orElse(false);
   }
 
   public PlayerAttackingGameState attackProjectile(
@@ -281,7 +301,7 @@ public class Game implements Closeable, GameReader {
       final Damage damage,
       final int eventSequence,
       final int pingMls) {
-    PlayerState attackingPlayerState = getPlayer(attackingPlayerId).orElse(null);
+    var attackingPlayerState = getPlayer(attackingPlayerId).orElse(null);
     if (attackingPlayerState == null) {
       LOG.warn("Non-existing player can't attack");
       return null;
@@ -289,7 +309,7 @@ public class Game implements Closeable, GameReader {
       LOG.warn("Dead players can't attack");
       return null;
     } else if (attackedPlayerId != null &&
-        isAttackCheating(attackPosition, damage, attackedPlayerId)) {
+        isAttackTooFar(attackPosition, damage, attackedPlayerId)) {
       LOG.warn("Cheating detected");
       return null;
     }
@@ -467,7 +487,7 @@ public class Game implements Closeable, GameReader {
   }
 
 
-  private boolean isAttackCheating(Vector attackPosition, Damage damage,
+  private boolean isAttackTooFar(Vector attackPosition, Damage damage,
       int affectedPlayerId) {
     return playersRegistry
         .getPlayerState(affectedPlayerId)

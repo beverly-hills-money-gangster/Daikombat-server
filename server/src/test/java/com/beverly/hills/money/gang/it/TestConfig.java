@@ -13,6 +13,7 @@ import com.beverly.hills.money.gang.state.PlayerStateReader;
 import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.Vector;
 import com.beverly.hills.money.gang.state.entity.VectorDirection;
+import com.beverly.hills.money.gang.state.entity.Wall;
 import com.beverly.hills.money.gang.teleport.Teleport;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +60,11 @@ public class TestConfig {
         return Coordinates.builder()
             .position(MAIN_LOCATION)
             .direction(VectorDirection.EAST.getVector()).build();
+      }
+
+      @Override
+      public List<Wall> getAllWalls() {
+        return new ArrayList<>(); // no walls
       }
     };
   }

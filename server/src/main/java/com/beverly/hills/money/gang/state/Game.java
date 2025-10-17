@@ -507,10 +507,6 @@ public class Game implements Closeable, GameReader {
         });
   }
 
-  public boolean isCurrentMatch(int clientSideMatchId) {
-    return matchId.get() == clientSideMatchId;
-  }
-
   @Override
   public int getMatchId() {
     return matchId.get();

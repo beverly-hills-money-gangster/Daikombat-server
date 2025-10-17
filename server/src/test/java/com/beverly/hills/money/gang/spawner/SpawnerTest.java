@@ -33,13 +33,13 @@ public class SpawnerTest {
 
   private final Map<String, ExpectedMapValues> EXPECTED = Map.of(
       "classic", ExpectedMapValues
-          .builder().teleports(7).spawns(12).powerUps(7).build(),
+          .builder().teleports(7).spawns(12).powerUps(7).walls(76).build(),
       "crazy", ExpectedMapValues
-          .builder().teleports(4).spawns(4).powerUps(6).build(),
+          .builder().teleports(4).spawns(4).powerUps(6).walls(100).build(),
       "horror", ExpectedMapValues
-          .builder().teleports(2).spawns(5).powerUps(6).build(),
+          .builder().teleports(2).spawns(5).powerUps(6).walls(63).build(),
       "peace", ExpectedMapValues
-          .builder().teleports(0).spawns(6).powerUps(0).build()
+          .builder().teleports(0).spawns(6).powerUps(0).walls(20).build()
   );
 
   @Test
@@ -54,6 +54,8 @@ public class SpawnerTest {
           "Teleports mismatch in map " + mapName);
       assertEquals(expectedMapValues.getValue().spawns, spawner.getPlayerSpawns().size(),
           "Spawns mismatch in map " + mapName);
+      assertEquals(expectedMapValues.getValue().walls, spawner.getAllWalls().size(),
+          "Walls mismatch in map " + mapName);
     }
   }
 
@@ -106,6 +108,7 @@ public class SpawnerTest {
     private final int teleports;
     private final int spawns;
     private final int powerUps;
+    private final int walls;
   }
 
 }

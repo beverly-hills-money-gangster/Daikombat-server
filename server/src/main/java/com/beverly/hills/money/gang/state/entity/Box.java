@@ -8,26 +8,33 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * Straight 2D rectangle wall. Can be stored as 2 points: min and max
+ * Straight 2D rectangle box. Can be stored as 2 points: min and max
  */
-public class Wall {
-
-  @Getter
-  private final String id;
+public class Box {
 
   private final List<Edge> edges = new ArrayList<>();
 
-  public Wall(final String id, final Vector minPoint, final Vector maxPoint) {
-    /*
+  private final Vector minPoint;
+  private final Vector maxPoint;
 
-    (a) ---- (b)
+  public Box(final float minX, final float minY, final float maxX, final float maxY) {
+    this(Vector.builder().x(minX).y(minY).build(), Vector.builder().x(maxX).y(maxY).build());
+  }
+
+  public Box(final Vector minPoint, final Vector maxPoint) {
+    if (minPoint.getY() > maxPoint.getY() || minPoint.getX() > maxPoint.getX()) {
+      throw new IllegalArgumentException("minPoint is not supposed to be lower than maxPoint");
+    }
+    this.minPoint = minPoint;
+    this.maxPoint = maxPoint;
+
+    /*
+   (a) ---- (b)
     |        |
     |        |
     |        |
    (c) ---- (d)
-
      */
-    this.id = id;
     var a = Vector.builder().x(minPoint.getX()).y(maxPoint.getY()).build();
     var b = Vector.builder().x(maxPoint.getX()).y(maxPoint.getY()).build();
     var c = Vector.builder().x(minPoint.getX()).y(minPoint.getY()).build();
@@ -42,6 +49,20 @@ public class Wall {
   public boolean isCrossing(
       final Vector startVector,
       final Vector endVector) {
+
+    float lineMinX = Math.min(startVector.getX(), endVector.getX());
+    float lineMaxX = Math.max(startVector.getX(), endVector.getX());
+    float lineMinY = Math.min(startVector.getY(), endVector.getY());
+    float lineMaxY = Math.max(startVector.getY(), endVector.getY());
+
+    if (lineMaxX < minPoint.getX() || lineMinX > maxPoint.getX()
+        || lineMaxY < minPoint.getY() || lineMinY > maxPoint.getY()) {
+      return false; // definitely outside
+    } else if (lineMinX > minPoint.getX() && lineMaxX < maxPoint.getX()
+        && lineMinY > minPoint.getY() && lineMaxY < maxPoint.getY()) {
+      return true; // definitely inside
+    }
+
     for (Edge edge : edges) {
       var crossing = Line2D.linesIntersect(
           startVector.getX(),
@@ -59,7 +80,6 @@ public class Wall {
     return false;
   }
 
-
   @Getter
   @Builder
   @ToString
@@ -69,5 +89,11 @@ public class Wall {
     final Vector endVector;
   }
 
-
+  @Override
+  public String toString() {
+    return "Box{" +
+        "minPoint=" + minPoint +
+        ", maxPoint=" + maxPoint +
+        '}';
+  }
 }

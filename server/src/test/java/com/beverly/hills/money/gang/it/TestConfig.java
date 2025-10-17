@@ -13,7 +13,7 @@ import com.beverly.hills.money.gang.state.PlayerStateReader;
 import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.Vector;
 import com.beverly.hills.money.gang.state.entity.VectorDirection;
-import com.beverly.hills.money.gang.state.entity.Wall;
+import com.beverly.hills.money.gang.state.entity.Box;
 import com.beverly.hills.money.gang.teleport.Teleport;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +63,7 @@ public class TestConfig {
       }
 
       @Override
-      public List<Wall> getAllWalls() {
+      public List<Box> getAllWalls() {
         return new ArrayList<>(); // no walls
       }
     };

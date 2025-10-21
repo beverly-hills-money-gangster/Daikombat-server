@@ -474,7 +474,7 @@ public class Game implements Closeable, GameReader {
     }
     var teleportTo = teleportRegistry.getTeleport(teleport.getTeleportToId()).orElseThrow(
         () -> new GameLogicError("Unknown teleport", GameErrorCode.COMMON_ERROR));
-    var teleportToPosition = teleportTo.getLocation();
+    var teleportToPosition = teleportTo.getSpawnTo();
     var teleportToDirection = teleportTo.getDirection().getVector();
     // position + direction so you teleport in front of the teleport location
     var newPosition = Vector.builder()

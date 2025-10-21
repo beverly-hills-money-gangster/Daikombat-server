@@ -16,7 +16,6 @@ import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.Vector;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.spawner.AbstractSpawner;
-import com.beverly.hills.money.gang.spawner.Spawner;
 import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import java.util.ArrayList;
 import java.util.List;

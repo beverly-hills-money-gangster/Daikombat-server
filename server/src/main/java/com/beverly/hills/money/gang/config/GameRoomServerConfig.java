@@ -22,6 +22,7 @@ public class GameRoomServerConfig {
   }
 
   @Getter
+  @ToString
   public class GameRoomServerConfigHolder {
 
     private final String title = ObjectUtils.defaultIfNull(getRoomEnv(

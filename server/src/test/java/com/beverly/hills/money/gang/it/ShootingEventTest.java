@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
+import com.beverly.hills.money.gang.cheat.AntiCheat;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.network.GameConnection;
@@ -51,6 +52,9 @@ public class ShootingEventTest extends AbstractGameServerTest {
 
   @SpyBean
   private AbstractSpawner spawner;
+
+  @SpyBean
+  private AntiCheat antiCheat;
 
   @Autowired
   private GameRoomRegistry gameRoomRegistry;
@@ -311,6 +315,74 @@ public class ShootingEventTest extends AbstractGameServerTest {
                 "Can't find the game we connected to"));
     assertEquals(2, myGame.getPlayersOnline(), "Should be 2 players still");
   }
+
+
+  /**
+   * @given a running server with 2 connected player
+   * @when player 1 shoots player 2 through a wall
+   * @then the event is ignored
+   */
+  @Test
+  public void testShootHitCrossingWalls() throws Exception {
+    doReturn(true).when(antiCheat).isCrossingWalls(any(), any(), any());
+
+    int gameIdToConnectTo = 0;
+
+    var shotgunInfo = gameRoomRegistry.getGame(gameIdToConnectTo)
+        .getRpgWeaponInfo().getWeaponInfo(RPGPlayerClass.WARRIOR, GameWeaponType.SHOTGUN)
+        .get();
+    doReturn(Coordinates.builder()
+        .position(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(0F).build())
+        .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(1F).build())
+        .build(), Coordinates.builder().position(
+            com.beverly.hills.money.gang.state.entity.Vector.builder()
+                .x((float) (shotgunInfo.getMaxDistance()) - 0.5f).y(0).build())
+        .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(1F).build())
+        .build()).when(spawner).getPlayerSpawn(any());
+
+    GameConnection shooterConnection = createGameConnection("localhost", port);
+    shooterConnection.write(
+        JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my player name")
+            .setGameId(gameIdToConnectTo).build());
+    GameConnection getShotConnection = createGameConnection("localhost", port);
+    getShotConnection.write(
+        JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my other player name")
+            .setGameId(gameIdToConnectTo).build());
+    waitUntilGetResponses(shooterConnection.getResponse(), 2);
+    waitUntilGetResponses(getShotConnection.getResponse(), 2);
+
+    ServerResponse shooterPlayerSpawn = shooterConnection.getResponse().poll().get();
+    int shooterPlayerId = shooterPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
+
+    ServerResponse shotPlayerSpawn = shooterConnection.getResponse().poll().get();
+    int shotPlayerId = shotPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
+
+    emptyQueue(getShotConnection.getResponse());
+
+    var shooterSpawnEvent = shooterPlayerSpawn.getGameEvents().getEvents(0);
+    float newPositionX = shooterSpawnEvent.getPlayer().getPosition().getX() + 0.1f;
+    float newPositionY = shooterSpawnEvent.getPlayer().getPosition().getY() - 0.1f;
+    emptyQueue(shooterConnection.getResponse());
+    shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
+        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
+        .setGameId(gameIdToConnectTo)
+        .setEventType(GameEventType.ATTACK).setWeaponType(WeaponType.SHOTGUN).setDirection(
+            Vector.newBuilder().setX(shooterSpawnEvent.getPlayer().getDirection().getX())
+                .setY(shooterSpawnEvent.getPlayer().getDirection().getY()).build())
+        .setPosition(Vector.newBuilder().setX(newPositionX).setY(newPositionY).build())
+        .setAffectedPlayerId(shotPlayerId).build());
+
+    Thread.sleep(2_500);
+
+    // check that nothing happened
+    assertEquals(0, shooterConnection.getResponse().size(),
+        "No events are expected because it was a gunshot through a wall");
+    assertEquals(0, getShotConnection.getResponse().size(),
+        "No events are expected because it was a gunshot through a wall");
+  }
+
 
   /**
    * @given a running server with 2 connected player

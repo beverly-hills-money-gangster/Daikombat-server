@@ -47,7 +47,6 @@ public class AttackGameEventHandler implements GameEventHandler {
     if (gameCommand.hasWeaponType()) {
       attackGameState = game.attackWeapon(
           createCoordinates(gameCommand),
-          createVector(gameCommand.getPosition()),
           gameCommand.getPlayerId(),
           gameCommand.hasAffectedPlayerId() ? gameCommand.getAffectedPlayerId() : null,
           getGameWeaponType(gameCommand.getWeaponType()),
@@ -122,6 +121,7 @@ public class AttackGameEventHandler implements GameEventHandler {
         .map(PlayerStateReader::getPlayerId).orElse(null);
   }
 
+  // TODO move to a separate class
   private GameWeaponType getGameWeaponType(WeaponType weaponType) {
     return switch (weaponType) {
       case SHOTGUN -> GameWeaponType.SHOTGUN;

@@ -20,4 +20,10 @@ public class Vector {
     float y = v1.getY() - v2.getY();
     return Math.sqrt(x * x + y * y);
   }
+
+  public Vector add(float x, float y) {
+    return Vector.builder()
+        .x(this.x + x)
+        .y(this.y + y).build();
+  }
 }

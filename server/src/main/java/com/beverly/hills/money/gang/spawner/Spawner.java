@@ -10,14 +10,14 @@ import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
 import com.beverly.hills.money.gang.powerup.QuadDamagePowerUp;
 import com.beverly.hills.money.gang.spawner.map.MapData;
-import com.beverly.hills.money.gang.spawner.map.MapObject;
+import com.beverly.hills.money.gang.spawner.map.ObjectGroup;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
+import com.beverly.hills.money.gang.state.entity.Box;
 import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.Vector;
 import com.beverly.hills.money.gang.state.entity.VectorDirection;
 import com.beverly.hills.money.gang.teleport.Teleport;
 import com.beverly.hills.money.gang.validator.MapValidator;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -25,10 +25,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.Getter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-// TODO make map-aware anti-cheat
 public class Spawner extends AbstractSpawner {
 
   private static final Random RANDOM = new Random();
@@ -37,103 +34,90 @@ public class Spawner extends AbstractSpawner {
 
   private static final double CLOSE_PROXIMITY = 3;
 
-  private static final Logger LOG = LoggerFactory.getLogger(Spawner.class);
-
   @Getter
-  private final List<Coordinates> playerSpawns = new ArrayList<>();
+  private final List<Coordinates> playerSpawns;
 
-  private final List<Teleport> teleports = new ArrayList<>();
+  private final List<Teleport> teleports;
 
-  private final List<PowerUp> availablePowerUps = new ArrayList<>();
+  private final List<PowerUp> availablePowerUps;
 
+  private final List<Box> walls;
 
   public Spawner(final MapData map) {
     MAP_VALIDATOR.validate(map);
-    var spawnsGroup = map.getObjectgroup().stream()
-        .filter(group -> group.getName().equals("spawns")).findFirst();
-    var teleportsGroup = map.getObjectgroup().stream()
-        .filter(group -> group.getName().equals("teleports")).findFirst();
-    var powerUpsGroup = map.getObjectgroup().stream()
-        .filter(group -> group.getName().equals("powerups")).findFirst();
 
-    powerUpsGroup.ifPresent(powerUpGroup -> {
-      if (powerUpGroup.getObject() == null) {
-        return;
-      }
-      for (MapObject powerUpObj : powerUpGroup.getObject()) {
-        powerUpObj.findProperty("type").ifPresent(typeProperty -> {
-          var type = PowerUpType.valueOf(typeProperty.getValue());
+    walls = map.getObjectgroup().stream()
+        .filter(group -> group.getName().equals("rects")).findFirst()
+        .map(ObjectGroup::getObject)
+        .map(mapObjects -> mapObjects.stream().map(wallObj ->
+            new Box(Vector.builder()
+                .x(normalizeCoordinate(wallObj.getX(), map.getTilewidth(), map.getWidth()))
+                .y(-normalizeCoordinate(wallObj.getY() + wallObj.getHeight(),
+                    map.getTileheight(), map.getHeight()))
+                .build(), Vector.builder()
+                .x(normalizeCoordinate(wallObj.getX() + wallObj.getWidth(), map.getTilewidth(),
+                    map.getWidth()))
+                .y(-normalizeCoordinate(wallObj.getY(), map.getTileheight(), map.getHeight()))
+                .build())).collect(Collectors.toList())).orElse(List.of());
+
+    availablePowerUps = map.getObjectgroup().stream()
+        .filter(group -> group.getName().equals("powerups")).findFirst()
+        .map(ObjectGroup::getObject)
+        .map(mapObjects -> mapObjects.stream().map(powerUpObj -> {
+          var type = PowerUpType.valueOf(powerUpObj.getProperty("type").getValue());
           var position = Vector.builder()
               .x(normalizeCoordinate(powerUpObj.getX(), map.getTilewidth(), map.getWidth()))
               .y(-normalizeCoordinate(powerUpObj.getY(), map.getTileheight(), map.getHeight()))
               .build();
-          availablePowerUps.add(createPowerUp(type, position));
-          LOG.info("Register power-up {} {}", type, position);
-        });
-      }
-    });
+          return createPowerUp(type, position);
+        }).collect(Collectors.toList())).orElse(List.of());
 
-    spawnsGroup.ifPresent(spawnGroup -> {
-      if (spawnGroup.getObject() == null) {
-        return;
-      }
-      for (MapObject spawnObj : spawnGroup.getObject()) {
-        spawnObj.findProperty("direction").ifPresent(directionProperty -> {
+    playerSpawns = map.getObjectgroup().stream()
+        .filter(group -> group.getName().equals("spawns")).findFirst()
+        .map(ObjectGroup::getObject)
+        .map(mapObjects -> mapObjects.stream().map(spawnObj -> {
+          var directionProperty = spawnObj.getProperty("direction");
           var position = Vector.builder()
               .x(normalizeCoordinate(spawnObj.getX(), map.getTilewidth(), map.getWidth()))
               .y(-normalizeCoordinate(spawnObj.getY(), map.getTileheight(), map.getHeight()))
               .build();
-          var spawn = Coordinates.builder().position(position)
-              .direction(
-                  VectorDirection.valueOf(directionProperty.getValue()
-                      .toUpperCase(Locale.ENGLISH)).getVector()).build();
-          playerSpawns.add(spawn);
-          LOG.info("Register player spawn {}", spawn);
-        });
-      }
-    });
+          return Coordinates.builder().position(position)
+              .direction(VectorDirection.valueOf(directionProperty.getValue()
+                  .toUpperCase(Locale.ENGLISH)).getVector()).build();
+        }).collect(Collectors.toList())).orElse(List.of());
 
     if (playerSpawns.isEmpty()) {
       throw new IllegalStateException("Map doesn't have player spawns");
     }
 
-    teleportsGroup.ifPresent(teleportGroup -> {
-      if (teleportGroup.getObject() == null) {
-        return;
-      }
-      for (MapObject teleportObj : teleportGroup.getObject()) {
-        teleportObj.findProperty("direction").ifPresent(
-            directionProperty -> teleportObj.findProperty("teleportsTo").ifPresent(
-                teleportsToProperty -> {
-                  String direction = directionProperty.getValue();
-                  int teleportsTo = Integer.parseInt(teleportsToProperty.getValue());
-                  var position = Vector.builder()
-                      .x(normalizeCoordinate(teleportObj.getX(), map.getTilewidth(),
-                          map.getWidth()))
-                      .y(-normalizeCoordinate(teleportObj.getY(), map.getTileheight(),
-                          map.getHeight()))
-                      .build();
-                  var teleport = Teleport.builder()
-                      .id(teleportObj.getId()).teleportToId(teleportsTo).direction(
-                          VectorDirection.valueOf(direction.toUpperCase(Locale.ENGLISH)))
-                      .location(position).build();
-                  teleports.add(teleport);
-                  LOG.info("Register teleport {}", teleport);
-                }));
-      }
-    });
-
+    teleports = map.getObjectgroup().stream()
+        .filter(group -> group.getName().equals("teleports")).findFirst()
+        .map(ObjectGroup::getObject)
+        .map(mapObjects -> mapObjects.stream().map(teleportObj -> {
+          var directionProperty = teleportObj.getProperty("direction");
+          var teleportsToProperty = teleportObj.getProperty("teleportsTo");
+          String direction = directionProperty.getValue();
+          int teleportsTo = Integer.parseInt(teleportsToProperty.getValue());
+          var position = Vector.builder()
+              .x(normalizeCoordinate(teleportObj.getX(), map.getTilewidth(), map.getWidth()))
+              .y(-normalizeCoordinate(teleportObj.getY(), map.getTileheight(), map.getHeight()))
+              .build();
+          return Teleport.builder()
+              .id(teleportObj.getId()).teleportToId(teleportsTo).direction(
+                  VectorDirection.valueOf(direction.toUpperCase(Locale.ENGLISH)))
+              .location(position).build();
+        }).collect(Collectors.toList())).orElse(List.of());
   }
 
   @Override
   public List<Teleport> getTeleports() {
-    return new ArrayList<>(teleports);
+    return teleports;
   }
 
 
   @Override
   public List<PowerUp> getPowerUps() {
-    return new ArrayList<>(availablePowerUps);
+    return availablePowerUps;
   }
 
 
@@ -151,6 +135,11 @@ public class Spawner extends AbstractSpawner {
       playersAroundSpawn.put(playersAround, spawn);
     });
     return playersAroundSpawn.values().stream().findFirst().get();
+  }
+
+  @Override
+  public List<Box> getAllWalls() {
+    return walls;
   }
 
   public List<Coordinates> getRandomSpawns() {

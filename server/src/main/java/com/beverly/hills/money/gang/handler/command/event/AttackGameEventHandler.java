@@ -7,6 +7,7 @@ import static com.beverly.hills.money.gang.factory.response.ServerResponseFactor
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createVector;
 import static com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType.ATTACK;
 
+import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.factory.response.ServerResponseFactory;
 import com.beverly.hills.money.gang.proto.ProjectileType;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
@@ -42,7 +43,7 @@ public class AttackGameEventHandler implements GameEventHandler {
   }
 
   @Override
-  public void handle(Game game, PushGameEventCommand gameCommand) {
+  public void handle(Game game, PushGameEventCommand gameCommand) throws GameLogicError {
     final PlayerAttackingGameState attackGameState;
     if (gameCommand.hasWeaponType()) {
       attackGameState = game.attackWeapon(
@@ -117,6 +118,7 @@ public class AttackGameEventHandler implements GameEventHandler {
   private Integer getProjectileAffectedPlayerId(PushGameEventCommand gameCommand, Damage damage,
       Game game) {
     return game.getPlayerWithinDamageRadius(
+            gameCommand.getPlayerId(),
             createVector(gameCommand.getProjectile().getBlowUpPosition()), damage.getMaxDistance())
         .map(PlayerStateReader::getPlayerId).orElse(null);
   }

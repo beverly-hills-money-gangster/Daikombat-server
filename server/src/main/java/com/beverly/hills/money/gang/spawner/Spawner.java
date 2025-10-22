@@ -17,22 +17,29 @@ import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.Vector;
 import com.beverly.hills.money.gang.state.entity.VectorDirection;
 import com.beverly.hills.money.gang.teleport.Teleport;
+import com.beverly.hills.money.gang.util.MathUtil;
 import com.beverly.hills.money.gang.validator.MapValidator;
+import java.util.Base64;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.Getter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Objects spawns: upper-left corner
- * Player spawns: center
+ * Objects spawns: upper-left corner Player spawns: center
  */
 public class Spawner extends AbstractSpawner {
 
   private static final Random RANDOM = new Random();
+
+  private static final Logger LOG = LoggerFactory.getLogger(Spawner.class);
 
   private static final MapValidator MAP_VALIDATOR = new MapValidator();
 
@@ -47,21 +54,29 @@ public class Spawner extends AbstractSpawner {
 
   private final List<Box> walls;
 
+  private final Set<Integer> floorTiles;
+
+  private final MapData mapData;
+
   public Spawner(final MapData map) {
     MAP_VALIDATOR.validate(map);
+    this.mapData = map;
 
     walls = map.getObjectgroup().stream()
         .filter(group -> group.getName().equals("rects")).findFirst()
         .map(ObjectGroup::getObject)
         .map(mapObjects -> mapObjects.stream().map(wallObj ->
             new Box(Vector.builder()
-                .x(normalizeCoordinate(wallObj.getX(), map.getTilewidth(), map.getWidth()))
-                .y(-normalizeCoordinate(wallObj.getY() + wallObj.getHeight(),
+                .x(MathUtil.normalizeMapCoordinate(wallObj.getX(), map.getTilewidth(),
+                    map.getWidth()))
+                .y(-MathUtil.normalizeMapCoordinate(wallObj.getY() + wallObj.getHeight(),
                     map.getTileheight(), map.getHeight()))
                 .build(), Vector.builder()
-                .x(normalizeCoordinate(wallObj.getX() + wallObj.getWidth(), map.getTilewidth(),
+                .x(MathUtil.normalizeMapCoordinate(wallObj.getX() + wallObj.getWidth(),
+                    map.getTilewidth(),
                     map.getWidth()))
-                .y(-normalizeCoordinate(wallObj.getY(), map.getTileheight(), map.getHeight()))
+                .y(-MathUtil.normalizeMapCoordinate(wallObj.getY(), map.getTileheight(),
+                    map.getHeight()))
                 .build())).collect(Collectors.toList())).orElse(List.of());
 
     availablePowerUps = map.getObjectgroup().stream()
@@ -70,8 +85,10 @@ public class Spawner extends AbstractSpawner {
         .map(mapObjects -> mapObjects.stream().map(powerUpObj -> {
           var type = PowerUpType.valueOf(powerUpObj.getProperty("type").getValue());
           var position = Vector.builder()
-              .x(normalizeCoordinate(powerUpObj.getX(), map.getTilewidth(), map.getWidth()))
-              .y(-normalizeCoordinate(powerUpObj.getY(), map.getTileheight(), map.getHeight()))
+              .x(MathUtil.normalizeMapCoordinate(powerUpObj.getX(), map.getTilewidth(),
+                  map.getWidth()))
+              .y(-MathUtil.normalizeMapCoordinate(powerUpObj.getY(), map.getTileheight(),
+                  map.getHeight()))
               .build();
           return createPowerUp(type, position);
         }).collect(Collectors.toList())).orElse(List.of());
@@ -82,9 +99,10 @@ public class Spawner extends AbstractSpawner {
         .map(mapObjects -> mapObjects.stream().map(spawnObj -> {
           var directionProperty = spawnObj.getProperty("direction");
           var position = Vector.builder()
-              .x(normalizeCoordinate(spawnObj.getX() + map.getTilewidth() / 2f, map.getTilewidth(),
+              .x(MathUtil.normalizeMapCoordinate(spawnObj.getX() + map.getTilewidth() / 2f,
+                  map.getTilewidth(),
                   map.getWidth()))
-              .y(-normalizeCoordinate(spawnObj.getY() - map.getTileheight() / 2f,
+              .y(-MathUtil.normalizeMapCoordinate(spawnObj.getY() - map.getTileheight() / 2f,
                   map.getTileheight(), map.getHeight()))
               .build();
           return Coordinates.builder().position(position)
@@ -105,13 +123,15 @@ public class Spawner extends AbstractSpawner {
           String direction = directionProperty.getValue();
           int teleportsTo = Integer.parseInt(teleportsToProperty.getValue());
           var position = Vector.builder()
-              .x(normalizeCoordinate(teleportObj.getX(), map.getTilewidth(), map.getWidth()))
-              .y(-normalizeCoordinate(teleportObj.getY(), map.getTileheight(), map.getHeight()))
+              .x(MathUtil.normalizeMapCoordinate(teleportObj.getX(), map.getTilewidth(),
+                  map.getWidth()))
+              .y(-MathUtil.normalizeMapCoordinate(teleportObj.getY(), map.getTileheight(),
+                  map.getHeight()))
               .build();
           var spawnTo = Vector.builder()
-              .x(normalizeCoordinate(teleportObj.getX() + map.getTilewidth() / 2f,
+              .x(MathUtil.normalizeMapCoordinate(teleportObj.getX() + map.getTilewidth() / 2f,
                   map.getTilewidth(), map.getWidth()))
-              .y(-normalizeCoordinate(teleportObj.getY() - map.getTileheight() / 2f,
+              .y(-MathUtil.normalizeMapCoordinate(teleportObj.getY() - map.getTileheight() / 2f,
                   map.getTileheight(), map.getHeight()))
               .build();
           return Teleport.builder()
@@ -120,6 +140,27 @@ public class Spawner extends AbstractSpawner {
               .spawnTo(spawnTo)
               .location(position).build();
         }).collect(Collectors.toList())).orElse(List.of());
+
+    floorTiles = map.getLayer().stream()
+        .filter(layer -> "floor".equals(layer.getName()))
+        .findFirst()
+        .map(layer -> {
+          byte[] bytes = Base64.getDecoder().decode(layer.getData().getValue().trim());
+          // Each GID is a 32-bit (4-byte) little-endian integer
+          int tileId = 0;
+          Set<Integer> floorTiles = new HashSet<>();
+          for (int i = 0; i < bytes.length; i += 4) {
+            int gid = MathUtil.byteToInt(bytes, i);
+            if (gid != 0) {
+              floorTiles.add(tileId);
+            }
+            tileId++;
+          }
+          return floorTiles;
+        }).orElse(Set.of());
+    if (floorTiles.isEmpty()) {
+      throw new IllegalStateException("Map has no floor tiles");
+    }
   }
 
   @Override
@@ -155,6 +196,21 @@ public class Spawner extends AbstractSpawner {
     return walls;
   }
 
+  @Override
+  public Set<Integer> getAllFloorTiles() {
+    return floorTiles;
+  }
+
+  @Override
+  public Integer getTileNumber(Vector vector) {
+    int x = (int) MathUtil.denormalizeMapCoordinate(vector.getX(), mapData.getTilewidth(),
+        mapData.getWidth())
+        / mapData.getTilewidth();
+    int y = (int) MathUtil.denormalizeMapCoordinate(-vector.getY(), mapData.getTileheight(),
+        mapData.getHeight()) / mapData.getTileheight();
+    return y * mapData.getWidth() + x;
+  }
+
   public List<Coordinates> getRandomSpawns() {
     return Stream.generate(this::getRandomSpawn)
         .limit(Math.max(1, playerSpawns.size() / 2)).collect(Collectors.toList());
@@ -164,12 +220,6 @@ public class Spawner extends AbstractSpawner {
     return playerSpawns.get(RANDOM.nextInt(playerSpawns.size()));
   }
 
-  private static float normalizeCoordinate(
-      final float coordinate,
-      final float tileSize,
-      final float mapSize) {
-    return coordinate / tileSize - mapSize / 2f;
-  }
 
   public static PowerUp createPowerUp(final PowerUpType powerUpType, final Vector position) {
     return switch (powerUpType) {

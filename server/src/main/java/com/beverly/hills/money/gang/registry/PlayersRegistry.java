@@ -34,11 +34,11 @@ public class PlayersRegistry implements Closeable {
     LOG.debug("Add player {}", playerState);
     // not thread-safe
     if (countAllActivePlayers() >= MAX_PLAYERS_PER_GAME) {
-      throw new GameLogicError("Can't connect player. Server is full.", GameErrorCode.SERVER_FULL);
+      throw new GameLogicError("Can't connect player. Server is full. Try later.", GameErrorCode.SERVER_FULL);
     } else if (players.values().stream()
         .anyMatch(playerStateChannel -> playerStateChannel.getPlayerState().getPlayerName()
             .equals(playerState.getPlayerName()))) {
-      throw new GameLogicError("Can't connect player. Player name already taken.",
+      throw new GameLogicError("Can't connect player. Player name already taken. Try another name.",
           GameErrorCode.PLAYER_EXISTS);
     }
     // thread-safe

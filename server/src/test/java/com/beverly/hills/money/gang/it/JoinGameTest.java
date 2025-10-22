@@ -190,7 +190,7 @@ public class JoinGameTest extends AbstractGameServerTest {
 
     ServerResponse serverResponse = gameConnection.getResponse().poll().get();
     ServerResponse.ErrorEvent errorEvent = serverResponse.getErrorEvent();
-    assertEquals(GameErrorCode.NOT_EXISTING_GAME_ROOM.ordinal(), errorEvent.getErrorCode(),
+    assertEquals(GameErrorCode.NOT_EXISTING_GAME_ROOM.getErrorCode(), errorEvent.getErrorCode(),
         "Should be a non-existing game error");
     assertEquals("Not existing game room", errorEvent.getMessage());
 
@@ -241,7 +241,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     ServerResponse serverResponse = gameConnection.getResponse().poll().get();
     ServerResponse.ErrorEvent errorEvent = serverResponse.getErrorEvent();
     assertEquals("Blacklisted player name", errorEvent.getMessage());
-    assertEquals(GameErrorCode.COMMON_ERROR.ordinal(), errorEvent.getErrorCode());
+    assertEquals(GameErrorCode.COMMON_ERROR.getErrorCode(), errorEvent.getErrorCode());
   }
 
   /**
@@ -265,7 +265,7 @@ public class JoinGameTest extends AbstractGameServerTest {
 
     ServerResponse serverResponse = gameConnection.getResponse().poll().get();
     ServerResponse.ErrorEvent errorEvent = serverResponse.getErrorEvent();
-    assertEquals(GameErrorCode.COMMAND_NOT_RECOGNIZED.ordinal(), errorEvent.getErrorCode(),
+    assertEquals(GameErrorCode.COMMAND_NOT_RECOGNIZED.getErrorCode(), errorEvent.getErrorCode(),
         "Command should not be recognized as client version is too old");
 
     // need a new game connection because the previous is closed
@@ -319,9 +319,9 @@ public class JoinGameTest extends AbstractGameServerTest {
 
     ServerResponse serverResponse = gameConnection.getResponse().poll().get();
     ServerResponse.ErrorEvent errorEvent = serverResponse.getErrorEvent();
-    assertEquals(GameErrorCode.SERVER_FULL.ordinal(), errorEvent.getErrorCode(),
+    assertEquals(GameErrorCode.SERVER_FULL.getErrorCode(), errorEvent.getErrorCode(),
         "Should be a server full error");
-    assertEquals("Can't connect player. Server is full.", errorEvent.getMessage());
+    assertEquals("Can't connect player. Server is full. Try later.", errorEvent.getMessage());
     Thread.sleep(1_000);
     assertTrue(gameConnection.isDisconnected());
   }
@@ -359,8 +359,8 @@ public class JoinGameTest extends AbstractGameServerTest {
     assertTrue(serverResponse.hasErrorEvent(),
         "Error event expected. Actual response " + serverResponse);
     ServerResponse.ErrorEvent errorEvent = serverResponse.getErrorEvent();
-    assertEquals("Can't connect player. Player name already taken.", errorEvent.getMessage());
-    assertEquals(GameErrorCode.PLAYER_EXISTS.ordinal(), errorEvent.getErrorCode(),
+    assertEquals("Can't connect player. Player name already taken. Try another name.", errorEvent.getMessage());
+    assertEquals(GameErrorCode.PLAYER_EXISTS.getErrorCode(), errorEvent.getErrorCode(),
         "Shouldn't be able to connect as the player name is already taken");
 
     Thread.sleep(1_000);

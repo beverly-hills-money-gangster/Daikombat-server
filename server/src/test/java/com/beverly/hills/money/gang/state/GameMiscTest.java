@@ -8,7 +8,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 import com.beverly.hills.money.gang.exception.GameLogicError;
-import com.beverly.hills.money.gang.state.entity.PlayerJoinedGameState;
 import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
 import com.beverly.hills.money.gang.state.entity.Vector;
@@ -23,17 +22,6 @@ public class GameMiscTest extends GameTest {
 
 
   /**
-   * @given a game with no players
-   * @when getPlayerWithinDamageRadius() is called
-   * @then nothing is returned
-   */
-  @Test
-  public void testGetPlayerWithinDamageRadiusNoPlayers() {
-    assertTrue(game.getPlayerWithinDamageRadius(Vector.builder().build(), 10).isEmpty(),
-        "Expected to be empty because we have no players at all");
-  }
-
-  /**
    * @given a game with no live players (all dead)
    * @when getPlayerWithinDamageRadius() is called
    * @then nothing is returned
@@ -42,7 +30,7 @@ public class GameMiscTest extends GameTest {
   public void testGetPlayerWithinDamageRadiusAllPlayersDead() throws GameLogicError {
     String shooterPlayerName = "shooter player";
     Channel channel = mock(Channel.class);
-    PlayerJoinedGameState shooterPlayerConnectedGameState = fullyJoin(shooterPlayerName,
+    var shooterPlayerConnectedGameState = fullyJoin(shooterPlayerName,
         channel, PlayerStateColor.GREEN);
 
     // two shots should be enough to commit suicide
@@ -58,7 +46,9 @@ public class GameMiscTest extends GameTest {
           PING_MLS);
     }
 
-    assertTrue(game.getPlayerWithinDamageRadius(Vector.builder().build(), 10).isEmpty(),
+    assertTrue(game.getPlayerWithinDamageRadius(
+            shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+            Vector.builder().build(), 10).isEmpty(),
         "Expected to be empty because we have no live players at all");
   }
 
@@ -71,8 +61,10 @@ public class GameMiscTest extends GameTest {
   public void testGetPlayerWithinDamageRadiusTooShort() throws GameLogicError {
     String shooterPlayerName = "shooter player";
     Channel channel = mock(Channel.class);
-    fullyJoin(shooterPlayerName, channel, PlayerStateColor.GREEN);
-    assertTrue(game.getPlayerWithinDamageRadius(Vector.builder().build(), 0).isEmpty(),
+    var joined = fullyJoin(shooterPlayerName, channel, PlayerStateColor.GREEN);
+    assertTrue(game.getPlayerWithinDamageRadius(
+            joined.getPlayerStateChannel().getPlayerState().getPlayerId(),
+            Vector.builder().build(), 0).isEmpty(),
         "Expected to be empty because damage radius is 0");
   }
 
@@ -88,7 +80,9 @@ public class GameMiscTest extends GameTest {
     var joinedPlayer = fullyJoin(shooterPlayerName, channel, PlayerStateColor.GREEN);
 
     var playerWithinDamageRadius
-        = game.getPlayerWithinDamageRadius(Vector.builder().build(), Integer.MAX_VALUE);
+        = game.getPlayerWithinDamageRadius(
+        joinedPlayer.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        Vector.builder().build(), Integer.MAX_VALUE);
 
     assertFalse(playerWithinDamageRadius.isEmpty(),
         "Should not be empty because radius covers all players");
@@ -96,6 +90,43 @@ public class GameMiscTest extends GameTest {
     assertEquals(
         joinedPlayer.getPlayerStateChannel().getPlayerState().getPlayerId(),
         playerWithinDamageRadius.get().getPlayerId());
+  }
+
+  /**
+   * @given 2 players
+   * @when getPlayerWithinDamageRadius() is called between the players
+   * @then an enemy player is preferred
+   */
+  @Test
+  public void testGetPlayerWithinDamageRadiusPreferEnemyPlayer() throws GameLogicError {
+    String shooterPlayerName = "shooter player";
+    String victimPlayerName = "victim player";
+
+    doReturn(Coordinates.builder()
+            .direction(Vector.builder().x(0).y(0).build())
+            .position(Vector.builder().build()).build(),
+        Coordinates.builder()
+            .direction(Vector.builder().build())
+            .position(Vector.builder().x(2.5f).y(0).build()).build())
+        .when(spawner).getPlayerSpawn(any());
+
+    Channel channel = mock(Channel.class);
+    var joinedShooterPlayer = fullyJoin(shooterPlayerName, channel, PlayerStateColor.GREEN);
+    var joinedVictimPlayer = fullyJoin(victimPlayerName, channel, PlayerStateColor.GREEN);
+
+    // blow up between 2 players
+    var playerWithinDamageRadius
+        = game.getPlayerWithinDamageRadius(
+        joinedShooterPlayer.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        Vector.builder().x(1).y(0).build(), 2);
+
+    assertFalse(playerWithinDamageRadius.isEmpty(),
+        "Should not be empty because radius covers all players");
+
+    // prefer an enemy
+    assertEquals(
+        joinedVictimPlayer.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        playerWithinDamageRadius.get().getPlayerId(), "An enemy player should be preferred");
   }
 
   /**
@@ -121,7 +152,7 @@ public class GameMiscTest extends GameTest {
         .build())
         .when(spawner).getPlayerSpawn(any());
 
-    var withinRangePlayer = fullyJoin("withing range", channel, PlayerStateColor.GREEN);
+    var withinRangePlayer = fullyJoin("within range", channel, PlayerStateColor.GREEN);
 
     // far away and not even within radius
     doReturn(Coordinates.builder()
@@ -130,10 +161,12 @@ public class GameMiscTest extends GameTest {
         .build())
         .when(spawner).getPlayerSpawn(any());
     fullyJoin("faraway player 1", channel, PlayerStateColor.GREEN);
-    fullyJoin("faraway player 2", channel, PlayerStateColor.GREEN);
+    var joinedFarawayPlayer2 = fullyJoin("faraway player 2", channel, PlayerStateColor.GREEN);
 
     var playerWithinDamageRadius
-        = game.getPlayerWithinDamageRadius(Vector.builder().build(), 10);
+        = game.getPlayerWithinDamageRadius(
+        joinedFarawayPlayer2.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        Vector.builder().build(), 10);
 
     assertFalse(playerWithinDamageRadius.isEmpty(),
         "Should not be empty because radius covers at least one player");

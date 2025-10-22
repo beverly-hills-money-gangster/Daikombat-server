@@ -11,6 +11,7 @@ import static com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventT
 import static com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType.MEDIUM_AMMO_POWER_UP;
 import static com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType.QUAD_DAMAGE_POWER_UP;
 
+import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
@@ -40,7 +41,7 @@ public class PowerUpPickGameEventHandler implements GameEventHandler {
       BIG_AMMO_POWER_UP, MEDIUM_AMMO_POWER_UP, BEAST_POWER_UP);
 
   @Override
-  public void handle(Game game, PushGameEventCommand gameCommand) {
+  public void handle(Game game, PushGameEventCommand gameCommand) throws GameLogicError {
     var result = game.pickupPowerUp(
         createCoordinates(gameCommand), getPowerUpType(gameCommand.getEventType()),
         gameCommand.getPlayerId(),

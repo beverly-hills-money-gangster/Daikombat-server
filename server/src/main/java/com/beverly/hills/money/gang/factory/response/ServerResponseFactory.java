@@ -142,7 +142,7 @@ public interface ServerResponseFactory {
   static ServerResponse createErrorEvent(GameLogicError error) {
     return ServerResponse.newBuilder()
         .setErrorEvent(ServerResponse.ErrorEvent.newBuilder()
-            .setErrorCode(error.getErrorCode().ordinal())
+            .setErrorCode(error.getErrorCode().getErrorCode())
             .setMessage(error.getMessage())
             .build())
         .build();

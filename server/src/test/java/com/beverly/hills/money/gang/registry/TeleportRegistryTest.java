@@ -23,6 +23,7 @@ public class TeleportRegistryTest {
     var ex = assertThrows(IllegalStateException.class, () -> new TeleportRegistry(
         List.of(Teleport.builder().id(1).teleportToId(1) // cyclic teleport
             .direction(VectorDirection.EAST)
+            .spawnTo(Vector.builder().build())
             .location(Vector.builder().build())
             .build())));
     assertTrue(ex.getMessage().startsWith("Teleport 1 is referencing itself"));
@@ -33,6 +34,7 @@ public class TeleportRegistryTest {
     var ex = assertThrows(IllegalStateException.class, () -> new TeleportRegistry(
         List.of(Teleport.builder().id(1).teleportToId(666) // non-existing teleport
             .direction(VectorDirection.EAST)
+            .spawnTo(Vector.builder().build())
             .location(Vector.builder().build())
             .build())));
     assertTrue(ex.getMessage().startsWith("Teleport 1 is referencing a non-existing teleport 666"));
@@ -42,10 +44,12 @@ public class TeleportRegistryTest {
   public void testSuccess() {
     var teleportsToCreate = List.of(Teleport.builder().id(1).teleportToId(2)
             .direction(VectorDirection.EAST)
+            .spawnTo(Vector.builder().build())
             .location(Vector.builder().build())
             .build(),
         Teleport.builder().id(2).teleportToId(1)
             .direction(VectorDirection.EAST)
+            .spawnTo(Vector.builder().build())
             .location(Vector.builder().build())
             .build());
     var registry = new TeleportRegistry(teleportsToCreate);

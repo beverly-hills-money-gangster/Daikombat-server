@@ -19,6 +19,9 @@ public class Teleport {
   private final Vector location;
 
   @NonNull
+  private final Vector spawnTo;
+
+  @NonNull
   private final VectorDirection direction;
 
   @NonNull

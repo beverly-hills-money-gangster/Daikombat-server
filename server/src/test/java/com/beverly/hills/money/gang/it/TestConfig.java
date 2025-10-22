@@ -10,10 +10,10 @@ import com.beverly.hills.money.gang.spawner.AbstractSpawner;
 import com.beverly.hills.money.gang.spawner.factory.AbstractSpawnerFactory;
 import com.beverly.hills.money.gang.spawner.map.MapData;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
+import com.beverly.hills.money.gang.state.entity.Box;
 import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.Vector;
 import com.beverly.hills.money.gang.state.entity.VectorDirection;
-import com.beverly.hills.money.gang.state.entity.Box;
 import com.beverly.hills.money.gang.teleport.Teleport;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,10 +38,12 @@ public class TestConfig {
         var teleport1 = Teleport.builder()
             .id(0).teleportToId(1)
             .location(MAIN_LOCATION)
+            .spawnTo(MAIN_LOCATION)
             .direction(VectorDirection.EAST).build();
         var teleport2 = Teleport.builder()
             .id(1).teleportToId(0)
             .location(MAIN_LOCATION)
+            .spawnTo(MAIN_LOCATION)
             .direction(VectorDirection.EAST).build();
         return List.of(teleport1, teleport2);
       }

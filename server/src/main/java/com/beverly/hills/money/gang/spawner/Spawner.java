@@ -26,6 +26,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.Getter;
 
+/**
+ * Objects spawns: upper-left corner
+ * Player spawns: center
+ */
 public class Spawner extends AbstractSpawner {
 
   private static final Random RANDOM = new Random();
@@ -78,8 +82,10 @@ public class Spawner extends AbstractSpawner {
         .map(mapObjects -> mapObjects.stream().map(spawnObj -> {
           var directionProperty = spawnObj.getProperty("direction");
           var position = Vector.builder()
-              .x(normalizeCoordinate(spawnObj.getX(), map.getTilewidth(), map.getWidth()))
-              .y(-normalizeCoordinate(spawnObj.getY(), map.getTileheight(), map.getHeight()))
+              .x(normalizeCoordinate(spawnObj.getX() + map.getTilewidth() / 2f, map.getTilewidth(),
+                  map.getWidth()))
+              .y(-normalizeCoordinate(spawnObj.getY() - map.getTileheight() / 2f,
+                  map.getTileheight(), map.getHeight()))
               .build();
           return Coordinates.builder().position(position)
               .direction(VectorDirection.valueOf(directionProperty.getValue()
@@ -102,9 +108,16 @@ public class Spawner extends AbstractSpawner {
               .x(normalizeCoordinate(teleportObj.getX(), map.getTilewidth(), map.getWidth()))
               .y(-normalizeCoordinate(teleportObj.getY(), map.getTileheight(), map.getHeight()))
               .build();
+          var spawnTo = Vector.builder()
+              .x(normalizeCoordinate(teleportObj.getX() + map.getTilewidth() / 2f,
+                  map.getTilewidth(), map.getWidth()))
+              .y(-normalizeCoordinate(teleportObj.getY() - map.getTileheight() / 2f,
+                  map.getTileheight(), map.getHeight()))
+              .build();
           return Teleport.builder()
-              .id(teleportObj.getId()).teleportToId(teleportsTo).direction(
-                  VectorDirection.valueOf(direction.toUpperCase(Locale.ENGLISH)))
+              .id(teleportObj.getId()).teleportToId(teleportsTo)
+              .direction(VectorDirection.valueOf(direction.toUpperCase(Locale.ENGLISH)))
+              .spawnTo(spawnTo)
               .location(position).build();
         }).collect(Collectors.toList())).orElse(List.of());
   }

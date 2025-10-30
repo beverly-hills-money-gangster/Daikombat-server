@@ -17,6 +17,7 @@ import com.beverly.hills.money.gang.state.entity.VectorDirection;
 import com.beverly.hills.money.gang.teleport.Teleport;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -67,6 +68,16 @@ public class TestConfig {
       @Override
       public List<Box> getAllWalls() {
         return new ArrayList<>(); // no walls
+      }
+
+      @Override
+      public Set<Integer> getAllFloorTiles() {
+        return Set.of(1);
+      }
+
+      @Override
+      public Integer getTileNumber(Vector vector) {
+        return 1;
       }
     };
   }

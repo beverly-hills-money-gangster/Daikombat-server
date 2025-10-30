@@ -35,6 +35,7 @@ import com.beverly.hills.money.gang.state.entity.RPGWeaponInfo;
 import com.beverly.hills.money.gang.state.entity.Vector;
 import io.netty.channel.Channel;
 import java.io.Closeable;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -177,7 +178,7 @@ public class Game implements Closeable, GameReader {
       final PowerUpType powerUpType,
       final int playerId,
       final int eventSequence,
-      final int pingMls) {
+      final int pingMls) throws GameLogicError {
     PlayerState playerState = getPlayer(playerId).orElse(null);
     if (playerState == null) {
       LOG.warn("Non-existing player can't take power-ups");
@@ -211,7 +212,7 @@ public class Game implements Closeable, GameReader {
       final Integer attackedPlayerId,
       final GameWeaponType weaponType,
       final int eventSequence,
-      final int pingMls) {
+      final int pingMls) throws GameLogicError {
     if (!isValidWeaponAttack(playerCoordinates, attackingPlayerId, attackedPlayerId, weaponType)) {
       return null;
     }
@@ -263,7 +264,7 @@ public class Game implements Closeable, GameReader {
       final Integer attackedPlayerId,
       final GameProjectileType projectileType,
       final int eventSequence,
-      final int pingMls) {
+      final int pingMls) throws GameLogicError {
 
     var attackingPlayerState = getPlayer(attackingPlayerId).orElse(null);
     if (attackingPlayerState == null) {
@@ -300,7 +301,7 @@ public class Game implements Closeable, GameReader {
       final Integer attackedPlayerId,
       final Damage damage,
       final int eventSequence,
-      final int pingMls) {
+      final int pingMls) throws GameLogicError {
     var attackingPlayerState = getPlayer(attackingPlayerId).orElse(null);
     if (attackingPlayerState == null) {
       LOG.warn("Non-existing player can't attack");
@@ -393,7 +394,7 @@ public class Game implements Closeable, GameReader {
   public void bufferMove(final int movingPlayerId,
       final Coordinates coordinates,
       final int eventSequence,
-      final int pingMls) {
+      final int pingMls) throws GameLogicError {
     move(movingPlayerId, coordinates, eventSequence, pingMls);
   }
 
@@ -443,17 +444,35 @@ public class Game implements Closeable, GameReader {
   }
 
   public Optional<PlayerStateReader> getPlayerWithinDamageRadius(
+      final int attackingPlayerId,
       final Vector projectileBoomPosition,
       final double radius) {
-    return playersRegistry.allActivePlayers().stream()
+    var playersWithinRangeOrdered = playersRegistry.allActivePlayers().stream()
+        // get all active live player
         .filter(playerStateChannel -> !playerStateChannel.getPlayerState().isDead())
+        // get distance for all
         .map(player -> Pair.of(
             Vector.getDistance(player.getPlayerState().getCoordinates().getPosition(),
                 projectileBoomPosition), player))
-        .min(java.util.Map.Entry.comparingByKey())
-        .filter(distancePlayerMap -> distancePlayerMap.getKey() < radius).stream()
-        .findFirst()
-        .map(distancePlayerMap -> distancePlayerMap.getValue().getPlayerState());
+        // get only those players that are in the blast radius
+        .filter(distancePlayerMap -> distancePlayerMap.getKey() < radius)
+        // sort by distance in the ascending order
+        .sorted(Comparator.comparingDouble(Pair::getKey))
+        .map(distancePlayerMap -> distancePlayerMap.getValue().getPlayerState())
+        .collect(Collectors.toList());
+
+    if (playersWithinRangeOrdered.isEmpty()) {
+      // if no player was blasted
+      return Optional.empty();
+    } else if (playersWithinRangeOrdered.size() == 1) {
+      // if only one player was blasted
+      return Optional.of(playersWithinRangeOrdered.get(0));
+    } else {
+      // if more than 2 in the blast radius, then prefer the player other than current player.
+      return playersWithinRangeOrdered.stream()
+          .filter(playerState -> playerState.getPlayerId() != attackingPlayerId).findFirst()
+          .map(playerState -> playerState);
+    }
   }
 
   public PlayerTeleportingGameState teleport(
@@ -499,7 +518,11 @@ public class Game implements Closeable, GameReader {
   private void move(final int movingPlayerId,
       final Coordinates coordinates,
       final int eventSequence,
-      final int pingMls) {
+      final int pingMls) throws GameLogicError {
+    int tileNumber = spawner.getTileNumber(coordinates.getPosition());
+    if (!spawner.getAllFloorTiles().contains(tileNumber)) {
+      throw new GameLogicError("Illegal move", GameErrorCode.CHEATING);
+    }
     getPlayer(movingPlayerId)
         .ifPresent(playerState -> {
           playerState.move(coordinates, eventSequence);

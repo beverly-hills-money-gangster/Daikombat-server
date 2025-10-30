@@ -69,6 +69,14 @@ public class SpawnerTest {
   }
 
   @Test
+  public void testNoFloorTiles() {
+    var ex = assertThrows(IllegalStateException.class,
+        () -> new Spawner(
+            invalidMapRegistry.getMap("no_floor_tiles").orElseThrow().getMapData()));
+    assertTrue(ex.getMessage().startsWith("Map has no floor tiles"));
+  }
+
+  @Test
   public void testNoPlayerSpawn() {
     var ex = assertThrows(IllegalStateException.class,
         () -> new Spawner(invalidMapRegistry.getMap("no_player_spawn").orElseThrow().getMapData()));

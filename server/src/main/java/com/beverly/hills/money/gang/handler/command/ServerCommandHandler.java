@@ -29,7 +29,8 @@ public abstract class ServerCommandHandler {
         handleInternal(msg, currentChannel);
       } else {
         LOG.error("Invalid command {}", msg);
-        throw new GameLogicError("Command not recognized", COMMAND_NOT_RECOGNIZED);
+        throw new GameLogicError("Command not recognized. Download the game again to update.",
+            COMMAND_NOT_RECOGNIZED);
       }
     });
   }

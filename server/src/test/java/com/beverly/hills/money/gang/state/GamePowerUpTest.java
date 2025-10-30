@@ -44,7 +44,7 @@ public class GamePowerUpTest extends GameTest {
    * @then nothing happens
    */
   @Test
-  public void testPickupQuadDamageNotExistingPlayer() {
+  public void testPickupQuadDamageNotExistingPlayer() throws GameLogicError {
     doReturn(false).when(antiCheat).isPowerUpTooFar(any(), any());
     Coordinates coordinates = Coordinates
         .builder()

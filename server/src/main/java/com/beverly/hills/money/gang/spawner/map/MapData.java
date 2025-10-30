@@ -35,4 +35,8 @@ public class MapData {
 
   @XmlElement(name = "objectgroup")
   private List<ObjectGroup> objectgroup;
+
+  @XmlElement(name = "layer")
+  private List<Layer> layer;
+
 }

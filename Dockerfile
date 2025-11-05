@@ -10,7 +10,7 @@ COPY . .
 # Build the project using Maven
 RUN mvn clean package -DskipTests
 
-FROM openjdk:14-slim
+FROM adoptopenjdk/openjdk14:x86_64-tumbleweed-jre-14.0.2_12
 WORKDIR /app
 COPY --from=build app/server/target/server-*-jar-with-dependencies.jar /app/server.jar
 RUN mkdir /app/jvmheap

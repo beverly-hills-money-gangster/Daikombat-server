@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.Getter;
@@ -161,6 +162,18 @@ public class Spawner extends AbstractSpawner {
     if (floorTiles.isEmpty()) {
       throw new IllegalStateException("Map has no floor tiles");
     }
+
+    playerSpawns.forEach(coordinates -> {
+      if (!floorTiles.contains(getTileNumber(coordinates.getPosition()))) {
+        throw new IllegalStateException("All spawns should be on floor tiles");
+      }
+    });
+
+    teleports.forEach(teleport -> {
+      if (!floorTiles.contains(getTileNumber(teleport.getSpawnTo()))) {
+        throw new IllegalStateException("All teleports should teleport to floor tiles");
+      }
+    });
   }
 
   @Override

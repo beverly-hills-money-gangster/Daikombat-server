@@ -77,6 +77,30 @@ public class SpawnerTest {
   }
 
   @Test
+  public void testSpawnOutOfBounds() {
+    var ex = assertThrows(IllegalStateException.class,
+        () -> new Spawner(
+            invalidMapRegistry.getMap("spawn_out_of_bounds").orElseThrow().getMapData()));
+    assertTrue(ex.getMessage().startsWith("All spawns should be on floor tiles"));
+  }
+
+  @Test
+  public void testSpawnInsideWall() {
+    var ex = assertThrows(IllegalStateException.class,
+        () -> new Spawner(
+            invalidMapRegistry.getMap("spawn_in_the_wall").orElseThrow().getMapData()));
+    assertTrue(ex.getMessage().startsWith("All spawns should be on floor tiles"));
+  }
+
+  @Test
+  public void testTeleportOutOfBounds() {
+    var ex = assertThrows(IllegalStateException.class,
+        () -> new Spawner(
+            invalidMapRegistry.getMap("teleport_out_of_bounds").orElseThrow().getMapData()));
+    assertTrue(ex.getMessage().startsWith("All teleports should teleport to floor tiles"));
+  }
+
+  @Test
   public void testNoPlayerSpawn() {
     var ex = assertThrows(IllegalStateException.class,
         () -> new Spawner(invalidMapRegistry.getMap("no_player_spawn").orElseThrow().getMapData()));

@@ -21,7 +21,7 @@ public class AntiCheat {
 
   private static final Logger LOG = LoggerFactory.getLogger(AntiCheat.class);
 
-  private static final float PLAYER_SIZE = 0.1f;
+  private static final float PLAYER_SIZE = 0.2f;
 
   private static final float TOO_CLOSE_SHOOTING_DISTANCE = 1f;
 

@@ -1,7 +1,7 @@
 package com.beverly.hills.money.gang.factory.handler;
 
 
-import com.beverly.hills.money.gang.handler.command.event.GameEventHandler;
+import com.beverly.hills.money.gang.handler.inbound.udp.event.GameEventHandler;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
 import java.util.HashMap;
@@ -15,12 +15,14 @@ public class GameEventHandlerFactory {
   private final Map<GameEventType, GameEventHandler> handlersMap = new HashMap<>();
 
   public GameEventHandlerFactory(final List<GameEventHandler> handlers) {
-    handlers.forEach(gameEventHandler -> gameEventHandler.getEventTypes().forEach(gameEventType -> {
-      var previous = handlersMap.putIfAbsent(gameEventType, gameEventHandler);
+    handlers.forEach(gameEventHandler -> {
+      var previous = handlersMap.putIfAbsent(gameEventHandler.getEventType(), gameEventHandler);
       if (previous != null) {
-        throw new IllegalStateException(gameEventType + " has more than one handler");
+        throw new IllegalStateException(
+            gameEventHandler.getEventType() + " has more than one handler");
       }
-    }));
+    });
+
     // -1 because one of types is UNRECOGNIZED
     if (handlersMap.size() != GameEventType.values().length - 1) {
       throw new IllegalArgumentException("Not all event types have handlers");

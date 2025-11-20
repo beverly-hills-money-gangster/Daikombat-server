@@ -15,7 +15,9 @@ public interface ServerConfig {
       System.getenv("GAME_SERVER_BLACKLISTED_WORDS"));
 
   int GAME_SERVER_PORT = NumberUtils.toInt(System.getenv("GAME_SERVER_PORT"), 7777);
-  int VOICE_CHAT_SERVER_PORT = GAME_SERVER_PORT + 1;
+
+  // TODO document
+  int UDP_SERVER_PORT = GAME_SERVER_PORT + 1;
   int GAMES_TO_CREATE = NumberUtils.toInt(System.getenv("GAME_SERVER_GAMES_TO_CREATE"), 1);
   int MAX_PLAYERS_PER_GAME = NumberUtils.toInt(System.getenv("GAME_SERVER_MAX_PLAYERS_PER_GAME"),
       25);

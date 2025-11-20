@@ -99,21 +99,6 @@ public interface ServerCommandOrBuilder extends
   com.beverly.hills.money.gang.proto.RespawnCommandOrBuilder getRespawnCommandOrBuilder();
 
   /**
-   * <code>.daikombat.dto.MergeConnectionCommand mergeConnectionCommand = 9;</code>
-   * @return Whether the mergeConnectionCommand field is set.
-   */
-  boolean hasMergeConnectionCommand();
-  /**
-   * <code>.daikombat.dto.MergeConnectionCommand mergeConnectionCommand = 9;</code>
-   * @return The mergeConnectionCommand.
-   */
-  com.beverly.hills.money.gang.proto.MergeConnectionCommand getMergeConnectionCommand();
-  /**
-   * <code>.daikombat.dto.MergeConnectionCommand mergeConnectionCommand = 9;</code>
-   */
-  com.beverly.hills.money.gang.proto.MergeConnectionCommandOrBuilder getMergeConnectionCommandOrBuilder();
-
-  /**
    * <code>.daikombat.dto.DownloadMapAssetsCommand downloadMapAssetsCommand = 10;</code>
    * @return Whether the downloadMapAssetsCommand field is set.
    */

@@ -5,6 +5,7 @@ import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
+import com.beverly.hills.money.gang.proto.GamePowerUpType;
 import com.beverly.hills.money.gang.proto.MapAssets;
 import com.beverly.hills.money.gang.proto.MapMetadata;
 import com.beverly.hills.money.gang.proto.PlayerClass;
@@ -15,7 +16,6 @@ import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStats;
 import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUp;
-import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType;
 import com.beverly.hills.money.gang.proto.ServerResponse.PlayerCurrentWeaponAmmo;
 import com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats;
 import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent;
@@ -109,13 +109,13 @@ public interface ServerResponseFactory {
       PlayerStateReader playerStateReader) {
     return ServerResponse.GameEvent.newBuilder()
         .setPlayer(createFullPlayerStats(playerStateReader))
-        .setEventType(ServerResponse.GameEvent.GameEventType.MOVE).build();
+        .setEventType(GameEventType.POWER_UP_PICKUP).build();
   }
 
   static ServerResponse.GameEvent createPlayerTeleportGameEvent(
       PlayerStateReader playerStateReader) {
     return ServerResponse.GameEvent.newBuilder()
-        .setPlayer(createFullPlayerStats(playerStateReader))
+        .setPlayer(createMinimalPlayerStats(playerStateReader))
         .setEventType(GameEventType.TELEPORT).build();
   }
 
@@ -212,6 +212,16 @@ public interface ServerResponseFactory {
     var allPlayersMoves = ServerResponse.GameEvents.newBuilder();
     movedPlayers.forEach(playerStateReader
         -> allPlayersMoves.addEvents(createMoveGameEvent(playerStateReader)));
+    allPlayersMoves.setPlayersOnline(playersOnline);
+    return ServerResponse.newBuilder()
+        .setGameEvents(allPlayersMoves)
+        .build();
+  }
+
+  static ServerResponse createMoveEvent(int playersOnline,
+      PlayerStateReader movedPlayer) {
+    var allPlayersMoves = ServerResponse.GameEvents.newBuilder();
+    allPlayersMoves.addEvents(createMoveGameEvent(movedPlayer));
     allPlayersMoves.setPlayersOnline(playersOnline);
     return ServerResponse.newBuilder()
         .setGameEvents(allPlayersMoves)
@@ -338,6 +348,7 @@ public interface ServerResponseFactory {
         .setPosition(createVector(playerReader.getCoordinates().getPosition()))
         .setDirection(createVector(playerReader.getCoordinates().getDirection()))
         .setPlayerId(playerReader.getPlayerId())
+        .setHealth(playerReader.getHealth())
         .setPingMls(playerReader.getPingMls())
         .build();
   }
@@ -358,8 +369,8 @@ public interface ServerResponseFactory {
       PushGameEventCommand pushGameEventCommand) {
     var killBuilder = ServerResponse.GameEvent.newBuilder()
         .setEventType(GameEventType.KILL)
-        .setPlayer(createFullPlayerStats(shooterPlayerReader))
-        .setAffectedPlayer(createFullPlayerStats(deadPlayerReader));
+        .setPlayer(createMinimalPlayerStats(shooterPlayerReader))
+        .setAffectedPlayer(createMinimalPlayerStats(deadPlayerReader));
     if (pushGameEventCommand.hasProjectile()) {
       killBuilder.setProjectile(pushGameEventCommand.getProjectile());
     } else if (pushGameEventCommand.hasWeaponType()) {
@@ -379,8 +390,8 @@ public interface ServerResponseFactory {
       PushGameEventCommand pushGameEventCommand) {
     var attackedPlayerBuilder = ServerResponse.GameEvent.newBuilder()
         .setEventType(GameEventType.GET_ATTACKED)
-        .setPlayer(createFullPlayerStats(shooterPlayerReader))
-        .setAffectedPlayer(createFullPlayerStats(shotPlayerReader));
+        .setPlayer(createMinimalPlayerStats(shooterPlayerReader))
+        .setAffectedPlayer(createMinimalPlayerStats(shotPlayerReader));
     if (pushGameEventCommand.hasProjectile()) {
       attackedPlayerBuilder.setProjectile(pushGameEventCommand.getProjectile());
     } else if (pushGameEventCommand.hasWeaponType()) {
@@ -398,16 +409,16 @@ public interface ServerResponseFactory {
       int playersOnline,
       PlayerStateReader shooterPlayerReader,
       PushGameEventCommand pushGameEventCommand) {
-    var attackedPlayerBuilder = ServerResponse.GameEvent.newBuilder()
+    var attackingdPlayerBuilder = ServerResponse.GameEvent.newBuilder()
         .setEventType(GameEventType.ATTACK)
-        .setPlayer(createFullPlayerStats(shooterPlayerReader));
+        .setPlayer(createMinimalPlayerStats(shooterPlayerReader));
     if (pushGameEventCommand.hasProjectile()) {
-      attackedPlayerBuilder.setProjectile(pushGameEventCommand.getProjectile());
+      attackingdPlayerBuilder.setProjectile(pushGameEventCommand.getProjectile());
     } else if (pushGameEventCommand.hasWeaponType()) {
-      attackedPlayerBuilder.setWeaponType(pushGameEventCommand.getWeaponType());
+      attackingdPlayerBuilder.setWeaponType(pushGameEventCommand.getWeaponType());
     }
     var attackedPlayerEvent = ServerResponse.GameEvents.newBuilder()
-        .addEvents(attackedPlayerBuilder);
+        .addEvents(attackingdPlayerBuilder);
     attackedPlayerEvent.setPlayersOnline(playersOnline);
     return ServerResponse.newBuilder()
         .setGameEvents(attackedPlayerEvent)

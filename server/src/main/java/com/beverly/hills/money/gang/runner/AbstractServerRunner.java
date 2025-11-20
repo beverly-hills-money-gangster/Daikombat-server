@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class AbstractServerRunner implements Closeable {
 
-  private static final Logger LOG = LoggerFactory.getLogger(VoiceChatServerRunner.class);
+  private static final Logger LOG = LoggerFactory.getLogger(UDPGameServerRunner.class);
 
   protected final CountDownLatch startWaitingLatch = new CountDownLatch(1);
 

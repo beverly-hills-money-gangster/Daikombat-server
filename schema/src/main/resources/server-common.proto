@@ -72,3 +72,13 @@ message MapAssets {
   optional bytes atlasTsx = 2;
   optional bytes onlineMapTmx = 3;
 }
+
+enum GamePowerUpType {
+  QUAD_DAMAGE = 0;
+  INVISIBILITY = 1;
+  DEFENCE = 2;
+  HEALTH = 3;
+  MEDIUM_AMMO = 4;
+  BIG_AMMO = 5;
+  BEAST = 6;
+}

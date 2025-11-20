@@ -1,0 +1,272 @@
+package com.beverly.hills.money.gang.network;
+
+import com.beverly.hills.money.gang.codec.OpusCodec;
+import com.beverly.hills.money.gang.config.ClientConfig;
+import com.beverly.hills.money.gang.dto.DatagramRequestType;
+import com.beverly.hills.money.gang.entity.AckPayload;
+import com.beverly.hills.money.gang.entity.HostPort;
+import com.beverly.hills.money.gang.entity.PlayerGameId;
+import com.beverly.hills.money.gang.entity.VoiceChatPayload;
+import com.beverly.hills.money.gang.handler.UDPHandler;
+import com.beverly.hills.money.gang.proto.PushGameEventCommand;
+import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
+import com.beverly.hills.money.gang.proto.ServerResponse;
+import com.beverly.hills.money.gang.queue.QueueAPI;
+import com.beverly.hills.money.gang.queue.QueueReader;
+import com.beverly.hills.money.gang.stats.UDPGameNetworkStats;
+import com.beverly.hills.money.gang.storage.ProcessedServerResponseGameEventsStorage;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.DatagramPacket;
+import io.netty.channel.socket.nio.NioDatagramChannel;
+import io.netty.handler.timeout.IdleStateHandler;
+import java.io.Closeable;
+import java.net.InetSocketAddress;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+import lombok.Getter;
+import lombok.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class UDPGameConnection implements Closeable {
+
+  private static final Logger LOG = LoggerFactory.getLogger(UDPGameConnection.class);
+
+  private static final int ACK_RESEND_MLS = 100;
+
+  private static final int MAX_NO_ACK = 100;
+
+  private final AtomicReference<PlayerGameId> playerGameIdAtomicRef = new AtomicReference<>();
+
+  private final QueueAPI<VoiceChatPayload> incomingVoiceChatQueueAPI = new QueueAPI<>();
+
+  private final QueueAPI<ServerResponse> responseQueueAPI = new QueueAPI<>();
+
+  private final Map<Integer, PushGameEventCommand> noAckGameEvents = new ConcurrentHashMap<>();
+  @Getter
+  private final OpusCodec opusCodec;
+
+  private final QueueAPI<Throwable> errorsQueueAPI = new QueueAPI<>();
+
+  private final UDPGameNetworkStats udpNetworkStats = new UDPGameNetworkStats();
+
+  private final HostPort hostPort;
+
+  private final CountDownLatch connectedLatch = new CountDownLatch(1);
+
+  private final ProcessedServerResponseGameEventsStorage
+      processedServerResponseGameEventsStorage = new ProcessedServerResponseGameEventsStorage();
+
+  private final AtomicReference<Channel> channelRef = new AtomicReference<>();
+  private final AtomicReference<ConnectionState> connectionState = new AtomicReference<>();
+
+  private final NioEventLoopGroup group;
+
+  private final AtomicBoolean fullyConnected = new AtomicBoolean();
+
+  private final AtomicBoolean keepAliveScheduled = new AtomicBoolean();
+
+  public UDPGameConnection(
+      final HostPort hostPort, final OpusCodec opusCodec) {
+    connectionState.set(ConnectionState.CONNECTING);
+    this.opusCodec = opusCodec;
+    this.hostPort = hostPort;
+    group = new NioEventLoopGroup();
+
+    Bootstrap bootstrap = new Bootstrap();
+    bootstrap.group(group)
+        .channel(NioDatagramChannel.class)
+        .handler(new ChannelInitializer<NioDatagramChannel>() {
+          @Override
+          protected void initChannel(NioDatagramChannel ch) {
+            ch.pipeline()
+                .addLast(new IdleStateHandler(
+                    ClientConfig.SERVER_MAX_INACTIVE_MLS / 1000, 0, 0));
+            ch.pipeline().addLast(UDPHandler.builder()
+                .processedServerResponseGameEventsStorage(processedServerResponseGameEventsStorage)
+                .fullyConnected(fullyConnected)
+                .errorsQueueAPI(errorsQueueAPI)
+                .incomingVoiceChatQueueAPI(incomingVoiceChatQueueAPI)
+                .noAckGameEvents(noAckGameEvents)
+                .udpNetworkStats(udpNetworkStats)
+                .responseQueueAPI(responseQueueAPI)
+                .opusCodec(opusCodec)
+                .onAck(gameEvent -> ack(gameEvent))
+                .onClose(() -> close())
+                .build());
+            ch.eventLoop().scheduleAtFixedRate(() -> resendNoAck(),
+                ACK_RESEND_MLS, ACK_RESEND_MLS, TimeUnit.MILLISECONDS);
+            ch.eventLoop().scheduleAtFixedRate(
+                processedServerResponseGameEventsStorage::clearOldEvents,
+                processedServerResponseGameEventsStorage.getMaxTtlMls(),
+                processedServerResponseGameEventsStorage.getMaxTtlMls(), TimeUnit.MILLISECONDS);
+          }
+        });
+
+    bootstrap.bind(0).addListener((ChannelFutureListener) channelFuture -> {
+      if (channelFuture.isSuccess()) {
+        channelRef.set(channelFuture.channel());
+        LOG.info("UDP connection established");
+        connectionState.set(ConnectionState.CONNECTED);
+        connectedLatch.countDown();
+      } else {
+        LOG.error("Failed to establish UDP connection", channelFuture.cause());
+      }
+    });
+  }
+
+  private void ack(ServerResponse.GameEvent event) {
+    Optional.ofNullable(playerGameIdAtomicRef.get())
+        .ifPresent(playerGameId -> write(AckPayload.builder().gameId(playerGameId.getGameId())
+            .playerId(playerGameId.getPlayerId()).sequence(event.getSequence()).build()));
+  }
+
+  public void init(final @NonNull PlayerGameId playerGameId) {
+    playerGameIdAtomicRef.set(playerGameId);
+  }
+
+  public boolean isConnected() {
+    return ConnectionState.CONNECTED.equals(connectionState.get());
+  }
+
+
+  public boolean waitUntilConnected(final int maxTimeMls) throws InterruptedException {
+    return connectedLatch.await(maxTimeMls, TimeUnit.MILLISECONDS);
+  }
+
+  private void write(final AckPayload payload) {
+    ByteBuf buf = Unpooled.directBuffer(13);
+    buf.writeByte(DatagramRequestType.ACK.getCode());
+    buf.writeInt(payload.getPlayerId());
+    buf.writeInt(payload.getGameId());
+    buf.writeInt(payload.getSequence());
+    writeIfFullyConnected(buf);
+  }
+
+
+  public void write(final VoiceChatPayload payload) {
+    var encoded = opusCodec.encode(payload.getPcm());
+    ByteBuf buf = Unpooled.directBuffer(9 + encoded.length);
+    buf.writeByte(DatagramRequestType.VOICE_CHAT.getCode());
+    buf.writeInt(payload.getPlayerId());
+    buf.writeInt(payload.getGameId());
+    buf.writeBytes(encoded);
+    writeIfFullyConnected(buf);
+  }
+
+  public void write(final PushGameEventCommand payload) {
+    var bytes = payload.toByteArray();
+    ByteBuf buf = Unpooled.directBuffer(1 + bytes.length);
+    buf.writeByte(DatagramRequestType.GAME_EVENT.getCode());
+    buf.writeBytes(bytes);
+    if (writeIfFullyConnected(buf) && payload.getEventType() != GameEventType.MOVE) {
+      if (noAckGameEvents.size() >= MAX_NO_ACK) {
+        throw new IllegalStateException("Too many no-ack messages in the queue");
+      }
+      noAckGameEvents.put(payload.getSequence(), payload);
+    }
+  }
+
+  private void resendNoAck() {
+    noAckGameEvents.forEach((seqId, gameEventCommand) -> write(gameEventCommand));
+  }
+
+  public void startKeepAlive() {
+    if (playerGameIdAtomicRef.get() == null) {
+      throw new IllegalArgumentException(
+          "Can't start keep-alive task. Player and game id was not specified");
+    } else if (!keepAliveScheduled.compareAndSet(false, true)) {
+      LOG.info("Can't start keep-alive twice");
+      return;
+    }
+    var playerGameId = playerGameIdAtomicRef.get();
+    ByteBuf buf = Unpooled.directBuffer(9);
+    buf.writeByte(DatagramRequestType.KEEP_ALIVE.getCode()); // keep alive
+    buf.writeInt(playerGameId.getPlayerId());
+    buf.writeInt(playerGameId.getGameId());
+    // min frequency - 2 per second
+    // max frequency - 10 times before failing due to server inactivity
+    long frequencyMls = Math.max(500, ClientConfig.SERVER_MAX_INACTIVE_MLS / 1000 / 10);
+    channelRef.get().eventLoop()
+        .scheduleAtFixedRate(() -> write(buf.retainedDuplicate()), 0, frequencyMls,
+            TimeUnit.MILLISECONDS);
+
+  }
+
+  private boolean writeIfFullyConnected(final ByteBuf buf) {
+    if (!fullyConnected.get()) {
+      LOG.warn("Can't write. Not fully connected");
+      buf.release();
+      return false;
+    }
+    write(buf);
+    return true;
+  }
+
+  private void write(final ByteBuf buf) {
+    if (connectionState.get() != ConnectionState.CONNECTED) {
+      LOG.warn("Can't write if not connected");
+      buf.release();
+      return;
+    }
+    Optional.ofNullable(channelRef.get()).ifPresentOrElse(channel -> {
+      udpNetworkStats.incSentMessages();
+      udpNetworkStats.addOutboundPayloadBytes(buf.readableBytes());
+      channel.writeAndFlush(
+              new DatagramPacket(buf, new InetSocketAddress(hostPort.getHost(), hostPort.getPort())))
+          .addListener(channelFuture -> {
+            if (!channelFuture.isSuccess()) {
+              LOG.error("Write fail", channelFuture.cause());
+              errorsQueueAPI.push(channelFuture.cause());
+            }
+          });
+    }, buf::release);
+  }
+
+  public QueueReader<VoiceChatPayload> getIncomingVoiceChatData() {
+    return incomingVoiceChatQueueAPI;
+  }
+
+  public QueueReader<Throwable> getErrors() {
+    return errorsQueueAPI;
+  }
+
+  public QueueReader<ServerResponse> getResponse() {
+    return responseQueueAPI;
+  }
+
+  public UDPGameNetworkStats getUdpNetworkStats() {
+    return udpNetworkStats;
+  }
+
+  @Override
+  public void close() {
+    connectionState.set(ConnectionState.DISCONNECTING);
+    try {
+      group.shutdownGracefully();
+    } catch (Exception e) {
+      LOG.error("Failed to shutdown group", e);
+    }
+    try {
+      Optional.ofNullable(channelRef.get()).ifPresent(channel -> channel.close()
+          .addListener(channelFuture -> {
+            connectionState.set(ConnectionState.DISCONNECTED);
+            LOG.info("Channel closed {}", udpNetworkStats);
+          }));
+      noAckGameEvents.clear();
+    } catch (Exception e) {
+      LOG.error("Failed to close connection", e);
+    }
+  }
+}

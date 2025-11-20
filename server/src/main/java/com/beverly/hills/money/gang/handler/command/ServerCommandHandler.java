@@ -16,17 +16,17 @@ public abstract class ServerCommandHandler {
   private final RequestsMeter requestsMeter = new RequestsMeter(this.getClass().getSimpleName());
   private static final Logger LOG = LoggerFactory.getLogger(ServerCommandHandler.class);
 
-  protected abstract boolean isValidCommand(ServerCommand msg, Channel currentChannel);
+  protected abstract boolean isValidCommand(ServerCommand msg);
 
   public abstract CommandCase getCommandCase();
 
-  protected abstract void handleInternal(ServerCommand msg, Channel currentChannel)
+  protected abstract void handleInternal(ServerCommand msg, Channel tcpClientChannel)
       throws GameLogicError;
 
-  public final void handle(ServerCommand msg, Channel currentChannel) throws GameLogicError {
+  public final void handle(ServerCommand msg, Channel tcpClientChannel) throws GameLogicError {
     requestsMeter.runAndMeasure(() -> {
-      if (isValidCommand(msg, currentChannel)) {
-        handleInternal(msg, currentChannel);
+      if (isValidCommand(msg)) {
+        handleInternal(msg, tcpClientChannel);
       } else {
         LOG.error("Invalid command {}", msg);
         throw new GameLogicError("Command not recognized. Download the game again to update.",

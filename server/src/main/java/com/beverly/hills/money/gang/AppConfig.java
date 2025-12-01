@@ -4,6 +4,7 @@ import com.beverly.hills.money.gang.generator.SequenceGenerator;
 import com.beverly.hills.money.gang.transport.EpollServerTransport;
 import com.beverly.hills.money.gang.transport.NIOServerTransport;
 import com.beverly.hills.money.gang.transport.ServerTransport;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.Epoll;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,13 @@ import org.springframework.context.annotation.Configuration;
 public class AppConfig {
 
   private static final Logger LOG = LoggerFactory.getLogger(AppConfig.class);
+
+  @Bean
+  public EventLoopGroup eventLoopGroup(ServerTransport serverTransport) {
+    // the whole app is single-threaded
+    // TODO remove useless .schedule() calls
+    return serverTransport.createEventLoopGroup(1);
+  }
 
   @Bean
   public SequenceGenerator gameIdGenerator() {

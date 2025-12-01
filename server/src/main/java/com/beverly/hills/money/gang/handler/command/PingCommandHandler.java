@@ -19,13 +19,13 @@ public class PingCommandHandler extends ServerCommandHandler {
       .setPing(ServerResponse.Ping.newBuilder().build()).build();
 
   @Override
-  protected boolean isValidCommand(ServerCommand msg, Channel currentChannel) {
+  protected boolean isValidCommand(ServerCommand msg) {
     return true;
   }
 
   @Override
-  protected void handleInternal(ServerCommand msg, Channel currentChannel) {
-    currentChannel.writeAndFlush(PING);
+  protected void handleInternal(ServerCommand msg, Channel tcpClientChannel) {
+    tcpClientChannel.writeAndFlush(PING);
   }
 
 }

@@ -150,4 +150,20 @@ public interface PushGameEventCommandOrBuilder extends
    * <code>optional .daikombat.dto.ProjectileCoordinates projectile = 11;</code>
    */
   com.beverly.hills.money.gang.proto.ProjectileCoordinatesOrBuilder getProjectileOrBuilder();
+
+  /**
+   * <code>optional .daikombat.dto.GamePowerUpType powerUp = 12;</code>
+   * @return Whether the powerUp field is set.
+   */
+  boolean hasPowerUp();
+  /**
+   * <code>optional .daikombat.dto.GamePowerUpType powerUp = 12;</code>
+   * @return The enum numeric value on the wire for powerUp.
+   */
+  int getPowerUpValue();
+  /**
+   * <code>optional .daikombat.dto.GamePowerUpType powerUp = 12;</code>
+   * @return The powerUp.
+   */
+  com.beverly.hills.money.gang.proto.GamePowerUpType getPowerUp();
 }

@@ -7,11 +7,11 @@
     <parent>
         <groupId>com.beverly.hills.money.gang</groupId>
         <artifactId>daikombat-server</artifactId>
-        <version>26.0.3</version>
+        <version>27.0.0</version>
     </parent>
 
     <artifactId>server</artifactId>
-    <version>26.0.3</version>
+    <version>27.0.0</version>
 
     <properties>
         <maven.compiler.source>14</maven.compiler.source>
@@ -110,7 +110,12 @@
         <dependency>
             <groupId>com.beverly.hills.money.gang</groupId>
             <artifactId>schema</artifactId>
-            <version>26.0.3</version>
+            <version>27.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.beverly.hills.money.gang</groupId>
+            <artifactId>net-commons</artifactId>
+            <version>27.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -151,7 +156,7 @@
         <dependency>
             <groupId>com.beverly.hills.money.gang</groupId>
             <artifactId>net-client</artifactId>
-            <version>26.0.3</version>
+            <version>27.0.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -249,7 +254,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.12.1</version>
+                <version>3.8.1</version>
                 <configuration>
                     <source>14</source>
                     <target>14</target>

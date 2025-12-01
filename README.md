@@ -12,7 +12,7 @@ on [GitHub](https://github.com/beverly-hills-money-gangster/DaikombatDesktop).
 
 ## Architecture overview
 
-The server opens a TCP connection and serves in-game events as protobuf messages(find `.proto`
+The server opens a network connection and pushes in-game events as protobuf messages(find `.proto`
 schema in `schema` module).
 The client publishes game commands and then subscribes to server events by collecting them in an
 in-memory queue that is meant to be polled during game rendering.
@@ -20,11 +20,9 @@ All communications (server-to-client and client-to-server) are totally non-block
 
 ### Known issues
 
-- TCP is a bad choice for fast-paced online shooter games due to head-of-line blocking. In the
-  future, the protocol is likely to be changed to either UDP or QUIC.
-- The server is totally not scalable at this moment. High availability and load balancing are not
+- The server is not scalable at this moment. High availability and load balancing are not
   provided.
-- The server is NOT authoritative
+- The server is not fully authoritative
 - Basic anti-cheat
 
 ## Configuration
@@ -32,10 +30,12 @@ All communications (server-to-client and client-to-server) are totally non-block
 Game server can be configured using the following environment variables:
 
 - `GAME_SERVER_PORT` TCP server port at which client connections are going to be accepted. For
-  simplicity, voice chat port is `GAME_SERVER_PORT`+1. Default - `7777`.
+  simplicity, UDP port is `GAME_SERVER_PORT`+1. Default - `7777`.
 - `GAME_SERVER_BLACKLISTED_WORDS` Blacklisted words. Affects chat messages and player names. Words
   should be separated by a comma (`,`) symbol. Case-insensitive. Example: `ABC,XYZ,QWE`. Not set by
   default.
+- `GAME_SERVER_BIG_UDP_WARNING` Pushes a warning to logs if a big UDP datagram was sent over a
+  network. Default - `false`.
 - `GAME_SERVER_GAMES_TO_CREATE` Games to create. Default - `1`.
 - `GAME_SERVER_MAX_PLAYERS_PER_GAME` Maximum number of players to join a game. Default - `25`. Total
   number of players on the server is `GAME_SERVER_GAMES_TO_CREATE*GAME_SERVER_MAX_PLAYERS_PER_GAME`.

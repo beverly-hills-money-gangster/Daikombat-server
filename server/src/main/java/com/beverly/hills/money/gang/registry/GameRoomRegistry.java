@@ -35,18 +35,18 @@ public class GameRoomRegistry implements Closeable {
   public Stream<Game> getGames() {
     return games.values().stream();
   }
-  
+
   public Optional<PlayerStateChannel> getActivePlayer(
-      final int gameId, final Channel channel, final int playerId) {
-    return getPlayer(gameId, channel, playerId).filter(
+      final int gameId, final int playerId) {
+    return getPlayer(gameId, playerId).filter(
         playerStateChannel -> playerStateChannel.getPlayerState().getActivityStatus()
             == PlayerActivityStatus.ACTIVE);
   }
 
 
-  public Optional<PlayerStateChannel> getPlayer(int gameId, Channel channel, int playerId) {
+  public Optional<PlayerStateChannel> getPlayer(int gameId, int playerId) {
     return Optional.ofNullable(games.get(gameId))
-        .flatMap(game -> game.getPlayersRegistry().findPlayer(channel, playerId));
+        .flatMap(game -> game.getPlayersRegistry().findPlayer(playerId));
   }
 
   public boolean removeChannel(final Channel channel, final OnPlayerRemoval onFound) {
@@ -69,7 +69,8 @@ public class GameRoomRegistry implements Closeable {
 
   public Game getGame(int gameId) throws GameLogicError {
     return Optional.ofNullable(games.get(gameId))
-        .orElseThrow(() -> new GameLogicError("Not existing game room", NOT_EXISTING_GAME_ROOM));
+        .orElseThrow(
+            () -> new GameLogicError("Not existing game room " + gameId, NOT_EXISTING_GAME_ROOM));
   }
 
   @Override

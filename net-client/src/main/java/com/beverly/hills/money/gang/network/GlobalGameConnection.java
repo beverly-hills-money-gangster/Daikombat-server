@@ -2,21 +2,19 @@ package com.beverly.hills.money.gang.network;
 
 import com.beverly.hills.money.gang.codec.OpusCodec;
 import com.beverly.hills.money.gang.entity.HostPort;
+import com.beverly.hills.money.gang.entity.PlayerGameId;
 import com.beverly.hills.money.gang.entity.VoiceChatPayload;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PushChatEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
-import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
 import com.beverly.hills.money.gang.proto.RespawnCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
-import com.beverly.hills.money.gang.stats.GameNetworkStatsReader;
-import com.beverly.hills.money.gang.stats.VoiceChatNetworkStatsReader;
-import java.io.IOException;
+import com.beverly.hills.money.gang.stats.TCPGameNetworkStatsReader;
+import com.beverly.hills.money.gang.stats.UDPGameNetworkStatsReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -28,98 +26,67 @@ public class GlobalGameConnection {
 
   private static final Logger LOG = LoggerFactory.getLogger(GlobalGameConnection.class);
 
-  private final AtomicInteger lastPickedConnectionId = new AtomicInteger();
-  private final GameConnection gameConnection;
+  private final TCPGameConnection tcpGameConnection;
 
-  private final VoiceChatConnection voiceChatConnection;
+  private final UDPGameConnection udpGameConnection;
 
-  @Getter
-  private final List<SecondaryGameConnection> secondaryGameConnections;
-  private final List<AbstractGameConnection> allGameConnections = new ArrayList<>();
-
-  private final List<GameNetworkStatsReader> secondaryStats = new ArrayList<>();
 
   public GlobalGameConnection(
-      final @NonNull GameConnection gameConnection,
-      final @NonNull List<SecondaryGameConnection> secondaryGameConnections) {
-    if (secondaryGameConnections.isEmpty()) {
-      throw new IllegalArgumentException(
-          "Need at least one secondary connection for load balancing");
-    }
-    this.secondaryGameConnections = secondaryGameConnections;
-    secondaryGameConnections.forEach(
-        secondaryGameConnection -> secondaryStats.add(
-            secondaryGameConnection.getGameNetworkStats()));
-    this.gameConnection = gameConnection;
-    this.allGameConnections.add(gameConnection);
-    this.allGameConnections.addAll(secondaryGameConnections);
-    this.voiceChatConnection = new VoiceChatConnection(
+      final @NonNull TCPGameConnection tcpGameConnection) {
+    this.tcpGameConnection = tcpGameConnection;
+    this.udpGameConnection = new UDPGameConnection(
         HostPort.builder()
-            .host(gameConnection.getHostPort().getHost())
-            .port(gameConnection.getHostPort().getPort() + 1)
+            .host(tcpGameConnection.getHostPort().getHost())
+            .port(tcpGameConnection.getHostPort().getPort() + 1)
             .build(),
         new OpusCodec());
   }
 
   public VoiceChatConfigs getVoiceChatConfigs() {
-    var codec = voiceChatConnection.getOpusCodec();
+    var codec = udpGameConnection.getOpusCodec();
     return VoiceChatConfigs.builder().sampleRate(codec.getSamplingRateHertz())
         .sampleSize(codec.getSampleSize()).build();
   }
 
   public void write(PushGameEventCommand pushGameEventCommand) {
-    if (pushGameEventCommand.getEventType() == GameEventType.MOVE) {
-      allGameConnections.get(lastPickedConnectionId.incrementAndGet() % allGameConnections.size())
-          .write(pushGameEventCommand);
-    } else {
-      gameConnection.write(pushGameEventCommand);
-    }
+    udpGameConnection.write(pushGameEventCommand);
   }
 
-  public VoiceChatNetworkStatsReader getVoiceChatNetworkStatsReader() {
-    return voiceChatConnection.getVoiceChatNetworkStats();
+  public UDPGameNetworkStatsReader getUDPNetworkStatsReader() {
+    return udpGameConnection.getUdpNetworkStats();
   }
 
   public void write(RespawnCommand respawnCommand) {
-    gameConnection.write(respawnCommand);
+    tcpGameConnection.write(respawnCommand);
   }
 
   public void write(VoiceChatPayload payload) {
-    voiceChatConnection.write(payload);
+    udpGameConnection.write(payload);
   }
 
   public void write(PushChatEventCommand pushChatEventCommand) {
-    gameConnection.write(pushChatEventCommand);
+    tcpGameConnection.write(pushChatEventCommand);
   }
 
   public void write(JoinGameCommand joinGameCommand) {
-    gameConnection.write(joinGameCommand);
+    tcpGameConnection.write(joinGameCommand);
   }
 
   public void write(GetServerInfoCommand getServerInfoCommand) {
-    gameConnection.write(getServerInfoCommand);
+    tcpGameConnection.write(getServerInfoCommand);
   }
 
-  public GameNetworkStatsReader getPrimaryNetworkStats() {
-    return gameConnection.getGameNetworkStats();
-  }
-
-  public Iterable<GameNetworkStatsReader> getSecondaryNetworkStats() {
-    return secondaryStats;
+  public TCPGameNetworkStatsReader getPrimaryNetworkStats() {
+    return tcpGameConnection.getTcpGameNetworkStats();
   }
 
   public void disconnect() {
-    allGameConnections.forEach(AbstractGameConnection::disconnect);
-    try {
-      voiceChatConnection.close();
-    } catch (IOException e) {
-      LOG.error("Can't disconnect", e);
-    }
+    tcpGameConnection.disconnect();
+    udpGameConnection.close();
   }
 
   public boolean isAllConnected() {
-    return allGameConnections.stream().allMatch(AbstractGameConnection::isConnected)
-        && voiceChatConnection.isConnected();
+    return tcpGameConnection.isConnected() && udpGameConnection.isConnected();
   }
 
   public boolean isAnyDisconnected() {
@@ -128,40 +95,38 @@ public class GlobalGameConnection {
 
   public List<Throwable> pollErrors() {
     List<Throwable> polledErrors = new ArrayList<>();
-    allGameConnections.forEach(abstractGameConnection ->
-        polledErrors.addAll(abstractGameConnection.getErrors().poll(Integer.MAX_VALUE)));
-    polledErrors.addAll(voiceChatConnection.getErrors().poll(Integer.MAX_VALUE));
+    polledErrors.addAll(tcpGameConnection.getErrors().poll(Integer.MAX_VALUE));
+    polledErrors.addAll(udpGameConnection.getErrors().poll(Integer.MAX_VALUE));
     return polledErrors;
   }
 
   public List<ServerResponse> pollResponses() {
     List<ServerResponse> polledResponses = new ArrayList<>();
-    allGameConnections.forEach(abstractGameConnection ->
-        polledResponses.addAll(abstractGameConnection.getResponse().poll(Integer.MAX_VALUE)));
+    polledResponses.addAll(tcpGameConnection.getResponse().poll(Integer.MAX_VALUE));
+    polledResponses.addAll(udpGameConnection.getResponse().poll(Integer.MAX_VALUE));
     return polledResponses;
   }
 
   public List<VoiceChatPayload> pollPCMBlocking(int maxWaitMls) throws InterruptedException {
-    return voiceChatConnection.getIncomingVoiceChatData()
+    return udpGameConnection.getIncomingVoiceChatData()
         .pollBlocking(maxWaitMls, Integer.MAX_VALUE);
   }
 
-  public void initVoiceChat(int playerId, int gameId) {
-    voiceChatConnection.join(playerId, gameId);
+  public void intUDPConnection(PlayerGameId playerGameId) {
+    udpGameConnection.init(playerGameId);
+    udpGameConnection.startKeepAlive();
   }
 
 
   public boolean waitUntilAllConnected(int timeoutMls) throws InterruptedException {
-    for (AbstractGameConnection connection : allGameConnections) {
-      if (!connection.waitUntilConnected(timeoutMls)) {
-        return false;
-      }
+    if (!tcpGameConnection.waitUntilConnected(timeoutMls)) {
+      return false;
     }
-    return voiceChatConnection.waitUntilConnected(timeoutMls);
+    return udpGameConnection.waitUntilConnected(timeoutMls);
   }
 
   public Optional<ServerResponse> pollPrimaryConnectionResponse() {
-    return gameConnection.getResponse().poll();
+    return tcpGameConnection.getResponse().poll();
   }
 
   @Builder

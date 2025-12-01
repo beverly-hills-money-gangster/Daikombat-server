@@ -12,12 +12,13 @@
 
     <groupId>com.beverly.hills.money.gang</groupId>
     <artifactId>daikombat-server</artifactId>
-    <version>26.0.3</version>
+    <version>27.0.0</version>
     <packaging>pom</packaging>
 
     <modules>
         <module>schema</module>
         <module>net-client</module>
+        <module>net-commons</module>
         <module>server</module>
         <module>benchmarks</module>
     </modules>
@@ -37,7 +38,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.12.1</version>
+                <version>3.8.1</version>
                 <configuration>
                     <source>14</source>
                     <target>14</target>

@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.beverly.hills.money.gang.cheat.AntiCheat;
 import com.beverly.hills.money.gang.config.ServerConfig;
+import com.beverly.hills.money.gang.entity.PlayerGameId;
 import com.beverly.hills.money.gang.exception.GameLogicError;
-import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
@@ -47,9 +47,9 @@ public class GameServerInfoTest extends AbstractGameServerTest {
   @ParameterizedTest
   @EnumSource(RPGPlayerClass.class)
   public void testGetServerInfo(final RPGPlayerClass playerClass)
-      throws IOException, GameLogicError {
+      throws IOException, GameLogicError, InterruptedException {
     var protoClass = createPlayerClass(playerClass);
-    GameConnection gameConnection = createGameConnection("localhost", port);
+    var gameConnection = createGameConnection("localhost", port);
 
     gameConnection.write(GetServerInfoCommand.newBuilder()
         .setPlayerClass(protoClass).build());
@@ -79,10 +79,10 @@ public class GameServerInfoTest extends AbstractGameServerTest {
           gameInfo.getPlayerSpeed());
       assertEquals(game.getGameConfig().getMaxVisibility(), gameInfo.getMaxVisibility());
     }
-    assertEquals(1, gameConnection.getGameNetworkStats().getReceivedMessages());
-    assertTrue(gameConnection.getGameNetworkStats().getInboundPayloadBytes() > 0);
-    assertEquals(1, gameConnection.getGameNetworkStats().getSentMessages());
-    assertTrue(gameConnection.getGameNetworkStats().getOutboundPayloadBytes() > 0);
+    assertEquals(1, gameConnection.getTCPNetworkStats().getReceivedMessages());
+    assertTrue(gameConnection.getTCPNetworkStats().getInboundPayloadBytes() > 0);
+    assertEquals(1, gameConnection.getTCPNetworkStats().getSentMessages());
+    assertTrue(gameConnection.getTCPNetworkStats().getOutboundPayloadBytes() > 0);
 
   }
 
@@ -92,21 +92,22 @@ public class GameServerInfoTest extends AbstractGameServerTest {
    * @then player 1 gets server info for all games
    */
   @Test
-  public void testGetServerInfoWithJoinedPlayers() throws IOException, GameLogicError {
+  public void testGetServerInfoWithJoinedPlayers()
+      throws IOException, GameLogicError, InterruptedException {
     int gameIdToConnectTo = 1;
     int playersToConnect = 5;
     for (int i = 0; i < playersToConnect; i++) {
-      GameConnection gameConnection = createGameConnection("localhost", port);
+      var gameConnection = createGameConnection("localhost", port);
       gameConnection.write(
           JoinGameCommand.newBuilder()
               .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
               .setPlayerClass(PlayerClass.WARRIOR)
               .setPlayerName("my player name " + i)
               .setGameId(gameIdToConnectTo).build());
-      waitUntilQueueNonEmpty(gameConnection.getResponse());
+      waitUntilGetResponses(gameConnection.getResponse(), 1);
       assertEquals(0, gameConnection.getErrors().size(), "Should be no error");
     }
-    GameConnection gameConnection = createGameConnection("localhost", port);
+    var gameConnection = createGameConnection("localhost", port);
     gameConnection.write(GetServerInfoCommand.newBuilder()
         .setPlayerClass(PlayerClass.WARRIOR).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
@@ -156,10 +157,10 @@ public class GameServerInfoTest extends AbstractGameServerTest {
       assertEquals(game.getGameConfig().getPlayerSpeed(), gameInfo.getPlayerSpeed());
       assertEquals(game.getGameConfig().getMaxVisibility(), gameInfo.getMaxVisibility());
     }
-    assertEquals(1, gameConnection.getGameNetworkStats().getReceivedMessages());
-    assertTrue(gameConnection.getGameNetworkStats().getInboundPayloadBytes() > 0);
-    assertEquals(1, gameConnection.getGameNetworkStats().getSentMessages());
-    assertTrue(gameConnection.getGameNetworkStats().getOutboundPayloadBytes() > 0);
+    assertEquals(1, gameConnection.getTCPNetworkStats().getReceivedMessages());
+    assertTrue(gameConnection.getTCPNetworkStats().getInboundPayloadBytes() > 0);
+    assertEquals(1, gameConnection.getTCPNetworkStats().getSentMessages());
+    assertTrue(gameConnection.getTCPNetworkStats().getOutboundPayloadBytes() > 0);
   }
 
 }

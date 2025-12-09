@@ -66,14 +66,11 @@ public class PushGameEventHandlerDispatcher {
 
     var gameCommand = payload.getPushGameEventCommand();
     Game game = gameRoomRegistry.getGame(gameCommand.getGameId());
-    gameRoomRegistry.getActivePlayer(gameCommand.getGameId(),
-            gameCommand.getPlayerId())
+    gameRoomRegistry.getActivePlayer(gameCommand.getGameId(), gameCommand.getPlayerId())
         .filter(playerStateChannel -> playerStateChannel.getPlayerState().getMatchId()
             == game.getMatchId())
-        .ifPresent(stateChannel -> {
-          handleGameEvents(game, gameCommand, stateChannel, udpChannel,
-              payload.getInetSocketAddress());
-        });
+        .ifPresent(stateChannel -> handleGameEvents(game, gameCommand, stateChannel, udpChannel,
+            payload.getInetSocketAddress()));
 
   }
 
@@ -124,11 +121,11 @@ public class PushGameEventHandlerDispatcher {
     var ackBuf = Unpooled.directBuffer(5);
     ackBuf.writeByte(DatagramRequestType.ACK.getCode());
     ackBuf.writeInt(gameCommand.getSequence());
-    playerState.getDataGramSocketAddress().ifPresent(inetSocketAddress -> {
+    playerState.getDataGramSocketAddress().ifPresentOrElse(inetSocketAddress -> {
       var forwardedPacket = new DatagramPacket(
           ackBuf, inetSocketAddress);
       udpChannel.writeAndFlush(forwardedPacket);
-    });
+    }, ackBuf::release);
   }
 
   private void initMDC(final PushGameEventCommand gameEventCommand,

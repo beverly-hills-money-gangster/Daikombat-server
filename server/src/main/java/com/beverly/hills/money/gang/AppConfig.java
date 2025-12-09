@@ -21,7 +21,6 @@ public class AppConfig {
   @Bean
   public EventLoopGroup eventLoopGroup(ServerTransport serverTransport) {
     // the whole app is single-threaded
-    // TODO remove useless .schedule() calls
     return serverTransport.createEventLoopGroup(1);
   }
 

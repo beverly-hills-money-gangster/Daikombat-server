@@ -38,6 +38,7 @@ public class GameServerInboundHandler extends SimpleChannelInboundHandler<Server
   public GameServerInboundHandler(ServerTransport serverTransport,
       GameRoomRegistry gameRoomRegistry,
       List<ServerCommandHandler> handlers) {
+    // TODO check if player id matches its ip address
     this.serverTransport = serverTransport;
     this.gameRoomRegistry = gameRoomRegistry;
     this.handlersMap = new HashMap<>();

@@ -87,8 +87,10 @@ public class Game implements Closeable, GameReader {
 
   public Game(
       final MapRegistry mapRegistry,
-      @Qualifier("gameIdGenerator") final SequenceGenerator gameSequenceGenerator,
-      @Qualifier("playerIdGenerator") final SequenceGenerator playerSequenceGenerator,
+      @Qualifier("gameIdGenerator")
+      final SequenceGenerator gameSequenceGenerator,
+      @Qualifier("playerIdGenerator")
+      final SequenceGenerator playerSequenceGenerator,
       final AntiCheat antiCheat,
       final AbstractSpawnerFactory spawnerFactory,
       final AbstractTeleportRegistryFactory teleportRegistryFactory,
@@ -144,7 +146,7 @@ public class Game implements Closeable, GameReader {
 
   @Nullable
   public PlayerRespawnedGameState respawnPlayer(final int playerId) throws GameLogicError {
-    var player = playersRegistry.findPlayer(playerId)
+    var player = playersRegistry.getPlayerStateChannel(playerId)
         .orElseThrow(
             () -> new GameLogicError("Player doesn't exist", GameErrorCode.PLAYER_DOES_NOT_EXIST));
     if (!player.getPlayerState().isDead()) {
@@ -340,7 +342,7 @@ public class Game implements Closeable, GameReader {
       allActivePlayers.forEach(
           playerStateChannel -> {
             playerStateChannel.getPlayerState().clearStats();
-            playerStateChannel.clearNoAckEvents();
+            playerStateChannel.clear();
           });
       // it's important that we get leaderboard before marking all players as 'GAME_OVER'
       playersRegistry.allPlayers().forEach(playerStateChannel -> playerStateChannel.getPlayerState()

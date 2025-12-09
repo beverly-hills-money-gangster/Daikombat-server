@@ -1,6 +1,7 @@
 package com.beverly.hills.money.gang.handler.outbound.udp;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
@@ -9,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+@Sharable
 @Component
 public class BigUDPDatagramWarnOutboundHandler extends ChannelOutboundHandlerAdapter {
 

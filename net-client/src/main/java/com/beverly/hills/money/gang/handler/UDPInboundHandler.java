@@ -6,9 +6,7 @@ import com.beverly.hills.money.gang.entity.VoiceChatPayload;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
-import com.beverly.hills.money.gang.proto.ServerResponse.GameEvents;
-import com.beverly.hills.money.gang.queue.QueueAPI;
-import com.beverly.hills.money.gang.stats.UDPGameNetworkStats;
+import com.beverly.hills.money.gang.queue.GameQueues;
 import com.beverly.hills.money.gang.storage.ProcessedServerResponseGameEventsStorage;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
@@ -27,21 +25,16 @@ import org.slf4j.LoggerFactory;
 
 
 @Builder
-public class UDPHandler extends SimpleChannelInboundHandler<DatagramPacket> {
+public class UDPInboundHandler extends SimpleChannelInboundHandler<DatagramPacket> {
 
-  private static final Logger LOG = LoggerFactory.getLogger(UDPHandler.class);
+  private static final Logger LOG = LoggerFactory.getLogger(UDPInboundHandler.class);
 
-  private final ProcessedServerResponseGameEventsStorage
-      processedServerResponseGameEventsStorage;
-  private final UDPGameNetworkStats udpNetworkStats;
-  private final QueueAPI<Throwable> errorsQueueAPI;
-  private final QueueAPI<VoiceChatPayload> incomingVoiceChatQueueAPI;
-  private final QueueAPI<ServerResponse> responseQueueAPI;
+  private final GameQueues gameQueues;
   private final OpusCodec opusCodec;
   private final AtomicBoolean fullyConnected;
-  private final Map<Integer, PushGameEventCommand> noAckGameEvents;
-  private final Consumer<GameEvent> onAck;
+  private final Map<Integer, PushGameEventCommand> ackRequiredGameEvents;
   private final Runnable onClose;
+  private final UDPServerResponseHandler udpServerResponseHandler;
 
 
   @Override
@@ -49,14 +42,10 @@ public class UDPHandler extends SimpleChannelInboundHandler<DatagramPacket> {
       ChannelHandlerContext channelHandlerContext,
       DatagramPacket packet) throws IOException {
     ByteBuf buf = packet.content();
-    udpNetworkStats.incReceivedMessages();
-    udpNetworkStats.addInboundPayloadBytes(buf.readableBytes());
     if (buf.readableBytes() < 1) {
-      // ignore small datagrams
       return;
     }
     var reqType = DatagramRequestType.create(buf.readByte());
-    // TODO create handlers
     switch (reqType) {
       case KEEP_ALIVE -> fullyConnected.set(true);
       case VOICE_CHAT -> {
@@ -64,7 +53,7 @@ public class UDPHandler extends SimpleChannelInboundHandler<DatagramPacket> {
         int gameId = buf.readInt();
         byte[] encoded = new byte[buf.readableBytes()];
         buf.readBytes(encoded);
-        incomingVoiceChatQueueAPI.push(VoiceChatPayload.builder()
+        gameQueues.getIncomingVoiceChatQueueAPI().push(VoiceChatPayload.builder()
             .playerId(playerId)
             .gameId(gameId)
             .pcm(opusCodec.decode(encoded))
@@ -72,27 +61,12 @@ public class UDPHandler extends SimpleChannelInboundHandler<DatagramPacket> {
       }
       case ACK -> {
         int sequence = buf.readInt();
-        noAckGameEvents.remove(sequence);
+        ackRequiredGameEvents.remove(sequence);
       }
       case GAME_EVENT -> {
-        var stream = new ByteBufInputStream(buf);
-        var serverResponse = ServerResponse.parseFrom(stream);
-        if (serverResponse.hasGameEvents()) {
-          // TODO document and refactor
-          serverResponse.getGameEvents().getEventsList().forEach(gameEvent -> {
-            if (processedServerResponseGameEventsStorage.eventAlreadyProcessed(gameEvent)) {
-              onAck.accept(gameEvent);
-            } else {
-              responseQueueAPI.push(ServerResponse.newBuilder().setGameEvents(
-                  GameEvents.newBuilder().addEvents(gameEvent).build()).build());
-              if (gameEvent.getEventType() != GameEvent.GameEventType.MOVE) {
-                processedServerResponseGameEventsStorage.markEventProcessed(
-                    gameEvent, () -> onAck.accept(gameEvent));
-              }
-            }
-          });
-        } else {
-          responseQueueAPI.push(serverResponse);
+        try (var stream = new ByteBufInputStream(buf)) {
+          var serverResponse = ServerResponse.parseFrom(stream);
+          udpServerResponseHandler.handle(serverResponse);
         }
       }
     }
@@ -104,8 +78,7 @@ public class UDPHandler extends SimpleChannelInboundHandler<DatagramPacket> {
     if (evt instanceof IdleStateEvent) {
       IdleStateEvent e = (IdleStateEvent) evt;
       if (e.state() == IdleState.READER_IDLE) {
-        LOG.info("UDP server is inactive");
-        errorsQueueAPI.push(new IOException("UDP server is inactive for too long"));
+        gameQueues.getErrorsQueueAPI().push(new IOException("Server is inactive for too long"));
         onClose.run();
       }
     } else {
@@ -116,6 +89,6 @@ public class UDPHandler extends SimpleChannelInboundHandler<DatagramPacket> {
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
     LOG.error("Error caught", cause);
-    errorsQueueAPI.push(cause);
+    gameQueues.getErrorsQueueAPI().push(cause);
   }
 }

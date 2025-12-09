@@ -33,7 +33,7 @@ public abstract class AbstractProcessedGameEventsStorage<T> {
       return;
     }
     var eventId = getEventId(gameEventCommand);
-    processedEvents.put(eventId, System.currentTimeMillis() + MAX_TTL_MLS);
+    processedEvents.put(eventId, System.currentTimeMillis() + getMaxTtlMls());
     onComplete.run();
   }
 
@@ -49,7 +49,7 @@ public abstract class AbstractProcessedGameEventsStorage<T> {
 
   protected abstract boolean isApplicable(T gameEventCommand);
 
-  public final int getMaxTtlMls() {
+  public int getMaxTtlMls() {
     return MAX_TTL_MLS;
   }
 

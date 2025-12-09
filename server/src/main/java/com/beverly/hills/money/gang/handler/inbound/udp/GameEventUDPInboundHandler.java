@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 // TODO make sure I check that the traffic is coming from the correct player (check ip)
-// TODO make sure I nullify UDP inet address on respawn
 @Component
 @ChannelHandler.Sharable
 @RequiredArgsConstructor

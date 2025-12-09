@@ -48,10 +48,11 @@ public class DatagramPayloadDispatcherDecoder extends MessageToMessageDecoder<Da
             .content(msg.content().retainedDuplicate()).build());
         case GAME_EVENT -> {
           msg.content().skipBytes(1);
-          var stream = new ByteBufInputStream(msg.content());
-          out.add(GameEventUDPPayloadDTO.builder()
-              .inetSocketAddress(msg.sender())
-              .pushGameEventCommand(PushGameEventCommand.parseFrom(stream)).build());
+          try (var stream = new ByteBufInputStream(msg.content())) {
+            out.add(GameEventUDPPayloadDTO.builder()
+                .inetSocketAddress(msg.sender())
+                .pushGameEventCommand(PushGameEventCommand.parseFrom(stream)).build());
+          }
         }
         case ACK -> out.add(AckUDPPayloadDTO.builder()
             .inetSocketAddress(msg.sender())

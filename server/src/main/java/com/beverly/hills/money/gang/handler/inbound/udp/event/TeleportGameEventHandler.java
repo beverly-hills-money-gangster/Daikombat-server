@@ -1,7 +1,7 @@
 package com.beverly.hills.money.gang.handler.inbound.udp.event;
 
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createCoordinates;
-import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createTeleportPlayerServerResponse;
+import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createPlayerTeleportGameEvent;
 import static com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType.TELEPORT;
 
 import com.beverly.hills.money.gang.exception.GameLogicError;
@@ -28,7 +28,7 @@ public class TeleportGameEventHandler extends GameEventHandler {
         gameCommand.getTeleportId(),
         gameCommand.getSequence(),
         gameCommand.getPingMls());
-    var serverResponse = createTeleportPlayerServerResponse(result.getTeleportedPlayer());
+    var serverResponse = createPlayerTeleportGameEvent(result.getTeleportedPlayer());
     game.getPlayersRegistry().allActivePlayers()
         .forEach(stateChannel -> stateChannel.writeUDPAckRequiredFlush(udpChannel, serverResponse));
 

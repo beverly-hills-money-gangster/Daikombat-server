@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
-import com.beverly.hills.money.gang.network.GameConnection;
+import com.beverly.hills.money.gang.entity.PlayerGameId;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PlayerSkinColor;
@@ -42,7 +42,7 @@ public class RespawnEventTest extends AbstractGameServerTest {
     int gameIdToConnectTo = 0;
     var gameConfig = gameRoomRegistry.getGame(gameIdToConnectTo).getGameConfig();
     String shooterPlayerName = "killer";
-    GameConnection killerConnection = createGameConnection("localhost",
+    var killerConnection = createGameConnection("localhost",
         port);
     killerConnection.write(
         JoinGameCommand.newBuilder()
@@ -51,7 +51,7 @@ public class RespawnEventTest extends AbstractGameServerTest {
             .setPlayerName(shooterPlayerName)
             .setGameId(gameIdToConnectTo).build());
 
-    GameConnection deadConnection = createGameConnection("localhost", port);
+    var deadConnection = createGameConnection("localhost", port);
     deadConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.PURPLE)

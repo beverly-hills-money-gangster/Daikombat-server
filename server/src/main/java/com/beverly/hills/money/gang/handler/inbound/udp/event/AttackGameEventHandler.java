@@ -76,7 +76,6 @@ public class AttackGameEventHandler extends GameEventHandler {
         .ifPresentOrElse(attackedPlayer -> {
           if (!attackedPlayer.isDead()) {
             var attackEvent = createGetAttackedEvent(
-                game.playersOnline(),
                 attackGameState.getAttackingPlayer(),
                 attackGameState.getPlayerAttacked(),
                 gameCommand);
@@ -85,7 +84,7 @@ public class AttackGameEventHandler extends GameEventHandler {
                     playerStateChannel.writeUDPAckRequiredFlush(udpChannel, attackEvent));
             return;
           }
-          var deadEvent = createKillEvent(game.playersOnline(),
+          var deadEvent = createKillEvent(
               attackGameState.getAttackingPlayer(),
               attackGameState.getPlayerAttacked(), gameCommand);
 
@@ -103,8 +102,7 @@ public class AttackGameEventHandler extends GameEventHandler {
                       .forEach(stateChannel -> stateChannel.writeTCPFlush(serverResponse)));
         }, () -> {
           LOG.debug("Nobody got attacked");
-          var attackEvent = createAttackingEvent(game.playersOnline(),
-              attackGameState.getAttackingPlayer(), gameCommand);
+          var attackEvent = createAttackingEvent(attackGameState.getAttackingPlayer(), gameCommand);
           game.getPlayersRegistry().allActivePlayers().stream()
               .filter(playerStateChannel
                   // don't send me my own attack back

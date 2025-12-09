@@ -3,11 +3,14 @@ package com.beverly.hills.money.gang.queue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -29,6 +32,14 @@ public class QueueAPITest {
   public void testPush() {
     queueAPI.push(1);
     assertEquals(1, queueAPI.size());
+  }
+
+  @Test
+  public void testListener() {
+    var mockListener = mock(Consumer.class);
+    queueAPI.addListener(mockListener);
+    queueAPI.push(123);
+    verify(mockListener).accept(123);
   }
 
   @Test

@@ -6,9 +6,7 @@ public interface UDPGameNetworkStatsReader {
 
   int getSentMessages();
 
-
   long getOutboundPayloadBytes();
-
 
   long getInboundPayloadBytes();
 }

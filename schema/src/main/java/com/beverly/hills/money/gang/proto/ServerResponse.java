@@ -12338,6 +12338,17 @@ private static final long serialVersionUID = 0L;
      * <code>optional .daikombat.dto.ProjectileCoordinates projectile = 7;</code>
      */
     com.beverly.hills.money.gang.proto.ProjectileCoordinatesOrBuilder getProjectileOrBuilder();
+
+    /**
+     * <code>optional int32 gameId = 8;</code>
+     * @return Whether the gameId field is set.
+     */
+    boolean hasGameId();
+    /**
+     * <code>optional int32 gameId = 8;</code>
+     * @return The gameId.
+     */
+    int getGameId();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.GameEvent}
@@ -12421,6 +12432,10 @@ private static final long serialVersionUID = 0L;
        * <code>POWER_UP_PICKUP = 9;</code>
        */
       POWER_UP_PICKUP(9),
+      /**
+       * <code>INIT = 10;</code>
+       */
+      INIT(10),
       UNRECOGNIZED(-1),
       ;
 
@@ -12464,6 +12479,10 @@ private static final long serialVersionUID = 0L;
        * <code>POWER_UP_PICKUP = 9;</code>
        */
       public static final int POWER_UP_PICKUP_VALUE = 9;
+      /**
+       * <code>INIT = 10;</code>
+       */
+      public static final int INIT_VALUE = 10;
 
 
       public final int getNumber() {
@@ -12500,6 +12519,7 @@ private static final long serialVersionUID = 0L;
           case 7: return JOIN;
           case 8: return RESPAWN;
           case 9: return POWER_UP_PICKUP;
+          case 10: return INIT;
           default: return null;
         }
       }
@@ -12723,6 +12743,25 @@ private static final long serialVersionUID = 0L;
       return projectile_ == null ? com.beverly.hills.money.gang.proto.ProjectileCoordinates.getDefaultInstance() : projectile_;
     }
 
+    public static final int GAMEID_FIELD_NUMBER = 8;
+    private int gameId_ = 0;
+    /**
+     * <code>optional int32 gameId = 8;</code>
+     * @return Whether the gameId field is set.
+     */
+    @java.lang.Override
+    public boolean hasGameId() {
+      return ((bitField0_ & 0x00000040) != 0);
+    }
+    /**
+     * <code>optional int32 gameId = 8;</code>
+     * @return The gameId.
+     */
+    @java.lang.Override
+    public int getGameId() {
+      return gameId_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -12757,6 +12796,9 @@ private static final long serialVersionUID = 0L;
       }
       if (((bitField0_ & 0x00000020) != 0)) {
         output.writeMessage(7, getProjectile());
+      }
+      if (((bitField0_ & 0x00000040) != 0)) {
+        output.writeInt32(8, gameId_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -12794,6 +12836,10 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000020) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(7, getProjectile());
+      }
+      if (((bitField0_ & 0x00000040) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(8, gameId_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -12840,6 +12886,11 @@ private static final long serialVersionUID = 0L;
         if (!getProjectile()
             .equals(other.getProjectile())) return false;
       }
+      if (hasGameId() != other.hasGameId()) return false;
+      if (hasGameId()) {
+        if (getGameId()
+            != other.getGameId()) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -12876,6 +12927,10 @@ private static final long serialVersionUID = 0L;
       if (hasProjectile()) {
         hash = (37 * hash) + PROJECTILE_FIELD_NUMBER;
         hash = (53 * hash) + getProjectile().hashCode();
+      }
+      if (hasGameId()) {
+        hash = (37 * hash) + GAMEID_FIELD_NUMBER;
+        hash = (53 * hash) + getGameId();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -13040,6 +13095,7 @@ private static final long serialVersionUID = 0L;
           projectileBuilder_.dispose();
           projectileBuilder_ = null;
         }
+        gameId_ = 0;
         return this;
       }
 
@@ -13109,6 +13165,10 @@ private static final long serialVersionUID = 0L;
               : projectileBuilder_.build();
           to_bitField0_ |= 0x00000020;
         }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.gameId_ = gameId_;
+          to_bitField0_ |= 0x00000040;
+        }
         result.bitField0_ |= to_bitField0_;
       }
 
@@ -13176,6 +13236,9 @@ private static final long serialVersionUID = 0L;
         }
         if (other.hasProjectile()) {
           mergeProjectile(other.getProjectile());
+        }
+        if (other.hasGameId()) {
+          setGameId(other.getGameId());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -13246,6 +13309,11 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000040;
                 break;
               } // case 58
+              case 64: {
+                gameId_ = input.readInt32();
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 64
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -13898,6 +13966,46 @@ private static final long serialVersionUID = 0L;
           projectile_ = null;
         }
         return projectileBuilder_;
+      }
+
+      private int gameId_ ;
+      /**
+       * <code>optional int32 gameId = 8;</code>
+       * @return Whether the gameId field is set.
+       */
+      @java.lang.Override
+      public boolean hasGameId() {
+        return ((bitField0_ & 0x00000080) != 0);
+      }
+      /**
+       * <code>optional int32 gameId = 8;</code>
+       * @return The gameId.
+       */
+      @java.lang.Override
+      public int getGameId() {
+        return gameId_;
+      }
+      /**
+       * <code>optional int32 gameId = 8;</code>
+       * @param value The gameId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGameId(int value) {
+
+        gameId_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 gameId = 8;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearGameId() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        gameId_ = 0;
+        onChanged();
+        return this;
       }
       @java.lang.Override
       public final Builder setUnknownFields(

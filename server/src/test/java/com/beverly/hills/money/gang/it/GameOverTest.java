@@ -3,7 +3,7 @@ package com.beverly.hills.money.gang.it;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
-import com.beverly.hills.money.gang.network.GameConnection;
+import com.beverly.hills.money.gang.network.GlobalGameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PlayerSkinColor;
@@ -40,7 +40,7 @@ public class GameOverTest extends AbstractGameServerTest {
     int deadConnectionsToCreate = 5;
     int gameIdToConnectTo = 0;
     String shooterPlayerName = "killer";
-    GameConnection killerConnection = createGameConnection(
+    var killerConnection = createGameConnection(
         "localhost", port);
     killerConnection.write(
         JoinGameCommand.newBuilder()
@@ -52,9 +52,9 @@ public class GameOverTest extends AbstractGameServerTest {
     ServerResponse shooterPlayerSpawn = killerConnection.getResponse().poll().get();
     int shooterPlayerId = shooterPlayerSpawn.getGameEvents().getEvents(0).getPlayer()
         .getPlayerId();
-    List<GameConnection> deadPlayerConnections = new ArrayList<>();
+    List<GlobalGameConnection> deadPlayerConnections = new ArrayList<>();
     for (int i = 0; i < deadConnectionsToCreate; i++) {
-      GameConnection deadConnection = createGameConnection("localhost",
+      var deadConnection = createGameConnection("localhost",
           port);
       deadPlayerConnections.add(deadConnection);
       deadConnection.write(
@@ -67,10 +67,9 @@ public class GameOverTest extends AbstractGameServerTest {
       waitUntilGetResponses(deadConnection.getResponse(), 2);
       ServerResponse shotPlayerSpawn = deadConnection.getResponse().poll().get();
 
-      assertEquals(GameEventType.SPAWN, shotPlayerSpawn.getGameEvents().getEvents(0).getEventType(),
+      assertEquals(GameEventType.INIT, shotPlayerSpawn.getGameEvents().getEvents(0).getEventType(),
           "It should be spawn");
       int shotPlayerId = shotPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
-
       emptyQueue(deadConnection.getResponse());
       emptyQueue(killerConnection.getResponse());
 
@@ -135,7 +134,7 @@ public class GameOverTest extends AbstractGameServerTest {
 
     Thread.sleep(2_500);
 
-    GameConnection newGameConnection = createGameConnection("localhost", port);
+    var newGameConnection = createGameConnection("localhost", port);
     newGameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)

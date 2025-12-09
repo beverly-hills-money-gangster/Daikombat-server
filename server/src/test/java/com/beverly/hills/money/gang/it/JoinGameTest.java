@@ -5,9 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
+import com.beverly.hills.money.gang.entity.PlayerGameId;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.factory.rpg.RPGStatsFactory;
-import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
@@ -61,7 +61,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     var expectedPlayerSpeed =
         RPGStatsFactory.create(RPGPlayerClass.values()[playerClassNumber]).getNormalized(
             PlayerRPGStatType.RUN_SPEED) * game.getGameConfig().getPlayerSpeed();
-    GameConnection gameConnection = createGameConnection("localhost", port);
+    var gameConnection = createGameConnection("localhost", port);
     gameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
@@ -77,6 +77,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     assertEquals(1, mySpawn.getGameEvents().getEventsCount(), "Should be only my spawn");
     assertEquals(1, mySpawn.getGameEvents().getPlayersOnline(), "Only me should be online");
     ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
+    assertEquals(GameEventType.INIT, mySpawnGameEvent.getEventType());
     assertEquals("my player name", mySpawnGameEvent.getPlayer().getPlayerName());
     assertEquals(100, mySpawnGameEvent.getPlayer().getHealth());
     assertEquals(expectedPlayerSpeed, mySpawnGameEvent.getPlayer().getSpeed(), 0.0001);
@@ -102,7 +103,7 @@ public class JoinGameTest extends AbstractGameServerTest {
       }
     }
 
-    GameConnection newGameConnection = createGameConnection("localhost", port);
+    var newGameConnection = createGameConnection("localhost", port);
     newGameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
@@ -136,7 +137,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     int gameIdToConnectTo = 0;
     int playersToConnect = 5;
     for (int i = 0; i < playersToConnect; i++) {
-      GameConnection gameConnection = createGameConnection("localhost",
+      var gameConnection = createGameConnection("localhost",
           port);
       gameConnection.write(
           JoinGameCommand.newBuilder()
@@ -145,10 +146,11 @@ public class JoinGameTest extends AbstractGameServerTest {
               .setPlayerName("player name " + i)
               .setGameId(gameIdToConnectTo).build());
       waitUntilQueueNonEmpty(gameConnection.getResponse());
+      ServerResponse playerSpawn = gameConnection.getResponse().poll().get();
       assertEquals(i + 1,
-          gameConnection.getResponse().poll().get().getGameEvents().getPlayersOnline());
+          playerSpawn.getGameEvents().getPlayersOnline());
     }
-    GameConnection gameConnection = createGameConnection("localhost", port);
+    var gameConnection = createGameConnection("localhost", port);
     gameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(
@@ -156,8 +158,13 @@ public class JoinGameTest extends AbstractGameServerTest {
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
+
+    ServerResponse playerSpawn = gameConnection.getResponse().poll().get();
+    ServerResponse.GameEvent playerSpawnEvent = playerSpawn.getGameEvents()
+        .getEvents(0);
+    int playerId = playerSpawnEvent.getPlayer().getPlayerId();
     assertEquals(playersToConnect + 1,
-        gameConnection.getResponse().poll().get().getGameEvents().getPlayersOnline(),
+        playerSpawn.getGameEvents().getPlayersOnline(),
         "I should see other players that are currently online");
 
     var otherPlayers = gameConnection.getResponse().poll().orElseThrow(
@@ -177,7 +184,7 @@ public class JoinGameTest extends AbstractGameServerTest {
   @Test
   public void testJoinGameNotExistingGame() throws IOException, InterruptedException {
     int gameIdToConnectTo = 666;
-    GameConnection gameConnection = createGameConnection("localhost", port);
+    var gameConnection = createGameConnection("localhost", port);
     gameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
@@ -192,7 +199,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     ServerResponse.ErrorEvent errorEvent = serverResponse.getErrorEvent();
     assertEquals(GameErrorCode.NOT_EXISTING_GAME_ROOM.getErrorCode(), errorEvent.getErrorCode(),
         "Should be a non-existing game error");
-    assertEquals("Not existing game room", errorEvent.getMessage());
+    assertEquals("Not existing game room " + gameIdToConnectTo, errorEvent.getMessage());
 
     // need a new game connection because the previous is closed
     var newGameConnection = createGameConnection("localhost", port);
@@ -227,7 +234,7 @@ public class JoinGameTest extends AbstractGameServerTest {
       "what the hell is with r@phael?"})
   public void testJoinGameBlacklisted(String userName) throws IOException, InterruptedException {
     int gameIdToConnectTo = 0;
-    GameConnection gameConnection = createGameConnection("localhost", port);
+    var gameConnection = createGameConnection("localhost", port);
     gameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
@@ -252,7 +259,7 @@ public class JoinGameTest extends AbstractGameServerTest {
   @Test
   public void testJoinGameWrongVersion() throws IOException, InterruptedException {
     int gameIdToConnectTo = 0;
-    GameConnection gameConnection = createGameConnection("localhost", port);
+    var gameConnection = createGameConnection("localhost", port);
     gameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion("0.1.1-SNAPSHOT")
@@ -295,7 +302,7 @@ public class JoinGameTest extends AbstractGameServerTest {
   @Test
   public void testJoinGameTooMany() throws IOException, InterruptedException {
     for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
-      GameConnection gameConnection = createGameConnection("localhost",
+      var gameConnection = createGameConnection("localhost",
           port);
       gameConnection.write(
           JoinGameCommand.newBuilder()
@@ -306,7 +313,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     }
     Thread.sleep(1_000);
 
-    GameConnection gameConnection = createGameConnection("localhost", port);
+    var gameConnection = createGameConnection("localhost", port);
     gameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
@@ -334,7 +341,7 @@ public class JoinGameTest extends AbstractGameServerTest {
   @Test
   public void testJoinSameName() throws IOException, InterruptedException {
 
-    GameConnection gameConnection = createGameConnection("localhost", port);
+    var gameConnection = createGameConnection("localhost", port);
     gameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
@@ -343,7 +350,7 @@ public class JoinGameTest extends AbstractGameServerTest {
             .setGameId(0).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
 
-    GameConnection sameNameConnection = createGameConnection("localhost",
+    var sameNameConnection = createGameConnection("localhost",
         port);
     sameNameConnection.write(
         JoinGameCommand.newBuilder()
@@ -359,7 +366,8 @@ public class JoinGameTest extends AbstractGameServerTest {
     assertTrue(serverResponse.hasErrorEvent(),
         "Error event expected. Actual response " + serverResponse);
     ServerResponse.ErrorEvent errorEvent = serverResponse.getErrorEvent();
-    assertEquals("Can't connect player. Player name already taken. Try another name.", errorEvent.getMessage());
+    assertEquals("Can't connect player. Player name already taken. Try another name.",
+        errorEvent.getMessage());
     assertEquals(GameErrorCode.PLAYER_EXISTS.getErrorCode(), errorEvent.getErrorCode(),
         "Shouldn't be able to connect as the player name is already taken");
 
@@ -383,7 +391,7 @@ public class JoinGameTest extends AbstractGameServerTest {
       int finalI = i;
       threads.add(new Thread(() -> {
         try {
-          GameConnection gameConnection = createGameConnection("localhost",
+          var gameConnection = createGameConnection("localhost",
               port);
           gameConnection.write(
               JoinGameCommand.newBuilder()
@@ -397,7 +405,7 @@ public class JoinGameTest extends AbstractGameServerTest {
           assertEquals(1, mySpawnResponse.getGameEvents().getEventsCount(),
               "Only one spawn(my spawn) is expected");
           var mySpawnEvent = mySpawnResponse.getGameEvents().getEvents(0);
-          assertEquals(GameEventType.SPAWN, mySpawnEvent.getEventType());
+          assertEquals(GameEventType.INIT, mySpawnEvent.getEventType());
           connectedPlayersPositions.put(mySpawnEvent.getPlayer().getPlayerId(),
               mySpawnEvent.getPlayer().getPosition());
         } catch (Throwable e) {
@@ -420,7 +428,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     Thread.sleep(1_500);
     assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME - 1, connectedPlayersPositions.size());
 
-    GameConnection gameConnection = createGameConnection("localhost", port);
+    var gameConnection = createGameConnection("localhost", port);
     gameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
@@ -436,7 +444,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     assertEquals(1, mySpawnResponse.getGameEvents().getEventsCount(),
         "Should be my spawn event only");
     var mySpawnEvent = mySpawnResponse.getGameEvents().getEvents(0);
-    assertEquals(ServerResponse.GameEvent.GameEventType.SPAWN, mySpawnEvent.getEventType(),
+    assertEquals(GameEventType.INIT, mySpawnEvent.getEventType(),
         "Should be my spawn");
     assertFalse(mySpawnEvent.hasAffectedPlayer(), "My spawn does not affect any player");
     assertEquals(100, mySpawnEvent.getPlayer().getHealth());

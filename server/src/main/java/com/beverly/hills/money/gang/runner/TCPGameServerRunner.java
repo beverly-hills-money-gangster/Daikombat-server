@@ -36,10 +36,10 @@ public class TCPGameServerRunner extends AbstractServerRunner {
 
     try {
       ServerBootstrap bootStrap = new ServerBootstrap();
-      bootStrap.group(eventLoopGroup, eventLoopGroup) // TODO is that ok?
+      bootStrap.group(eventLoopGroup, eventLoopGroup)
           .option(ChannelOption.SO_BACKLOG, 100)
           .childOption(ChannelOption.TCP_NODELAY, ServerConfig.FAST_TCP);
-      bootStrap.channel(serverTransport.getServerSocketChannelClass());
+      bootStrap.channel(serverTransport.getTCPSocketChannelClass());
       bootStrap.childHandler(gameServerInitializer);
       // Bind to port
       var serverChannel = bootStrap.bind(port).sync()

@@ -5,24 +5,23 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
+import com.beverly.hills.money.gang.entity.PlayerGameId;
 import com.beverly.hills.money.gang.exception.GameLogicError;
-import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
+import com.beverly.hills.money.gang.proto.GamePowerUpType;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
-import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType;
 import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem;
 import com.beverly.hills.money.gang.proto.Vector;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
@@ -52,9 +51,9 @@ public class AllPowerUpTest extends AbstractGameServerTest {
    */
   @Test
   public void testPickUpPowerUpAll()
-      throws IOException, GameLogicError {
+      throws IOException, GameLogicError, InterruptedException {
     int gameIdToConnectTo = 0;
-    GameConnection playerConnection = createGameConnection("localhost", port);
+    var playerConnection = createGameConnection("localhost", port);
     var game = gameRoomRegistry.getGame(gameIdToConnectTo);
     var allPowerUps = new ArrayList<PowerUp>();
     for (PowerUpType type : PowerUpType.values()) {
@@ -81,31 +80,24 @@ public class AllPowerUpTest extends AbstractGameServerTest {
     var spawns = quadDamagePowerUpSpawnResponse.getPowerUpSpawn().getItemsList().stream().map(
         PowerUpSpawnEventItem::getType).collect(Collectors.toSet());
 
-    assertEquals(
-        Arrays.stream(GamePowerUpType.values()).filter(
-                gamePowerUpType -> gamePowerUpType != GamePowerUpType.UNRECOGNIZED)
-            .collect(Collectors.toSet()),
+    var powerUpsToPick = Arrays.stream(GamePowerUpType.values()).filter(
+            gamePowerUpType -> gamePowerUpType != GamePowerUpType.UNRECOGNIZED)
+        .collect(Collectors.toSet());
+
+    assertEquals(powerUpsToPick,
         spawns, "All power-ups should be spawned");
 
-    var powerUpsToPick = List.of(
-        GameEventType.INVISIBILITY_POWER_UP,
-        GameEventType.DEFENCE_POWER_UP,
-        GameEventType.QUAD_DAMAGE_POWER_UP,
-        GameEventType.BIG_AMMO_POWER_UP,
-        GameEventType.HEALTH_POWER_UP,
-        GameEventType.MEDIUM_AMMO_POWER_UP,
-        GameEventType.BEAST_POWER_UP);
-
-    powerUpsToPick.forEach(gameEventType -> playerConnection.write(PushGameEventCommand.newBuilder()
+    powerUpsToPick.forEach(powerUpType -> playerConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(playerId)
         .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-       .setGameId(gameIdToConnectTo)
+        .setGameId(gameIdToConnectTo)
         .setPosition(Vector.newBuilder()
             .setX(playerSpawnEvent.getPlayer().getPosition().getX())
             .setY(playerSpawnEvent.getPlayer().getPosition().getY())
             .build())
         .setDirection(Vector.newBuilder().setX(0).setY(1).build())
-        .setEventType(gameEventType)
+        .setEventType(GameEventType.POWER_UP_PICKUP)
+        .setPowerUp(powerUpType)
         .build()));
 
     waitUntilGetResponses(playerConnection.getResponse(), powerUpsToPick.size());

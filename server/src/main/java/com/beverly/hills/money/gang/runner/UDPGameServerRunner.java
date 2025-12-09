@@ -5,6 +5,7 @@ import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.initializer.UDPGameServerInitializer;
 import com.beverly.hills.money.gang.scheduler.GameTickScheduler;
 import com.beverly.hills.money.gang.storage.ProcessedGameEventsStorage;
+import com.beverly.hills.money.gang.transport.ServerTransport;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
@@ -28,6 +29,8 @@ public class UDPGameServerRunner extends AbstractServerRunner {
 
   private final EventLoopGroup eventLoopGroup;
 
+  private final ServerTransport serverTransport;
+
   private final GameTickScheduler gameTickScheduler;
 
   private final ProcessedGameEventsStorage processedGameEventsStorage;
@@ -41,7 +44,7 @@ public class UDPGameServerRunner extends AbstractServerRunner {
     try {
       Bootstrap bootstrap = new Bootstrap();
       bootstrap.group(eventLoopGroup)
-          .channel(NioDatagramChannel.class)
+          .channel(serverTransport.getUDPSocketChannelClass())
           .handler(udpGameServerInitializer);
       Channel serverChannel = bootstrap.bind(port).sync().channel();
       LOG.info("UDP server started on port: {}", port);
@@ -52,7 +55,7 @@ public class UDPGameServerRunner extends AbstractServerRunner {
       serverChannel.eventLoop().scheduleAtFixedRate(
           () -> {
             gameTickScheduler.sendBufferedMoves(serverChannel);
-            gameTickScheduler.resendNoAckEvents(serverChannel);
+            gameTickScheduler.resendAckRequiredEvents(serverChannel);
           },
           ServerConfig.MOVES_UPDATE_FREQUENCY_MLS, ServerConfig.MOVES_UPDATE_FREQUENCY_MLS,
           TimeUnit.MILLISECONDS);

@@ -46,7 +46,7 @@ public class GameRoomRegistry implements Closeable {
 
   public Optional<PlayerStateChannel> getPlayer(int gameId, int playerId) {
     return Optional.ofNullable(games.get(gameId))
-        .flatMap(game -> game.getPlayersRegistry().findPlayer(playerId));
+        .flatMap(game -> game.getPlayersRegistry().getPlayerStateChannel(playerId));
   }
 
   public boolean removeChannel(final Channel channel, final OnPlayerRemoval onFound) {

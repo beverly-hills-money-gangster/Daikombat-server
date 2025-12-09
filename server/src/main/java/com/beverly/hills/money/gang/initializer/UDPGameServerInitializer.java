@@ -7,14 +7,14 @@ import com.beverly.hills.money.gang.handler.inbound.udp.GameEventUDPInboundHandl
 import com.beverly.hills.money.gang.handler.inbound.udp.KeepAliveUDPInboundHandler;
 import com.beverly.hills.money.gang.handler.inbound.udp.VoiceChatPayloadInboundHandler;
 import com.beverly.hills.money.gang.handler.outbound.udp.BigUDPDatagramWarnOutboundHandler;
+import io.netty.channel.AbstractChannel;
 import io.netty.channel.ChannelInitializer;
-import io.netty.channel.socket.nio.NioDatagramChannel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class UDPGameServerInitializer extends ChannelInitializer<NioDatagramChannel> {
+public class UDPGameServerInitializer extends ChannelInitializer<AbstractChannel> {
 
   private final VoiceChatPayloadInboundHandler voiceChatPayloadInboundHandler;
   private final KeepAliveUDPInboundHandler keepAliveUDPInboundHandler;
@@ -25,7 +25,7 @@ public class UDPGameServerInitializer extends ChannelInitializer<NioDatagramChan
 
 
   @Override
-  protected void initChannel(NioDatagramChannel ch) {
+  protected void initChannel(AbstractChannel ch) {
     ch.pipeline().addLast(bigUDPDatagramWarnOutboundHandler);
     ch.pipeline().addLast(datagramPayloadDispatcherDecoder);
     ch.pipeline().addLast(keepAliveUDPInboundHandler);

@@ -44,17 +44,17 @@ public class PowerUpPickGameEventHandler extends GameEventHandler {
     }
     var serverResponse = createPowerUpPlayerServerResponse(result.getPlayerState());
     game.getPlayersRegistry().allActivePlayers()
-        .forEach(stateChannel -> stateChannel.writeUDPAckRequiredFlush(udpChannel, serverResponse));
+        .forEach(stateChannel -> stateChannel.writeTCPFlush(serverResponse));
     scheduler.schedule(result.getPowerUp().getLastsForMls(), () -> {
       if (!result.getPlayerState().isDead()) {
         LOG.debug("Revert power-up");
         result.getPlayerState().revertPowerUp(result.getPowerUp());
       }
-      schedulePowerUpSpawn(game, result.getPowerUp(), udpChannel);
+      schedulePowerUpSpawn(game, result.getPowerUp());
     });
   }
 
-  private void schedulePowerUpSpawn(Game game, PowerUp powerUp, final Channel udpChannel) {
+  private void schedulePowerUpSpawn(Game game, PowerUp powerUp) {
     scheduler.schedule(powerUp.getSpawnPeriodMls(), () -> {
       if (!game.getPowerUpRegistry().release(powerUp)) {
         LOG.warn("Can't release power-up {}", powerUp.getType());
@@ -62,8 +62,7 @@ public class PowerUpPickGameEventHandler extends GameEventHandler {
       }
       ServerResponse serverResponse = createPowerUpSpawn(powerUp);
       game.getPlayersRegistry().allActivePlayers().forEach(
-          playerStateChannel -> playerStateChannel.writeUDPAckRequiredFlush(udpChannel,
-              serverResponse));
+          playerStateChannel -> playerStateChannel.writeTCPFlush(serverResponse));
     });
   }
 

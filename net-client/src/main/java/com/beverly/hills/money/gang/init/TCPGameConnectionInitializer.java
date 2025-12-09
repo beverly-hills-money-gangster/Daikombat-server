@@ -31,8 +31,6 @@ import org.slf4j.LoggerFactory;
 public class TCPGameConnectionInitializer extends ChannelInitializer<SocketChannel> {
 
   private static final Logger LOG = LoggerFactory.getLogger(TCPGameConnectionInitializer.class);
-  private static final int BAD_PING_THRESHOLD_MLS = 1000;
-
 
   private final QueueAPI<Throwable> errorsQueueAPI;
   private final QueueAPI<ServerResponse> serverEventsQueueAPI;
@@ -50,7 +48,8 @@ public class TCPGameConnectionInitializer extends ChannelInitializer<SocketChann
       public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ByteBuf buf = (ByteBuf) msg;
         tcpGameNetworkStats.addInboundPayloadBytes(buf.readableBytes());
-        super.channelRead(ctx, msg);
+        tcpGameNetworkStats.incReceivedMessages();
+        ctx.fireChannelRead(msg);
       }
     });
     p.addLast(new ChannelOutboundHandlerAdapter() {
@@ -59,6 +58,7 @@ public class TCPGameConnectionInitializer extends ChannelInitializer<SocketChann
           throws Exception {
         ByteBuf buf = (ByteBuf) msg;
         tcpGameNetworkStats.addOutboundPayloadBytes(buf.readableBytes());
+        tcpGameNetworkStats.incSentMessages();
         super.write(ctx, msg, promise);
       }
     });
@@ -81,14 +81,10 @@ public class TCPGameConnectionInitializer extends ChannelInitializer<SocketChann
         if (msg.hasPing()) {
           int ping = (int) (System.currentTimeMillis() - pingRequestedTimeMls.get());
           tcpGameNetworkStats.setPingMls(ping);
-          if (ping >= BAD_PING_THRESHOLD_MLS) {
-            LOG.warn("Ping is bad: {} mls", ping);
-          }
           hasPendingPing.set(false);
         } else {
           serverEventsQueueAPI.push(msg);
         }
-        tcpGameNetworkStats.incReceivedMessages();
       }
 
       @Override
@@ -108,7 +104,6 @@ public class TCPGameConnectionInitializer extends ChannelInitializer<SocketChann
         if (evt instanceof IdleStateEvent) {
           IdleStateEvent e = (IdleStateEvent) evt;
           if (e.state() == IdleState.READER_IDLE) {
-            LOG.info("Server is inactive");
             errorsQueueAPI.push(new IOException("Server is inactive for too long"));
             onDisconnect.run();
           }

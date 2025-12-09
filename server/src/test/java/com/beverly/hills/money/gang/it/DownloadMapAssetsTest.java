@@ -3,7 +3,6 @@ package com.beverly.hills.money.gang.it;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
@@ -34,8 +33,8 @@ public class DownloadMapAssetsTest extends AbstractGameServerTest {
    * @then map assets are returned to the player
    */
   @Test
-  public void testDownloadAllMaps() throws IOException {
-    GameConnection gameConnection = createGameConnection("localhost", port);
+  public void testDownloadAllMaps() throws IOException, InterruptedException {
+    var gameConnection = createGameConnection("localhost", port);
     gameConnection.write(GetServerInfoCommand.newBuilder()
         .setPlayerClass(PlayerClass.WARRIOR).build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());
@@ -53,15 +52,14 @@ public class DownloadMapAssetsTest extends AbstractGameServerTest {
     }
   }
 
-
   /**
    * @given a running game server
    * @when a player requests a non-existing map
    * @then an error is returned
    */
   @Test
-  public void testDownloadNonExistingMap() throws IOException {
-    GameConnection gameConnection = createGameConnection("localhost", port);
+  public void testDownloadNonExistingMap() throws IOException, InterruptedException {
+    var gameConnection = createGameConnection("localhost", port);
     gameConnection.write(DownloadMapAssetsCommand.newBuilder()
         .setMapName("non-existing").build());
     waitUntilQueueNonEmpty(gameConnection.getResponse());

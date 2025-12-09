@@ -1,23 +1,22 @@
 package com.beverly.hills.money.gang.it;
 
-import static com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType.MOVE;
+import static com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType.POWER_UP_PICKUP;
 import static com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType.SPAWN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
+import com.beverly.hills.money.gang.entity.PlayerGameId;
 import com.beverly.hills.money.gang.exception.GameLogicError;
-import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
-import com.beverly.hills.money.gang.powerup.QuadDamagePowerUp;
+import com.beverly.hills.money.gang.proto.GamePowerUpType;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
-import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType;
 import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem;
 import com.beverly.hills.money.gang.proto.Vector;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
@@ -27,7 +26,6 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "999999")
 @SetEnvironmentVariable(key = "GAME_SERVER_QUAD_DAMAGE_SPAWN_MLS", value = "5000")
@@ -53,7 +51,7 @@ public class QuadDamagePowerUpTest extends AbstractGameServerTest {
     int gameIdToConnectTo = 0;
     var game = gameRoomRegistry.getGame(gameIdToConnectTo);
     var quadDamagePowerUp = game.getPowerUpRegistry().get(PowerUpType.QUAD_DAMAGE);
-    GameConnection playerConnection = createGameConnection( "localhost",
+    var playerConnection = createGameConnection("localhost",
         port);
     playerConnection.write(
         JoinGameCommand.newBuilder()
@@ -85,13 +83,14 @@ public class QuadDamagePowerUpTest extends AbstractGameServerTest {
     playerConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(playerId)
         .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-       .setGameId(gameIdToConnectTo)
+        .setGameId(gameIdToConnectTo)
         .setPosition(Vector.newBuilder()
             .setX(playerSpawnEvent.getPlayer().getPosition().getX())
             .setY(playerSpawnEvent.getPlayer().getPosition().getY())
             .build())
         .setDirection(Vector.newBuilder().setX(0).setY(1).build())
-        .setEventType(GameEventType.QUAD_DAMAGE_POWER_UP)
+        .setPowerUp(GamePowerUpType.QUAD_DAMAGE)
+        .setEventType(GameEventType.POWER_UP_PICKUP)
         .build());
 
     waitUntilQueueNonEmpty(playerConnection.getResponse());
@@ -100,8 +99,8 @@ public class QuadDamagePowerUpTest extends AbstractGameServerTest {
     verify(quadDamagePowerUp).apply(argThat(playerState -> playerState.getPlayerId() == playerId));
 
     ServerResponse powerUpMove = playerConnection.getResponse().poll().get();
-    assertEquals(MOVE, powerUpMove.getGameEvents().getEvents(0).getEventType(),
-        "After picking up a power-up, we must get a MOVE event with a player having the power-up");
+    assertEquals(POWER_UP_PICKUP, powerUpMove.getGameEvents().getEvents(0).getEventType(),
+        "After picking up a power-up, we must get a POWER_UP_PICKUP event with a player having the power-up");
     var playerAfterQuadDamage = powerUpMove.getGameEvents().getEvents(0).getPlayer();
     assertEquals(playerId, playerAfterQuadDamage.getPlayerId());
     assertEquals(1, playerAfterQuadDamage.getActivePowerUpsList().size());
@@ -118,18 +117,19 @@ public class QuadDamagePowerUpTest extends AbstractGameServerTest {
     Thread.sleep(quadDamagePowerUp.getSpawnPeriodMls() + 250);
 
     assertEquals(1, playerConnection.getResponse().size(),
-        "Should be 1 messages: quad damage power-up respawn. Actual response: "
+        "Should be 1 message: quad damage power-up respawn. Actual response: "
             + playerConnection.getResponse());
 
     ServerResponse quadDamagePowerUpReSpawnResponse = playerConnection.getResponse().poll().get();
     var quadDamagePowerUpReSpawn = quadDamagePowerUpReSpawnResponse.getPowerUpSpawn();
     assertEquals(GamePowerUpType.QUAD_DAMAGE, quadDamagePowerUpReSpawn.getItems(0).getType());
 
-    GameConnection observerAfterRevert = createGameConnection( "localhost",
+    var observerAfterRevert = createGameConnection("localhost",
         port);
     observerAfterRevert.write(
         JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(PlayerClass.WARRIOR)
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("after revert")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerAfterRevert.getResponse());

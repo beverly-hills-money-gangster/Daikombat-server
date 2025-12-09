@@ -13,6 +13,7 @@ import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.ProjectileType;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStats;
 import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUp;
@@ -81,6 +82,18 @@ public interface ServerResponseFactory {
         .build();
   }
 
+  static ServerResponse.GameEvent createInitEvent(
+      PlayerStateReader playerStateReader,
+      List<GameLeaderBoardItem> leaderBoard,
+      int gameId) {
+    return ServerResponse.GameEvent.newBuilder()
+        .setEventType(GameEventType.INIT)
+        .setGameId(gameId)
+        .setLeaderBoard(createLeaderBoard(leaderBoard))
+        .setPlayer(createFullPlayerStats(playerStateReader))
+        .build();
+  }
+
   static ServerResponse.GameEvent createSpawnEvent(PlayerStateReader playerStateReader) {
     return createSpawnEvent(playerStateReader, List.of());
   }
@@ -123,13 +136,6 @@ public interface ServerResponseFactory {
     return ServerResponse.newBuilder()
         .setGameEvents(ServerResponse.GameEvents.newBuilder()
             .addEvents(createPowerUpPlayerMoveGameEvent(playerStateReader)))
-        .build();
-  }
-
-  static ServerResponse createTeleportPlayerServerResponse(PlayerStateReader playerStateReader) {
-    return ServerResponse.newBuilder()
-        .setGameEvents(ServerResponse.GameEvents.newBuilder()
-            .addEvents(createPlayerTeleportGameEvent(playerStateReader)))
         .build();
   }
 
@@ -204,27 +210,6 @@ public interface ServerResponseFactory {
 
     return ServerResponse.newBuilder()
         .setServerInfo(serverInfo)
-        .build();
-  }
-
-  static ServerResponse createMovesEventAllPlayers(int playersOnline,
-      List<PlayerStateReader> movedPlayers) {
-    var allPlayersMoves = ServerResponse.GameEvents.newBuilder();
-    movedPlayers.forEach(playerStateReader
-        -> allPlayersMoves.addEvents(createMoveGameEvent(playerStateReader)));
-    allPlayersMoves.setPlayersOnline(playersOnline);
-    return ServerResponse.newBuilder()
-        .setGameEvents(allPlayersMoves)
-        .build();
-  }
-
-  static ServerResponse createMoveEvent(int playersOnline,
-      PlayerStateReader movedPlayer) {
-    var allPlayersMoves = ServerResponse.GameEvents.newBuilder();
-    allPlayersMoves.addEvents(createMoveGameEvent(movedPlayer));
-    allPlayersMoves.setPlayersOnline(playersOnline);
-    return ServerResponse.newBuilder()
-        .setGameEvents(allPlayersMoves)
         .build();
   }
 
@@ -362,8 +347,7 @@ public interface ServerResponseFactory {
         .build();
   }
 
-  static ServerResponse createKillEvent(
-      int playersOnline,
+  static GameEvent createKillEvent(
       PlayerStateReader shooterPlayerReader,
       PlayerStateReader deadPlayerReader,
       PushGameEventCommand pushGameEventCommand) {
@@ -376,15 +360,10 @@ public interface ServerResponseFactory {
     } else if (pushGameEventCommand.hasWeaponType()) {
       killBuilder.setWeaponType(pushGameEventCommand.getWeaponType());
     }
-    var deadPlayerEvent = ServerResponse.GameEvents.newBuilder()
-        .addEvents(killBuilder)
-        .setPlayersOnline(playersOnline);
-    return ServerResponse.newBuilder()
-        .setGameEvents(deadPlayerEvent)
-        .build();
+    return killBuilder.build();
   }
 
-  static ServerResponse createGetAttackedEvent(int playersOnline,
+  static GameEvent createGetAttackedEvent(
       PlayerStateReader shooterPlayerReader,
       PlayerStateReader shotPlayerReader,
       PushGameEventCommand pushGameEventCommand) {
@@ -397,16 +376,10 @@ public interface ServerResponseFactory {
     } else if (pushGameEventCommand.hasWeaponType()) {
       attackedPlayerBuilder.setWeaponType(pushGameEventCommand.getWeaponType());
     }
-    var attackedPlayerEvent = ServerResponse.GameEvents.newBuilder()
-        .addEvents(attackedPlayerBuilder);
-    attackedPlayerEvent.setPlayersOnline(playersOnline);
-    return ServerResponse.newBuilder()
-        .setGameEvents(attackedPlayerEvent)
-        .build();
+    return attackedPlayerBuilder.build();
   }
 
-  static ServerResponse createAttackingEvent(
-      int playersOnline,
+  static GameEvent createAttackingEvent(
       PlayerStateReader shooterPlayerReader,
       PushGameEventCommand pushGameEventCommand) {
     var attackingdPlayerBuilder = ServerResponse.GameEvent.newBuilder()
@@ -417,22 +390,20 @@ public interface ServerResponseFactory {
     } else if (pushGameEventCommand.hasWeaponType()) {
       attackingdPlayerBuilder.setWeaponType(pushGameEventCommand.getWeaponType());
     }
-    var attackedPlayerEvent = ServerResponse.GameEvents.newBuilder()
-        .addEvents(attackingdPlayerBuilder);
-    attackedPlayerEvent.setPlayersOnline(playersOnline);
-    return ServerResponse.newBuilder()
-        .setGameEvents(attackedPlayerEvent)
-        .build();
+    return attackingdPlayerBuilder.build();
   }
 
-  static ServerResponse createJoinSinglePlayer(int playersOnline,
-      PlayerJoinedGameState playerConnected) {
+  static ServerResponse createInitSinglePlayer(
+      int playersOnline,
+      PlayerJoinedGameState playerConnected,
+      int gameId) {
     return ServerResponse.newBuilder()
         .setGameEvents(ServerResponse.GameEvents.newBuilder()
             .setPlayersOnline(playersOnline)
-            .addEvents(createSpawnEvent(
+            .addEvents(createInitEvent(
                 playerConnected.getPlayerStateChannel().getPlayerState(),
-                playerConnected.getLeaderBoard()))).build();
+                playerConnected.getLeaderBoard(),
+                gameId))).build();
   }
 
   static ServerResponse createRespawnEventSinglePlayer(int playersOnline,

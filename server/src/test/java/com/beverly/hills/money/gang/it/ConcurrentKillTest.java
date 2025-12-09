@@ -4,7 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
-import com.beverly.hills.money.gang.network.GameConnection;
+import com.beverly.hills.money.gang.entity.PlayerGameId;
+import com.beverly.hills.money.gang.network.GlobalGameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PlayerSkinColor;
@@ -49,7 +50,7 @@ public class ConcurrentKillTest extends AbstractGameServerTest {
       int finalJ = j;
       joinThreads.add(new Thread(() -> {
         try {
-          GameConnection gameConnection = createGameConnection("localhost",
+          var gameConnection = createGameConnection("localhost",
               port);
           gameConnection.write(
               JoinGameCommand.newBuilder()
@@ -62,7 +63,6 @@ public class ConcurrentKillTest extends AbstractGameServerTest {
           var mySpawnEvent = mySpawnResponse.getGameEvents().getEvents(0);
           spawnsWithConnections.add(SpawnWithGameConnection.builder()
               .spawn(mySpawnEvent).gameConnection(gameConnection).build());
-          Thread.sleep(500);
         } catch (Exception e) {
           LOG.error("Error while running test", e);
           failed.set(true);
@@ -160,7 +160,7 @@ public class ConcurrentKillTest extends AbstractGameServerTest {
   private static class SpawnWithGameConnection {
 
     private ServerResponse.GameEvent spawn;
-    private GameConnection gameConnection;
+    private GlobalGameConnection gameConnection;
   }
 
 }

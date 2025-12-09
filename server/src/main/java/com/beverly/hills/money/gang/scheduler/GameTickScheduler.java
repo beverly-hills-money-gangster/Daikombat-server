@@ -1,9 +1,7 @@
 package com.beverly.hills.money.gang.scheduler;
 
-import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createMoveEvent;
+import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createMoveGameEvent;
 
-import com.beverly.hills.money.gang.proto.ServerResponse;
-import com.beverly.hills.money.gang.proto.ServerResponse.GameEvents;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.state.GameReader;
 import com.beverly.hills.money.gang.state.PlayerStateReader;
@@ -40,8 +38,7 @@ public class GameTickScheduler {
             .forEach(player -> Optional.of(
                     getPlayerBufferedMoves(bufferedMoves, player.getPlayerState(), game))
                 .ifPresent(moves -> moves.forEach(playerStateReader
-                    -> player.writeUDPFlush(
-                    udpChannel, createMoveEvent(game.playersOnline(), playerStateReader)))));
+                    -> player.writeUDPFlush(udpChannel, createMoveGameEvent(playerStateReader)))));
       } catch (Exception e) {
         LOG.error("Error while scheduling", e);
       } finally {
@@ -50,16 +47,11 @@ public class GameTickScheduler {
     });
   }
 
-  public void resendNoAckEvents(final Channel udpChannel) {
+  public void resendAckRequiredEvents(final Channel udpChannel) {
     gameRoomRegistry.getGames().forEach(game -> {
       try {
-        game.getPlayersRegistry().allActivePlayers().forEach(player
-            -> player.noAckEvents()
-            .forEach(gameEvent
-                -> player.writeUDPFlushRaw(udpChannel,
-                ServerResponse.newBuilder()
-                    .setGameEvents(GameEvents.newBuilder().addEvents(gameEvent))
-                    .build(), false)));
+        game.getPlayersRegistry().allActivePlayers().forEach(player -> player.getAckRequiredEvents()
+            .forEach(gameEvent -> player.writeUDPFlushRaw(udpChannel, gameEvent, false)));
       } catch (Exception e) {
         LOG.error("Error while scheduling", e);
       } finally {

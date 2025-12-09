@@ -1,7 +1,7 @@
 package com.beverly.hills.money.gang.handler.command;
 
+import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createInitSinglePlayer;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createJoinEventSinglePlayer;
-import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createJoinSinglePlayer;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createPowerUpSpawn;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createSpawnEventAllPlayers;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createTeleportSpawn;
@@ -68,8 +68,8 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
         command.getPlayerName(), tcpClientChannel, getSkinColor(command.getSkin()),
         command.hasRecoveryPlayerId() ? command.getRecoveryPlayerId() : null,
         getRPGPlayerClass(command.getPlayerClass()));
-    var playerSpawnEvent = createJoinSinglePlayer(
-        game.playersOnline(), playerConnected);
+    var playerSpawnEvent = createInitSinglePlayer(
+        game.playersOnline(), playerConnected, game.gameId());
     playerConnected.getPlayerStateChannel()
         .writeTCPFlush(playerSpawnEvent, channelFuture -> {
           if (!channelFuture.isSuccess()) {

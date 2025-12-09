@@ -18,6 +18,15 @@ The client publishes game commands and then subscribes to server events by colle
 in-memory queue that is meant to be polled during game rendering.
 All communications (server-to-client and client-to-server) are totally non-blocking.
 
+## Core dev principles
+
+- All configuration defaults should be prod-ready
+- The code should be simple, so I can understand it at 2 AM after taking a two-month
+  break
+- Add as many tests as possible even if it looks non-practical at a moment(you will appreciate it
+  later)
+- No AI
+
 ### Known issues
 
 - The server is not scalable at this moment. High availability and load balancing are not

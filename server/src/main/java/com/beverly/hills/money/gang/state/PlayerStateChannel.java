@@ -3,6 +3,7 @@ package com.beverly.hills.money.gang.state;
 import com.beverly.hills.money.gang.dto.DatagramRequestType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
+import com.beverly.hills.money.gang.proto.ServerResponse.GameEvents;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
 import com.beverly.hills.money.gang.util.NetworkUtil;
 import io.netty.buffer.ByteBuf;
@@ -30,10 +31,9 @@ public class PlayerStateChannel {
 
   private final Channel tcpChannel;
 
-  // TODO empty on game over
-  private final Map<Integer, GameEvent> noAckGameEvents = new ConcurrentHashMap<>();
+  private final Map<Integer, GameEvent> ackRequiredGameEvents = new ConcurrentHashMap<>();
 
-  private static final int MAX_NO_ACK_EVENTS = 128;
+  private static final int MAX_ACK_REQUIRED_EVENTS = 128;
 
   @Getter
   private final PlayerState playerState;
@@ -68,42 +68,44 @@ public class PlayerStateChannel {
   }
 
 
-  public void writeUDPFlush(
-      @NonNull final Channel udpChannel,
-      @NonNull ServerResponse response) {
-    writeUDPFlushRaw(udpChannel, setEventSequence(response), false);
+  public Iterable<GameEvent> getAckRequiredEvents() {
+    return ackRequiredGameEvents.values();
   }
 
-  public Iterable<GameEvent> noAckEvents() {
-    return noAckGameEvents.values();
-  }
-
-  public void clearNoAckEvents() {
-    noAckGameEvents.clear();
+  public void clear() {
+    ackRequiredGameEvents.clear();
   }
 
   public void ackGameEvent(final int sequence) {
-    noAckGameEvents.remove(sequence);
+    ackRequiredGameEvents.remove(sequence);
   }
 
   public void writeUDPAckRequiredFlush(
       @NonNull final Channel udpChannel,
-      @NonNull ServerResponse response) {
-    writeUDPFlushRaw(udpChannel, setEventSequence(response), true);
+      @NonNull GameEvent gameEvent) {
+    writeUDPFlushRaw(udpChannel, setEventSequence(gameEvent), true);
+  }
+
+  // TODO make sure we only send GameEvents in UDP
+  public void writeUDPFlush(
+      @NonNull final Channel udpChannel,
+      @NonNull GameEvent gameEvent) {
+    writeUDPFlushRaw(udpChannel, setEventSequence(gameEvent), false);
   }
 
   // TODO add javadoc
   public void writeUDPFlushRaw(
       @NonNull final Channel udpChannel,
-      @NonNull ServerResponse response,
+      @NonNull GameEvent gameEvent,
       boolean ackRequired) {
+    var response = ServerResponse.newBuilder()
+        .setGameEvents(GameEvents.newBuilder().addEvents(gameEvent)).build();
     Optional.ofNullable(datagramSocketAddress.get()).ifPresent(inetSocketAddress -> {
       if (ackRequired) {
-        if (noAckGameEvents.size() > MAX_NO_ACK_EVENTS) {
-          throw new IllegalStateException("Too many no ack events");
+        if (ackRequiredGameEvents.size() > MAX_ACK_REQUIRED_EVENTS) {
+          throw new IllegalStateException("Too many ack-required events");
         }
-        response.getGameEvents().getEventsList().forEach(
-            gameEvent -> noAckGameEvents.put(gameEvent.getSequence(), gameEvent));
+        ackRequiredGameEvents.put(gameEvent.getSequence(), gameEvent);
       }
       var bytes = response.toByteArray();
       ByteBuf buf = Unpooled.directBuffer(1 + bytes.length);
@@ -128,21 +130,26 @@ public class PlayerStateChannel {
 
 
   protected ServerResponse setEventSequence(ServerResponse response) {
-    if (response.hasGameEvents()) {
-      var gameEvents = new ArrayList<GameEvent>();
-      for (GameEvent gameEvent : response.getGameEvents().getEventsList()) {
-        gameEvents.add(gameEvent.toBuilder().setSequence(playerState.getNextEventId()).build());
-      }
-      return response.toBuilder().setGameEvents(
-              response.getGameEvents().toBuilder().clearEvents().addAllEvents(gameEvents).build())
-          .build();
+    if (!response.hasGameEvents()) {
+      return response;
     }
-    return response;
+    var gameEvents = new ArrayList<GameEvent>();
+    for (GameEvent gameEvent : response.getGameEvents().getEventsList()) {
+      gameEvents.add(setEventSequence(gameEvent));
+    }
+    return response.toBuilder().setGameEvents(
+            response.getGameEvents().toBuilder().clearEvents().addAllEvents(gameEvents).build())
+        .build();
+
+  }
+
+  private GameEvent setEventSequence(GameEvent gameEvent) {
+    return gameEvent.toBuilder().setSequence(playerState.getNextEventId()).build();
   }
 
   public void close() {
     LOG.info("Close connection");
-    clearNoAckEvents();
+    clear();
     tcpChannel.close();
   }
 

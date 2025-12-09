@@ -21,8 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RequiredArgsConstructor
-// TODO simplify and create separate interfaces
-// TODO cover with tests
 public class PlayersRegistry implements Closeable {
 
   private static final Logger LOG = LoggerFactory.getLogger(PlayersRegistry.class);
@@ -54,8 +52,7 @@ public class PlayersRegistry implements Closeable {
   }
 
   public Optional<PlayerState> getPlayerState(int playerId) {
-    return Optional.ofNullable(players.get(playerId))
-        .map(PlayerStateChannel::getPlayerState);
+    return getPlayerStateChannel(playerId).map(PlayerStateChannel::getPlayerState);
   }
 
   public Optional<PlayerStateChannel> getPlayerStateChannel(int playerId) {
@@ -95,10 +92,6 @@ public class PlayersRegistry implements Closeable {
     return players.values().stream().filter(
         playerStateChannel -> playerStateChannel.getPlayerState().getActivityStatus()
             == PlayerActivityStatus.ACTIVE);
-  }
-
-  public Optional<PlayerStateChannel> findPlayer(int playerId) {
-    return Optional.ofNullable(players.get(playerId));
   }
 
   public int getPlayersOnline(int matchId) {

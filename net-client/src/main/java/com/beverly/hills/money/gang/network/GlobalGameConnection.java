@@ -172,9 +172,9 @@ public class GlobalGameConnection {
     return !isConnected();
   }
 
-  public void waitUntilConnected(int mlsToWait) throws InterruptedException {
-    udpGameConnection.waitUntilConnected(mlsToWait);
-    tcpGameConnection.waitUntilConnected(mlsToWait);
+  public boolean waitUntilConnected(int mlsToWait) throws InterruptedException {
+    return udpGameConnection.waitUntilConnected(mlsToWait)
+        && tcpGameConnection.waitUntilConnected(mlsToWait);
   }
 
   @Builder

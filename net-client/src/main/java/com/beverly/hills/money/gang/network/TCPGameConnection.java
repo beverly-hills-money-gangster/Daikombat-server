@@ -72,7 +72,7 @@ public class TCPGameConnection {
   @Getter
   private final HostPort hostPort;
 
-  protected TCPGameConnection(
+  public TCPGameConnection(
       final HostPort hostPort,
       final GameQueues gameQueues) throws IOException {
     this.hostPort = hostPort;

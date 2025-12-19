@@ -1,22 +1,22 @@
 package com.beverly.hills.money.gang.it;
 
-import static com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType.MOVE;
+import static com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType.POWER_UP_PICKUP;
 import static com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType.SPAWN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
+import com.beverly.hills.money.gang.entity.PlayerGameId;
 import com.beverly.hills.money.gang.exception.GameLogicError;
-import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
+import com.beverly.hills.money.gang.proto.GamePowerUpType;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
-import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType;
 import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem;
 import com.beverly.hills.money.gang.proto.Vector;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
@@ -52,7 +52,7 @@ public class DefencePowerUpTest extends AbstractGameServerTest {
     int gameIdToConnectTo = 0;
     var game = gameRoomRegistry.getGame(gameIdToConnectTo);
     var defencePowerUp = game.getPowerUpRegistry().get(PowerUpType.DEFENCE);
-    GameConnection playerConnection = createGameConnection("localhost",
+    var playerConnection = createGameConnection("localhost",
         port);
     playerConnection.write(
         JoinGameCommand.newBuilder()
@@ -85,13 +85,14 @@ public class DefencePowerUpTest extends AbstractGameServerTest {
         .setPlayerId(playerId)
         .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
         .setPingMls(PING_MLS)
-       .setGameId(gameIdToConnectTo)
+        .setGameId(gameIdToConnectTo)
         .setPosition(Vector.newBuilder()
             .setX(playerSpawnEvent.getPlayer().getPosition().getX())
             .setY(playerSpawnEvent.getPlayer().getPosition().getY())
             .build())
         .setDirection(Vector.newBuilder().setX(0).setY(1).build())
-        .setEventType(GameEventType.DEFENCE_POWER_UP)
+        .setPowerUp(GamePowerUpType.DEFENCE)
+        .setEventType(GameEventType.POWER_UP_PICKUP)
         .build());
 
     waitUntilQueueNonEmpty(playerConnection.getResponse());
@@ -100,8 +101,8 @@ public class DefencePowerUpTest extends AbstractGameServerTest {
     verify(defencePowerUp).apply(argThat(playerState -> playerState.getPlayerId() == playerId));
 
     ServerResponse powerUpMove = playerConnection.getResponse().poll().get();
-    assertEquals(MOVE, powerUpMove.getGameEvents().getEvents(0).getEventType(),
-        "After picking up a power-up, we must get a MOVE event with a player having the power-up");
+    assertEquals(POWER_UP_PICKUP, powerUpMove.getGameEvents().getEvents(0).getEventType(),
+        "After picking up a power-up, we must get a POWER_UP_PICKUP event with a player having the power-up");
     var playerAfterQuadDamage = powerUpMove.getGameEvents().getEvents(0).getPlayer();
     assertEquals(playerId, playerAfterQuadDamage.getPlayerId());
     assertEquals(1, playerAfterQuadDamage.getActivePowerUpsList().size());
@@ -118,14 +119,14 @@ public class DefencePowerUpTest extends AbstractGameServerTest {
     Thread.sleep(defencePowerUp.getSpawnPeriodMls() + 250);
 
     assertEquals(1, playerConnection.getResponse().size(),
-        "Should be 1 messages: quad damage power-up respawn. Actual response: "
+        "Should be 1 message: quad damage power-up respawn. Actual response: "
             + playerConnection.getResponse());
 
     ServerResponse quadDamagePowerUpReSpawnResponse = playerConnection.getResponse().poll().get();
     var quadDamagePowerUpReSpawn = quadDamagePowerUpReSpawnResponse.getPowerUpSpawn();
     assertEquals(GamePowerUpType.DEFENCE, quadDamagePowerUpReSpawn.getItems(0).getType());
 
-    GameConnection observerAfterRevert = createGameConnection("localhost",
+    var observerAfterRevert = createGameConnection("localhost",
         port);
     observerAfterRevert.write(
         JoinGameCommand.newBuilder()

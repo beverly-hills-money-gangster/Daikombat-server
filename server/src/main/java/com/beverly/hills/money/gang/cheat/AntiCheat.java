@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 // TODO check attack rate
 // TODO check that attacker is looking at victim
-// TODO check that no player is going through walls
 @Component
 public class AntiCheat {
 

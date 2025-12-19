@@ -1,7 +1,7 @@
 package com.beverly.hills.money.gang.handler.command;
 
+import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createInitSinglePlayer;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createJoinEventSinglePlayer;
-import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createJoinSinglePlayer;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createPowerUpSpawn;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createSpawnEventAllPlayers;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createTeleportSpawn;
@@ -46,7 +46,7 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
 
 
   @Override
-  protected boolean isValidCommand(ServerCommand msg, Channel currentChannel) {
+  protected boolean isValidCommand(ServerCommand msg) {
     var joinGameCommand = msg.getJoinGameCommand();
     return joinGameCommand.hasGameId()
         && joinGameCommand.hasPlayerName()
@@ -58,22 +58,22 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
   }
 
   @Override
-  protected void handleInternal(ServerCommand msg, Channel currentChannel) throws GameLogicError {
+  protected void handleInternal(ServerCommand msg, Channel tcpClientChannel) throws GameLogicError {
     var command = msg.getJoinGameCommand();
     if (TextUtil.containsBlacklistedWord(command.getPlayerName(), ServerConfig.BLACKLISTED_WORDS)) {
       throw new GameLogicError("Blacklisted player name", GameErrorCode.COMMON_ERROR);
     }
     Game game = gameRoomRegistry.getGame(command.getGameId());
     var playerConnected = game.joinPlayer(
-        command.getPlayerName(), currentChannel, getSkinColor(command.getSkin()),
+        command.getPlayerName(), tcpClientChannel, getSkinColor(command.getSkin()),
         command.hasRecoveryPlayerId() ? command.getRecoveryPlayerId() : null,
         getRPGPlayerClass(command.getPlayerClass()));
-    var playerSpawnEvent = createJoinSinglePlayer(
-        game.playersOnline(), playerConnected);
+    var playerSpawnEvent = createInitSinglePlayer(
+        game.playersOnline(), playerConnected, game.gameId());
     playerConnected.getPlayerStateChannel()
-        .writeFlushPrimaryChannel(playerSpawnEvent, channelFuture -> {
+        .writeTCPFlush(playerSpawnEvent, channelFuture -> {
           if (!channelFuture.isSuccess()) {
-            currentChannel.close();
+            tcpClientChannel.close();
             return;
           }
           sendOtherSpawns(game, playerConnected.getPlayerStateChannel(),
@@ -107,7 +107,8 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
       ServerResponse playerSpawnEventToSendOtherPlayers) {
     var otherPlayers = game.getPlayersRegistry()
         .allActivePlayers().stream()
-        .filter(playerStateChannel -> !playerStateChannel.isOurChannel(joinedPlayerStateChannel))
+        .filter(playerStateChannel -> playerStateChannel.getPlayerState().getPlayerId()
+            != joinedPlayerStateChannel.getPlayerState().getPlayerId())
         .collect(Collectors.toList());
 
     if (!otherPlayers.isEmpty()) {
@@ -118,11 +119,11 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
           createSpawnEventAllPlayers(game.playersOnline(), otherLivePlayers.stream()
               .map(PlayerStateChannel::getPlayerState)
               .collect(Collectors.toList()));
-      joinedPlayerStateChannel.writeFlushPrimaryChannel(allPlayersSpawnEvent);
+      joinedPlayerStateChannel.writeTCPFlush(allPlayersSpawnEvent);
     }
     sendMapItems(joinedPlayerStateChannel, spawnedPowerUps, teleports);
-    otherPlayers.forEach(playerStateChannel -> playerStateChannel.writeFlushPrimaryChannel(
-            playerSpawnEventToSendOtherPlayers));
+    otherPlayers.forEach(playerStateChannel -> playerStateChannel.writeTCPFlush(
+        playerSpawnEventToSendOtherPlayers));
 
   }
 
@@ -139,7 +140,7 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
     if (powerUps.isEmpty()) {
       return;
     }
-    joinedPlayerStateChannel.writeFlushPrimaryChannel(createPowerUpSpawn(powerUps));
+    joinedPlayerStateChannel.writeTCPFlush(createPowerUpSpawn(powerUps));
   }
 
   private void sendTeleportSpawn(List<Teleport> teleports,
@@ -147,6 +148,6 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
     if (teleports.isEmpty()) {
       return;
     }
-    joinedPlayerStateChannel.writeFlushPrimaryChannel(createTeleportSpawn(teleports));
+    joinedPlayerStateChannel.writeTCPFlush(createTeleportSpawn(teleports));
   }
 }

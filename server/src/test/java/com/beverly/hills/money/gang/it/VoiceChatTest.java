@@ -3,9 +3,8 @@ package com.beverly.hills.money.gang.it;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
+import com.beverly.hills.money.gang.entity.PlayerGameId;
 import com.beverly.hills.money.gang.entity.VoiceChatPayload;
-import com.beverly.hills.money.gang.network.GameConnection;
-import com.beverly.hills.money.gang.network.VoiceChatConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PlayerSkinColor;
@@ -35,7 +34,7 @@ public class VoiceChatTest extends AbstractGameServerTest {
   public void testVoiceChat() throws Exception {
     int gameIdToConnectTo = 0;
 
-    GameConnection aGameConnection = createGameConnection("localhost", port);
+    var aGameConnection = createGameConnection("localhost", port);
     aGameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
@@ -50,7 +49,8 @@ public class VoiceChatTest extends AbstractGameServerTest {
     ServerResponse aPlayerSpawn = aGameConnection.getResponse().poll().get();
     int aPlayerId = aPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
 
-    GameConnection bGameConnection = createGameConnection("localhost", port);
+
+    var bGameConnection = createGameConnection("localhost", port);
     bGameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
@@ -58,30 +58,20 @@ public class VoiceChatTest extends AbstractGameServerTest {
             .setPlayerName("player b")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(bGameConnection.getResponse());
-    GameEvent bPlayerSpawnGameEvent = bGameConnection.getResponse().poll().get()
-        .getGameEvents().getEvents(0);
-    int bPlayerId = bPlayerSpawnGameEvent.getPlayer().getPlayerId();
+    aGameConnection.waitUntilConnected(5_000);
+    bGameConnection.waitUntilConnected(5_000);
 
-    VoiceChatConnection aPlayerVoiceConnection = createVoiceConnection("localhost",
-        port + 1);
 
-    VoiceChatConnection bPlayerVoiceConnection = createVoiceConnection("localhost",
-        port + 1);
-
-    aPlayerVoiceConnection.waitUntilConnected(5_000);
-    bPlayerVoiceConnection.waitUntilConnected(5_000);
-    aPlayerVoiceConnection.join(aPlayerId, gameIdToConnectTo);
-    bPlayerVoiceConnection.join(bPlayerId, gameIdToConnectTo);
     Thread.sleep(1_500);
 
     int voiceMessagesToSend = 16;
     for (int i = 0; i < voiceMessagesToSend; i++) {
-      short[] shortPCM = new short[aPlayerVoiceConnection.getOpusCodec().getSampleSize()];
+      short[] shortPCM = new short[aGameConnection.getOpusCodec().getSampleSize()];
       randomShortArray(shortPCM);
       var outgoingVoiceMessage = VoiceChatPayload.builder()
           .playerId(aPlayerId).gameId(gameIdToConnectTo).pcm(shortPCM).build();
-      aPlayerVoiceConnection.write(outgoingVoiceMessage);
-      var bIncomingVoiceData = bPlayerVoiceConnection.getIncomingVoiceChatData()
+      aGameConnection.write(outgoingVoiceMessage);
+      var bIncomingVoiceData = bGameConnection.getIncomingVoiceChatData()
           .pollBlocking(1000, 1);
       assertEquals(1, bIncomingVoiceData.size(), "Only one voice message was sent");
       var incomingPayload = bIncomingVoiceData.get(0);
@@ -89,7 +79,7 @@ public class VoiceChatTest extends AbstractGameServerTest {
       assertEquals(outgoingVoiceMessage.getPlayerId(), incomingPayload.getPlayerId());
       assertEquals(outgoingVoiceMessage.getPcm().length, incomingPayload.getPcm().length);
     }
-    assertEquals(0, aPlayerVoiceConnection.getIncomingVoiceChatData().size(),
+    assertEquals(0, aGameConnection.getIncomingVoiceChatData().size(),
         "Player A shouldn't receive any voice message because it player don't receive their OWN voice messages");
   }
 

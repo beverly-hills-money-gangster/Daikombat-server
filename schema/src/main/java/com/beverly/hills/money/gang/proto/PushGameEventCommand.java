@@ -19,6 +19,7 @@ private static final long serialVersionUID = 0L;
   private PushGameEventCommand() {
     eventType_ = 0;
     weaponType_ = 0;
+    powerUp_ = 0;
   }
 
   @java.lang.Override
@@ -55,37 +56,13 @@ private static final long serialVersionUID = 0L;
      */
     ATTACK(1),
     /**
-     * <code>QUAD_DAMAGE_POWER_UP = 2;</code>
+     * <code>POWER_UP_PICKUP = 2;</code>
      */
-    QUAD_DAMAGE_POWER_UP(2),
+    POWER_UP_PICKUP(2),
     /**
-     * <code>INVISIBILITY_POWER_UP = 3;</code>
+     * <code>TELEPORT = 3;</code>
      */
-    INVISIBILITY_POWER_UP(3),
-    /**
-     * <code>DEFENCE_POWER_UP = 4;</code>
-     */
-    DEFENCE_POWER_UP(4),
-    /**
-     * <code>TELEPORT = 5;</code>
-     */
-    TELEPORT(5),
-    /**
-     * <code>HEALTH_POWER_UP = 6;</code>
-     */
-    HEALTH_POWER_UP(6),
-    /**
-     * <code>BIG_AMMO_POWER_UP = 7;</code>
-     */
-    BIG_AMMO_POWER_UP(7),
-    /**
-     * <code>MEDIUM_AMMO_POWER_UP = 8;</code>
-     */
-    MEDIUM_AMMO_POWER_UP(8),
-    /**
-     * <code>BEAST_POWER_UP = 9;</code>
-     */
-    BEAST_POWER_UP(9),
+    TELEPORT(3),
     UNRECOGNIZED(-1),
     ;
 
@@ -98,37 +75,13 @@ private static final long serialVersionUID = 0L;
      */
     public static final int ATTACK_VALUE = 1;
     /**
-     * <code>QUAD_DAMAGE_POWER_UP = 2;</code>
+     * <code>POWER_UP_PICKUP = 2;</code>
      */
-    public static final int QUAD_DAMAGE_POWER_UP_VALUE = 2;
+    public static final int POWER_UP_PICKUP_VALUE = 2;
     /**
-     * <code>INVISIBILITY_POWER_UP = 3;</code>
+     * <code>TELEPORT = 3;</code>
      */
-    public static final int INVISIBILITY_POWER_UP_VALUE = 3;
-    /**
-     * <code>DEFENCE_POWER_UP = 4;</code>
-     */
-    public static final int DEFENCE_POWER_UP_VALUE = 4;
-    /**
-     * <code>TELEPORT = 5;</code>
-     */
-    public static final int TELEPORT_VALUE = 5;
-    /**
-     * <code>HEALTH_POWER_UP = 6;</code>
-     */
-    public static final int HEALTH_POWER_UP_VALUE = 6;
-    /**
-     * <code>BIG_AMMO_POWER_UP = 7;</code>
-     */
-    public static final int BIG_AMMO_POWER_UP_VALUE = 7;
-    /**
-     * <code>MEDIUM_AMMO_POWER_UP = 8;</code>
-     */
-    public static final int MEDIUM_AMMO_POWER_UP_VALUE = 8;
-    /**
-     * <code>BEAST_POWER_UP = 9;</code>
-     */
-    public static final int BEAST_POWER_UP_VALUE = 9;
+    public static final int TELEPORT_VALUE = 3;
 
 
     public final int getNumber() {
@@ -157,14 +110,8 @@ private static final long serialVersionUID = 0L;
       switch (value) {
         case 0: return MOVE;
         case 1: return ATTACK;
-        case 2: return QUAD_DAMAGE_POWER_UP;
-        case 3: return INVISIBILITY_POWER_UP;
-        case 4: return DEFENCE_POWER_UP;
-        case 5: return TELEPORT;
-        case 6: return HEALTH_POWER_UP;
-        case 7: return BIG_AMMO_POWER_UP;
-        case 8: return MEDIUM_AMMO_POWER_UP;
-        case 9: return BEAST_POWER_UP;
+        case 2: return POWER_UP_PICKUP;
+        case 3: return TELEPORT;
         default: return null;
       }
     }
@@ -464,6 +411,31 @@ private static final long serialVersionUID = 0L;
     return projectile_ == null ? com.beverly.hills.money.gang.proto.ProjectileCoordinates.getDefaultInstance() : projectile_;
   }
 
+  public static final int POWERUP_FIELD_NUMBER = 12;
+  private int powerUp_ = 0;
+  /**
+   * <code>optional .daikombat.dto.GamePowerUpType powerUp = 12;</code>
+   * @return Whether the powerUp field is set.
+   */
+  @java.lang.Override public boolean hasPowerUp() {
+    return ((bitField0_ & 0x00000800) != 0);
+  }
+  /**
+   * <code>optional .daikombat.dto.GamePowerUpType powerUp = 12;</code>
+   * @return The enum numeric value on the wire for powerUp.
+   */
+  @java.lang.Override public int getPowerUpValue() {
+    return powerUp_;
+  }
+  /**
+   * <code>optional .daikombat.dto.GamePowerUpType powerUp = 12;</code>
+   * @return The powerUp.
+   */
+  @java.lang.Override public com.beverly.hills.money.gang.proto.GamePowerUpType getPowerUp() {
+    com.beverly.hills.money.gang.proto.GamePowerUpType result = com.beverly.hills.money.gang.proto.GamePowerUpType.forNumber(powerUp_);
+    return result == null ? com.beverly.hills.money.gang.proto.GamePowerUpType.UNRECOGNIZED : result;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -510,6 +482,9 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000400) != 0)) {
       output.writeMessage(11, getProjectile());
+    }
+    if (((bitField0_ & 0x00000800) != 0)) {
+      output.writeEnum(12, powerUp_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -563,6 +538,10 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000400) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(11, getProjectile());
+    }
+    if (((bitField0_ & 0x00000800) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(12, powerUp_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -632,6 +611,10 @@ private static final long serialVersionUID = 0L;
       if (!getProjectile()
           .equals(other.getProjectile())) return false;
     }
+    if (hasPowerUp() != other.hasPowerUp()) return false;
+    if (hasPowerUp()) {
+      if (powerUp_ != other.powerUp_) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -686,6 +669,10 @@ private static final long serialVersionUID = 0L;
     if (hasProjectile()) {
       hash = (37 * hash) + PROJECTILE_FIELD_NUMBER;
       hash = (53 * hash) + getProjectile().hashCode();
+    }
+    if (hasPowerUp()) {
+      hash = (37 * hash) + POWERUP_FIELD_NUMBER;
+      hash = (53 * hash) + powerUp_;
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -849,6 +836,7 @@ private static final long serialVersionUID = 0L;
         projectileBuilder_.dispose();
         projectileBuilder_ = null;
       }
+      powerUp_ = 0;
       return this;
     }
 
@@ -933,6 +921,10 @@ private static final long serialVersionUID = 0L;
             : projectileBuilder_.build();
         to_bitField0_ |= 0x00000400;
       }
+      if (((from_bitField0_ & 0x00000800) != 0)) {
+        result.powerUp_ = powerUp_;
+        to_bitField0_ |= 0x00000800;
+      }
       result.bitField0_ |= to_bitField0_;
     }
 
@@ -1012,6 +1004,9 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasProjectile()) {
         mergeProjectile(other.getProjectile());
+      }
+      if (other.hasPowerUp()) {
+        setPowerUp(other.getPowerUp());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -1100,6 +1095,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000400;
               break;
             } // case 90
+            case 96: {
+              powerUp_ = input.readEnum();
+              bitField0_ |= 0x00000800;
+              break;
+            } // case 96
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1838,6 +1838,66 @@ private static final long serialVersionUID = 0L;
         projectile_ = null;
       }
       return projectileBuilder_;
+    }
+
+    private int powerUp_ = 0;
+    /**
+     * <code>optional .daikombat.dto.GamePowerUpType powerUp = 12;</code>
+     * @return Whether the powerUp field is set.
+     */
+    @java.lang.Override public boolean hasPowerUp() {
+      return ((bitField0_ & 0x00000800) != 0);
+    }
+    /**
+     * <code>optional .daikombat.dto.GamePowerUpType powerUp = 12;</code>
+     * @return The enum numeric value on the wire for powerUp.
+     */
+    @java.lang.Override public int getPowerUpValue() {
+      return powerUp_;
+    }
+    /**
+     * <code>optional .daikombat.dto.GamePowerUpType powerUp = 12;</code>
+     * @param value The enum numeric value on the wire for powerUp to set.
+     * @return This builder for chaining.
+     */
+    public Builder setPowerUpValue(int value) {
+      powerUp_ = value;
+      bitField0_ |= 0x00000800;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .daikombat.dto.GamePowerUpType powerUp = 12;</code>
+     * @return The powerUp.
+     */
+    @java.lang.Override
+    public com.beverly.hills.money.gang.proto.GamePowerUpType getPowerUp() {
+      com.beverly.hills.money.gang.proto.GamePowerUpType result = com.beverly.hills.money.gang.proto.GamePowerUpType.forNumber(powerUp_);
+      return result == null ? com.beverly.hills.money.gang.proto.GamePowerUpType.UNRECOGNIZED : result;
+    }
+    /**
+     * <code>optional .daikombat.dto.GamePowerUpType powerUp = 12;</code>
+     * @param value The powerUp to set.
+     * @return This builder for chaining.
+     */
+    public Builder setPowerUp(com.beverly.hills.money.gang.proto.GamePowerUpType value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      bitField0_ |= 0x00000800;
+      powerUp_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .daikombat.dto.GamePowerUpType powerUp = 12;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearPowerUp() {
+      bitField0_ = (bitField0_ & ~0x00000800);
+      powerUp_ = 0;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

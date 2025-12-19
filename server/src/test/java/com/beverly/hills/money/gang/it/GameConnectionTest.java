@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
-import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
@@ -33,7 +32,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
   @Test
   public void testExit() throws IOException, InterruptedException {
     int gameToConnectTo = 0;
-    GameConnection gameConnection1 = createGameConnection("localhost", port);
+    var gameConnection1 = createGameConnection("localhost", port);
     gameConnection1.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(
@@ -41,11 +40,11 @@ public class GameConnectionTest extends AbstractGameServerTest {
             .setPlayerName("my player name")
             .setGameId(gameToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection1.getResponse());
-    ServerResponse mySpawn = gameConnection1.getResponse().poll().get();
-    ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
-    int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
+    var mySpawn1 = gameConnection1.getResponse().poll().get();
+    var mySpawnGameEvent1 = mySpawn1.getGameEvents().getEvents(0);
+    int playerId1 = mySpawnGameEvent1.getPlayer().getPlayerId();
 
-    GameConnection gameConnection2 = createGameConnection("localhost", port);
+    var gameConnection2 = createGameConnection("localhost", port);
     gameConnection2.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
@@ -53,12 +52,11 @@ public class GameConnectionTest extends AbstractGameServerTest {
             .setPlayerName("my other player name")
             .setGameId(gameToConnectTo).build());
     waitUntilQueueNonEmpty(gameConnection2.getResponse());
-
     emptyQueue(gameConnection1.getResponse());
     emptyQueue(gameConnection2.getResponse());
     gameConnection1.disconnect();
     Thread.sleep(250);
-    assertTrue(gameConnection1.isDisconnected(), "Player 1 should be disconnected now");
+    assertFalse(gameConnection1.isConnected(), "Player 1 should be disconnected now");
     assertTrue(gameConnection2.isConnected(), "Player 2 should be connected");
 
     gameConnection1.write(GetServerInfoCommand.newBuilder()
@@ -91,7 +89,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
    */
   @Test
   public void testDisconnectTwice() throws IOException, InterruptedException {
-    GameConnection gameConnection = createGameConnection("localhost", port);
+    var gameConnection = createGameConnection("localhost", port);
     assertTrue(gameConnection.isConnected(), "Should be connected by default");
     assertFalse(gameConnection.isDisconnected());
     gameConnection.disconnect();
@@ -118,7 +116,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
    * @then an exception is thrown
    */
   @Test
-  public void testGetServerInfoNotExistingServer() throws IOException {
+  public void testGetServerInfoNotExistingServer() throws IOException, InterruptedException {
     var connection = createGameConnection("666.666.666.666", port);
     assertInstanceOf(UnknownHostException.class, connection.getErrors().poll().get());
   }
@@ -129,7 +127,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
    * @then an exception is thrown
    */
   @Test
-  public void testGetServerInfoWrongPort() throws IOException {
+  public void testGetServerInfoWrongPort() throws IOException, InterruptedException {
     var connection = createGameConnection("localhost", 666);
     assertInstanceOf(ConnectException.class, connection.getErrors().poll().get());
   }

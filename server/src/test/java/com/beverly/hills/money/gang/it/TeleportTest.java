@@ -3,8 +3,8 @@ package com.beverly.hills.money.gang.it;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
+import com.beverly.hills.money.gang.entity.PlayerGameId;
 import com.beverly.hills.money.gang.exception.GameLogicError;
-import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PlayerSkinColor;
@@ -45,14 +45,14 @@ public class TeleportTest extends AbstractGameServerTest {
    */
 
   @Test
-  public void testTeleport() throws IOException, GameLogicError {
+  public void testTeleport() throws IOException, GameLogicError, InterruptedException {
 
     int gameIdToConnectTo = 0;
     var game = gameRoomRegistry.getGame(gameIdToConnectTo);
     var teleport1 = game.getTeleportRegistry().getTeleport(0).orElseThrow();
     var teleport2 = game.getTeleportRegistry().getTeleport(1).orElseThrow();
 
-    GameConnection playerConnection = createGameConnection("localhost",
+    var playerConnection = createGameConnection("localhost",
         port);
     playerConnection.write(
         JoinGameCommand.newBuilder()
@@ -79,7 +79,7 @@ public class TeleportTest extends AbstractGameServerTest {
     playerConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(playerId)
         .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-       .setGameId(gameIdToConnectTo)
+        .setGameId(gameIdToConnectTo)
         .setPosition(Vector.newBuilder()
             .setX(playerSpawnEvent.getPlayer().getPosition().getX())
             .setY(playerSpawnEvent.getPlayer().getPosition().getY())

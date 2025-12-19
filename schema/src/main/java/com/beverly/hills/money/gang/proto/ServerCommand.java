@@ -51,7 +51,6 @@ private static final long serialVersionUID = 0L;
     GETSERVERINFOCOMMAND(6),
     PINGCOMMAND(7),
     RESPAWNCOMMAND(8),
-    MERGECONNECTIONCOMMAND(9),
     DOWNLOADMAPASSETSCOMMAND(10),
     COMMAND_NOT_SET(0);
     private final int value;
@@ -76,7 +75,6 @@ private static final long serialVersionUID = 0L;
         case 6: return GETSERVERINFOCOMMAND;
         case 7: return PINGCOMMAND;
         case 8: return RESPAWNCOMMAND;
-        case 9: return MERGECONNECTIONCOMMAND;
         case 10: return DOWNLOADMAPASSETSCOMMAND;
         case 0: return COMMAND_NOT_SET;
         default: return null;
@@ -279,37 +277,6 @@ private static final long serialVersionUID = 0L;
     return com.beverly.hills.money.gang.proto.RespawnCommand.getDefaultInstance();
   }
 
-  public static final int MERGECONNECTIONCOMMAND_FIELD_NUMBER = 9;
-  /**
-   * <code>.daikombat.dto.MergeConnectionCommand mergeConnectionCommand = 9;</code>
-   * @return Whether the mergeConnectionCommand field is set.
-   */
-  @java.lang.Override
-  public boolean hasMergeConnectionCommand() {
-    return commandCase_ == 9;
-  }
-  /**
-   * <code>.daikombat.dto.MergeConnectionCommand mergeConnectionCommand = 9;</code>
-   * @return The mergeConnectionCommand.
-   */
-  @java.lang.Override
-  public com.beverly.hills.money.gang.proto.MergeConnectionCommand getMergeConnectionCommand() {
-    if (commandCase_ == 9) {
-       return (com.beverly.hills.money.gang.proto.MergeConnectionCommand) command_;
-    }
-    return com.beverly.hills.money.gang.proto.MergeConnectionCommand.getDefaultInstance();
-  }
-  /**
-   * <code>.daikombat.dto.MergeConnectionCommand mergeConnectionCommand = 9;</code>
-   */
-  @java.lang.Override
-  public com.beverly.hills.money.gang.proto.MergeConnectionCommandOrBuilder getMergeConnectionCommandOrBuilder() {
-    if (commandCase_ == 9) {
-       return (com.beverly.hills.money.gang.proto.MergeConnectionCommand) command_;
-    }
-    return com.beverly.hills.money.gang.proto.MergeConnectionCommand.getDefaultInstance();
-  }
-
   public static final int DOWNLOADMAPASSETSCOMMAND_FIELD_NUMBER = 10;
   /**
    * <code>.daikombat.dto.DownloadMapAssetsCommand downloadMapAssetsCommand = 10;</code>
@@ -373,9 +340,6 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 8) {
       output.writeMessage(8, (com.beverly.hills.money.gang.proto.RespawnCommand) command_);
     }
-    if (commandCase_ == 9) {
-      output.writeMessage(9, (com.beverly.hills.money.gang.proto.MergeConnectionCommand) command_);
-    }
     if (commandCase_ == 10) {
       output.writeMessage(10, (com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand) command_);
     }
@@ -411,10 +375,6 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 8) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(8, (com.beverly.hills.money.gang.proto.RespawnCommand) command_);
-    }
-    if (commandCase_ == 9) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(9, (com.beverly.hills.money.gang.proto.MergeConnectionCommand) command_);
     }
     if (commandCase_ == 10) {
       size += com.google.protobuf.CodedOutputStream
@@ -461,10 +421,6 @@ private static final long serialVersionUID = 0L;
         if (!getRespawnCommand()
             .equals(other.getRespawnCommand())) return false;
         break;
-      case 9:
-        if (!getMergeConnectionCommand()
-            .equals(other.getMergeConnectionCommand())) return false;
-        break;
       case 10:
         if (!getDownloadMapAssetsCommand()
             .equals(other.getDownloadMapAssetsCommand())) return false;
@@ -507,10 +463,6 @@ private static final long serialVersionUID = 0L;
       case 8:
         hash = (37 * hash) + RESPAWNCOMMAND_FIELD_NUMBER;
         hash = (53 * hash) + getRespawnCommand().hashCode();
-        break;
-      case 9:
-        hash = (37 * hash) + MERGECONNECTIONCOMMAND_FIELD_NUMBER;
-        hash = (53 * hash) + getMergeConnectionCommand().hashCode();
         break;
       case 10:
         hash = (37 * hash) + DOWNLOADMAPASSETSCOMMAND_FIELD_NUMBER;
@@ -668,9 +620,6 @@ private static final long serialVersionUID = 0L;
       if (respawnCommandBuilder_ != null) {
         respawnCommandBuilder_.clear();
       }
-      if (mergeConnectionCommandBuilder_ != null) {
-        mergeConnectionCommandBuilder_.clear();
-      }
       if (downloadMapAssetsCommandBuilder_ != null) {
         downloadMapAssetsCommandBuilder_.clear();
       }
@@ -738,10 +687,6 @@ private static final long serialVersionUID = 0L;
       if (commandCase_ == 8 &&
           respawnCommandBuilder_ != null) {
         result.command_ = respawnCommandBuilder_.build();
-      }
-      if (commandCase_ == 9 &&
-          mergeConnectionCommandBuilder_ != null) {
-        result.command_ = mergeConnectionCommandBuilder_.build();
       }
       if (commandCase_ == 10 &&
           downloadMapAssetsCommandBuilder_ != null) {
@@ -816,10 +761,6 @@ private static final long serialVersionUID = 0L;
         }
         case RESPAWNCOMMAND: {
           mergeRespawnCommand(other.getRespawnCommand());
-          break;
-        }
-        case MERGECONNECTIONCOMMAND: {
-          mergeMergeConnectionCommand(other.getMergeConnectionCommand());
           break;
         }
         case DOWNLOADMAPASSETSCOMMAND: {
@@ -898,13 +839,6 @@ private static final long serialVersionUID = 0L;
               commandCase_ = 8;
               break;
             } // case 66
-            case 74: {
-              input.readMessage(
-                  getMergeConnectionCommandFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              commandCase_ = 9;
-              break;
-            } // case 74
             case 82: {
               input.readMessage(
                   getDownloadMapAssetsCommandFieldBuilder().getBuilder(),
@@ -1794,148 +1728,6 @@ private static final long serialVersionUID = 0L;
       commandCase_ = 8;
       onChanged();
       return respawnCommandBuilder_;
-    }
-
-    private com.google.protobuf.SingleFieldBuilderV3<
-        com.beverly.hills.money.gang.proto.MergeConnectionCommand, com.beverly.hills.money.gang.proto.MergeConnectionCommand.Builder, com.beverly.hills.money.gang.proto.MergeConnectionCommandOrBuilder> mergeConnectionCommandBuilder_;
-    /**
-     * <code>.daikombat.dto.MergeConnectionCommand mergeConnectionCommand = 9;</code>
-     * @return Whether the mergeConnectionCommand field is set.
-     */
-    @java.lang.Override
-    public boolean hasMergeConnectionCommand() {
-      return commandCase_ == 9;
-    }
-    /**
-     * <code>.daikombat.dto.MergeConnectionCommand mergeConnectionCommand = 9;</code>
-     * @return The mergeConnectionCommand.
-     */
-    @java.lang.Override
-    public com.beverly.hills.money.gang.proto.MergeConnectionCommand getMergeConnectionCommand() {
-      if (mergeConnectionCommandBuilder_ == null) {
-        if (commandCase_ == 9) {
-          return (com.beverly.hills.money.gang.proto.MergeConnectionCommand) command_;
-        }
-        return com.beverly.hills.money.gang.proto.MergeConnectionCommand.getDefaultInstance();
-      } else {
-        if (commandCase_ == 9) {
-          return mergeConnectionCommandBuilder_.getMessage();
-        }
-        return com.beverly.hills.money.gang.proto.MergeConnectionCommand.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.daikombat.dto.MergeConnectionCommand mergeConnectionCommand = 9;</code>
-     */
-    public Builder setMergeConnectionCommand(com.beverly.hills.money.gang.proto.MergeConnectionCommand value) {
-      if (mergeConnectionCommandBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        command_ = value;
-        onChanged();
-      } else {
-        mergeConnectionCommandBuilder_.setMessage(value);
-      }
-      commandCase_ = 9;
-      return this;
-    }
-    /**
-     * <code>.daikombat.dto.MergeConnectionCommand mergeConnectionCommand = 9;</code>
-     */
-    public Builder setMergeConnectionCommand(
-        com.beverly.hills.money.gang.proto.MergeConnectionCommand.Builder builderForValue) {
-      if (mergeConnectionCommandBuilder_ == null) {
-        command_ = builderForValue.build();
-        onChanged();
-      } else {
-        mergeConnectionCommandBuilder_.setMessage(builderForValue.build());
-      }
-      commandCase_ = 9;
-      return this;
-    }
-    /**
-     * <code>.daikombat.dto.MergeConnectionCommand mergeConnectionCommand = 9;</code>
-     */
-    public Builder mergeMergeConnectionCommand(com.beverly.hills.money.gang.proto.MergeConnectionCommand value) {
-      if (mergeConnectionCommandBuilder_ == null) {
-        if (commandCase_ == 9 &&
-            command_ != com.beverly.hills.money.gang.proto.MergeConnectionCommand.getDefaultInstance()) {
-          command_ = com.beverly.hills.money.gang.proto.MergeConnectionCommand.newBuilder((com.beverly.hills.money.gang.proto.MergeConnectionCommand) command_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          command_ = value;
-        }
-        onChanged();
-      } else {
-        if (commandCase_ == 9) {
-          mergeConnectionCommandBuilder_.mergeFrom(value);
-        } else {
-          mergeConnectionCommandBuilder_.setMessage(value);
-        }
-      }
-      commandCase_ = 9;
-      return this;
-    }
-    /**
-     * <code>.daikombat.dto.MergeConnectionCommand mergeConnectionCommand = 9;</code>
-     */
-    public Builder clearMergeConnectionCommand() {
-      if (mergeConnectionCommandBuilder_ == null) {
-        if (commandCase_ == 9) {
-          commandCase_ = 0;
-          command_ = null;
-          onChanged();
-        }
-      } else {
-        if (commandCase_ == 9) {
-          commandCase_ = 0;
-          command_ = null;
-        }
-        mergeConnectionCommandBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>.daikombat.dto.MergeConnectionCommand mergeConnectionCommand = 9;</code>
-     */
-    public com.beverly.hills.money.gang.proto.MergeConnectionCommand.Builder getMergeConnectionCommandBuilder() {
-      return getMergeConnectionCommandFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.daikombat.dto.MergeConnectionCommand mergeConnectionCommand = 9;</code>
-     */
-    @java.lang.Override
-    public com.beverly.hills.money.gang.proto.MergeConnectionCommandOrBuilder getMergeConnectionCommandOrBuilder() {
-      if ((commandCase_ == 9) && (mergeConnectionCommandBuilder_ != null)) {
-        return mergeConnectionCommandBuilder_.getMessageOrBuilder();
-      } else {
-        if (commandCase_ == 9) {
-          return (com.beverly.hills.money.gang.proto.MergeConnectionCommand) command_;
-        }
-        return com.beverly.hills.money.gang.proto.MergeConnectionCommand.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.daikombat.dto.MergeConnectionCommand mergeConnectionCommand = 9;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        com.beverly.hills.money.gang.proto.MergeConnectionCommand, com.beverly.hills.money.gang.proto.MergeConnectionCommand.Builder, com.beverly.hills.money.gang.proto.MergeConnectionCommandOrBuilder> 
-        getMergeConnectionCommandFieldBuilder() {
-      if (mergeConnectionCommandBuilder_ == null) {
-        if (!(commandCase_ == 9)) {
-          command_ = com.beverly.hills.money.gang.proto.MergeConnectionCommand.getDefaultInstance();
-        }
-        mergeConnectionCommandBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            com.beverly.hills.money.gang.proto.MergeConnectionCommand, com.beverly.hills.money.gang.proto.MergeConnectionCommand.Builder, com.beverly.hills.money.gang.proto.MergeConnectionCommandOrBuilder>(
-                (com.beverly.hills.money.gang.proto.MergeConnectionCommand) command_,
-                getParentForChildren(),
-                isClean());
-        command_ = null;
-      }
-      commandCase_ = 9;
-      onChanged();
-      return mergeConnectionCommandBuilder_;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<

@@ -3,7 +3,7 @@ package com.beverly.hills.money.gang.entity;
 import lombok.Builder;
 import lombok.Getter;
 
-@Builder
+@Builder(toBuilder = true)
 @Getter
 public class HostPort {
 

@@ -29,12 +29,15 @@ public class PlayersRegistry implements Closeable {
 
   private final PlayerStatsRecoveryRegistry playerStatsRecoveryRegistry;
 
-  public PlayerStateChannel addPlayer(PlayerState playerState, Channel channel)
+  public PlayerStateChannel addPlayer(
+      PlayerState playerState,
+      Channel tcpChannel)
       throws GameLogicError {
     LOG.debug("Add player {}", playerState);
     // not thread-safe
     if (countAllActivePlayers() >= MAX_PLAYERS_PER_GAME) {
-      throw new GameLogicError("Can't connect player. Server is full. Try later.", GameErrorCode.SERVER_FULL);
+      throw new GameLogicError("Can't connect player. Server is full. Try later.",
+          GameErrorCode.SERVER_FULL);
     } else if (players.values().stream()
         .anyMatch(playerStateChannel -> playerStateChannel.getPlayerState().getPlayerName()
             .equals(playerState.getPlayerName()))) {
@@ -43,14 +46,13 @@ public class PlayersRegistry implements Closeable {
     }
     // thread-safe
     var playerStateChannel = PlayerStateChannel.builder()
-        .channel(channel).playerState(playerState).build();
+        .tcpChannel(tcpChannel).playerState(playerState).build();
     players.put(playerState.getPlayerId(), playerStateChannel);
     return playerStateChannel;
   }
 
   public Optional<PlayerState> getPlayerState(int playerId) {
-    return Optional.ofNullable(players.get(playerId))
-        .map(PlayerStateChannel::getPlayerState);
+    return getPlayerStateChannel(playerId).map(PlayerStateChannel::getPlayerState);
   }
 
   public Optional<PlayerStateChannel> getPlayerStateChannel(int playerId) {
@@ -60,8 +62,7 @@ public class PlayersRegistry implements Closeable {
   public Optional<PlayerStateChannel> getPlayerStateChannel(int playerId, String ipAddress) {
     return getPlayerStateChannel(playerId)
         // check that it matches our ip address
-        .filter(playerStateChannel -> playerStateChannel.getPrimaryChannelAddress()
-            .equals(ipAddress));
+        .filter(playerStateChannel -> playerStateChannel.getIPAddress().equals(ipAddress));
   }
 
   public List<PlayerStateChannel> allPlayers() {
@@ -93,29 +94,17 @@ public class PlayersRegistry implements Closeable {
             == PlayerActivityStatus.ACTIVE);
   }
 
-
-  public Optional<PlayerStateChannel> findPlayer(int playerId) {
-    return Optional.ofNullable(players.get(playerId));
-  }
-
   public int getPlayersOnline(int matchId) {
     return (int) players.values().stream().filter(
         playerStateChannel -> playerStateChannel.getPlayerState().getMatchId() == matchId).count();
   }
 
-  public Optional<PlayerStateChannel> findPlayer(Channel channel, int playerId) {
-    return Optional.ofNullable(players.get(playerId))
-        .filter(playerStateChannel -> playerStateChannel.isOurChannel(channel));
-  }
-
   public Optional<PlayerState> disconnectPlayer(int playerId) {
     LOG.debug("Disconnect player {}", playerId);
-    var removedStateOpt = removePlayer(playerId);
-    if (removedStateOpt.isPresent()) {
-      removedStateOpt.get().close();
-      return Optional.of(removedStateOpt.get().getPlayerState());
-    }
-    return Optional.empty();
+    return removePlayer(playerId).map(playerStateChannel -> {
+      playerStateChannel.close();
+      return playerStateChannel.getPlayerState();
+    });
   }
 
   public Optional<PlayerStateChannel> removePlayer(int playerId) {

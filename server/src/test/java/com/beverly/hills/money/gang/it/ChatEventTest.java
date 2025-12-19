@@ -7,7 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
-import com.beverly.hills.money.gang.network.GameConnection;
+import com.beverly.hills.money.gang.entity.PlayerGameId;
+import com.beverly.hills.money.gang.network.GlobalGameConnection;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PlayerSkinColor;
@@ -52,9 +53,9 @@ public class ChatEventTest extends AbstractGameServerTest {
       "I hate all donatellos"})
   public void testChatBadWords(String realBadWords) throws IOException, InterruptedException {
     int gameIdToConnectTo = 0;
-    List<GameConnection> connections = new ArrayList<>();
+    List<GlobalGameConnection> connections = new ArrayList<>();
     for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
-      GameConnection gameConnection = createGameConnection("localhost", port);
+      var gameConnection = createGameConnection("localhost", port);
       connections.add(gameConnection);
       gameConnection.write(
           JoinGameCommand.newBuilder()
@@ -90,7 +91,7 @@ public class ChatEventTest extends AbstractGameServerTest {
   public void testChatManyPlayers() throws IOException, InterruptedException {
     int gameIdToConnectTo = 0;
     for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
-      GameConnection gameConnection = createGameConnection("localhost",
+      var gameConnection = createGameConnection("localhost",
           port);
       gameConnection.write(
           JoinGameCommand.newBuilder()
@@ -101,16 +102,14 @@ public class ChatEventTest extends AbstractGameServerTest {
       waitUntilGetResponses(gameConnection.getResponse(), 1);
     }
 
-    Thread.sleep(2_500);
-
-    Map<Integer, GameConnection> players = new HashMap<>();
-    for (GameConnection gameConnection : gameConnections) {
+    Map<Integer, GlobalGameConnection> players = new HashMap<>();
+    for (var gameConnection : gameConnections) {
       ServerResponse mySpawn = gameConnection.getResponse().poll().get();
       int myId = mySpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
       players.put(myId, gameConnection);
     }
 
-    for (GameConnection gameConnection : gameConnections) {
+    for (var gameConnection : gameConnections) {
       emptyQueue(gameConnection.getResponse());
     }
 
@@ -128,7 +127,7 @@ public class ChatEventTest extends AbstractGameServerTest {
           "We must have MAX_PLAYERS-1 messages for every player." +
               " -1 because you don't send your own message to yourself. Actual responses are:"
               + chatMessagesResponse);
-      assertEquals(2, gameConnection.getGameNetworkStats().getSentMessages(),
+      assertEquals(2, gameConnection.getTCPNetworkStats().getSentMessages(),
           "Every player connected and sent one chat message so it should be 2 sent messages only");
       chatMessagesResponse.forEach(serverResponse -> {
         assertTrue(serverResponse.hasChatEvents(), "Must be chat events only");
@@ -150,7 +149,7 @@ public class ChatEventTest extends AbstractGameServerTest {
   @Test
   public void testChatDifferentGame() throws IOException, InterruptedException {
 
-    GameConnection gameConnectionPlayer1 = createGameConnection("localhost",
+    var gameConnectionPlayer1 = createGameConnection("localhost",
         port);
     gameConnectionPlayer1.write(
         JoinGameCommand.newBuilder()
@@ -163,7 +162,8 @@ public class ChatEventTest extends AbstractGameServerTest {
     ServerResponse player1Spawn = gameConnectionPlayer1.getResponse().poll().get();
     int player1Id = player1Spawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
 
-    GameConnection gameConnectionPlayer2 = createGameConnection("localhost",
+
+    var gameConnectionPlayer2 = createGameConnection("localhost",
         port);
     gameConnectionPlayer2.write(
         JoinGameCommand.newBuilder()
@@ -206,7 +206,7 @@ public class ChatEventTest extends AbstractGameServerTest {
   public void testChatManyPlayersTaunt() throws IOException, InterruptedException {
     int gameIdToConnectTo = 0;
     for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
-      GameConnection gameConnection = createGameConnection("localhost",
+      var gameConnection = createGameConnection("localhost",
           port);
       gameConnection.write(
           JoinGameCommand.newBuilder()
@@ -217,16 +217,14 @@ public class ChatEventTest extends AbstractGameServerTest {
       waitUntilGetResponses(gameConnection.getResponse(), 1);
     }
 
-    Thread.sleep(2_500);
-
-    Map<Integer, GameConnection> players = new HashMap<>();
-    for (GameConnection gameConnection : gameConnections) {
+    Map<Integer, GlobalGameConnection> players = new HashMap<>();
+    for (var gameConnection : gameConnections) {
       ServerResponse mySpawn = gameConnection.getResponse().poll().get();
       int myId = mySpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
       players.put(myId, gameConnection);
     }
 
-    for (GameConnection gameConnection : gameConnections) {
+    for (var gameConnection : gameConnections) {
       emptyQueue(gameConnection.getResponse());
     }
 
@@ -246,7 +244,7 @@ public class ChatEventTest extends AbstractGameServerTest {
           "We must have MAX_PLAYERS-1 messages for every player." +
               " -1 because you don't send your own message to yourself. Actual responses are:"
               + chatMessagesResponse);
-      assertEquals(2, gameConnection.getGameNetworkStats().getSentMessages(),
+      assertEquals(2, gameConnection.getTCPNetworkStats().getSentMessages(),
           "Every player connected and sent one chat message so it should be 2 sent messages only");
       chatMessagesResponse.forEach(serverResponse -> {
         assertTrue(serverResponse.hasChatEvents(), "Must be chat events only");
@@ -269,7 +267,7 @@ public class ChatEventTest extends AbstractGameServerTest {
   public void testChatManyPlayersConcurrent() throws IOException, InterruptedException {
     int gameIdToConnectTo = 0;
     for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
-      GameConnection gameConnection = createGameConnection("localhost",
+      var gameConnection = createGameConnection("localhost",
           port);
       gameConnection.write(
           JoinGameCommand.newBuilder()
@@ -280,16 +278,14 @@ public class ChatEventTest extends AbstractGameServerTest {
       waitUntilGetResponses(gameConnection.getResponse(), 1);
     }
 
-    Thread.sleep(2_500);
-
-    Map<Integer, GameConnection> players = new HashMap<>();
-    for (GameConnection gameConnection : gameConnections) {
+    Map<Integer, GlobalGameConnection> players = new HashMap<>();
+    for (var gameConnection : gameConnections) {
       ServerResponse mySpawn = gameConnection.getResponse().poll().get();
       int myId = mySpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
       players.put(myId, gameConnection);
     }
 
-    for (GameConnection gameConnection : gameConnections) {
+    for (var gameConnection : gameConnections) {
       emptyQueue(gameConnection.getResponse());
     }
     CountDownLatch latch = new CountDownLatch(1);

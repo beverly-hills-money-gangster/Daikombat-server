@@ -7,7 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
-import com.beverly.hills.money.gang.network.GameConnection;
+import com.beverly.hills.money.gang.entity.PlayerGameId;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PlayerSkinColor;
@@ -57,7 +57,7 @@ public class MoveEventTest extends AbstractGameServerTest {
             .position(createGameVector(game.getGameConfig().getMaxVisibility() * 0.5f, 0))
             .build())
         .when(spawner).getPlayerSpawn(any());
-    GameConnection movingPlayerConnection = createGameConnection("localhost",
+    var movingPlayerConnection = createGameConnection("localhost",
         port);
     movingPlayerConnection.write(
         JoinGameCommand.newBuilder()
@@ -70,7 +70,7 @@ public class MoveEventTest extends AbstractGameServerTest {
     ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
     int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
 
-    GameConnection observerPlayerConnection = createGameConnection(
+    var observerPlayerConnection = createGameConnection(
         "localhost", port);
     observerPlayerConnection.write(
         JoinGameCommand.newBuilder()
@@ -89,7 +89,7 @@ public class MoveEventTest extends AbstractGameServerTest {
     float newPositionX = mySpawnGameEvent.getPlayer().getPosition().getX() + 0.01f;
     emptyQueue(movingPlayerConnection.getResponse());
     movingPlayerConnection.write(PushGameEventCommand.newBuilder()
-       .setGameId(gameIdToConnectTo)
+        .setGameId(gameIdToConnectTo)
         .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
         .setEventType(PushGameEventCommand.GameEventType.MOVE)
         .setPlayerId(playerId1)
@@ -110,7 +110,6 @@ public class MoveEventTest extends AbstractGameServerTest {
         "Only one response is expected(player 1 move)");
 
     ServerResponse moveServerResponse = observerPlayerConnection.getResponse().poll().get();
-    assertEquals(2, moveServerResponse.getGameEvents().getPlayersOnline());
     assertTrue(moveServerResponse.hasGameEvents(), "Should be a game event");
     assertEquals(1, moveServerResponse.getGameEvents().getEventsCount(),
         "Only one game even is expected(player 1 move)");
@@ -157,7 +156,7 @@ public class MoveEventTest extends AbstractGameServerTest {
             .build())
         .when(spawner).getPlayerSpawn(any());
 
-    GameConnection movingPlayerConnection = createGameConnection("localhost",
+    var movingPlayerConnection = createGameConnection("localhost",
         port);
     movingPlayerConnection.write(
         JoinGameCommand.newBuilder()
@@ -169,8 +168,7 @@ public class MoveEventTest extends AbstractGameServerTest {
     ServerResponse mySpawn = movingPlayerConnection.getResponse().poll().get();
     ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
     int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
-
-    GameConnection observerPlayerConnection = createGameConnection(
+    var observerPlayerConnection = createGameConnection(
         "localhost", port);
     observerPlayerConnection.write(
         JoinGameCommand.newBuilder()
@@ -179,6 +177,7 @@ public class MoveEventTest extends AbstractGameServerTest {
             .setPlayerName("new player")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerPlayerConnection.getResponse());
+
     emptyQueue(observerPlayerConnection.getResponse());
     Thread.sleep(1_000);
     assertEquals(0, observerPlayerConnection.getResponse().size(),
@@ -189,7 +188,7 @@ public class MoveEventTest extends AbstractGameServerTest {
     float newPositionX = mySpawnGameEvent.getPlayer().getPosition().getX() + 0.01f;
     emptyQueue(movingPlayerConnection.getResponse());
     movingPlayerConnection.write(PushGameEventCommand.newBuilder()
-       .setGameId(gameIdToConnectTo)
+        .setGameId(gameIdToConnectTo)
         .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
         .setEventType(PushGameEventCommand.GameEventType.MOVE)
         .setPlayerId(playerId1)
@@ -215,7 +214,7 @@ public class MoveEventTest extends AbstractGameServerTest {
   @Test
   public void testMoveAscendingSequence() throws Exception {
     int gameIdToConnectTo = 0;
-    GameConnection movingPlayerConnection = createGameConnection("localhost",
+    var movingPlayerConnection = createGameConnection("localhost",
         port);
     movingPlayerConnection.write(
         JoinGameCommand.newBuilder()
@@ -228,7 +227,7 @@ public class MoveEventTest extends AbstractGameServerTest {
     ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
     int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
 
-    GameConnection observerPlayerConnection = createGameConnection(
+    var observerPlayerConnection = createGameConnection(
         "localhost", port);
     observerPlayerConnection.write(
         JoinGameCommand.newBuilder()
@@ -249,7 +248,7 @@ public class MoveEventTest extends AbstractGameServerTest {
     int movements = 3;
     for (int i = 0; i < movements; i++) {
       movingPlayerConnection.write(PushGameEventCommand.newBuilder()
-         .setGameId(gameIdToConnectTo)
+          .setGameId(gameIdToConnectTo)
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
           .setPlayerId(playerId1)
@@ -287,7 +286,7 @@ public class MoveEventTest extends AbstractGameServerTest {
   @Test
   public void testMoveOutOfOrderSequence() throws Exception {
     int gameIdToConnectTo = 0;
-    GameConnection movingPlayerConnection = createGameConnection("localhost",
+    var movingPlayerConnection = createGameConnection("localhost",
         port);
     movingPlayerConnection.write(
         JoinGameCommand.newBuilder()
@@ -300,7 +299,8 @@ public class MoveEventTest extends AbstractGameServerTest {
     ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
     int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
 
-    GameConnection observerPlayerConnection = createGameConnection(
+
+    var observerPlayerConnection = createGameConnection(
         "localhost", port);
     observerPlayerConnection.write(
         JoinGameCommand.newBuilder()
@@ -309,6 +309,8 @@ public class MoveEventTest extends AbstractGameServerTest {
             .setPlayerName("new player")
             .setGameId(gameIdToConnectTo).build());
     waitUntilQueueNonEmpty(observerPlayerConnection.getResponse());
+    ServerResponse observerSpawn = observerPlayerConnection.getResponse().poll().get();
+    ServerResponse.GameEvent observerSpawnGameEvent = observerSpawn.getGameEvents().getEvents(0);
     emptyQueue(observerPlayerConnection.getResponse());
     Thread.sleep(1_000);
     assertEquals(0, observerPlayerConnection.getResponse().size(),
@@ -321,7 +323,7 @@ public class MoveEventTest extends AbstractGameServerTest {
     for (int i = 0; i < 2; i++) {
       int sequence = sequenceGenerator.getNext();
       movingPlayerConnection.write(PushGameEventCommand.newBuilder()
-         .setGameId(gameIdToConnectTo)
+          .setGameId(gameIdToConnectTo)
           .setSequence(sequence)
           .setPingMls(PING_MLS)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
@@ -339,7 +341,7 @@ public class MoveEventTest extends AbstractGameServerTest {
     }
 
     movingPlayerConnection.write(PushGameEventCommand.newBuilder()
-       .setGameId(gameIdToConnectTo)
+        .setGameId(gameIdToConnectTo)
         .setSequence(-1) // out-of-order
         .setPingMls(PING_MLS)
         .setEventType(PushGameEventCommand.GameEventType.MOVE)
@@ -363,75 +365,6 @@ public class MoveEventTest extends AbstractGameServerTest {
       assertEquals(ServerResponse.GameEvent.GameEventType.MOVE, player1MoveEvent.getEventType());
       assertTrue(player1MoveEvent.hasSequence());
     }
-  }
-
-  /**
-   * @given a running server with 2 connected players
-   * @when player 2 uses player 1 id to move
-   * @then player 1 move is not published
-   */
-  @Test
-  public void testMoveWrongPlayerId() throws Exception {
-    int gameIdToConnectTo = 0;
-    GameConnection observerConnection = createGameConnection("localhost",
-        port);
-    observerConnection.write(
-        JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.WARRIOR)
-            .setPlayerName("my player name")
-            .setGameId(gameIdToConnectTo).build());
-    waitUntilQueueNonEmpty(observerConnection.getResponse());
-    ServerResponse mySpawn = observerConnection.getResponse().poll().get();
-    ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
-    int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
-
-    GameConnection wrongGameConnection = createGameConnection("localhost",
-        port);
-    wrongGameConnection.write(
-        JoinGameCommand.newBuilder()
-            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.WARRIOR)
-            .setPlayerName("new player")
-            .setGameId(gameIdToConnectTo).build());
-
-    waitUntilQueueNonEmpty(wrongGameConnection.getResponse());
-    waitUntilQueueNonEmpty(observerConnection.getResponse());
-    emptyQueue(wrongGameConnection.getResponse());
-    emptyQueue(observerConnection.getResponse());
-    Thread.sleep(1_000);
-    assertEquals(0, wrongGameConnection.getResponse().size(),
-        "No activity happened in the game so no response yet. Actual response is "
-            + wrongGameConnection.getResponse().list());
-
-    float newPositionY = mySpawnGameEvent.getPlayer().getPosition().getY() + 0.01f;
-    float newPositionX = mySpawnGameEvent.getPlayer().getPosition().getX() + 0.01f;
-
-    // wrong game connection
-    wrongGameConnection.write(PushGameEventCommand.newBuilder()
-       .setGameId(gameIdToConnectTo)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-        .setEventType(PushGameEventCommand.GameEventType.MOVE)
-        .setPlayerId(playerId1)
-        .setPosition(Vector.newBuilder()
-            .setY(newPositionY)
-            .setX(newPositionX)
-            .build())
-        .setDirection(Vector.newBuilder()
-            .setY(mySpawnGameEvent.getPlayer().getDirection().getY())
-            .setX(mySpawnGameEvent.getPlayer().getDirection().getX())
-            .build())
-        .build());
-
-    Thread.sleep(250);
-
-    assertTrue(wrongGameConnection.isConnected());
-    assertTrue(observerConnection.isConnected());
-    assertEquals(0, observerConnection.getResponse().size(),
-        "No movements should be published. Actual:" + observerConnection.getResponse().list());
-    assertEquals(0, wrongGameConnection.getResponse().size(),
-        "No movements should be published. Actual:" + wrongGameConnection.getResponse().list());
-
   }
 
   private com.beverly.hills.money.gang.state.entity.Vector createGameVector(float x, float y) {

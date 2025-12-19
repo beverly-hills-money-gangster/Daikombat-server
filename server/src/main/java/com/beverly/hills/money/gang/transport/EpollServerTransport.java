@@ -1,9 +1,11 @@
 package com.beverly.hills.money.gang.transport;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
+import io.netty.channel.AbstractChannel;
 import io.netty.channel.ChannelConfig;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollChannelOption;
+import io.netty.channel.epoll.EpollDatagramChannel;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.socket.ServerSocketChannel;
@@ -21,8 +23,13 @@ public class EpollServerTransport implements ServerTransport {
   }
 
   @Override
-  public Class<? extends ServerSocketChannel> getServerSocketChannelClass() {
+  public Class<? extends ServerSocketChannel> getTCPSocketChannelClass() {
     return EpollServerSocketChannel.class;
+  }
+
+  @Override
+  public Class<? extends AbstractChannel> getUDPSocketChannelClass() {
+    return EpollDatagramChannel.class;
   }
 
   @Override

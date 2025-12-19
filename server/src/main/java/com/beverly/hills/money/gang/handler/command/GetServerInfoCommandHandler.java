@@ -22,14 +22,14 @@ public class GetServerInfoCommandHandler extends ServerCommandHandler {
   private final CommandCase commandCase = CommandCase.GETSERVERINFOCOMMAND;
 
   @Override
-  protected boolean isValidCommand(ServerCommand msg, Channel currentChannel) {
+  protected boolean isValidCommand(ServerCommand msg) {
     return msg.getGetServerInfoCommand().hasPlayerClass();
   }
 
   @Override
-  protected void handleInternal(ServerCommand msg, Channel currentChannel) {
+  protected void handleInternal(ServerCommand msg, Channel tcpClientChannel) {
     var playerClass = getRPGPlayerClass(msg.getGetServerInfoCommand().getPlayerClass());
-    currentChannel.writeAndFlush(
+    tcpClientChannel.writeAndFlush(
         createServerInfo(gameRoomRegistry.getGames().map(game -> game), playerClass));
   }
 

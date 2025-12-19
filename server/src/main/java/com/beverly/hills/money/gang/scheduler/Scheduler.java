@@ -1,35 +1,34 @@
 package com.beverly.hills.money.gang.scheduler;
 
+import io.netty.channel.EventLoopGroup;
 import java.io.Closeable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class Scheduler implements Closeable {
 
   private static final Logger LOG = LoggerFactory.getLogger(Scheduler.class);
 
-  private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1,
-      new BasicThreadFactory.Builder().namingPattern("scheduler-%d").build());
+  private final EventLoopGroup eventLoopGroup;
 
   public void schedule(int afterMls, Runnable runnable) {
-    executorService.schedule(runnable, afterMls, TimeUnit.MILLISECONDS);
+    eventLoopGroup.schedule(runnable, afterMls, TimeUnit.MILLISECONDS);
   }
 
   public void scheduleAtFixedRate(int afterMls, int periodMls, Runnable runnable) {
-    executorService.scheduleAtFixedRate(runnable, afterMls, periodMls, TimeUnit.MILLISECONDS);
+    eventLoopGroup.scheduleAtFixedRate(runnable, afterMls, periodMls, TimeUnit.MILLISECONDS);
   }
 
 
   public void close() {
     LOG.info("Close");
     try {
-      executorService.shutdownNow();
+      eventLoopGroup.shutdownGracefully();
     } catch (Exception e) {
       LOG.error("Can't shutdown scheduler", e);
     }

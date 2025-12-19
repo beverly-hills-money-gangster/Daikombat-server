@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
-import com.beverly.hills.money.gang.network.GameConnection;
+import com.beverly.hills.money.gang.entity.PlayerGameId;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
@@ -13,6 +13,8 @@ import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.Vector;
 import java.io.IOException;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -32,8 +34,7 @@ public class IdleServerTest extends AbstractGameServerTest {
   @Test
   public void testClientIsMovingButServerIsIdle() throws IOException, InterruptedException {
     int gameToConnectTo = 0;
-    GameConnection gameConnection = createGameConnection( "localhost", port);
-    gameConnection.shutdownPingScheduler(); // shutting down to mimic server inactivity
+    var gameConnection = createGameConnection("localhost", port);
     gameConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN).setPlayerClass(
@@ -43,6 +44,8 @@ public class IdleServerTest extends AbstractGameServerTest {
     waitUntilQueueNonEmpty(gameConnection.getResponse());
     var mySpawn = gameConnection.getResponse().poll().get().getGameEvents().getEvents(0);
     int playerId = mySpawn.getPlayer().getPlayerId();
+    gameConnection.initUDPConnection(
+        PlayerGameId.builder().playerId(playerId).gameId(gameToConnectTo).build());
 
     gameConnection.write(GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR)
         .build());
@@ -55,6 +58,7 @@ public class IdleServerTest extends AbstractGameServerTest {
 
     assertEquals(1, myGame.getPlayersOnline(), "Only the current player should be connected");
     emptyQueue(gameConnection.getResponse());
+    gameConnection.shutdownTCPPingScheduler(); // shutting down to mimic server inactivity
 
     float newPositionY = mySpawn.getPlayer().getPosition().getY();
     float newPositionX = mySpawn.getPlayer().getPosition().getX();
@@ -65,7 +69,7 @@ public class IdleServerTest extends AbstractGameServerTest {
       gameConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(playerId)
           .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-         .setGameId(gameToConnectTo)
+          .setGameId(gameToConnectTo)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
           .setDirection(Vector.newBuilder().setX(0).setY(1).build())
           .setPosition(Vector.newBuilder()
@@ -77,12 +81,16 @@ public class IdleServerTest extends AbstractGameServerTest {
     assertEquals(0, gameConnection.getResponse().size(),
         "It's expected that server didn't send anything in a while. Response is :"
             + gameConnection.getResponse().list());
-    assertEquals(1, gameConnection.getErrors().size());
-    Throwable error = gameConnection.getErrors().poll().get();
-    assertEquals(IOException.class, error.getClass(),
-        "Inactive server should be treated as an IO exception");
-    assertEquals("Server is inactive for too long", error.getMessage());
-    assertTrue(gameConnection.isDisconnected(),
-        "Client should disconnect because the server is idle");
+    assertEquals(2, gameConnection.getErrors().size(),
+        "Actual errors: " + gameConnection.getErrors().list().stream().map(
+            ExceptionUtils::getStackTrace).collect(Collectors.toList()));
+
+    for (Throwable error : gameConnection.getErrors().list()) {
+      assertEquals(IOException.class, error.getClass(),
+          "Inactive server should be treated as an IO exception");
+      assertEquals("Server is inactive for too long", error.getMessage());
+      assertTrue(gameConnection.isDisconnected(),
+          "Client should disconnect because the server is idle");
+    }
   }
 }

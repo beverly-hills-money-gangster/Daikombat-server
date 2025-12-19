@@ -29,13 +29,13 @@ public class DownloadMapAssetsCommandHandler extends ServerCommandHandler {
   private final Map<String, ServerResponse> cache = new ConcurrentHashMap<>();
 
   @Override
-  protected boolean isValidCommand(ServerCommand msg, Channel currentChannel) {
+  protected boolean isValidCommand(ServerCommand msg) {
     return msg.hasDownloadMapAssetsCommand()
         && msg.getDownloadMapAssetsCommand().hasMapName();
   }
 
   @Override
-  protected void handleInternal(ServerCommand msg, Channel currentChannel) throws GameLogicError {
+  protected void handleInternal(ServerCommand msg, Channel tcpClientChannel) throws GameLogicError {
     var downloadMapCommand = msg.getDownloadMapAssetsCommand();
     var response = Optional
         .ofNullable(cache.get(downloadMapCommand.getMapName()))
@@ -51,7 +51,7 @@ public class DownloadMapAssetsCommandHandler extends ServerCommandHandler {
       throw new GameLogicError("Can't find map", GameErrorCode.COMMON_ERROR);
     }
     // TODO optimize it. we still have too many data copies
-    currentChannel.writeAndFlush(response)
+    tcpClientChannel.writeAndFlush(response)
         .addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
   }
 

@@ -5,6 +5,7 @@ import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
+import com.beverly.hills.money.gang.proto.GamePowerUpType;
 import com.beverly.hills.money.gang.proto.MapAssets;
 import com.beverly.hills.money.gang.proto.MapMetadata;
 import com.beverly.hills.money.gang.proto.PlayerClass;
@@ -12,10 +13,10 @@ import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.ProjectileType;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEventPlayerStats;
 import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUp;
-import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType;
 import com.beverly.hills.money.gang.proto.ServerResponse.PlayerCurrentWeaponAmmo;
 import com.beverly.hills.money.gang.proto.ServerResponse.PlayerGameMatchStats;
 import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEvent;
@@ -81,6 +82,18 @@ public interface ServerResponseFactory {
         .build();
   }
 
+  static ServerResponse.GameEvent createInitEvent(
+      PlayerStateReader playerStateReader,
+      List<GameLeaderBoardItem> leaderBoard,
+      int gameId) {
+    return ServerResponse.GameEvent.newBuilder()
+        .setEventType(GameEventType.INIT)
+        .setGameId(gameId)
+        .setLeaderBoard(createLeaderBoard(leaderBoard))
+        .setPlayer(createFullPlayerStats(playerStateReader))
+        .build();
+  }
+
   static ServerResponse.GameEvent createSpawnEvent(PlayerStateReader playerStateReader) {
     return createSpawnEvent(playerStateReader, List.of());
   }
@@ -109,13 +122,13 @@ public interface ServerResponseFactory {
       PlayerStateReader playerStateReader) {
     return ServerResponse.GameEvent.newBuilder()
         .setPlayer(createFullPlayerStats(playerStateReader))
-        .setEventType(ServerResponse.GameEvent.GameEventType.MOVE).build();
+        .setEventType(GameEventType.POWER_UP_PICKUP).build();
   }
 
   static ServerResponse.GameEvent createPlayerTeleportGameEvent(
       PlayerStateReader playerStateReader) {
     return ServerResponse.GameEvent.newBuilder()
-        .setPlayer(createFullPlayerStats(playerStateReader))
+        .setPlayer(createMinimalPlayerStats(playerStateReader))
         .setEventType(GameEventType.TELEPORT).build();
   }
 
@@ -123,13 +136,6 @@ public interface ServerResponseFactory {
     return ServerResponse.newBuilder()
         .setGameEvents(ServerResponse.GameEvents.newBuilder()
             .addEvents(createPowerUpPlayerMoveGameEvent(playerStateReader)))
-        .build();
-  }
-
-  static ServerResponse createTeleportPlayerServerResponse(PlayerStateReader playerStateReader) {
-    return ServerResponse.newBuilder()
-        .setGameEvents(ServerResponse.GameEvents.newBuilder()
-            .addEvents(createPlayerTeleportGameEvent(playerStateReader)))
         .build();
   }
 
@@ -204,17 +210,6 @@ public interface ServerResponseFactory {
 
     return ServerResponse.newBuilder()
         .setServerInfo(serverInfo)
-        .build();
-  }
-
-  static ServerResponse createMovesEventAllPlayers(int playersOnline,
-      List<PlayerStateReader> movedPlayers) {
-    var allPlayersMoves = ServerResponse.GameEvents.newBuilder();
-    movedPlayers.forEach(playerStateReader
-        -> allPlayersMoves.addEvents(createMoveGameEvent(playerStateReader)));
-    allPlayersMoves.setPlayersOnline(playersOnline);
-    return ServerResponse.newBuilder()
-        .setGameEvents(allPlayersMoves)
         .build();
   }
 
@@ -338,6 +333,7 @@ public interface ServerResponseFactory {
         .setPosition(createVector(playerReader.getCoordinates().getPosition()))
         .setDirection(createVector(playerReader.getCoordinates().getDirection()))
         .setPlayerId(playerReader.getPlayerId())
+        .setHealth(playerReader.getHealth())
         .setPingMls(playerReader.getPingMls())
         .build();
   }
@@ -351,77 +347,63 @@ public interface ServerResponseFactory {
         .build();
   }
 
-  static ServerResponse createKillEvent(
-      int playersOnline,
+  static GameEvent createKillEvent(
       PlayerStateReader shooterPlayerReader,
       PlayerStateReader deadPlayerReader,
       PushGameEventCommand pushGameEventCommand) {
     var killBuilder = ServerResponse.GameEvent.newBuilder()
         .setEventType(GameEventType.KILL)
-        .setPlayer(createFullPlayerStats(shooterPlayerReader))
-        .setAffectedPlayer(createFullPlayerStats(deadPlayerReader));
+        .setPlayer(createMinimalPlayerStats(shooterPlayerReader))
+        .setAffectedPlayer(createMinimalPlayerStats(deadPlayerReader));
     if (pushGameEventCommand.hasProjectile()) {
       killBuilder.setProjectile(pushGameEventCommand.getProjectile());
     } else if (pushGameEventCommand.hasWeaponType()) {
       killBuilder.setWeaponType(pushGameEventCommand.getWeaponType());
     }
-    var deadPlayerEvent = ServerResponse.GameEvents.newBuilder()
-        .addEvents(killBuilder)
-        .setPlayersOnline(playersOnline);
-    return ServerResponse.newBuilder()
-        .setGameEvents(deadPlayerEvent)
-        .build();
+    return killBuilder.build();
   }
 
-  static ServerResponse createGetAttackedEvent(int playersOnline,
+  static GameEvent createGetAttackedEvent(
       PlayerStateReader shooterPlayerReader,
       PlayerStateReader shotPlayerReader,
       PushGameEventCommand pushGameEventCommand) {
     var attackedPlayerBuilder = ServerResponse.GameEvent.newBuilder()
         .setEventType(GameEventType.GET_ATTACKED)
-        .setPlayer(createFullPlayerStats(shooterPlayerReader))
-        .setAffectedPlayer(createFullPlayerStats(shotPlayerReader));
+        .setPlayer(createMinimalPlayerStats(shooterPlayerReader))
+        .setAffectedPlayer(createMinimalPlayerStats(shotPlayerReader));
     if (pushGameEventCommand.hasProjectile()) {
       attackedPlayerBuilder.setProjectile(pushGameEventCommand.getProjectile());
     } else if (pushGameEventCommand.hasWeaponType()) {
       attackedPlayerBuilder.setWeaponType(pushGameEventCommand.getWeaponType());
     }
-    var attackedPlayerEvent = ServerResponse.GameEvents.newBuilder()
-        .addEvents(attackedPlayerBuilder);
-    attackedPlayerEvent.setPlayersOnline(playersOnline);
-    return ServerResponse.newBuilder()
-        .setGameEvents(attackedPlayerEvent)
-        .build();
+    return attackedPlayerBuilder.build();
   }
 
-  static ServerResponse createAttackingEvent(
-      int playersOnline,
+  static GameEvent createAttackingEvent(
       PlayerStateReader shooterPlayerReader,
       PushGameEventCommand pushGameEventCommand) {
-    var attackedPlayerBuilder = ServerResponse.GameEvent.newBuilder()
+    var attackingdPlayerBuilder = ServerResponse.GameEvent.newBuilder()
         .setEventType(GameEventType.ATTACK)
-        .setPlayer(createFullPlayerStats(shooterPlayerReader));
+        .setPlayer(createMinimalPlayerStats(shooterPlayerReader));
     if (pushGameEventCommand.hasProjectile()) {
-      attackedPlayerBuilder.setProjectile(pushGameEventCommand.getProjectile());
+      attackingdPlayerBuilder.setProjectile(pushGameEventCommand.getProjectile());
     } else if (pushGameEventCommand.hasWeaponType()) {
-      attackedPlayerBuilder.setWeaponType(pushGameEventCommand.getWeaponType());
+      attackingdPlayerBuilder.setWeaponType(pushGameEventCommand.getWeaponType());
     }
-    var attackedPlayerEvent = ServerResponse.GameEvents.newBuilder()
-        .addEvents(attackedPlayerBuilder);
-    attackedPlayerEvent.setPlayersOnline(playersOnline);
-    return ServerResponse.newBuilder()
-        .setGameEvents(attackedPlayerEvent)
-        .build();
+    return attackingdPlayerBuilder.build();
   }
 
-  static ServerResponse createJoinSinglePlayer(int playersOnline,
-      PlayerJoinedGameState playerConnected) {
+  static ServerResponse createInitSinglePlayer(
+      int playersOnline,
+      PlayerJoinedGameState playerConnected,
+      int gameId) {
     return ServerResponse.newBuilder()
         .setGameEvents(ServerResponse.GameEvents.newBuilder()
             .setPlayersOnline(playersOnline)
-            .addEvents(createSpawnEvent(
+            .addEvents(createInitEvent(
                 playerConnected.getPlayerStateChannel().getPlayerState(),
-                playerConnected.getLeaderBoard()))).build();
+                playerConnected.getLeaderBoard(),
+                gameId))).build();
   }
 
   static ServerResponse createRespawnEventSinglePlayer(int playersOnline,

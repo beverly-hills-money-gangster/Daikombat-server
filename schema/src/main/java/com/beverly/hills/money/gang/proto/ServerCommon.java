@@ -69,8 +69,11 @@ public final class ServerCommon {
       "T_MAKE_ME_LAUGH\020\005\022\025\n\021THAT_WAS_PATHETIC\020\006" +
       "\022\025\n\021IS_THAT_YOUR_BEST\020\007\022\022\n\016PREPARE_TO_DI" +
       "E\020\010\022\017\n\013U_R_NOTHING\020\t\022\032\n\026U_R_WEAK_PATHETI" +
-      "C_FOOL\020\nB&\n\"com.beverly.hills.money.gang" +
-      ".protoP\001b\006proto3"
+      "C_FOOL\020\n*w\n\017GamePowerUpType\022\017\n\013QUAD_DAMA" +
+      "GE\020\000\022\020\n\014INVISIBILITY\020\001\022\013\n\007DEFENCE\020\002\022\n\n\006H" +
+      "EALTH\020\003\022\017\n\013MEDIUM_AMMO\020\004\022\014\n\010BIG_AMMO\020\005\022\t" +
+      "\n\005BEAST\020\006B&\n\"com.beverly.hills.money.gan" +
+      "g.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

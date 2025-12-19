@@ -1,21 +1,21 @@
 package com.beverly.hills.money.gang.it;
 
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.getWeaponType;
-import static com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType.MOVE;
+import static com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType.POWER_UP_PICKUP;
 import static com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType.SPAWN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
+import com.beverly.hills.money.gang.entity.PlayerGameId;
 import com.beverly.hills.money.gang.exception.GameLogicError;
-import com.beverly.hills.money.gang.network.GameConnection;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
+import com.beverly.hills.money.gang.proto.GamePowerUpType;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
-import com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType;
 import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem;
 import com.beverly.hills.money.gang.proto.Vector;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
@@ -52,13 +52,14 @@ public class BigAmmoPowerUpTest extends AbstractGameServerTest {
       throws IOException, InterruptedException, GameLogicError {
     int gameIdToConnectTo = 0;
     var game = gameRoomRegistry.getGame(gameIdToConnectTo);
-    var weaponInfo = game.getRpgWeaponInfo().getWeaponInfo(RPGPlayerClass.WARRIOR, gameWeaponType).get();
+    var weaponInfo = game.getRpgWeaponInfo().getWeaponInfo(RPGPlayerClass.WARRIOR, gameWeaponType)
+        .get();
     var bigAmmoPowerUp = game.getPowerUpRegistry().get(PowerUpType.BIG_AMMO);
     if (weaponInfo.getMaxAmmo() == null) {
       // skip
       return;
     }
-    GameConnection playerConnection = createGameConnection("localhost",
+    var playerConnection = createGameConnection("localhost",
         port);
     playerConnection.write(
         JoinGameCommand.newBuilder()
@@ -111,14 +112,15 @@ public class BigAmmoPowerUpTest extends AbstractGameServerTest {
             .build())
         .setGameId(gameIdToConnectTo)
         .setDirection(Vector.newBuilder().setX(0).setY(1).build())
-        .setEventType(GameEventType.BIG_AMMO_POWER_UP)
+        .setEventType(GameEventType.POWER_UP_PICKUP)
+        .setPowerUp(GamePowerUpType.BIG_AMMO)
         .build());
 
     waitUntilQueueNonEmpty(playerConnection.getResponse());
 
     ServerResponse powerUpMove = playerConnection.getResponse().poll().get();
-    assertEquals(MOVE, powerUpMove.getGameEvents().getEvents(0).getEventType(),
-        "After picking up a power-up, we must get a MOVE event with a player having the power-up");
+    assertEquals(POWER_UP_PICKUP, powerUpMove.getGameEvents().getEvents(0).getEventType(),
+        "After picking up a power-up, we must get a POWER_UP_PICKUP event with a player having the power-up");
     var playerAfterQuadDamage = powerUpMove.getGameEvents().getEvents(0).getPlayer();
     assertEquals(playerId, playerAfterQuadDamage.getPlayerId());
     var ammo = playerAfterQuadDamage.getCurrentAmmoList().stream().filter(
@@ -135,14 +137,14 @@ public class BigAmmoPowerUpTest extends AbstractGameServerTest {
     Thread.sleep(bigAmmoPowerUp.getSpawnPeriodMls() + 250);
 
     assertEquals(1, playerConnection.getResponse().size(),
-        "Should be 1 messages: big ammo power-up respawn. Actual response: "
+        "Should be 1 message: big ammo power-up respawn. Actual response: "
             + playerConnection.getResponse());
 
     ServerResponse quadDamagePowerUpReSpawnResponse = playerConnection.getResponse().poll().get();
     var bigAmmoPowerUpReSpawn = quadDamagePowerUpReSpawnResponse.getPowerUpSpawn();
     assertEquals(GamePowerUpType.BIG_AMMO, bigAmmoPowerUpReSpawn.getItems(0).getType());
 
-    GameConnection observerAfterRevert = createGameConnection("localhost",
+    var observerAfterRevert = createGameConnection("localhost",
         port);
     observerAfterRevert.write(
         JoinGameCommand.newBuilder()

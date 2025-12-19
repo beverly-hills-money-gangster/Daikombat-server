@@ -4,14 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.ChatEvent;
@@ -38,7 +33,7 @@ public class PlayerStateChannelTest {
     playerState = mock(PlayerState.class);
     channel = mock(Channel.class);
     playerStateChannel = spy(PlayerStateChannel.builder()
-        .channel(channel).playerState(playerState)
+        .tcpChannel(channel).playerState(playerState)
         .build());
   }
 
@@ -83,64 +78,6 @@ public class PlayerStateChannelTest {
         "Response should be exactly the same instance. Chat events don't have 'sequence'");
   }
 
-  @Test
-  public void testWriteFlushSecondaryChannelNoSecondary() {
-    ServerResponse serverResponse = ServerResponse.newBuilder()
-        .setChatEvents(ChatEvent.newBuilder().build()).build();
-    doNothing().when(playerStateChannel).writeFlush(any(), any(), any());
-
-    playerStateChannel.writeFlushBalanced(serverResponse);
-
-    verify(playerStateChannel).writeFlush(eq(channel), eq(serverResponse), any());
-  }
-
-  @Test
-  public void testWriteFlushSecondaryChannel() {
-    Channel secondaryGameConnection1 = mock(Channel.class);
-    Channel secondaryGameConnection2 = mock(Channel.class);
-
-    playerStateChannel.addSecondaryChannel(secondaryGameConnection1);
-    playerStateChannel.addSecondaryChannel(secondaryGameConnection2);
-
-    ServerResponse serverResponse = ServerResponse.newBuilder()
-        .setChatEvents(ChatEvent.newBuilder().build()).build();
-
-    doNothing().when(playerStateChannel).writeFlush(any(), any(), any());
-    playerStateChannel.writeFlushBalanced(serverResponse);
-    playerStateChannel.writeFlushBalanced(serverResponse);
-    playerStateChannel.writeFlushBalanced(serverResponse);
-
-    verify(playerStateChannel).writeFlush(eq(channel), eq(serverResponse), any());
-    verify(playerStateChannel).writeFlush(eq(secondaryGameConnection1), eq(serverResponse), any());
-    verify(playerStateChannel).writeFlush(eq(secondaryGameConnection2), eq(serverResponse), any());
-  }
-
-  @Test
-  public void testWriteFlushSecondaryChannelRoundRobin() {
-    Channel secondaryGameConnection1 = mock(Channel.class);
-    Channel secondaryGameConnection2 = mock(Channel.class);
-    doNothing().when(playerStateChannel).writeFlush(any(), any(), any());
-
-    playerStateChannel.addSecondaryChannel(secondaryGameConnection1);
-    playerStateChannel.addSecondaryChannel(secondaryGameConnection2);
-
-    ServerResponse serverResponse = ServerResponse.newBuilder()
-        .setChatEvents(ChatEvent.newBuilder().build()).build();
-
-    playerStateChannel.writeFlushBalanced(serverResponse);
-    playerStateChannel.writeFlushBalanced(serverResponse);
-    playerStateChannel.writeFlushBalanced(serverResponse);
-    playerStateChannel.writeFlushBalanced(serverResponse);
-    playerStateChannel.writeFlushBalanced(serverResponse);
-    playerStateChannel.writeFlushBalanced(serverResponse);
-
-    verify(playerStateChannel, times(2)).writeFlush(
-        eq(channel), eq(serverResponse), any());
-    verify(playerStateChannel, times(2)).writeFlush(
-        eq(secondaryGameConnection1), eq(serverResponse), any());
-    verify(playerStateChannel, times(2)).writeFlush(
-        eq(secondaryGameConnection2), eq(serverResponse), any());
-  }
 
   @Test
   public void testIsOurChannelNotOurChannel() {
@@ -148,26 +85,9 @@ public class PlayerStateChannelTest {
   }
 
   @Test
-  public void testIsOurChannelOurPrimaryChannel() {
-    Channel secondaryGameConnection1 = mock(Channel.class);
-    Channel secondaryGameConnection2 = mock(Channel.class);
-
-    playerStateChannel.addSecondaryChannel(secondaryGameConnection1);
-    playerStateChannel.addSecondaryChannel(secondaryGameConnection2);
-
+  public void testIsOurChannel() {
     assertTrue(playerStateChannel.isOurChannel(channel));
   }
 
-  @Test
-  public void testIsOurChannelOurSecondaryChannel() {
-    Channel secondaryGameConnection1 = mock(Channel.class);
-    Channel secondaryGameConnection2 = mock(Channel.class);
-
-    playerStateChannel.addSecondaryChannel(secondaryGameConnection1);
-    playerStateChannel.addSecondaryChannel(secondaryGameConnection2);
-
-    assertTrue(playerStateChannel.isOurChannel(secondaryGameConnection1));
-    assertTrue(playerStateChannel.isOurChannel(secondaryGameConnection2));
-  }
 
 }

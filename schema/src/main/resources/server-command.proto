@@ -15,7 +15,6 @@ message ServerCommand {
     GetServerInfoCommand getServerInfoCommand = 6;
     PingCommand pingCommand = 7;
     RespawnCommand respawnCommand = 8;
-    MergeConnectionCommand mergeConnectionCommand = 9;
     DownloadMapAssetsCommand downloadMapAssetsCommand = 10;
   }
 }
@@ -46,11 +45,6 @@ message JoinGameCommand {
   optional PlayerClass playerClass = 6;
 }
 
-message MergeConnectionCommand {
-  optional int32 gameId = 1;
-  optional int32 playerId = 2;
-}
-
 
 message RespawnCommand {
   optional int32 gameId = 1;
@@ -69,17 +63,12 @@ message PushGameEventCommand {
   optional int32 teleportId = 9;
   optional WeaponType weaponType = 10;
   optional ProjectileCoordinates projectile = 11;
+  optional GamePowerUpType powerUp = 12;
 
   enum GameEventType {
     MOVE = 0;
     ATTACK = 1;
-    QUAD_DAMAGE_POWER_UP = 2;
-    INVISIBILITY_POWER_UP = 3;
-    DEFENCE_POWER_UP = 4;
-    TELEPORT = 5;
-    HEALTH_POWER_UP = 6;
-    BIG_AMMO_POWER_UP = 7;
-    MEDIUM_AMMO_POWER_UP = 8;
-    BEAST_POWER_UP = 9;
+    POWER_UP_PICKUP = 2;
+    TELEPORT = 3;
   }
 }

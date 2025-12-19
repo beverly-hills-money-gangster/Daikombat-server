@@ -107,6 +107,7 @@ message ServerResponse {
     optional int32 sequence = 5;
     optional WeaponType weaponType = 6;
     optional ProjectileCoordinates projectile = 7;
+    optional int32 gameId = 8;
 
     enum GameEventType {
       MOVE = 0;
@@ -118,6 +119,8 @@ message ServerResponse {
       TELEPORT = 6;
       JOIN = 7;
       RESPAWN = 8;
+      POWER_UP_PICKUP = 9;
+      INIT = 10;
     }
   }
 
@@ -163,16 +166,6 @@ message ServerResponse {
   message GamePowerUp {
     optional GamePowerUpType type = 1;
     optional int32 lastsForMls = 2;
-  }
-
-  enum GamePowerUpType {
-    QUAD_DAMAGE = 0;
-    INVISIBILITY = 1;
-    DEFENCE = 2;
-    HEALTH = 3;
-    MEDIUM_AMMO = 4;
-    BIG_AMMO = 5;
-    BEAST = 6;
   }
 
 

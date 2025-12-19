@@ -29,7 +29,7 @@ public class ChatServerCommandHandler extends ServerCommandHandler {
   private final CommandCase commandCase = CommandCase.CHATCOMMAND;
 
   @Override
-  protected boolean isValidCommand(ServerCommand msg, Channel currentChannel) {
+  protected boolean isValidCommand(ServerCommand msg) {
     var chatCommand = msg.getChatCommand();
     return chatCommand.hasMessage()
         && StringUtils.isNotBlank(chatCommand.getMessage())
@@ -37,7 +37,7 @@ public class ChatServerCommandHandler extends ServerCommandHandler {
   }
 
   @Override
-  protected void handleInternal(ServerCommand msg, Channel currentChannel) throws GameLogicError {
+  protected void handleInternal(ServerCommand msg, Channel tcpClientChannel) throws GameLogicError {
     var chatCommand = msg.getChatCommand();
     if (TextUtil.containsBlacklistedWord(chatCommand.getMessage(),
         ServerConfig.BLACKLISTED_WORDS)) {
@@ -45,8 +45,7 @@ public class ChatServerCommandHandler extends ServerCommandHandler {
       return;
     }
     Game game = gameRoomRegistry.getGame(chatCommand.getGameId());
-    gameRoomRegistry.getPlayer(
-            chatCommand.getGameId(), currentChannel, chatCommand.getPlayerId())
+    gameRoomRegistry.getPlayer(chatCommand.getGameId(), chatCommand.getPlayerId())
         .ifPresent(sender -> {
           var chatMsgToSend = createChatEvent(
               chatCommand.getMessage(),
@@ -54,7 +53,7 @@ public class ChatServerCommandHandler extends ServerCommandHandler {
               sender.getPlayerState().getPlayerName(),
               chatCommand.hasTaunt() ? chatCommand.getTaunt() : null);
           game.getPlayersRegistry().allChatablePlayers(sender.getPlayerState().getPlayerId())
-              .forEach(playerChannel -> playerChannel.writeFlushPrimaryChannel(chatMsgToSend));
+              .forEach(playerChannel -> playerChannel.writeTCPFlush(chatMsgToSend));
         });
   }
 }

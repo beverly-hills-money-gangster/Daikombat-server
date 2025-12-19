@@ -142,7 +142,7 @@ public class GameTest {
     PlayerJoinedGameState player = game.joinPlayer(playerName,
         playerChannel, color, null, playerClass);
     game.getPlayersRegistry()
-        .findPlayer(player.getPlayerStateChannel().getPlayerState().getPlayerId()).ifPresent(
+        .getPlayerStateChannel(player.getPlayerStateChannel().getPlayerState().getPlayerId()).ifPresent(
             playerStateChannel -> playerStateChannel.getPlayerState()
                 .setStatus(PlayerActivityStatus.ACTIVE));
     return player;

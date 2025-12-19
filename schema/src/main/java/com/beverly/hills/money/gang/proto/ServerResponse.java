@@ -39,159 +39,6 @@ private static final long serialVersionUID = 0L;
             com.beverly.hills.money.gang.proto.ServerResponse.class, com.beverly.hills.money.gang.proto.ServerResponse.Builder.class);
   }
 
-  /**
-   * Protobuf enum {@code daikombat.dto.ServerResponse.GamePowerUpType}
-   */
-  public enum GamePowerUpType
-      implements com.google.protobuf.ProtocolMessageEnum {
-    /**
-     * <code>QUAD_DAMAGE = 0;</code>
-     */
-    QUAD_DAMAGE(0),
-    /**
-     * <code>INVISIBILITY = 1;</code>
-     */
-    INVISIBILITY(1),
-    /**
-     * <code>DEFENCE = 2;</code>
-     */
-    DEFENCE(2),
-    /**
-     * <code>HEALTH = 3;</code>
-     */
-    HEALTH(3),
-    /**
-     * <code>MEDIUM_AMMO = 4;</code>
-     */
-    MEDIUM_AMMO(4),
-    /**
-     * <code>BIG_AMMO = 5;</code>
-     */
-    BIG_AMMO(5),
-    /**
-     * <code>BEAST = 6;</code>
-     */
-    BEAST(6),
-    UNRECOGNIZED(-1),
-    ;
-
-    /**
-     * <code>QUAD_DAMAGE = 0;</code>
-     */
-    public static final int QUAD_DAMAGE_VALUE = 0;
-    /**
-     * <code>INVISIBILITY = 1;</code>
-     */
-    public static final int INVISIBILITY_VALUE = 1;
-    /**
-     * <code>DEFENCE = 2;</code>
-     */
-    public static final int DEFENCE_VALUE = 2;
-    /**
-     * <code>HEALTH = 3;</code>
-     */
-    public static final int HEALTH_VALUE = 3;
-    /**
-     * <code>MEDIUM_AMMO = 4;</code>
-     */
-    public static final int MEDIUM_AMMO_VALUE = 4;
-    /**
-     * <code>BIG_AMMO = 5;</code>
-     */
-    public static final int BIG_AMMO_VALUE = 5;
-    /**
-     * <code>BEAST = 6;</code>
-     */
-    public static final int BEAST_VALUE = 6;
-
-
-    public final int getNumber() {
-      if (this == UNRECOGNIZED) {
-        throw new java.lang.IllegalArgumentException(
-            "Can't get the number of an unknown enum value.");
-      }
-      return value;
-    }
-
-    /**
-     * @param value The numeric wire value of the corresponding enum entry.
-     * @return The enum associated with the given numeric wire value.
-     * @deprecated Use {@link #forNumber(int)} instead.
-     */
-    @java.lang.Deprecated
-    public static GamePowerUpType valueOf(int value) {
-      return forNumber(value);
-    }
-
-    /**
-     * @param value The numeric wire value of the corresponding enum entry.
-     * @return The enum associated with the given numeric wire value.
-     */
-    public static GamePowerUpType forNumber(int value) {
-      switch (value) {
-        case 0: return QUAD_DAMAGE;
-        case 1: return INVISIBILITY;
-        case 2: return DEFENCE;
-        case 3: return HEALTH;
-        case 4: return MEDIUM_AMMO;
-        case 5: return BIG_AMMO;
-        case 6: return BEAST;
-        default: return null;
-      }
-    }
-
-    public static com.google.protobuf.Internal.EnumLiteMap<GamePowerUpType>
-        internalGetValueMap() {
-      return internalValueMap;
-    }
-    private static final com.google.protobuf.Internal.EnumLiteMap<
-        GamePowerUpType> internalValueMap =
-          new com.google.protobuf.Internal.EnumLiteMap<GamePowerUpType>() {
-            public GamePowerUpType findValueByNumber(int number) {
-              return GamePowerUpType.forNumber(number);
-            }
-          };
-
-    public final com.google.protobuf.Descriptors.EnumValueDescriptor
-        getValueDescriptor() {
-      if (this == UNRECOGNIZED) {
-        throw new java.lang.IllegalStateException(
-            "Can't get the descriptor of an unrecognized enum value.");
-      }
-      return getDescriptor().getValues().get(ordinal());
-    }
-    public final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptorForType() {
-      return getDescriptor();
-    }
-    public static final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptor() {
-      return com.beverly.hills.money.gang.proto.ServerResponse.getDescriptor().getEnumTypes().get(0);
-    }
-
-    private static final GamePowerUpType[] VALUES = values();
-
-    public static GamePowerUpType valueOf(
-        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-      if (desc.getType() != getDescriptor()) {
-        throw new java.lang.IllegalArgumentException(
-          "EnumValueDescriptor is not for this type.");
-      }
-      if (desc.getIndex() == -1) {
-        return UNRECOGNIZED;
-      }
-      return VALUES[desc.getIndex()];
-    }
-
-    private final int value;
-
-    private GamePowerUpType(int value) {
-      this.value = value;
-    }
-
-    // @@protoc_insertion_point(enum_scope:daikombat.dto.ServerResponse.GamePowerUpType)
-  }
-
   public interface TeleportSpawnEventOrBuilder extends
       // @@protoc_insertion_point(interface_extends:daikombat.dto.ServerResponse.TeleportSpawnEvent)
       com.google.protobuf.MessageOrBuilder {
@@ -2472,20 +2319,20 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+     * <code>optional .daikombat.dto.GamePowerUpType type = 1;</code>
      * @return Whether the type field is set.
      */
     boolean hasType();
     /**
-     * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+     * <code>optional .daikombat.dto.GamePowerUpType type = 1;</code>
      * @return The enum numeric value on the wire for type.
      */
     int getTypeValue();
     /**
-     * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+     * <code>optional .daikombat.dto.GamePowerUpType type = 1;</code>
      * @return The type.
      */
-    com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType getType();
+    com.beverly.hills.money.gang.proto.GamePowerUpType getType();
 
     /**
      * <code>optional .daikombat.dto.Vector position = 2;</code>
@@ -2542,26 +2389,26 @@ private static final long serialVersionUID = 0L;
     public static final int TYPE_FIELD_NUMBER = 1;
     private int type_ = 0;
     /**
-     * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+     * <code>optional .daikombat.dto.GamePowerUpType type = 1;</code>
      * @return Whether the type field is set.
      */
     @java.lang.Override public boolean hasType() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+     * <code>optional .daikombat.dto.GamePowerUpType type = 1;</code>
      * @return The enum numeric value on the wire for type.
      */
     @java.lang.Override public int getTypeValue() {
       return type_;
     }
     /**
-     * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+     * <code>optional .daikombat.dto.GamePowerUpType type = 1;</code>
      * @return The type.
      */
-    @java.lang.Override public com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType getType() {
-      com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType result = com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType.forNumber(type_);
-      return result == null ? com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType.UNRECOGNIZED : result;
+    @java.lang.Override public com.beverly.hills.money.gang.proto.GamePowerUpType getType() {
+      com.beverly.hills.money.gang.proto.GamePowerUpType result = com.beverly.hills.money.gang.proto.GamePowerUpType.forNumber(type_);
+      return result == null ? com.beverly.hills.money.gang.proto.GamePowerUpType.UNRECOGNIZED : result;
     }
 
     public static final int POSITION_FIELD_NUMBER = 2;
@@ -2967,21 +2814,21 @@ private static final long serialVersionUID = 0L;
 
       private int type_ = 0;
       /**
-       * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+       * <code>optional .daikombat.dto.GamePowerUpType type = 1;</code>
        * @return Whether the type field is set.
        */
       @java.lang.Override public boolean hasType() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
-       * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+       * <code>optional .daikombat.dto.GamePowerUpType type = 1;</code>
        * @return The enum numeric value on the wire for type.
        */
       @java.lang.Override public int getTypeValue() {
         return type_;
       }
       /**
-       * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+       * <code>optional .daikombat.dto.GamePowerUpType type = 1;</code>
        * @param value The enum numeric value on the wire for type to set.
        * @return This builder for chaining.
        */
@@ -2992,20 +2839,20 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+       * <code>optional .daikombat.dto.GamePowerUpType type = 1;</code>
        * @return The type.
        */
       @java.lang.Override
-      public com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType getType() {
-        com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType result = com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType.forNumber(type_);
-        return result == null ? com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType.UNRECOGNIZED : result;
+      public com.beverly.hills.money.gang.proto.GamePowerUpType getType() {
+        com.beverly.hills.money.gang.proto.GamePowerUpType result = com.beverly.hills.money.gang.proto.GamePowerUpType.forNumber(type_);
+        return result == null ? com.beverly.hills.money.gang.proto.GamePowerUpType.UNRECOGNIZED : result;
       }
       /**
-       * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+       * <code>optional .daikombat.dto.GamePowerUpType type = 1;</code>
        * @param value The type to set.
        * @return This builder for chaining.
        */
-      public Builder setType(com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType value) {
+      public Builder setType(com.beverly.hills.money.gang.proto.GamePowerUpType value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -3015,7 +2862,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+       * <code>optional .daikombat.dto.GamePowerUpType type = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearType() {
@@ -12491,6 +12338,17 @@ private static final long serialVersionUID = 0L;
      * <code>optional .daikombat.dto.ProjectileCoordinates projectile = 7;</code>
      */
     com.beverly.hills.money.gang.proto.ProjectileCoordinatesOrBuilder getProjectileOrBuilder();
+
+    /**
+     * <code>optional int32 gameId = 8;</code>
+     * @return Whether the gameId field is set.
+     */
+    boolean hasGameId();
+    /**
+     * <code>optional int32 gameId = 8;</code>
+     * @return The gameId.
+     */
+    int getGameId();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.GameEvent}
@@ -12570,6 +12428,14 @@ private static final long serialVersionUID = 0L;
        * <code>RESPAWN = 8;</code>
        */
       RESPAWN(8),
+      /**
+       * <code>POWER_UP_PICKUP = 9;</code>
+       */
+      POWER_UP_PICKUP(9),
+      /**
+       * <code>INIT = 10;</code>
+       */
+      INIT(10),
       UNRECOGNIZED(-1),
       ;
 
@@ -12609,6 +12475,14 @@ private static final long serialVersionUID = 0L;
        * <code>RESPAWN = 8;</code>
        */
       public static final int RESPAWN_VALUE = 8;
+      /**
+       * <code>POWER_UP_PICKUP = 9;</code>
+       */
+      public static final int POWER_UP_PICKUP_VALUE = 9;
+      /**
+       * <code>INIT = 10;</code>
+       */
+      public static final int INIT_VALUE = 10;
 
 
       public final int getNumber() {
@@ -12644,6 +12518,8 @@ private static final long serialVersionUID = 0L;
           case 6: return TELEPORT;
           case 7: return JOIN;
           case 8: return RESPAWN;
+          case 9: return POWER_UP_PICKUP;
+          case 10: return INIT;
           default: return null;
         }
       }
@@ -12867,6 +12743,25 @@ private static final long serialVersionUID = 0L;
       return projectile_ == null ? com.beverly.hills.money.gang.proto.ProjectileCoordinates.getDefaultInstance() : projectile_;
     }
 
+    public static final int GAMEID_FIELD_NUMBER = 8;
+    private int gameId_ = 0;
+    /**
+     * <code>optional int32 gameId = 8;</code>
+     * @return Whether the gameId field is set.
+     */
+    @java.lang.Override
+    public boolean hasGameId() {
+      return ((bitField0_ & 0x00000040) != 0);
+    }
+    /**
+     * <code>optional int32 gameId = 8;</code>
+     * @return The gameId.
+     */
+    @java.lang.Override
+    public int getGameId() {
+      return gameId_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -12901,6 +12796,9 @@ private static final long serialVersionUID = 0L;
       }
       if (((bitField0_ & 0x00000020) != 0)) {
         output.writeMessage(7, getProjectile());
+      }
+      if (((bitField0_ & 0x00000040) != 0)) {
+        output.writeInt32(8, gameId_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -12938,6 +12836,10 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000020) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(7, getProjectile());
+      }
+      if (((bitField0_ & 0x00000040) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(8, gameId_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -12984,6 +12886,11 @@ private static final long serialVersionUID = 0L;
         if (!getProjectile()
             .equals(other.getProjectile())) return false;
       }
+      if (hasGameId() != other.hasGameId()) return false;
+      if (hasGameId()) {
+        if (getGameId()
+            != other.getGameId()) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -13020,6 +12927,10 @@ private static final long serialVersionUID = 0L;
       if (hasProjectile()) {
         hash = (37 * hash) + PROJECTILE_FIELD_NUMBER;
         hash = (53 * hash) + getProjectile().hashCode();
+      }
+      if (hasGameId()) {
+        hash = (37 * hash) + GAMEID_FIELD_NUMBER;
+        hash = (53 * hash) + getGameId();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -13184,6 +13095,7 @@ private static final long serialVersionUID = 0L;
           projectileBuilder_.dispose();
           projectileBuilder_ = null;
         }
+        gameId_ = 0;
         return this;
       }
 
@@ -13253,6 +13165,10 @@ private static final long serialVersionUID = 0L;
               : projectileBuilder_.build();
           to_bitField0_ |= 0x00000020;
         }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.gameId_ = gameId_;
+          to_bitField0_ |= 0x00000040;
+        }
         result.bitField0_ |= to_bitField0_;
       }
 
@@ -13320,6 +13236,9 @@ private static final long serialVersionUID = 0L;
         }
         if (other.hasProjectile()) {
           mergeProjectile(other.getProjectile());
+        }
+        if (other.hasGameId()) {
+          setGameId(other.getGameId());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -13390,6 +13309,11 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000040;
                 break;
               } // case 58
+              case 64: {
+                gameId_ = input.readInt32();
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 64
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -14042,6 +13966,46 @@ private static final long serialVersionUID = 0L;
           projectile_ = null;
         }
         return projectileBuilder_;
+      }
+
+      private int gameId_ ;
+      /**
+       * <code>optional int32 gameId = 8;</code>
+       * @return Whether the gameId field is set.
+       */
+      @java.lang.Override
+      public boolean hasGameId() {
+        return ((bitField0_ & 0x00000080) != 0);
+      }
+      /**
+       * <code>optional int32 gameId = 8;</code>
+       * @return The gameId.
+       */
+      @java.lang.Override
+      public int getGameId() {
+        return gameId_;
+      }
+      /**
+       * <code>optional int32 gameId = 8;</code>
+       * @param value The gameId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGameId(int value) {
+
+        gameId_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 gameId = 8;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearGameId() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        gameId_ = 0;
+        onChanged();
+        return this;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -19970,20 +19934,20 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+     * <code>optional .daikombat.dto.GamePowerUpType type = 1;</code>
      * @return Whether the type field is set.
      */
     boolean hasType();
     /**
-     * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+     * <code>optional .daikombat.dto.GamePowerUpType type = 1;</code>
      * @return The enum numeric value on the wire for type.
      */
     int getTypeValue();
     /**
-     * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+     * <code>optional .daikombat.dto.GamePowerUpType type = 1;</code>
      * @return The type.
      */
-    com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType getType();
+    com.beverly.hills.money.gang.proto.GamePowerUpType getType();
 
     /**
      * <code>optional int32 lastsForMls = 2;</code>
@@ -20036,26 +20000,26 @@ private static final long serialVersionUID = 0L;
     public static final int TYPE_FIELD_NUMBER = 1;
     private int type_ = 0;
     /**
-     * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+     * <code>optional .daikombat.dto.GamePowerUpType type = 1;</code>
      * @return Whether the type field is set.
      */
     @java.lang.Override public boolean hasType() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+     * <code>optional .daikombat.dto.GamePowerUpType type = 1;</code>
      * @return The enum numeric value on the wire for type.
      */
     @java.lang.Override public int getTypeValue() {
       return type_;
     }
     /**
-     * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+     * <code>optional .daikombat.dto.GamePowerUpType type = 1;</code>
      * @return The type.
      */
-    @java.lang.Override public com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType getType() {
-      com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType result = com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType.forNumber(type_);
-      return result == null ? com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType.UNRECOGNIZED : result;
+    @java.lang.Override public com.beverly.hills.money.gang.proto.GamePowerUpType getType() {
+      com.beverly.hills.money.gang.proto.GamePowerUpType result = com.beverly.hills.money.gang.proto.GamePowerUpType.forNumber(type_);
+      return result == null ? com.beverly.hills.money.gang.proto.GamePowerUpType.UNRECOGNIZED : result;
     }
 
     public static final int LASTSFORMLS_FIELD_NUMBER = 2;
@@ -20440,21 +20404,21 @@ private static final long serialVersionUID = 0L;
 
       private int type_ = 0;
       /**
-       * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+       * <code>optional .daikombat.dto.GamePowerUpType type = 1;</code>
        * @return Whether the type field is set.
        */
       @java.lang.Override public boolean hasType() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
-       * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+       * <code>optional .daikombat.dto.GamePowerUpType type = 1;</code>
        * @return The enum numeric value on the wire for type.
        */
       @java.lang.Override public int getTypeValue() {
         return type_;
       }
       /**
-       * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+       * <code>optional .daikombat.dto.GamePowerUpType type = 1;</code>
        * @param value The enum numeric value on the wire for type to set.
        * @return This builder for chaining.
        */
@@ -20465,20 +20429,20 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+       * <code>optional .daikombat.dto.GamePowerUpType type = 1;</code>
        * @return The type.
        */
       @java.lang.Override
-      public com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType getType() {
-        com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType result = com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType.forNumber(type_);
-        return result == null ? com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType.UNRECOGNIZED : result;
+      public com.beverly.hills.money.gang.proto.GamePowerUpType getType() {
+        com.beverly.hills.money.gang.proto.GamePowerUpType result = com.beverly.hills.money.gang.proto.GamePowerUpType.forNumber(type_);
+        return result == null ? com.beverly.hills.money.gang.proto.GamePowerUpType.UNRECOGNIZED : result;
       }
       /**
-       * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+       * <code>optional .daikombat.dto.GamePowerUpType type = 1;</code>
        * @param value The type to set.
        * @return This builder for chaining.
        */
-      public Builder setType(com.beverly.hills.money.gang.proto.ServerResponse.GamePowerUpType value) {
+      public Builder setType(com.beverly.hills.money.gang.proto.GamePowerUpType value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -20488,7 +20452,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>optional .daikombat.dto.ServerResponse.GamePowerUpType type = 1;</code>
+       * <code>optional .daikombat.dto.GamePowerUpType type = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearType() {

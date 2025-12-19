@@ -1,7 +1,5 @@
 package com.beverly.hills.money.gang.state;
 
-import static com.beverly.hills.money.gang.util.NetworkUtil.getChannelAddress;
-
 import com.beverly.hills.money.gang.cheat.AntiCheat;
 import com.beverly.hills.money.gang.config.GameRoomServerConfig;
 import com.beverly.hills.money.gang.config.ServerConfig;
@@ -42,7 +40,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +48,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+// TODO make sure I can't access network layer here
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class Game implements Closeable, GameReader {
@@ -89,8 +87,10 @@ public class Game implements Closeable, GameReader {
 
   public Game(
       final MapRegistry mapRegistry,
-      @Qualifier("gameIdGenerator") final SequenceGenerator gameSequenceGenerator,
-      @Qualifier("playerIdGenerator") final SequenceGenerator playerSequenceGenerator,
+      @Qualifier("gameIdGenerator")
+      final SequenceGenerator gameSequenceGenerator,
+      @Qualifier("playerIdGenerator")
+      final SequenceGenerator playerSequenceGenerator,
       final AntiCheat antiCheat,
       final AbstractSpawnerFactory spawnerFactory,
       final AbstractTeleportRegistryFactory teleportRegistryFactory,
@@ -119,22 +119,13 @@ public class Game implements Closeable, GameReader {
     LOG.info("Created game {}. Configs {}", this.id, gameConfig);
   }
 
-  public void mergeConnection(int playerId, Channel channel) throws GameLogicError {
-    String currentAddress = getChannelAddress(channel);
-    var player = playersRegistry.findPlayer(playerId)
-        .filter(stateChannel -> StringUtils.equals(
-            stateChannel.getPrimaryChannelAddress(), currentAddress))
-        .orElseThrow(() -> new GameLogicError(
-            "Can't merge connections", GameErrorCode.COMMON_ERROR));
-    player.addSecondaryChannel(channel);
-  }
 
   public PlayerJoinedGameState joinPlayer(
       final String playerName, final Channel playerChannel, PlayerStateColor color,
       Integer recoveryPlayerId,
       RPGPlayerClass rpgPlayerClass) throws GameLogicError {
     int playerId = playerSequenceGenerator.getNext();
-    Coordinates spawn = spawner.getPlayerSpawn(getPlayersRegistry().allActivePlayers()
+    Coordinates spawn = spawner.getPlayerSpawn(playersRegistry.allActivePlayers()
         .stream().map(PlayerStateChannel::getPlayerState).collect(Collectors.toList()));
     PlayerState connectedPlayerState = new PlayerState(
         playerName, spawn, playerId, color, rpgPlayerClass, this);
@@ -155,7 +146,7 @@ public class Game implements Closeable, GameReader {
 
   @Nullable
   public PlayerRespawnedGameState respawnPlayer(final int playerId) throws GameLogicError {
-    var player = playersRegistry.findPlayer(playerId)
+    var player = playersRegistry.getPlayerStateChannel(playerId)
         .orElseThrow(
             () -> new GameLogicError("Player doesn't exist", GameErrorCode.PLAYER_DOES_NOT_EXIST));
     if (!player.getPlayerState().isDead()) {
@@ -165,7 +156,7 @@ public class Game implements Closeable, GameReader {
       return null;
     }
     LOG.debug("Respawn player {}", playerId);
-    player.getPlayerState().respawn(spawner.getPlayerSpawn(getPlayersRegistry().allActivePlayers()
+    player.getPlayerState().respawn(spawner.getPlayerSpawn(playersRegistry.allActivePlayers()
         .stream().map(PlayerStateChannel::getPlayerState).collect(Collectors.toList())));
     return PlayerRespawnedGameState.builder()
         .spawnedPowerUps(powerUpRegistry.getAvailable())
@@ -293,7 +284,6 @@ public class Game implements Closeable, GameReader {
         pingMls);
   }
 
-
   PlayerAttackingGameState attack(
       final Coordinates playerCoordinates,
       final Vector attackPosition,
@@ -344,12 +334,16 @@ public class Game implements Closeable, GameReader {
         attackingPlayerState.getGameStats().getKills() >= ServerConfig.FRAGS_PER_GAME;
     GameOverGameState gameOverState = null;
     if (isGameOver) {
+      // TODO make sure leaderboard is not sent over UDP
       gameOverState = GameOverGameState.builder().leaderBoardItems(getLeaderBoard()).build();
       // clearing all stats because the game is over
       playerStatsRecoveryRegistry.clearAllStats();
       var allActivePlayers = playersRegistry.allActivePlayers();
       allActivePlayers.forEach(
-          playerStateChannel -> playerStateChannel.getPlayerState().clearStats());
+          playerStateChannel -> {
+            playerStateChannel.getPlayerState().clearStats();
+            playerStateChannel.clear();
+          });
       // it's important that we get leaderboard before marking all players as 'GAME_OVER'
       playersRegistry.allPlayers().forEach(playerStateChannel -> playerStateChannel.getPlayerState()
           .setStatus(PlayerActivityStatus.GAME_OVER));
@@ -485,7 +479,7 @@ public class Game implements Closeable, GameReader {
 
     var teleport = teleportRegistry.getTeleport(teleportId).orElseThrow(
         () -> new GameLogicError("Can't find teleport", GameErrorCode.COMMON_ERROR));
-    var player = getPlayersRegistry().getPlayerState(teleportedPlayerId).orElseThrow(
+    var player = playersRegistry.getPlayerState(teleportedPlayerId).orElseThrow(
         () -> new GameLogicError("Can't find player", GameErrorCode.COMMON_ERROR));
     if (antiCheat.isTeleportTooFar(
         player.getCoordinates().getPosition(), teleport.getLocation())) {

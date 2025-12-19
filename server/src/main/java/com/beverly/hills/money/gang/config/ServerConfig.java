@@ -15,7 +15,8 @@ public interface ServerConfig {
       System.getenv("GAME_SERVER_BLACKLISTED_WORDS"));
 
   int GAME_SERVER_PORT = NumberUtils.toInt(System.getenv("GAME_SERVER_PORT"), 7777);
-  int VOICE_CHAT_SERVER_PORT = GAME_SERVER_PORT + 1;
+
+  int UDP_SERVER_PORT = GAME_SERVER_PORT + 1;
   int GAMES_TO_CREATE = NumberUtils.toInt(System.getenv("GAME_SERVER_GAMES_TO_CREATE"), 1);
   int MAX_PLAYERS_PER_GAME = NumberUtils.toInt(System.getenv("GAME_SERVER_MAX_PLAYERS_PER_GAME"),
       25);
@@ -63,6 +64,10 @@ public interface ServerConfig {
 
   boolean POWER_UPS_ENABLED = Boolean.parseBoolean(StringUtils.defaultIfBlank(
       System.getenv("GAME_SERVER_POWER_UPS_ENABLED"), "true"));
+
+  boolean BIG_UDP_WARNING = Boolean.parseBoolean(StringUtils.defaultIfBlank(
+      System.getenv("GAME_SERVER_BIG_UDP_WARNING"), "false"));
+
 
   boolean TELEPORTS_ENABLED = Boolean.parseBoolean(StringUtils.defaultIfBlank(
       System.getenv("GAME_SERVER_TELEPORTS_ENABLED"), "true"));

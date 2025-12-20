@@ -1,7 +1,7 @@
 package com.beverly.hills.money.gang.handler.inbound.udp.event;
 
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createCoordinates;
-import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createPowerUpPlayerServerResponse;
+import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createPowerUpPlayerMoveGameEvent;
 import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createPowerUpSpawn;
 import static com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType.POWER_UP_PICKUP;
 
@@ -42,9 +42,9 @@ public class PowerUpPickGameEventHandler extends GameEventHandler {
       LOG.warn("Can't process power-up");
       return;
     }
-    var serverResponse = createPowerUpPlayerServerResponse(result.getPlayerState());
+    var event = createPowerUpPlayerMoveGameEvent(result.getPlayerState());
     game.getPlayersRegistry().allActivePlayers()
-        .forEach(stateChannel -> stateChannel.writeTCPFlush(serverResponse));
+        .forEach(stateChannel -> stateChannel.writeUDPAckRequiredFlush(udpChannel, event));
     scheduler.schedule(result.getPowerUp().getLastsForMls(), () -> {
       if (!result.getPlayerState().isDead()) {
         LOG.debug("Revert power-up");

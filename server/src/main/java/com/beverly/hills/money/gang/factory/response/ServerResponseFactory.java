@@ -132,12 +132,6 @@ public interface ServerResponseFactory {
         .setEventType(GameEventType.TELEPORT).build();
   }
 
-  static ServerResponse createPowerUpPlayerServerResponse(PlayerStateReader playerStateReader) {
-    return ServerResponse.newBuilder()
-        .setGameEvents(ServerResponse.GameEvents.newBuilder()
-            .addEvents(createPowerUpPlayerMoveGameEvent(playerStateReader)))
-        .build();
-  }
 
   static ServerResponse.GameEvent createExitGameEvent(PlayerStateReader playerStateReader) {
     return ServerResponse.GameEvent.newBuilder()
@@ -219,12 +213,16 @@ public interface ServerResponseFactory {
 
   static ServerResponse createPowerUpSpawn(List<PowerUp> powerUps) {
     return ServerResponse.newBuilder()
-        .setPowerUpSpawn(PowerUpSpawnEvent.newBuilder()
-            .addAllItems(powerUps.stream().map(power -> PowerUpSpawnEventItem.newBuilder()
-                    .setType(createGamePowerUpType(power.getType()))
-                    .setPosition(createVector(power.getPosition())).build())
-                .collect(Collectors.toList())))
+        .setPowerUpSpawn(createPowerUpSpawnEvent(powerUps))
         .build();
+  }
+
+  static PowerUpSpawnEvent createPowerUpSpawnEvent(List<PowerUp> powerUps) {
+    return PowerUpSpawnEvent.newBuilder()
+        .addAllItems(powerUps.stream().map(power -> PowerUpSpawnEventItem.newBuilder()
+                .setType(createGamePowerUpType(power.getType()))
+                .setPosition(createVector(power.getPosition())).build())
+            .collect(Collectors.toList())).build();
   }
 
   static ServerResponse createTeleportSpawn(List<Teleport> teleports) {

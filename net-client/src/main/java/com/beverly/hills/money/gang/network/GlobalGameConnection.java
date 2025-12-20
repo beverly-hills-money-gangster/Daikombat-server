@@ -19,6 +19,7 @@ import com.beverly.hills.money.gang.stats.UDPGameNetworkStatsReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -126,6 +127,10 @@ public class GlobalGameConnection {
   public List<ServerResponse> pollResponses() {
     return new ArrayList<>(
         gameQueues.getResponsesQueueAPI().poll(Integer.MAX_VALUE));
+  }
+
+  public Optional<ServerResponse> pollResponse() {
+    return gameQueues.getResponsesQueueAPI().poll();
   }
 
   public List<VoiceChatPayload> pollPCMBlocking(int maxWaitMls) throws InterruptedException {

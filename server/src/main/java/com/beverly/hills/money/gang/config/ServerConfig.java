@@ -24,6 +24,9 @@ public interface ServerConfig {
   int MOVES_UPDATE_FREQUENCY_MLS = NumberUtils.toInt(
       System.getenv("GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS"), 50);
 
+  int ACK_RESEND_FREQUENCY_MLS = NumberUtils.toInt(
+      System.getenv("GAME_SERVER_ACK_RESEND_FREQUENCY_MLS"), 100);
+
   int MAX_IDLE_TIME_MLS = NumberUtils.toInt(System.getenv("GAME_SERVER_MAX_IDLE_TIME_MLS"), 10_000);
 
   int SPAWN_IMMORTAL_MLS = NumberUtils.toInt(

@@ -7,6 +7,7 @@ import com.beverly.hills.money.gang.proto.ServerResponse.GameEvents;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
 import com.beverly.hills.money.gang.util.NetworkUtil;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -86,7 +87,6 @@ public class PlayerStateChannel {
     writeUDPFlushRaw(udpChannel, setEventSequence(gameEvent), true);
   }
 
-  // TODO make sure we only send GameEvents in UDP
   public void writeUDPFlush(
       @NonNull final Channel udpChannel,
       @NonNull GameEvent gameEvent) {
@@ -100,15 +100,9 @@ public class PlayerStateChannel {
       boolean ackRequired) {
     var response = ServerResponse.newBuilder()
         .setGameEvents(GameEvents.newBuilder().addEvents(gameEvent)).build();
-    Optional.ofNullable(datagramSocketAddress.get()).ifPresent(inetSocketAddress -> {
-      if (ackRequired) {
-        if (ackRequiredGameEvents.size() > MAX_ACK_REQUIRED_EVENTS) {
-          throw new IllegalStateException("Too many ack-required events");
-        }
-        ackRequiredGameEvents.put(gameEvent.getSequence(), gameEvent);
-      }
+    Optional.ofNullable(datagramSocketAddress.get()).ifPresentOrElse(inetSocketAddress -> {
       var bytes = response.toByteArray();
-      ByteBuf buf = Unpooled.directBuffer(1 + bytes.length);
+      ByteBuf buf = PooledByteBufAllocator.DEFAULT.directBuffer(1 + bytes.length);
       try {
         buf.writeByte(DatagramRequestType.GAME_EVENT.getCode());
         buf.writeBytes(bytes);
@@ -117,7 +111,17 @@ public class PlayerStateChannel {
       } finally {
         buf.release();
       }
-    });
+    }, () -> LOG.warn("Can't find datagram socket"));
+
+    if (ackRequired) {
+      if (!gameEvent.hasSequence()) {
+        throw new IllegalStateException(
+            "Can't ack a game event with no sequence specified. Check event:" + gameEvent);
+      } else if (ackRequiredGameEvents.size() > MAX_ACK_REQUIRED_EVENTS) {
+        throw new IllegalStateException("Too many ack-required events");
+      }
+      ackRequiredGameEvents.put(gameEvent.getSequence(), gameEvent);
+    }
   }
 
 

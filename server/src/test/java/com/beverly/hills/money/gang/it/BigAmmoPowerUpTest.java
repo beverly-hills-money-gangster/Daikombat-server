@@ -31,10 +31,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "999999")
 @SetEnvironmentVariable(key = "GAME_SERVER_AMMO_SPAWN_MLS", value = "5000")
-@SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "999999")
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "999999")
 @SetEnvironmentVariable(key = "GAME_SERVER_TELEPORTS_ENABLED", value = "false")
 @SetEnvironmentVariable(key = "GAME_SERVER_SPAWN_IMMORTAL_MLS", value = "0")
+@SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "5000")
+@SetEnvironmentVariable(key = "CLIENT_UDP_GLITCHY_INBOUND_DROP_MESSAGE_PROBABILITY", value = "0.15")
+@SetEnvironmentVariable(key = "CLIENT_UDP_GLITCHY_OUTBOUND_DROP_MESSAGE_PROBABILITY", value = "0.15")
 public class BigAmmoPowerUpTest extends AbstractGameServerTest {
 
 

@@ -5,7 +5,6 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
-import com.beverly.hills.money.gang.entity.PlayerGameId;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.powerup.PowerUp;
 import com.beverly.hills.money.gang.powerup.PowerUpType;
@@ -23,7 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -36,9 +35,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 @SetEnvironmentVariable(key = "GAME_SERVER_INVISIBILITY_LASTS_FOR_MLS", value = "2000")
 @SetEnvironmentVariable(key = "GAME_SERVER_DEFENCE_SPAWN_MLS", value = "5000")
 @SetEnvironmentVariable(key = "GAME_SERVER_DEFENCE_LASTS_FOR_MLS", value = "2000")
-@SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "999999")
 @SetEnvironmentVariable(key = "GAME_SERVER_SPAWN_IMMORTAL_MLS", value = "0")
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "999999")
+@SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "5000")
+@SetEnvironmentVariable(key = "CLIENT_UDP_GLITCHY_INBOUND_DROP_MESSAGE_PROBABILITY", value = "0.15")
+@SetEnvironmentVariable(key = "CLIENT_UDP_GLITCHY_OUTBOUND_DROP_MESSAGE_PROBABILITY", value = "0.15")
 public class AllPowerUpTest extends AbstractGameServerTest {
 
   @Autowired
@@ -49,7 +50,7 @@ public class AllPowerUpTest extends AbstractGameServerTest {
    * @when a player picks up all power-ups
    * @then all power-ups are applied and reverted after some time
    */
-  @Test
+  @RepeatedTest(8)
   public void testPickUpPowerUpAll()
       throws IOException, GameLogicError, InterruptedException {
     int gameIdToConnectTo = 0;

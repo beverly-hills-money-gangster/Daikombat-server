@@ -25,12 +25,12 @@ All communications (server-to-client and client-to-server) are totally non-block
   break
 - Add as many tests as possible even if it looks non-practical at a moment(you will appreciate it
   later)
+- All time related values(configs too) are stored in the millisecond format
 - No AI
 
 ### Known issues
 
-- The server is not scalable at this moment. High availability and load balancing are not
-  provided.
+- The server is not scalable
 - The server is not fully authoritative
 - Basic anti-cheat
 
@@ -50,6 +50,8 @@ Game server can be configured using the following environment variables:
   number of players on the server is `GAME_SERVER_GAMES_TO_CREATE*GAME_SERVER_MAX_PLAYERS_PER_GAME`.
 - `GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS` Frequency(in milliseconds) at which server notifies
   players about other players' positioning on the map. Default - `50`.
+- `GAME_SERVER_ACK_RESEND_FREQUENCY_MLS` Frequency(in milliseconds) at which server resends UDP
+  messages that require an ack but haven't received one. Default - `100`.
 - `GAME_SERVER_MAX_IDLE_TIME_MLS` Maximum idle time(in milliseconds) for a player. "Idle" - no
   network activity, which includes in-game events + ping responds. For example, if player connects
   to a game and doesn't move but responds to PING requests, then it's NOT considered idle. This
@@ -138,6 +140,10 @@ Game client is also configurable through environments variables:
   Default - `10_000`.
 - `CLIENT_FAST_TCP` Enables fast TCP configurations(used mostly for testing, not recommended to be
   set to `false` in prod). Default - `true`.
+- `CLIENT_UDP_GLITCHY_INBOUND_DROP_MESSAGE_PROBABILITY` Probability to drop a UDP message while
+  reading. Ranges from `0`(0%) to `1`(100%). Default - `0`.
+- `CLIENT_UDP_GLITCHY_OUTBOUND_DROP_MESSAGE_PROBABILITY` Probability to drop a UDP message while
+  writing. Ranges from `0`(0%) to `1`(100%). Default - `0`.
 
 Note: all default (both client and server) configurations are production-ready.
 
@@ -183,16 +189,6 @@ MBeans" tab.
 #### Sentry
 
 All errors are automatically published to Sentry. See `SENTRY_DSN` env var.
-
-### Client monitoring
-
-`GameConnection.java` has `networkStats` field that gathers basic network stats including:
-
-- ping (and also 50th, 75th, and 99th percentiles)
-- number of sent protobuf messages
-- number of received protobuf messages
-- total protobuf outbound payload size
-- total protobuf inbound payload size
 
 ## Development
 

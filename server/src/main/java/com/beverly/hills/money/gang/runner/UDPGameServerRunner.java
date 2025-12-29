@@ -53,11 +53,12 @@ public class UDPGameServerRunner extends AbstractServerRunner {
         throw new IllegalStateException("Can't run!");
       }
       serverChannel.eventLoop().scheduleAtFixedRate(
-          () -> {
-            gameTickScheduler.sendBufferedMoves(serverChannel);
-            gameTickScheduler.resendAckRequiredEvents(serverChannel);
-          },
+          () -> gameTickScheduler.sendBufferedMoves(serverChannel),
           ServerConfig.MOVES_UPDATE_FREQUENCY_MLS, ServerConfig.MOVES_UPDATE_FREQUENCY_MLS,
+          TimeUnit.MILLISECONDS);
+      serverChannel.eventLoop().scheduleAtFixedRate(
+          () -> gameTickScheduler.resendAckRequiredEvents(serverChannel),
+          ServerConfig.ACK_RESEND_FREQUENCY_MLS, ServerConfig.ACK_RESEND_FREQUENCY_MLS,
           TimeUnit.MILLISECONDS);
       serverChannel.eventLoop().scheduleAtFixedRate(
           processedGameEventsStorage::clearOldEvents,

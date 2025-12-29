@@ -18,6 +18,7 @@ import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import com.beverly.hills.money.gang.storage.ProcessedGameEventsStorage;
+import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.socket.DatagramPacket;
@@ -118,7 +119,7 @@ public class PushGameEventHandlerDispatcher {
 
   private void ack(PlayerStateChannel playerState, PushGameEventCommand gameCommand,
       Channel udpChannel) {
-    var ackBuf = Unpooled.directBuffer(5);
+    var ackBuf = PooledByteBufAllocator.DEFAULT.directBuffer(5);
     ackBuf.writeByte(DatagramRequestType.ACK.getCode());
     ackBuf.writeInt(gameCommand.getSequence());
     playerState.getDataGramSocketAddress().ifPresentOrElse(inetSocketAddress -> {

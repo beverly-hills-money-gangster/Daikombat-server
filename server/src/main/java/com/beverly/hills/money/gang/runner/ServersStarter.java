@@ -20,6 +20,10 @@ public class ServersStarter {
   }
 
   public void startAllServers() throws InterruptedException {
+    Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
+      LOG.error("Uncaught exception in thread {}:{}", thread.getName(), thread.getId(), throwable);
+    });
+
     for (var runner : abstractServerRunners) {
       new Thread(() -> {
         try {

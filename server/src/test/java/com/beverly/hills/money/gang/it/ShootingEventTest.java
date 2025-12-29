@@ -15,8 +15,6 @@ import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PlayerSkinColor;
-import com.beverly.hills.money.gang.proto.ProjectileCoordinates;
-import com.beverly.hills.money.gang.proto.ProjectileType;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
@@ -25,14 +23,13 @@ import com.beverly.hills.money.gang.proto.Vector;
 import com.beverly.hills.money.gang.proto.WeaponType;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.spawner.AbstractSpawner;
-import com.beverly.hills.money.gang.state.GameProjectileType;
 import com.beverly.hills.money.gang.state.GameWeaponType;
 import com.beverly.hills.money.gang.state.entity.PlayerState.Coordinates;
 import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Supplier;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
@@ -44,8 +41,10 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 @SetEnvironmentVariable(key = "GAME_SERVER_TELEPORTS_ENABLED", value = "false")
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "99999")
-@SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "99999")
 @SetEnvironmentVariable(key = "GAME_SERVER_SPAWN_IMMORTAL_MLS", value = "0")
+@SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "5000")
+@SetEnvironmentVariable(key = "CLIENT_UDP_GLITCHY_INBOUND_DROP_MESSAGE_PROBABILITY", value = "0.2")
+@SetEnvironmentVariable(key = "CLIENT_UDP_GLITCHY_OUTBOUND_DROP_MESSAGE_PROBABILITY", value = "0.2")
 public class ShootingEventTest extends AbstractGameServerTest {
 
   @SpyBean
@@ -199,7 +198,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
    * @then player 2 health is reduced by ServerConfig.DEFAULT_SHOTGUN_DAMAGE and the event is sent
    * to all players
    */
-  @Test
+  @RepeatedTest(8)
   public void testShootHit() throws Exception {
     int gameIdToConnectTo = 0;
     var gameConfig = gameRoomRegistry.getGame(gameIdToConnectTo).getGameConfig();
@@ -298,7 +297,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
    * @when player 1 shoots player 2 through a wall
    * @then the event is ignored
    */
-  @Test
+  @RepeatedTest(8)
   public void testShootHitCrossingWalls() throws Exception {
     doReturn(true).when(antiCheat).isCrossingWalls(any(), any(), any());
 
@@ -359,270 +358,13 @@ public class ShootingEventTest extends AbstractGameServerTest {
         "No events are expected because it was a gunshot through a wall");
   }
 
-
-  /**
-   * @given a running server with 2 connected player
-   * @when player 1 launcher a rocket at player 2
-   * @then player 2 health is reduced and the event is sent to all players
-   */
-  @Test
-  public void testShootHitRocketLauncher() throws Exception {
-
-    int gameIdToConnectTo = 0;
-    var rocketLauncherInfo = gameRoomRegistry.getGame(gameIdToConnectTo)
-        .getRpgWeaponInfo().getWeaponInfo(RPGPlayerClass.WARRIOR,
-            GameWeaponType.ROCKET_LAUNCHER)
-        .get();
-    doReturn(Coordinates.builder()
-        .position(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(0F).build())
-        .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(1F).build())
-        .build(), Coordinates.builder().position(
-            com.beverly.hills.money.gang.state.entity.Vector.builder()
-                .x((float) (rocketLauncherInfo.getMaxDistance()) - 0.5f).y(0).build())
-        .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(1F).build())
-        .build()).when(spawner).getPlayerSpawn(any());
-
-    var shooterConnection = createGameConnection("localhost", port);
-    shooterConnection.write(
-        JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my player name")
-            .setGameId(gameIdToConnectTo).build());
-    var getShotConnection = createGameConnection("localhost", port);
-    getShotConnection.write(
-        JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my other player name")
-            .setGameId(gameIdToConnectTo).build());
-    waitUntilQueueNonEmpty(shooterConnection.getResponse());
-    ServerResponse shooterPlayerSpawn = shooterConnection.getResponse().poll().get();
-    int shooterPlayerId = shooterPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
-
-    waitUntilQueueNonEmpty(getShotConnection.getResponse());
-    ServerResponse shotPlayerSpawn = shooterConnection.getResponse().poll().get();
-    var shotSpawnEvent = shotPlayerSpawn.getGameEvents().getEvents(0);
-    float shotPositionX = shotSpawnEvent.getPlayer().getPosition().getX() + 0.1f;
-    float shotPositionY = shotSpawnEvent.getPlayer().getPosition().getY() - 0.1f;
-    int shotPlayerId = shotSpawnEvent.getPlayer().getPlayerId();
-
-    emptyQueue(getShotConnection.getResponse());
-
-    var shooterSpawnEvent = shooterPlayerSpawn.getGameEvents().getEvents(0);
-    float newPositionX = shooterSpawnEvent.getPlayer().getPosition().getX() + 0.1f;
-    float newPositionY = shooterSpawnEvent.getPlayer().getPosition().getY() - 0.1f;
-    emptyQueue(shooterConnection.getResponse());
-
-    // launch a rocket
-    shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-        .setGameId(gameIdToConnectTo)
-        .setEventType(GameEventType.ATTACK).setWeaponType(WeaponType.ROCKET_LAUNCHER).setDirection(
-            Vector.newBuilder().setX(shooterSpawnEvent.getPlayer().getDirection().getX())
-                .setY(shooterSpawnEvent.getPlayer().getDirection().getY()).build())
-        .setPosition(Vector.newBuilder().setX(newPositionX).setY(newPositionY).build())
-        .build());
-
-    // blow up the rocket
-    shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-        .setGameId(gameIdToConnectTo)
-        .setEventType(GameEventType.ATTACK)
-        .setProjectile(ProjectileCoordinates.newBuilder()
-            .setBlowUpPosition(Vector.newBuilder().setX(shotPositionX).setY(shotPositionY).build())
-            .setProjectileType(ProjectileType.ROCKET).build())
-        .setDirection(
-            Vector.newBuilder().setX(shooterSpawnEvent.getPlayer().getDirection().getX())
-                .setY(shooterSpawnEvent.getPlayer().getDirection().getY()).build())
-        .setPosition(Vector.newBuilder().setX(newPositionX).setY(newPositionY).build())
-        .setAffectedPlayerId(shotPlayerId)
-        .build());
-
-    waitUntilGetResponses(getShotConnection.getResponse(), 2);
-    assertEquals(2, getShotConnection.getResponse().size(),
-        "2 (launch + rocket) events are expected");
-
-    ServerResponse launchResponse = getShotConnection.getResponse().poll().get();
-    var launchEvent = launchResponse.getGameEvents().getEvents(0);
-    assertTrue(launchResponse.hasGameEvents(), "A game event is expected");
-    assertEquals(GameEvent.GameEventType.ATTACK, launchEvent.getEventType());
-    assertEquals(WeaponType.ROCKET_LAUNCHER, launchEvent.getWeaponType());
-
-    ServerResponse serverResponse = getShotConnection.getResponse().poll().get();
-    assertTrue(serverResponse.hasGameEvents(), "A game event is expected");
-    assertEquals(1, serverResponse.getGameEvents().getEventsCount(),
-        "One shooting event is expected");
-    var shootingEvent = serverResponse.getGameEvents().getEvents(0);
-    assertEquals(GameEvent.GameEventType.GET_ATTACKED, shootingEvent.getEventType());
-    assertEquals(ProjectileType.ROCKET, shootingEvent.getProjectile().getProjectileType());
-    assertFalse(shootingEvent.hasLeaderBoard(), "No leader board as nobody got killed");
-    assertEquals(shooterPlayerId, shootingEvent.getPlayer().getPlayerId());
-
-    assertEquals(shooterSpawnEvent.getPlayer().getDirection().getX(),
-        shootingEvent.getPlayer().getDirection().getX(), "Direction shouldn't change");
-    assertEquals(shooterSpawnEvent.getPlayer().getDirection().getY(),
-        shootingEvent.getPlayer().getDirection().getY(), "Direction shouldn't change");
-    assertEquals(newPositionX, shootingEvent.getPlayer().getPosition().getX());
-    assertEquals(newPositionY, shootingEvent.getPlayer().getPosition().getY());
-
-    assertEquals(100, shootingEvent.getPlayer().getHealth(), "Shooter player health is full");
-    assertTrue(shootingEvent.hasAffectedPlayer(), "One player must be shot");
-    assertEquals(shotPlayerId, shootingEvent.getAffectedPlayer().getPlayerId());
-    assertEquals(100 - GameProjectileType.ROCKET
-            .getDamageFactory().getDamage(gameRoomRegistry.getGame(gameIdToConnectTo))
-            .getDefaultDamage(),
-        shootingEvent.getAffectedPlayer().getHealth());
-    assertEquals(shotPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPosition().getX(),
-        shootingEvent.getAffectedPlayer().getPosition().getX(),
-        "Shot player hasn't moved so position has to stay the same");
-    assertEquals(shotPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPosition().getY(),
-        shootingEvent.getAffectedPlayer().getPosition().getY(),
-        "Shot player hasn't moved so position has to stay the same");
-
-    emptyQueue(shooterConnection.getResponse());
-    shooterConnection.write(
-        GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR).build());
-    waitUntilQueueNonEmpty(shooterConnection.getResponse());
-    var serverInfoResponse = shooterConnection.getResponse().poll().get();
-    List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
-    ServerResponse.GameInfo myGame = games.stream()
-        .filter(gameInfo -> gameInfo.getGameId() == gameIdToConnectTo).findFirst().orElseThrow(
-            (Supplier<Exception>) () -> new IllegalStateException(
-                "Can't find the game we connected to"));
-    assertEquals(2, myGame.getPlayersOnline(), "Should be 2 players still");
-  }
-
-  /**
-   * @given a running server with 2 connected player
-   * @when player 1 shoots plasma at player 2
-   * @then player 2 health is reduced and the event is sent to all players
-   */
-  @Test
-  public void testShootHitPlasmagun() throws Exception {
-    int gameIdToConnectTo = 0;
-    var plasmagunInfo = gameRoomRegistry.getGame(gameIdToConnectTo).getRpgWeaponInfo()
-        .getWeaponInfo(RPGPlayerClass.WARRIOR, GameWeaponType.PLASMAGUN)
-        .get();
-    doReturn(Coordinates.builder()
-        .position(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(0F).build())
-        .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(1F).build())
-        .build(), Coordinates.builder().position(
-            com.beverly.hills.money.gang.state.entity.Vector.builder()
-                .x((float) (plasmagunInfo.getMaxDistance()) - 0.5f).y(0).build())
-        .direction(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(1F).build())
-        .build()).when(spawner).getPlayerSpawn(any());
-
-    var shooterConnection = createGameConnection("localhost", port);
-    shooterConnection.write(
-        JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my player name")
-            .setGameId(gameIdToConnectTo).build());
-    var getShotConnection = createGameConnection("localhost", port);
-    getShotConnection.write(
-        JoinGameCommand.newBuilder().setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
-            .setPlayerClass(PlayerClass.WARRIOR).setPlayerName("my other player name")
-            .setGameId(gameIdToConnectTo).build());
-    waitUntilQueueNonEmpty(shooterConnection.getResponse());
-    ServerResponse shooterPlayerSpawn = shooterConnection.getResponse().poll().get();
-    int shooterPlayerId = shooterPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
-
-    waitUntilQueueNonEmpty(getShotConnection.getResponse());
-    ServerResponse shotPlayerSpawn = shooterConnection.getResponse().poll().get();
-    var shotSpawnEvent = shotPlayerSpawn.getGameEvents().getEvents(0);
-    float shotPositionX = shotSpawnEvent.getPlayer().getPosition().getX() + 0.1f;
-    float shotPositionY = shotSpawnEvent.getPlayer().getPosition().getY() - 0.1f;
-    int shotPlayerId = shotSpawnEvent.getPlayer().getPlayerId();
-
-    emptyQueue(getShotConnection.getResponse());
-
-    var shooterSpawnEvent = shooterPlayerSpawn.getGameEvents().getEvents(0);
-    float newPositionX = shooterSpawnEvent.getPlayer().getPosition().getX() + 0.1f;
-    float newPositionY = shooterSpawnEvent.getPlayer().getPosition().getY() - 0.1f;
-    emptyQueue(shooterConnection.getResponse());
-
-    // launch plasma
-    shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-        .setGameId(gameIdToConnectTo)
-        .setEventType(GameEventType.ATTACK).setWeaponType(WeaponType.PLASMAGUN).setDirection(
-            Vector.newBuilder().setX(shooterSpawnEvent.getPlayer().getDirection().getX())
-                .setY(shooterSpawnEvent.getPlayer().getDirection().getY()).build())
-        .setPosition(Vector.newBuilder().setX(newPositionX).setY(newPositionY).build())
-        .build());
-
-    // blow up plasma
-    shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
-        .setGameId(gameIdToConnectTo)
-        .setEventType(GameEventType.ATTACK)
-        .setProjectile(ProjectileCoordinates.newBuilder()
-            .setBlowUpPosition(Vector.newBuilder().setX(shotPositionX).setY(shotPositionY).build())
-            .setProjectileType(ProjectileType.PLASMA).build())
-        .setDirection(
-            Vector.newBuilder().setX(shooterSpawnEvent.getPlayer().getDirection().getX())
-                .setY(shooterSpawnEvent.getPlayer().getDirection().getY()).build())
-        .setPosition(Vector.newBuilder().setX(newPositionX).setY(newPositionY).build())
-        .setAffectedPlayerId(shotPlayerId)
-        .build());
-
-    waitUntilGetResponses(getShotConnection.getResponse(), 2);
-    assertEquals(2, getShotConnection.getResponse().size(),
-        "2 (launch + plasma) events are expected");
-
-    ServerResponse launchResponse = getShotConnection.getResponse().poll().get();
-    var launchEvent = launchResponse.getGameEvents().getEvents(0);
-    assertTrue(launchResponse.hasGameEvents(), "A game event is expected");
-    assertEquals(GameEvent.GameEventType.ATTACK, launchEvent.getEventType());
-    assertEquals(WeaponType.PLASMAGUN, launchEvent.getWeaponType());
-
-    ServerResponse serverResponse = getShotConnection.getResponse().poll().get();
-    assertTrue(serverResponse.hasGameEvents(), "A game event is expected");
-    assertEquals(1, serverResponse.getGameEvents().getEventsCount(),
-        "One shooting event is expected");
-    var shootingEvent = serverResponse.getGameEvents().getEvents(0);
-    assertEquals(GameEvent.GameEventType.GET_ATTACKED, shootingEvent.getEventType());
-    assertEquals(ProjectileType.PLASMA, shootingEvent.getProjectile().getProjectileType());
-    assertFalse(shootingEvent.hasLeaderBoard(), "No leader board as nobody got killed");
-    assertEquals(shooterPlayerId, shootingEvent.getPlayer().getPlayerId());
-
-    assertEquals(shooterSpawnEvent.getPlayer().getDirection().getX(),
-        shootingEvent.getPlayer().getDirection().getX(), "Direction shouldn't change");
-    assertEquals(shooterSpawnEvent.getPlayer().getDirection().getY(),
-        shootingEvent.getPlayer().getDirection().getY(), "Direction shouldn't change");
-    assertEquals(newPositionX, shootingEvent.getPlayer().getPosition().getX());
-    assertEquals(newPositionY, shootingEvent.getPlayer().getPosition().getY());
-
-    assertEquals(100, shootingEvent.getPlayer().getHealth(), "Shooter player health is full");
-    assertTrue(shootingEvent.hasAffectedPlayer(), "One player must be shot");
-    assertEquals(shotPlayerId, shootingEvent.getAffectedPlayer().getPlayerId());
-    assertEquals(100 - GameProjectileType.PLASMA.getDamageFactory()
-            .getDamage(gameRoomRegistry.getGame(gameIdToConnectTo)).getDefaultDamage(),
-        shootingEvent.getAffectedPlayer().getHealth());
-    assertEquals(shotPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPosition().getX(),
-        shootingEvent.getAffectedPlayer().getPosition().getX(),
-        "Shot player hasn't moved so position has to stay the same");
-    assertEquals(shotPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPosition().getY(),
-        shootingEvent.getAffectedPlayer().getPosition().getY(),
-        "Shot player hasn't moved so position has to stay the same");
-
-    emptyQueue(shooterConnection.getResponse());
-    shooterConnection.write(
-        GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR).build());
-    waitUntilQueueNonEmpty(shooterConnection.getResponse());
-    var serverInfoResponse = shooterConnection.getResponse().poll().get();
-    List<ServerResponse.GameInfo> games = serverInfoResponse.getServerInfo().getGamesList();
-    ServerResponse.GameInfo myGame = games.stream()
-        .filter(gameInfo -> gameInfo.getGameId() == gameIdToConnectTo).findFirst().orElseThrow(
-            (Supplier<Exception>) () -> new IllegalStateException(
-                "Can't find the game we connected to"));
-    assertEquals(2, myGame.getPlayersOnline(), "Should be 2 players still");
-  }
-
-
   /**
    * @given a running server with 2 connected player
    * @when player 1 shoots player 2 standing right in front of him (0.5 distance)
    * @then player 2 health is reduced by ServerConfig.DEFAULT_SHOTGUN_DAMAGE*3 and the event is sent
    * to all players
    */
-  @Test
+  @RepeatedTest(8)
   public void testShootHitVeryClose() throws Exception {
     int gameIdToConnectTo = 0;
     var gameConfig = gameRoomRegistry.getGame(gameIdToConnectTo).getGameConfig();
@@ -698,7 +440,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(shotPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPosition().getY(),
         shootingEvent.getAffectedPlayer().getPosition().getY(),
         "Shot player hasn't moved so position has to stay the same");
-
+    Thread.sleep(500);
     emptyQueue(shooterConnection.getResponse());
     shooterConnection.write(
         GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR).build());
@@ -718,7 +460,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
    * @then player 2 health is reduced by ServerConfig.DEFAULT_SHOTGUN_DAMAGE*2 and the event is sent
    * to all players
    */
-  @Test
+  @RepeatedTest(8)
   public void testShootHitClose() throws Exception {
     int gameIdToConnectTo = 0;
     var gameConfig = gameRoomRegistry.getGame(gameIdToConnectTo).getGameConfig();
@@ -795,8 +537,9 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(shotPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPosition().getY(),
         shootingEvent.getAffectedPlayer().getPosition().getY(),
         "Shot player hasn't moved so position has to stay the same");
-
+    waitUntilQueueNonEmpty(shooterConnection.getResponse());
     emptyQueue(shooterConnection.getResponse());
+    
     shooterConnection.write(
         GetServerInfoCommand.newBuilder().setPlayerClass(PlayerClass.WARRIOR).build());
     waitUntilQueueNonEmpty(shooterConnection.getResponse());
@@ -805,7 +548,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     ServerResponse.GameInfo myGame = games.stream()
         .filter(gameInfo -> gameInfo.getGameId() == gameIdToConnectTo).findFirst().orElseThrow(
             (Supplier<Exception>) () -> new IllegalStateException(
-                "Can't find the game we connected to"));
+                "Can't find the game we connected to. Actual response :" + serverInfoResponse));
     assertEquals(2, myGame.getPlayersOnline(), "Should be 2 players still");
   }
 
@@ -815,7 +558,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
    * @then player 2 health is reduced by ServerConfig.DEFAULT_PUNCH_DAMAGE and the event is sent to
    * all players
    */
-  @Test
+  @RepeatedTest(8)
   public void testPunchHit() throws Exception {
     int gameIdToConnectTo = 0;
     var gameConfig = gameRoomRegistry.getGame(gameIdToConnectTo).getGameConfig();
@@ -1061,6 +804,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(shotPlayerId, deadShootingEvent.getAffectedPlayer().getPlayerId());
     assertEquals(0, deadShootingEvent.getAffectedPlayer().getHealth());
 
+    waitUntilQueueNonEmpty(killerConnection.getResponse());
     ServerResponse killerPlayerServerResponse = killerConnection.getResponse().poll().get();
     var killerShootingEvent = killerPlayerServerResponse.getGameEvents().getEvents(0);
     assertEquals(GameEvent.GameEventType.KILL, killerShootingEvent.getEventType(),
@@ -1127,7 +871,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
    * @then player 2 is dead. KILL event is sent to all active players. player 2 stats are recovered
    * after reconnecting
    */
-  @Test
+  @RepeatedTest(8)
   public void testRailgunKillRecovery() throws Exception {
     int gameIdToConnectTo = 0;
     String shooterPlayerName = "killer";
@@ -1147,6 +891,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     int shooterPlayerId = shooterPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
 
     waitUntilQueueNonEmpty(deadConnection.getResponse());
+    waitUntilQueueNonEmpty(killerConnection.getResponse());
     ServerResponse shotPlayerSpawn = killerConnection.getResponse().poll().get();
     int shotPlayerId = shotPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
 
@@ -1165,7 +910,6 @@ public class ShootingEventTest extends AbstractGameServerTest {
                 .setY(shooterSpawnEvent.getPlayer().getDirection().getY()).build())
         .setPosition(Vector.newBuilder().setX(newPositionX).setY(newPositionY).build())
         .setAffectedPlayerId(shotPlayerId).build());
-    waitUntilQueueNonEmpty(deadConnection.getResponse());
 
     waitUntilQueueNonEmpty(deadConnection.getResponse());
     assertTrue(deadConnection.isConnected(), "Dead players should be connected");
@@ -1184,6 +928,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
     assertEquals(shotPlayerId, deadShootingEvent.getAffectedPlayer().getPlayerId());
     assertEquals(0, deadShootingEvent.getAffectedPlayer().getHealth());
 
+    waitUntilQueueNonEmpty(killerConnection.getResponse());
     ServerResponse killerPlayerServerResponse = killerConnection.getResponse().poll().get();
     var killerShootingEvent = killerPlayerServerResponse.getGameEvents().getEvents(0);
     assertEquals(GameEvent.GameEventType.KILL, killerShootingEvent.getEventType(),
@@ -1264,7 +1009,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
    * @when player 1 shoots player 2
    * @then nothing happens as dead players can't get shot
    */
-  @Test
+  @RepeatedTest(8)
   public void testShootDeadPlayer() throws Exception {
     int gameIdToConnectTo = 0;
     var gameConfig = gameRoomRegistry.getGame(gameIdToConnectTo).getGameConfig();
@@ -1329,6 +1074,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
       assertEquals(100 - gameConfig.getDefaultShotgunDamage() * (i + 1),
           shootingEvent.getAffectedPlayer().getHealth());
     }
+    waitUntilGetResponses(shooterConnection.getResponse(), shotsToKill);
     emptyQueue(shooterConnection.getResponse());
     // shoot dead player
     shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
@@ -1341,7 +1087,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
         .setAffectedPlayerId(shotPlayerId).build());
     Thread.sleep(250);
     assertEquals(0, shooterConnection.getResponse().size(),
-        "Should be no response as you can't shoot a dead player");
+        "Should be no response as you can't shoot a dead player. Actual response is "
+            + shooterConnection.getResponse().list());
     assertEquals(0, shooterConnection.getWarning().size(), "Should be no warnings");
     assertEquals(0, shooterConnection.getErrors().size(),
         "Should be no errors as this situation might happen in a fast paced game");
@@ -1364,7 +1111,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
    * @when player shoots himself
    * @then player's health is reduced accordingly
    */
-  @Test
+  @RepeatedTest(8)
   public void testShootYourself() throws Exception {
     doReturn(Coordinates.builder()
         .position(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(0F).build())

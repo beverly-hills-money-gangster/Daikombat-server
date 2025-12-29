@@ -7,7 +7,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
-import com.beverly.hills.money.gang.entity.PlayerGameId;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
 import com.beverly.hills.money.gang.proto.PlayerClass;
 import com.beverly.hills.money.gang.proto.PlayerSkinColor;
@@ -29,7 +28,6 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 @SetEnvironmentVariable(key = "GAME_SERVER_TELEPORTS_ENABLED", value = "false")
 @SetEnvironmentVariable(key = "GAME_SERVER_MAX_IDLE_TIME_MLS", value = "99999")
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "99999")
-@SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "250")
 @SetEnvironmentVariable(key = "GAME_SERVER_SPAWN_IMMORTAL_MLS", value = "0")
 public class MoveEventTest extends AbstractGameServerTest {
 
@@ -70,15 +68,14 @@ public class MoveEventTest extends AbstractGameServerTest {
     ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
     int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
 
-    var observerPlayerConnection = createGameConnection(
-        "localhost", port);
+    var observerPlayerConnection = createGameConnection("localhost", port);
     observerPlayerConnection.write(
         JoinGameCommand.newBuilder()
             .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
             .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("new player")
             .setGameId(gameIdToConnectTo).build());
-    waitUntilQueueNonEmpty(observerPlayerConnection.getResponse());
+    waitUntilGetResponses(observerPlayerConnection.getResponse(), 2);
     emptyQueue(observerPlayerConnection.getResponse());
     Thread.sleep(1_000);
     assertEquals(0, observerPlayerConnection.getResponse().size(),
@@ -235,7 +232,7 @@ public class MoveEventTest extends AbstractGameServerTest {
             .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("new player")
             .setGameId(gameIdToConnectTo).build());
-    waitUntilQueueNonEmpty(observerPlayerConnection.getResponse());
+    waitUntilGetResponses(observerPlayerConnection.getResponse(), 2);
     emptyQueue(observerPlayerConnection.getResponse());
     Thread.sleep(1_000);
     assertEquals(0, observerPlayerConnection.getResponse().size(),
@@ -299,7 +296,6 @@ public class MoveEventTest extends AbstractGameServerTest {
     ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
     int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
 
-
     var observerPlayerConnection = createGameConnection(
         "localhost", port);
     observerPlayerConnection.write(
@@ -308,7 +304,7 @@ public class MoveEventTest extends AbstractGameServerTest {
             .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("new player")
             .setGameId(gameIdToConnectTo).build());
-    waitUntilQueueNonEmpty(observerPlayerConnection.getResponse());
+    waitUntilGetResponses(observerPlayerConnection.getResponse(), 2);
     ServerResponse observerSpawn = observerPlayerConnection.getResponse().poll().get();
     ServerResponse.GameEvent observerSpawnGameEvent = observerSpawn.getGameEvents().getEvents(0);
     emptyQueue(observerPlayerConnection.getResponse());

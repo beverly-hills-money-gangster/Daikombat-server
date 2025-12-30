@@ -19,8 +19,8 @@ import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.PlayerStateChannel;
 import com.beverly.hills.money.gang.storage.ProcessedGameEventsStorage;
 import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.socket.DatagramPacket;
 import java.net.InetSocketAddress;
 import java.util.Optional;
@@ -106,7 +106,8 @@ public class PushGameEventHandlerDispatcher {
       }
     } catch (GameLogicError e) {
       LOG.error("Can't process command: " + gameCommand, e);
-      playerState.writeTCPFlush(ServerResponseFactory.createErrorEvent(e));
+      playerState.writeTCPFlush(ServerResponseFactory.createErrorEvent(e),
+          ChannelFutureListener.CLOSE);
     } catch (Exception e) {
       LOG.error("Can't process command: " + gameCommand, e);
       throw e;

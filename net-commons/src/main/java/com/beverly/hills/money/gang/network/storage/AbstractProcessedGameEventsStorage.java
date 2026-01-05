@@ -13,7 +13,7 @@ public abstract class AbstractProcessedGameEventsStorage<T> {
   private static final Logger LOG = LoggerFactory.getLogger(
       AbstractProcessedGameEventsStorage.class);
 
-  private static final int MAX_TTL_MLS = 30 * 1000;
+  private static final int MAX_TTL_MLS = 120 * 1000;
 
 
   // key -> event id, value -> expiration time

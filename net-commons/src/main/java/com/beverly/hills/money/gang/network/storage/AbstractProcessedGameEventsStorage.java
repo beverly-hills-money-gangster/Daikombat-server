@@ -53,4 +53,8 @@ public abstract class AbstractProcessedGameEventsStorage<T> {
     return MAX_TTL_MLS;
   }
 
+  public int getCheckPeriodMls() {
+    return MAX_TTL_MLS / 4;
+  }
+
 }

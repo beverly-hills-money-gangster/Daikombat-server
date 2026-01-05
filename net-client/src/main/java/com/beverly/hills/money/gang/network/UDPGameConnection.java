@@ -150,8 +150,8 @@ public class UDPGameConnection implements Closeable {
                 ACK_RESEND_MLS, ACK_RESEND_MLS, TimeUnit.MILLISECONDS);
             ch.eventLoop().scheduleAtFixedRate(
                 processedServerResponseGameEventsStorage::clearOldEvents,
-                processedServerResponseGameEventsStorage.getMaxTtlMls(),
-                processedServerResponseGameEventsStorage.getMaxTtlMls(), TimeUnit.MILLISECONDS);
+                processedServerResponseGameEventsStorage.getCheckPeriodMls(),
+                processedServerResponseGameEventsStorage.getCheckPeriodMls(), TimeUnit.MILLISECONDS);
           }
         });
 

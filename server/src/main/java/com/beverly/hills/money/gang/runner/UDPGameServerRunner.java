@@ -9,7 +9,6 @@ import com.beverly.hills.money.gang.transport.ServerTransport;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.socket.nio.NioDatagramChannel;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -62,8 +61,8 @@ public class UDPGameServerRunner extends AbstractServerRunner {
           TimeUnit.MILLISECONDS);
       serverChannel.eventLoop().scheduleAtFixedRate(
           processedGameEventsStorage::clearOldEvents,
-          processedGameEventsStorage.getMaxTtlMls(),
-          processedGameEventsStorage.getMaxTtlMls(), TimeUnit.MILLISECONDS);
+          processedGameEventsStorage.getCheckPeriodMls(),
+          processedGameEventsStorage.getCheckPeriodMls(), TimeUnit.MILLISECONDS);
       startWaitingLatch.countDown();
       serverChannel.closeFuture().sync();
       LOG.info("Server channel closed");

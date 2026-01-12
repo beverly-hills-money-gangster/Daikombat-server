@@ -126,7 +126,7 @@ public class Game implements Closeable, GameReader {
       RPGPlayerClass rpgPlayerClass) throws GameLogicError {
     int playerId = playerSequenceGenerator.getNext();
     Coordinates spawn = spawner.getPlayerSpawn(playersRegistry.allActivePlayers()
-        .stream().map(PlayerStateChannel::getPlayerState).collect(Collectors.toList()));
+        .stream().map(PlayerNetworkLayerState::getPlayerState).collect(Collectors.toList()));
     PlayerState connectedPlayerState = new PlayerState(
         playerName, spawn, playerId, color, rpgPlayerClass, this);
     // recover game stats if we can
@@ -141,7 +141,7 @@ public class Game implements Closeable, GameReader {
         .spawnedPowerUps(powerUpRegistry.getAvailable())
         .leaderBoard(getLeaderBoard())
         .teleports(teleportRegistry.getAllTeleports())
-        .playerStateChannel(playerStateChannel).build();
+        .playerNetworkLayerState(playerStateChannel).build();
   }
 
   @Nullable
@@ -157,11 +157,11 @@ public class Game implements Closeable, GameReader {
     }
     LOG.debug("Respawn player {}", playerId);
     player.getPlayerState().respawn(spawner.getPlayerSpawn(playersRegistry.allActivePlayers()
-        .stream().map(PlayerStateChannel::getPlayerState).collect(Collectors.toList())));
+        .stream().map(PlayerNetworkLayerState::getPlayerState).collect(Collectors.toList())));
     return PlayerRespawnedGameState.builder()
         .spawnedPowerUps(powerUpRegistry.getAvailable())
         .teleports(teleportRegistry.getAllTeleports())
-        .playerStateChannel(player).leaderBoard(getLeaderBoard()).build();
+        .playerNetworkLayerState(player).leaderBoard(getLeaderBoard()).build();
   }
 
   public PlayerPowerUpGameState pickupPowerUp(
@@ -393,14 +393,14 @@ public class Game implements Closeable, GameReader {
   }
 
   public List<PlayerStateReader> getBufferedMoves() {
-    return playersRegistry.allActivePlayers().stream().map(PlayerStateChannel::getPlayerState)
+    return playersRegistry.allActivePlayers().stream().map(PlayerNetworkLayerState::getPlayerState)
         .filter(PlayerState::hasMoved)
         .collect(Collectors.toList());
   }
 
 
   public void flushBufferedMoves() {
-    playersRegistry.allActivePlayers().stream().map(PlayerStateChannel::getPlayerState)
+    playersRegistry.allActivePlayers().stream().map(PlayerNetworkLayerState::getPlayerState)
         .forEach(PlayerState::flushMove);
   }
 

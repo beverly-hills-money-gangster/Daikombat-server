@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
-import com.beverly.hills.money.gang.entity.PlayerGameId;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.factory.rpg.RPGStatsFactory;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
@@ -28,6 +27,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -132,7 +132,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @when a new player connects to a server
    * @then the player sees "6 players online message"
    */
-  @Test
+  @RepeatedTest(4)
   public void testJoinGameAfterManyPlayersJoined() throws Exception {
     int gameIdToConnectTo = 0;
     int playersToConnect = 5;
@@ -157,7 +157,8 @@ public class JoinGameTest extends AbstractGameServerTest {
                 PlayerClass.WARRIOR)
             .setPlayerName("my player name")
             .setGameId(gameIdToConnectTo).build());
-    waitUntilQueueNonEmpty(gameConnection.getResponse());
+
+    waitUntilGetResponses(gameConnection.getResponse(), 2);
 
     ServerResponse playerSpawn = gameConnection.getResponse().poll().get();
     ServerResponse.GameEvent playerSpawnEvent = playerSpawn.getGameEvents()
@@ -181,7 +182,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @when a player connects to a server using wrong game id
    * @then the player is not connected
    */
-  @Test
+  @RepeatedTest(4)
   public void testJoinGameNotExistingGame() throws IOException, InterruptedException {
     int gameIdToConnectTo = 666;
     var gameConnection = createGameConnection("localhost", port);
@@ -256,7 +257,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @when a player connects with older major version connects to a server
    * @then the player is not connected
    */
-  @Test
+  @RepeatedTest(4)
   public void testJoinGameWrongVersion() throws IOException, InterruptedException {
     int gameIdToConnectTo = 0;
     var gameConnection = createGameConnection("localhost", port);
@@ -299,7 +300,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @when one more player connects to game 0
    * @then the player is not connected as the server is full
    */
-  @Test
+  @RepeatedTest(4)
   public void testJoinGameTooMany() throws IOException, InterruptedException {
     for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
       var gameConnection = createGameConnection("localhost",
@@ -338,7 +339,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @when 2 players connect with the same name
    * @then 1st player is connected, 2nd player is not
    */
-  @Test
+  @RepeatedTest(4)
   public void testJoinSameName() throws IOException, InterruptedException {
 
     var gameConnection = createGameConnection("localhost", port);
@@ -381,7 +382,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @when a new player connects to game 0
    * @then the player is successfully connected
    */
-  @Test
+  @RepeatedTest(4)
   public void testJoinGameAlmostFull() throws Exception {
     int gameIdToConnectTo = 0;
     Map<Integer, Vector> connectedPlayersPositions = new ConcurrentHashMap<>();
@@ -483,7 +484,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     ServerResponse.GameInfo myGame = games.stream()
         .filter(gameInfo -> gameInfo.getGameId() == gameIdToConnectTo).findFirst()
         .orElseThrow((Supplier<Exception>) () -> new IllegalStateException(
-            "Can't find the game we connected to"));
+            "Can't find the game we connected to. Actual response :" + serverResponse));
     assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, myGame.getPlayersOnline(),
         "We should connect all players");
 

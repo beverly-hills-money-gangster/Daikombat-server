@@ -87,7 +87,7 @@ public class MoveEventTest extends AbstractGameServerTest {
     emptyQueue(movingPlayerConnection.getResponse());
     movingPlayerConnection.write(PushGameEventCommand.newBuilder()
         .setGameId(gameIdToConnectTo)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
+        .setPingMls(PING_MLS)
         .setEventType(PushGameEventCommand.GameEventType.MOVE)
         .setPlayerId(playerId1)
         .setPosition(Vector.newBuilder()
@@ -173,7 +173,7 @@ public class MoveEventTest extends AbstractGameServerTest {
             .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("new player")
             .setGameId(gameIdToConnectTo).build());
-    waitUntilQueueNonEmpty(observerPlayerConnection.getResponse());
+    waitUntilGetResponses(observerPlayerConnection.getResponse(), 2);
 
     emptyQueue(observerPlayerConnection.getResponse());
     Thread.sleep(1_000);
@@ -186,7 +186,7 @@ public class MoveEventTest extends AbstractGameServerTest {
     emptyQueue(movingPlayerConnection.getResponse());
     movingPlayerConnection.write(PushGameEventCommand.newBuilder()
         .setGameId(gameIdToConnectTo)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
+        .setPingMls(PING_MLS)
         .setEventType(PushGameEventCommand.GameEventType.MOVE)
         .setPlayerId(playerId1)
         .setPosition(Vector.newBuilder()
@@ -201,6 +201,78 @@ public class MoveEventTest extends AbstractGameServerTest {
     Thread.sleep(1_000);
     assertEquals(0, observerPlayerConnection.getResponse().size(),
         "No response is expected because the players are too far away");
+  }
+
+  /**
+   * @given a running server with 2 connected players
+   * @when player 1 moves with a wrong session id
+   * @then player 2 doesn't see player 1 moves
+   */
+  @Test
+  public void testMoveWrongSessionId() throws Exception {
+    int gameIdToConnectTo = 0;
+    var game = gameRoomRegistry.getGame(gameIdToConnectTo);
+    doReturn(
+        Coordinates.builder()
+            .direction(createGameVector(0, 0))
+            .position(createGameVector(0, 0)).build(),
+        Coordinates.builder()
+            .direction(createGameVector(0, 0))
+            .position(createGameVector(game.getGameConfig().getMaxVisibility() * 0.5f, 0))
+            .build())
+        .when(spawner).getPlayerSpawn(any());
+    var movingPlayerConnection = createGameConnection("localhost",
+        port);
+    movingPlayerConnection.write(
+        JoinGameCommand.newBuilder()
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.WARRIOR)
+            .setPlayerName("my player name")
+            .setGameId(gameIdToConnectTo).build());
+    waitUntilQueueNonEmpty(movingPlayerConnection.getResponse());
+    ServerResponse mySpawn = movingPlayerConnection.getResponse().poll().get();
+    ServerResponse.GameEvent mySpawnGameEvent = mySpawn.getGameEvents().getEvents(0);
+    int playerId1 = mySpawnGameEvent.getPlayer().getPlayerId();
+
+    var observerPlayerConnection = createGameConnection("localhost", port);
+    observerPlayerConnection.write(
+        JoinGameCommand.newBuilder()
+            .setVersion(ServerConfig.VERSION).setSkin(PlayerSkinColor.GREEN)
+            .setPlayerClass(PlayerClass.WARRIOR)
+            .setPlayerName("new player")
+            .setGameId(gameIdToConnectTo).build());
+    waitUntilGetResponses(observerPlayerConnection.getResponse(), 2);
+    emptyQueue(observerPlayerConnection.getResponse());
+    Thread.sleep(1_000);
+    assertEquals(0, observerPlayerConnection.getResponse().size(),
+        "No activity happened in the game so no response yet. Actual response is "
+            + observerPlayerConnection.getResponse().list());
+
+    float newPositionY = mySpawnGameEvent.getPlayer().getPosition().getY() + 0.01f;
+    float newPositionX = mySpawnGameEvent.getPlayer().getPosition().getX() + 0.01f;
+    emptyQueue(movingPlayerConnection.getResponse());
+
+    movingPlayerConnection.write(PushGameEventCommand.newBuilder()
+        .setGameId(gameIdToConnectTo)
+        .setPingMls(PING_MLS)
+        .setGameSession(-777)// wrong session id
+        .setEventType(PushGameEventCommand.GameEventType.MOVE)
+        .setPlayerId(playerId1)
+        .setPosition(Vector.newBuilder()
+            .setY(newPositionY)
+            .setX(newPositionX)
+            .build())
+        .setDirection(Vector.newBuilder()
+            .setY(mySpawnGameEvent.getPlayer().getDirection().getY())
+            .setX(mySpawnGameEvent.getPlayer().getDirection().getX())
+            .build())
+        .build());
+
+    Thread.sleep(1_000L);
+
+    assertEquals(0, observerPlayerConnection.getResponse().size(),
+        "No response is expected because we received a wrong game session id. Actual response: "
+            + observerPlayerConnection.getResponse().list());
   }
 
   /**
@@ -246,7 +318,7 @@ public class MoveEventTest extends AbstractGameServerTest {
     for (int i = 0; i < movements; i++) {
       movingPlayerConnection.write(PushGameEventCommand.newBuilder()
           .setGameId(gameIdToConnectTo)
-          .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
+          .setPingMls(PING_MLS)
           .setEventType(PushGameEventCommand.GameEventType.MOVE)
           .setPlayerId(playerId1)
           .setPosition(Vector.newBuilder()

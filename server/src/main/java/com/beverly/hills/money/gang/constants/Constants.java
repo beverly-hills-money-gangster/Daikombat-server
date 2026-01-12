@@ -7,4 +7,5 @@ public interface Constants {
   String MDC_PLAYER_NAME = "player_name";
   String MDC_IP_ADDRESS = "ip_address";
   String MDC_PING_MLS = "ping_mls";
+  String MDC_GAME_SESSION = "game_session";
 }

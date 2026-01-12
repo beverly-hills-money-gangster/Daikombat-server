@@ -3,8 +3,12 @@ package com.beverly.hills.money.gang.handler;
 import com.beverly.hills.money.gang.codec.OpusCodec;
 import com.beverly.hills.money.gang.dto.DatagramRequestType;
 import com.beverly.hills.money.gang.entity.VoiceChatPayload;
+import com.beverly.hills.money.gang.network.ack.ReliableGameEventProcessingService;
+import com.beverly.hills.money.gang.network.storage.AckRequiredEventStorage;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
+import com.beverly.hills.money.gang.proto.ServerResponse.GameEvents;
 import com.beverly.hills.money.gang.queue.GameQueues;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
@@ -14,8 +18,8 @@ import io.netty.channel.socket.DatagramPacket;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import java.io.IOException;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 import lombok.Builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +33,11 @@ public class UDPInboundHandler extends SimpleChannelInboundHandler<DatagramPacke
   private final GameQueues gameQueues;
   private final OpusCodec opusCodec;
   private final AtomicBoolean fullyConnected;
-  private final Map<Integer, PushGameEventCommand> ackRequiredGameEvents;
+  private final AckRequiredEventStorage<PushGameEventCommand> ackRequiredGameEvents;
   private final Runnable onClose;
-  private final UDPServerResponseHandler udpServerResponseHandler;
+  private final Consumer<GameEvent> onAck;
+  private final ReliableGameEventProcessingService gameEventProcessingService
+      = new ReliableGameEventProcessingService();
 
 
   @Override
@@ -56,14 +62,18 @@ public class UDPInboundHandler extends SimpleChannelInboundHandler<DatagramPacke
             .pcm(opusCodec.decode(encoded))
             .build());
       }
-      case ACK -> {
-        int sequence = buf.readInt();
-        ackRequiredGameEvents.remove(sequence);
-      }
+      case ACK -> ackRequiredGameEvents.ackReceived(buf.readInt());
       case GAME_EVENT -> {
         try (var stream = new ByteBufInputStream(buf)) {
           var serverResponse = ServerResponse.parseFrom(stream);
-          udpServerResponseHandler.handle(serverResponse);
+          var gameEvents = serverResponse.getGameEvents().getEventsList();
+          gameEvents.forEach(
+              gameEvent -> gameEventProcessingService.processInput(gameEvent, event -> {
+                var newResponse = serverResponse.toBuilder()
+                    .setGameEvents(GameEvents.newBuilder().addEvents(event).build())
+                    .build();
+                gameQueues.getResponsesQueueAPI().push(newResponse);
+              }, onAck));
         }
       }
     }

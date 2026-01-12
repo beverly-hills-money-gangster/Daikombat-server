@@ -12349,6 +12349,17 @@ private static final long serialVersionUID = 0L;
      * @return The gameId.
      */
     int getGameId();
+
+    /**
+     * <code>optional int32 gameSession = 9;</code>
+     * @return Whether the gameSession field is set.
+     */
+    boolean hasGameSession();
+    /**
+     * <code>optional int32 gameSession = 9;</code>
+     * @return The gameSession.
+     */
+    int getGameSession();
   }
   /**
    * Protobuf type {@code daikombat.dto.ServerResponse.GameEvent}
@@ -12436,6 +12447,10 @@ private static final long serialVersionUID = 0L;
        * <code>INIT = 10;</code>
        */
       INIT(10),
+      /**
+       * <code>INIT_RESPAWN = 11;</code>
+       */
+      INIT_RESPAWN(11),
       UNRECOGNIZED(-1),
       ;
 
@@ -12483,6 +12498,10 @@ private static final long serialVersionUID = 0L;
        * <code>INIT = 10;</code>
        */
       public static final int INIT_VALUE = 10;
+      /**
+       * <code>INIT_RESPAWN = 11;</code>
+       */
+      public static final int INIT_RESPAWN_VALUE = 11;
 
 
       public final int getNumber() {
@@ -12520,6 +12539,7 @@ private static final long serialVersionUID = 0L;
           case 8: return RESPAWN;
           case 9: return POWER_UP_PICKUP;
           case 10: return INIT;
+          case 11: return INIT_RESPAWN;
           default: return null;
         }
       }
@@ -12762,6 +12782,25 @@ private static final long serialVersionUID = 0L;
       return gameId_;
     }
 
+    public static final int GAMESESSION_FIELD_NUMBER = 9;
+    private int gameSession_ = 0;
+    /**
+     * <code>optional int32 gameSession = 9;</code>
+     * @return Whether the gameSession field is set.
+     */
+    @java.lang.Override
+    public boolean hasGameSession() {
+      return ((bitField0_ & 0x00000080) != 0);
+    }
+    /**
+     * <code>optional int32 gameSession = 9;</code>
+     * @return The gameSession.
+     */
+    @java.lang.Override
+    public int getGameSession() {
+      return gameSession_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -12799,6 +12838,9 @@ private static final long serialVersionUID = 0L;
       }
       if (((bitField0_ & 0x00000040) != 0)) {
         output.writeInt32(8, gameId_);
+      }
+      if (((bitField0_ & 0x00000080) != 0)) {
+        output.writeInt32(9, gameSession_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -12840,6 +12882,10 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000040) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(8, gameId_);
+      }
+      if (((bitField0_ & 0x00000080) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(9, gameSession_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -12891,6 +12937,11 @@ private static final long serialVersionUID = 0L;
         if (getGameId()
             != other.getGameId()) return false;
       }
+      if (hasGameSession() != other.hasGameSession()) return false;
+      if (hasGameSession()) {
+        if (getGameSession()
+            != other.getGameSession()) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -12931,6 +12982,10 @@ private static final long serialVersionUID = 0L;
       if (hasGameId()) {
         hash = (37 * hash) + GAMEID_FIELD_NUMBER;
         hash = (53 * hash) + getGameId();
+      }
+      if (hasGameSession()) {
+        hash = (37 * hash) + GAMESESSION_FIELD_NUMBER;
+        hash = (53 * hash) + getGameSession();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -13096,6 +13151,7 @@ private static final long serialVersionUID = 0L;
           projectileBuilder_ = null;
         }
         gameId_ = 0;
+        gameSession_ = 0;
         return this;
       }
 
@@ -13169,6 +13225,10 @@ private static final long serialVersionUID = 0L;
           result.gameId_ = gameId_;
           to_bitField0_ |= 0x00000040;
         }
+        if (((from_bitField0_ & 0x00000100) != 0)) {
+          result.gameSession_ = gameSession_;
+          to_bitField0_ |= 0x00000080;
+        }
         result.bitField0_ |= to_bitField0_;
       }
 
@@ -13239,6 +13299,9 @@ private static final long serialVersionUID = 0L;
         }
         if (other.hasGameId()) {
           setGameId(other.getGameId());
+        }
+        if (other.hasGameSession()) {
+          setGameSession(other.getGameSession());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -13314,6 +13377,11 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000080;
                 break;
               } // case 64
+              case 72: {
+                gameSession_ = input.readInt32();
+                bitField0_ |= 0x00000100;
+                break;
+              } // case 72
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -14004,6 +14072,46 @@ private static final long serialVersionUID = 0L;
       public Builder clearGameId() {
         bitField0_ = (bitField0_ & ~0x00000080);
         gameId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int gameSession_ ;
+      /**
+       * <code>optional int32 gameSession = 9;</code>
+       * @return Whether the gameSession field is set.
+       */
+      @java.lang.Override
+      public boolean hasGameSession() {
+        return ((bitField0_ & 0x00000100) != 0);
+      }
+      /**
+       * <code>optional int32 gameSession = 9;</code>
+       * @return The gameSession.
+       */
+      @java.lang.Override
+      public int getGameSession() {
+        return gameSession_;
+      }
+      /**
+       * <code>optional int32 gameSession = 9;</code>
+       * @param value The gameSession to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGameSession(int value) {
+
+        gameSession_ = value;
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 gameSession = 9;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearGameSession() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        gameSession_ = 0;
         onChanged();
         return this;
       }

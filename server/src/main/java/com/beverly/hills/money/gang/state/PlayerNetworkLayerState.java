@@ -1,6 +1,9 @@
 package com.beverly.hills.money.gang.state;
 
+
 import com.beverly.hills.money.gang.dto.DatagramRequestType;
+import com.beverly.hills.money.gang.network.ack.AckRequiredGameEventsStorage;
+import com.beverly.hills.money.gang.network.storage.AckRequiredEventStorage;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
 import com.beverly.hills.money.gang.proto.ServerResponse.GameEvents;
@@ -13,9 +16,7 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.socket.DatagramPacket;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,23 +26,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ToString
-public class PlayerStateChannel {
+public class PlayerNetworkLayerState {
 
-  private static final Logger LOG = LoggerFactory.getLogger(PlayerStateChannel.class);
+  private static final Logger LOG = LoggerFactory.getLogger(PlayerNetworkLayerState.class);
 
   private final Channel tcpChannel;
 
-  private final Map<Integer, GameEvent> ackRequiredGameEvents = new ConcurrentHashMap<>();
 
-  private static final int MAX_ACK_REQUIRED_EVENTS = 128;
+  private final AckRequiredEventStorage<GameEvent> ackRequiredGameEventsStorage = new AckRequiredGameEventsStorage();
 
   @Getter
   private final PlayerState playerState;
 
+
   private final AtomicReference<InetSocketAddress> datagramSocketAddress = new AtomicReference<>();
 
   @Builder
-  private PlayerStateChannel(
+  private PlayerNetworkLayerState(
       Channel tcpChannel,
       PlayerState playerState) {
     this.tcpChannel = tcpChannel;
@@ -62,41 +63,31 @@ public class PlayerStateChannel {
     writeFlush(tcpChannel, response, channelFutureListener);
   }
 
-  // TODO decouple PlayerState and PlayerChannel
   public void writeTCPFlush(ServerResponse response) {
     writeFlush(tcpChannel, response, null);
   }
 
 
   public Iterable<GameEvent> getAckRequiredEvents() {
-    return ackRequiredGameEvents.values();
+    int sessionId = getPlayerState().getGameSession();
+    ackRequiredGameEventsStorage.ackNotRequired(
+        gameEvent -> gameEvent.getGameSession() != sessionId);
+    return ackRequiredGameEventsStorage.get();
   }
 
-  public void clear() {
-    ackRequiredGameEvents.clear();
-  }
-
-  public void ackGameEvent(final int sequence) {
-    ackRequiredGameEvents.remove(sequence);
-  }
-
-  public void writeUDPAckRequiredFlush(
-      @NonNull final Channel udpChannel,
-      @NonNull GameEvent gameEvent) {
-    writeUDPFlushRaw(udpChannel, setEventSequence(gameEvent), true);
+  public void ackReceivedGameEvent(final int sequence) {
+    ackRequiredGameEventsStorage.ackReceived(sequence);
   }
 
   public void writeUDPFlush(
       @NonNull final Channel udpChannel,
       @NonNull GameEvent gameEvent) {
-    writeUDPFlushRaw(udpChannel, setEventSequence(gameEvent), false);
+    writeUDPFlushRaw(udpChannel, enrichResponse(gameEvent));
   }
 
-  // TODO add javadoc
   public void writeUDPFlushRaw(
       @NonNull final Channel udpChannel,
-      @NonNull GameEvent gameEvent,
-      boolean ackRequired) {
+      @NonNull GameEvent gameEvent) {
     var response = ServerResponse.newBuilder()
         .setGameEvents(GameEvents.newBuilder().addEvents(gameEvent)).build();
     Optional.ofNullable(datagramSocketAddress.get()).ifPresentOrElse(inetSocketAddress -> {
@@ -111,34 +102,25 @@ public class PlayerStateChannel {
         buf.release();
       }
     }, () -> LOG.warn("Can't find datagram socket"));
-
-    if (ackRequired) {
-      if (!gameEvent.hasSequence()) {
-        throw new IllegalStateException(
-            "Can't ack a game event with no sequence specified. Check event:" + gameEvent);
-      } else if (ackRequiredGameEvents.size() > MAX_ACK_REQUIRED_EVENTS) {
-        throw new IllegalStateException("Too many ack-required events");
-      }
-      ackRequiredGameEvents.put(gameEvent.getSequence(), gameEvent);
-    }
+    ackRequiredGameEventsStorage.requireAck(gameEvent.getSequence(), gameEvent);
   }
 
 
   void writeFlush(Channel channel, ServerResponse response,
       ChannelFutureListener channelFutureListener) {
-    var writeFlushFuture = channel.writeAndFlush(setEventSequence(response));
+    var writeFlushFuture = channel.writeAndFlush(enrichResponse(response));
     Optional.ofNullable(channelFutureListener).ifPresent(
         writeFlushFuture::addListener);
   }
 
 
-  protected ServerResponse setEventSequence(ServerResponse response) {
+  protected ServerResponse enrichResponse(ServerResponse response) {
     if (!response.hasGameEvents()) {
       return response;
     }
     var gameEvents = new ArrayList<GameEvent>();
     for (GameEvent gameEvent : response.getGameEvents().getEventsList()) {
-      gameEvents.add(setEventSequence(gameEvent));
+      gameEvents.add(enrichResponse(gameEvent));
     }
     return response.toBuilder().setGameEvents(
             response.getGameEvents().toBuilder().clearEvents().addAllEvents(gameEvents).build())
@@ -146,8 +128,15 @@ public class PlayerStateChannel {
 
   }
 
-  private GameEvent setEventSequence(GameEvent gameEvent) {
-    return gameEvent.toBuilder().setSequence(playerState.getNextEventId()).build();
+  private GameEvent enrichResponse(GameEvent gameEvent) {
+    return gameEvent.toBuilder()
+        .setSequence(playerState.getNextEventId())
+        .setGameSession(playerState.getGameSession())
+        .build();
+  }
+
+  public void clear() {
+    ackRequiredGameEventsStorage.clear();
   }
 
   public void close() {

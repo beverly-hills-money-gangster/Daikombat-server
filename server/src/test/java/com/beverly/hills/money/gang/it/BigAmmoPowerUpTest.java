@@ -35,8 +35,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 @SetEnvironmentVariable(key = "GAME_SERVER_TELEPORTS_ENABLED", value = "false")
 @SetEnvironmentVariable(key = "GAME_SERVER_SPAWN_IMMORTAL_MLS", value = "0")
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "5000")
-@SetEnvironmentVariable(key = "CLIENT_UDP_GLITCHY_INBOUND_DROP_MESSAGE_PROBABILITY", value = "0.15")
-@SetEnvironmentVariable(key = "CLIENT_UDP_GLITCHY_OUTBOUND_DROP_MESSAGE_PROBABILITY", value = "0.15")
+@SetEnvironmentVariable(key = "CLIENT_UDP_GLITCHY_INBOUND_DROP_MESSAGE_PROBABILITY", value = "0.20")
+@SetEnvironmentVariable(key = "CLIENT_UDP_GLITCHY_OUTBOUND_DROP_MESSAGE_PROBABILITY", value = "0.20")
 public class BigAmmoPowerUpTest extends AbstractGameServerTest {
 
 
@@ -93,7 +93,7 @@ public class BigAmmoPowerUpTest extends AbstractGameServerTest {
     for (int i = 0; i < weaponInfo.getMaxAmmo(); i++) {
       playerConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(playerId)
-          .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
+          .setPingMls(PING_MLS)
           .setWeaponType(getWeaponType(gameWeaponType))
           .setPosition(Vector.newBuilder()
               .setX(playerSpawnEvent.getPlayer().getPosition().getX())
@@ -107,7 +107,7 @@ public class BigAmmoPowerUpTest extends AbstractGameServerTest {
     Thread.sleep(1_000);
     playerConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(playerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
+        .setPingMls(PING_MLS)
         .setPosition(Vector.newBuilder()
             .setX(playerSpawnEvent.getPlayer().getPosition().getX())
             .setY(playerSpawnEvent.getPlayer().getPosition().getY())

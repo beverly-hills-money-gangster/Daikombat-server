@@ -108,6 +108,7 @@ message ServerResponse {
     optional WeaponType weaponType = 6;
     optional ProjectileCoordinates projectile = 7;
     optional int32 gameId = 8;
+    optional int32 gameSession = 9;
 
     enum GameEventType {
       MOVE = 0;
@@ -121,6 +122,7 @@ message ServerResponse {
       RESPAWN = 8;
       POWER_UP_PICKUP = 9;
       INIT = 10;
+      INIT_RESPAWN = 11;
     }
   }
 

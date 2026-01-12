@@ -82,6 +82,15 @@ public interface ServerResponseFactory {
         .build();
   }
 
+  static ServerResponse.GameEvent createInitRespawnEvent(PlayerStateReader playerStateReader,
+      List<GameLeaderBoardItem> leaderBoard) {
+    return ServerResponse.GameEvent.newBuilder()
+        .setEventType(GameEventType.INIT_RESPAWN)
+        .setLeaderBoard(createLeaderBoard(leaderBoard))
+        .setPlayer(createFullPlayerStats(playerStateReader))
+        .build();
+  }
+
   static ServerResponse.GameEvent createInitEvent(
       PlayerStateReader playerStateReader,
       List<GameLeaderBoardItem> leaderBoard,
@@ -399,18 +408,18 @@ public interface ServerResponseFactory {
         .setGameEvents(ServerResponse.GameEvents.newBuilder()
             .setPlayersOnline(playersOnline)
             .addEvents(createInitEvent(
-                playerConnected.getPlayerStateChannel().getPlayerState(),
+                playerConnected.getPlayerNetworkLayerState().getPlayerState(),
                 playerConnected.getLeaderBoard(),
                 gameId))).build();
   }
 
-  static ServerResponse createRespawnEventSinglePlayer(int playersOnline,
+  static ServerResponse createInitRespawnEventSinglePlayer(int playersOnline,
       PlayerRespawnedGameState playerRespawned) {
     return ServerResponse.newBuilder()
         .setGameEvents(ServerResponse.GameEvents.newBuilder()
             .setPlayersOnline(playersOnline)
-            .addEvents(createSpawnEvent(
-                playerRespawned.getPlayerStateChannel().getPlayerState(),
+            .addEvents(createInitRespawnEvent(
+                playerRespawned.getPlayerNetworkLayerState().getPlayerState(),
                 playerRespawned.getLeaderBoard()))).build();
   }
 
@@ -423,7 +432,7 @@ public interface ServerResponseFactory {
         .build();
   }
 
-  static ServerResponse createRespawnEventSinglePlayer(
+  static ServerResponse createInitRespawnEventSinglePlayer(
       int playersOnline, PlayerState playerState) {
     return ServerResponse.newBuilder()
         .setGameEvents(ServerResponse.GameEvents.newBuilder()

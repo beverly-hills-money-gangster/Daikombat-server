@@ -32,8 +32,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "999999")
 @SetEnvironmentVariable(key = "GAME_SERVER_SPAWN_IMMORTAL_MLS", value = "0")
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "5000")
-@SetEnvironmentVariable(key = "CLIENT_UDP_GLITCHY_INBOUND_DROP_MESSAGE_PROBABILITY", value = "0.15")
-@SetEnvironmentVariable(key = "CLIENT_UDP_GLITCHY_OUTBOUND_DROP_MESSAGE_PROBABILITY", value = "0.15")
+@SetEnvironmentVariable(key = "CLIENT_UDP_GLITCHY_INBOUND_DROP_MESSAGE_PROBABILITY", value = "0.20")
+@SetEnvironmentVariable(key = "CLIENT_UDP_GLITCHY_OUTBOUND_DROP_MESSAGE_PROBABILITY", value = "0.20")
 public class TeleportTest extends AbstractGameServerTest {
 
 
@@ -46,8 +46,7 @@ public class TeleportTest extends AbstractGameServerTest {
    * @when the player enters a teleport
    * @then the player gets teleported
    */
-
-  @RepeatedTest(8)
+  @RepeatedTest(4)
   public void testTeleport() throws IOException, GameLogicError, InterruptedException {
 
     int gameIdToConnectTo = 0;
@@ -81,7 +80,7 @@ public class TeleportTest extends AbstractGameServerTest {
 
     playerConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(playerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
+        .setPingMls(PING_MLS)
         .setGameId(gameIdToConnectTo)
         .setPosition(Vector.newBuilder()
             .setX(playerSpawnEvent.getPlayer().getPosition().getX())

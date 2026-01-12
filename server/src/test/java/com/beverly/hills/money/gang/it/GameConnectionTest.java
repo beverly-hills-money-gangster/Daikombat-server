@@ -14,6 +14,7 @@ import com.beverly.hills.money.gang.proto.ServerResponse;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
@@ -29,7 +30,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
    * @when player 1 disconnects from server
    * @then player 1 gets disconnected and player 2 has the event DISCONNECT for player 1
    */
-  @Test
+  @RepeatedTest(4)
   public void testExit() throws IOException, InterruptedException {
     int gameToConnectTo = 0;
     var gameConnection1 = createGameConnection("localhost", port);
@@ -51,7 +52,9 @@ public class GameConnectionTest extends AbstractGameServerTest {
             .setPlayerClass(PlayerClass.WARRIOR)
             .setPlayerName("my other player name")
             .setGameId(gameToConnectTo).build());
-    waitUntilQueueNonEmpty(gameConnection2.getResponse());
+    waitUntilGetResponses(gameConnection2.getResponse(), 2);
+    waitUntilQueueNonEmpty(gameConnection1.getResponse());
+
     emptyQueue(gameConnection1.getResponse());
     emptyQueue(gameConnection2.getResponse());
     gameConnection1.disconnect();
@@ -63,15 +66,19 @@ public class GameConnectionTest extends AbstractGameServerTest {
         .setPlayerClass(PlayerClass.WARRIOR).build());
     Thread.sleep(250);
     assertEquals(0, gameConnection1.getResponse().size(),
-        "Should be no response because the connection is closed");
+        "Should be no response because the connection is closed. Actual response: "
+            + gameConnection1.getResponse().list());
     assertEquals(1, gameConnection1.getWarning().size(),
-        "Should be one warning because the connection is closed");
+        "Should be one warning because the connection is closed. Actual warnings: "
+            + gameConnection1.getWarning().list());
     Throwable error = gameConnection1.getWarning().poll().get();
     assertEquals(IOException.class, error.getClass());
     assertEquals("Can't write using closed connection", error.getMessage());
 
     assertEquals(1,
-        gameConnection2.getResponse().size(), "We need to get 1 response(EXIT)");
+        gameConnection2.getResponse().size(),
+        "We need to get 1 response(EXIT). Actual response: " + gameConnection2.getResponse()
+            .list());
     ServerResponse serverResponse = gameConnection2.getResponse().poll().get();
     assertTrue(serverResponse.hasGameEvents());
     assertEquals(1, serverResponse.getGameEvents().getEventsCount());

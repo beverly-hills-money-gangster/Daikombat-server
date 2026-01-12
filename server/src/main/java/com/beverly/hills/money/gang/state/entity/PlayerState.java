@@ -67,6 +67,10 @@ public class PlayerState implements PlayerStateReader {
   @Getter
   private final int matchId;
 
+  private static final SequenceGenerator SESSION_SEQ_GENERATOR = new SequenceGenerator();
+
+  private final AtomicInteger gameSession = new AtomicInteger();
+
   public PlayerState(
       String name, Coordinates coordinates, int id, PlayerStateColor color,
       RPGPlayerClass rpgPlayerClass,
@@ -81,6 +85,7 @@ public class PlayerState implements PlayerStateReader {
     ammoStorage = new AmmoStorage(gameReader, rpgPlayerClass);
     initImmortality();
     this.matchId = gameReader.getMatchId();
+    gameSession.set(SESSION_SEQ_GENERATOR.getNext());
   }
 
   @Override
@@ -186,14 +191,19 @@ public class PlayerState implements PlayerStateReader {
     this.playerCoordinatesRef.set(coordinates);
     health.set(DEFAULT_HP);
     dead.set(false);
-    lastReceivedEventSequence.set(-1);
     initImmortality();
     restoreAllAmmo(1);
+    gameSession.set(SESSION_SEQ_GENERATOR.getNext());
   }
 
   @Override
   public PlayerGameStatsReader getGameStats() {
     return playerGameStats;
+  }
+
+  @Override
+  public int getGameSession() {
+    return gameSession.get();
   }
 
   @Override
@@ -234,11 +244,8 @@ public class PlayerState implements PlayerStateReader {
       LOG.warn("Out-of-order move for player {}. Current sequence {}, given {}. Skip move.",
           playerId, localLastEventSequence, eventSequence);
       return;
-    } else if (!lastReceivedEventSequence.compareAndSet(localLastEventSequence, eventSequence)) {
-      LOG.warn("Concurrent move for player {}. Skip move.", playerId);
-      return;
     }
-
+    lastReceivedEventSequence.set(eventSequence);
     playerCoordinatesRef.set(newCoordinates);
     moved.set(true);
   }
@@ -267,6 +274,9 @@ public class PlayerState implements PlayerStateReader {
     return health.get();
   }
 
+  public boolean isMyGameSession(int gameSession) {
+    return gameSession == this.gameSession.get();
+  }
 
   @Override
   public boolean isDead() {

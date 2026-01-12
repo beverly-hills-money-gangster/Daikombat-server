@@ -166,4 +166,15 @@ public interface PushGameEventCommandOrBuilder extends
    * @return The powerUp.
    */
   com.beverly.hills.money.gang.proto.GamePowerUpType getPowerUp();
+
+  /**
+   * <code>optional int32 gameSession = 13;</code>
+   * @return Whether the gameSession field is set.
+   */
+  boolean hasGameSession();
+  /**
+   * <code>optional int32 gameSession = 13;</code>
+   * @return The gameSession.
+   */
+  int getGameSession();
 }

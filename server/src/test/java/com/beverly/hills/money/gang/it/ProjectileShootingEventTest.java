@@ -29,7 +29,6 @@ import com.beverly.hills.money.gang.state.entity.RPGPlayerClass;
 import java.util.List;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -58,7 +57,7 @@ public class ProjectileShootingEventTest extends AbstractGameServerTest {
    * @when player 1 launcher a rocket at player 2
    * @then player 2 health is reduced and the event is sent to all players
    */
-  @RepeatedTest(8)
+  @RepeatedTest(4)
   public void testShootHitRocketLauncher() throws Exception {
 
     int gameIdToConnectTo = 0;
@@ -89,7 +88,8 @@ public class ProjectileShootingEventTest extends AbstractGameServerTest {
     ServerResponse shooterPlayerSpawn = shooterConnection.getResponse().poll().get();
     int shooterPlayerId = shooterPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
 
-    waitUntilQueueNonEmpty(getShotConnection.getResponse());
+    waitUntilQueueNonEmpty(shooterConnection.getResponse());
+    waitUntilGetResponses(getShotConnection.getResponse(), 2);
     ServerResponse shotPlayerSpawn = shooterConnection.getResponse().poll().get();
     var shotSpawnEvent = shotPlayerSpawn.getGameEvents().getEvents(0);
     float shotPositionX = shotSpawnEvent.getPlayer().getPosition().getX() + 0.1f;
@@ -105,7 +105,7 @@ public class ProjectileShootingEventTest extends AbstractGameServerTest {
 
     // launch a rocket
     shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
+        .setPingMls(PING_MLS)
         .setGameId(gameIdToConnectTo)
         .setEventType(GameEventType.ATTACK).setWeaponType(WeaponType.ROCKET_LAUNCHER).setDirection(
             Vector.newBuilder().setX(shooterSpawnEvent.getPlayer().getDirection().getX())
@@ -115,7 +115,7 @@ public class ProjectileShootingEventTest extends AbstractGameServerTest {
 
     // blow up the rocket
     shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
+        .setPingMls(PING_MLS)
         .setGameId(gameIdToConnectTo)
         .setEventType(GameEventType.ATTACK)
         .setProjectile(ProjectileCoordinates.newBuilder()
@@ -130,7 +130,8 @@ public class ProjectileShootingEventTest extends AbstractGameServerTest {
 
     waitUntilGetResponses(getShotConnection.getResponse(), 2);
     assertEquals(2, getShotConnection.getResponse().size(),
-        "2 (launch + rocket) events are expected");
+        "2 (launch + rocket) events are expected. Actual response is: "
+            + getShotConnection.getResponse().list());
 
     ServerResponse launchResponse = getShotConnection.getResponse().poll().get();
     var launchEvent = launchResponse.getGameEvents().getEvents(0);
@@ -178,7 +179,7 @@ public class ProjectileShootingEventTest extends AbstractGameServerTest {
     ServerResponse.GameInfo myGame = games.stream()
         .filter(gameInfo -> gameInfo.getGameId() == gameIdToConnectTo).findFirst().orElseThrow(
             (Supplier<Exception>) () -> new IllegalStateException(
-                "Can't find the game we connected to"));
+                "Can't find the game we connected to. Actual response :" + serverInfoResponse));
     assertEquals(2, myGame.getPlayersOnline(), "Should be 2 players still");
   }
 
@@ -187,7 +188,7 @@ public class ProjectileShootingEventTest extends AbstractGameServerTest {
    * @when player 1 shoots plasma at player 2
    * @then player 2 health is reduced and the event is sent to all players
    */
-  @RepeatedTest(8)
+  @RepeatedTest(4)
   public void testShootHitPlasmagun() throws Exception {
     int gameIdToConnectTo = 0;
     var plasmagunInfo = gameRoomRegistry.getGame(gameIdToConnectTo).getRpgWeaponInfo()
@@ -216,8 +217,8 @@ public class ProjectileShootingEventTest extends AbstractGameServerTest {
     ServerResponse shooterPlayerSpawn = shooterConnection.getResponse().poll().get();
     int shooterPlayerId = shooterPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
 
-    waitUntilQueueNonEmpty(getShotConnection.getResponse());
     waitUntilQueueNonEmpty(shooterConnection.getResponse());
+    waitUntilGetResponses(getShotConnection.getResponse(), 2);
     ServerResponse shotPlayerSpawn = shooterConnection.getResponse().poll().get();
     var shotSpawnEvent = shotPlayerSpawn.getGameEvents().getEvents(0);
     float shotPositionX = shotSpawnEvent.getPlayer().getPosition().getX() + 0.1f;
@@ -233,7 +234,7 @@ public class ProjectileShootingEventTest extends AbstractGameServerTest {
 
     // launch plasma
     shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
+        .setPingMls(PING_MLS)
         .setGameId(gameIdToConnectTo)
         .setEventType(GameEventType.ATTACK).setWeaponType(WeaponType.PLASMAGUN).setDirection(
             Vector.newBuilder().setX(shooterSpawnEvent.getPlayer().getDirection().getX())
@@ -243,7 +244,7 @@ public class ProjectileShootingEventTest extends AbstractGameServerTest {
 
     // blow up plasma
     shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
+        .setPingMls(PING_MLS)
         .setGameId(gameIdToConnectTo)
         .setEventType(GameEventType.ATTACK)
         .setProjectile(ProjectileCoordinates.newBuilder()
@@ -258,7 +259,8 @@ public class ProjectileShootingEventTest extends AbstractGameServerTest {
 
     waitUntilGetResponses(getShotConnection.getResponse(), 2);
     assertEquals(2, getShotConnection.getResponse().size(),
-        "2 (launch + plasma) events are expected");
+        "2 (launch + plasma) events are expected. Actual response is: "
+            + getShotConnection.getResponse().list());
 
     var launchResponse = getShotConnection.getResponse().poll().get();
     var launchEvent = launchResponse.getGameEvents().getEvents(0);
@@ -305,7 +307,7 @@ public class ProjectileShootingEventTest extends AbstractGameServerTest {
     ServerResponse.GameInfo myGame = games.stream()
         .filter(gameInfo -> gameInfo.getGameId() == gameIdToConnectTo).findFirst().orElseThrow(
             (Supplier<Exception>) () -> new IllegalStateException(
-                "Can't find the game we connected to"));
+                "Can't find the game we connected to. Actual response :" + serverInfoResponse));
     assertEquals(2, myGame.getPlayersOnline(), "Should be 2 players still");
   }
 

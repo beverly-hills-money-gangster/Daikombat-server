@@ -36,18 +36,18 @@ public class GameMiscTest extends GameTest {
     // two shots should be enough to commit suicide
     for (int i = 0; i <= 2; i++) {
       game.attack(
-          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
-          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+          shooterPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
+          shooterPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates()
               .getPosition(),
-          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          shooterPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
+          shooterPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
           GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
 
     assertTrue(game.getPlayerWithinDamageRadius(
-            shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+            shooterPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
             Vector.builder().build(), 10).isEmpty(),
         "Expected to be empty because we have no live players at all");
   }
@@ -63,7 +63,7 @@ public class GameMiscTest extends GameTest {
     Channel channel = mock(Channel.class);
     var joined = fullyJoin(shooterPlayerName, channel, PlayerStateColor.GREEN);
     assertTrue(game.getPlayerWithinDamageRadius(
-            joined.getPlayerStateChannel().getPlayerState().getPlayerId(),
+            joined.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
             Vector.builder().build(), 0).isEmpty(),
         "Expected to be empty because damage radius is 0");
   }
@@ -81,14 +81,14 @@ public class GameMiscTest extends GameTest {
 
     var playerWithinDamageRadius
         = game.getPlayerWithinDamageRadius(
-        joinedPlayer.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        joinedPlayer.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         Vector.builder().build(), Integer.MAX_VALUE);
 
     assertFalse(playerWithinDamageRadius.isEmpty(),
         "Should not be empty because radius covers all players");
 
     assertEquals(
-        joinedPlayer.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        joinedPlayer.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         playerWithinDamageRadius.get().getPlayerId());
   }
 
@@ -117,7 +117,7 @@ public class GameMiscTest extends GameTest {
     // blow up between 2 players
     var playerWithinDamageRadius
         = game.getPlayerWithinDamageRadius(
-        joinedShooterPlayer.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        joinedShooterPlayer.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         Vector.builder().x(1).y(0).build(), 2);
 
     assertFalse(playerWithinDamageRadius.isEmpty(),
@@ -125,7 +125,7 @@ public class GameMiscTest extends GameTest {
 
     // prefer an enemy
     assertEquals(
-        joinedVictimPlayer.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        joinedVictimPlayer.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         playerWithinDamageRadius.get().getPlayerId(), "An enemy player should be preferred");
   }
 
@@ -165,14 +165,14 @@ public class GameMiscTest extends GameTest {
 
     var playerWithinDamageRadius
         = game.getPlayerWithinDamageRadius(
-        joinedFarawayPlayer2.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        joinedFarawayPlayer2.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         Vector.builder().build(), 10);
 
     assertFalse(playerWithinDamageRadius.isEmpty(),
         "Should not be empty because radius covers at least one player");
 
     assertEquals(
-        nearestPlayer.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        nearestPlayer.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         playerWithinDamageRadius.get().getPlayerId());
   }
 }

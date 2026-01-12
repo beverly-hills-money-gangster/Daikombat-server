@@ -5,7 +5,7 @@ import static com.beverly.hills.money.gang.exception.GameErrorCode.NOT_EXISTING_
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.state.Game;
-import com.beverly.hills.money.gang.state.PlayerStateChannel;
+import com.beverly.hills.money.gang.state.PlayerNetworkLayerState;
 import com.beverly.hills.money.gang.state.entity.PlayerActivityStatus;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
 import io.netty.channel.Channel;
@@ -36,7 +36,7 @@ public class GameRoomRegistry implements Closeable {
     return games.values().stream();
   }
 
-  public Optional<PlayerStateChannel> getActivePlayer(
+  public Optional<PlayerNetworkLayerState> getActivePlayer(
       final int gameId, final int playerId) {
     return getPlayer(gameId, playerId).filter(
         playerStateChannel -> playerStateChannel.getPlayerState().getActivityStatus()
@@ -44,7 +44,7 @@ public class GameRoomRegistry implements Closeable {
   }
 
 
-  public Optional<PlayerStateChannel> getPlayer(int gameId, int playerId) {
+  public Optional<PlayerNetworkLayerState> getPlayer(int gameId, int playerId) {
     return Optional.ofNullable(games.get(gameId))
         .flatMap(game -> game.getPlayersRegistry().getPlayerStateChannel(playerId));
   }

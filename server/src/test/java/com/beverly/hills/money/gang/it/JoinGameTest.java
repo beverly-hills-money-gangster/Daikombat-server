@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.beverly.hills.money.gang.config.ServerConfig;
-import com.beverly.hills.money.gang.entity.PlayerGameId;
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.factory.rpg.RPGStatsFactory;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
@@ -483,7 +482,7 @@ public class JoinGameTest extends AbstractGameServerTest {
     ServerResponse.GameInfo myGame = games.stream()
         .filter(gameInfo -> gameInfo.getGameId() == gameIdToConnectTo).findFirst()
         .orElseThrow((Supplier<Exception>) () -> new IllegalStateException(
-            "Can't find the game we connected to"));
+            "Can't find the game we connected to. Actual response :" + serverResponse));
     assertEquals(ServerConfig.MAX_PLAYERS_PER_GAME, myGame.getPlayersOnline(),
         "We should connect all players");
 

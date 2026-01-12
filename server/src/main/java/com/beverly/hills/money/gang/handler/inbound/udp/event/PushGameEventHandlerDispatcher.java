@@ -1,6 +1,7 @@
 package com.beverly.hills.money.gang.handler.inbound.udp.event;
 
 import static com.beverly.hills.money.gang.constants.Constants.MDC_GAME_ID;
+import static com.beverly.hills.money.gang.constants.Constants.MDC_GAME_SESSION;
 import static com.beverly.hills.money.gang.constants.Constants.MDC_IP_ADDRESS;
 import static com.beverly.hills.money.gang.constants.Constants.MDC_PING_MLS;
 import static com.beverly.hills.money.gang.constants.Constants.MDC_PLAYER_ID;
@@ -12,12 +13,12 @@ import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
 import com.beverly.hills.money.gang.factory.handler.GameEventHandlerFactory;
 import com.beverly.hills.money.gang.factory.response.ServerResponseFactory;
+import com.beverly.hills.money.gang.network.service.AckBasedEventProcessingService;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.ServerCommand.CommandCase;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.state.Game;
-import com.beverly.hills.money.gang.state.PlayerStateChannel;
-import com.beverly.hills.money.gang.storage.ProcessedGameEventsStorage;
+import com.beverly.hills.money.gang.state.PlayerNetworkLayerState;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -32,15 +33,13 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
-// TODO add more network logs and metrics on server side
-// TODO add big udp datagram warning
-// TODO add more UDP networks metrics on client side
 @Component
 @RequiredArgsConstructor
 public class PushGameEventHandlerDispatcher {
 
 
-  private final ProcessedGameEventsStorage processedGameEventsStorage;
+  private final AckBasedEventProcessingService<PushGameEventCommand>
+      reliableGameEventsProcessingService;
 
   @Getter
   private final CommandCase commandCase = CommandCase.GAMECOMMAND;
@@ -49,7 +48,6 @@ public class PushGameEventHandlerDispatcher {
   private final GameRoomRegistry gameRoomRegistry;
 
   private final GameEventHandlerFactory gameEventHandlerFactory;
-
 
   public boolean isValidEvent(PushGameEventCommand gameCommand) {
     return gameCommand.hasGameId()
@@ -76,22 +74,31 @@ public class PushGameEventHandlerDispatcher {
   }
 
   protected void handleGameEvents(Game game, PushGameEventCommand gameCommand,
-      PlayerStateChannel playerState, final Channel udpChannel,
+      PlayerNetworkLayerState playerState, final Channel udpChannel,
       final InetSocketAddress clientAddress) {
-    if (processedGameEventsStorage.eventAlreadyProcessed(gameCommand)) {
-      LOG.warn("Dup event {}", gameCommand);
-      ack(playerState, gameCommand, udpChannel);
-      return;
-    }
-    if (playerState.getPlayerState().isDead()) {
-      LOG.warn("Player {} is dead. Ignore command.", gameCommand.getPlayerId());
-      return;
-    } else if (!StringUtils.equals(playerState.getIPAddress(),
-        clientAddress.getAddress().getHostAddress())) {
-      LOG.warn("IP address mismatch for player id {}. Ignore command.", gameCommand.getPlayerId());
-      return;
-    }
+    reliableGameEventsProcessingService.processInput(gameCommand,
+        gameEventCommand -> runGameLogic(game, gameCommand, playerState, udpChannel, clientAddress),
+        gameEventCommand -> ack(playerState, gameCommand, udpChannel));
+  }
+
+  private void runGameLogic(
+      final Game game,
+      final PushGameEventCommand gameCommand,
+      PlayerNetworkLayerState playerState, final Channel udpChannel,
+      final InetSocketAddress clientAddress) {
     try {
+      if (playerState.getPlayerState().isDead()) {
+        LOG.warn("Player {} is dead. Ignore command.", gameCommand.getPlayerId());
+        return;
+      } else if (!playerState.getPlayerState().isMyGameSession(gameCommand.getGameSession())) {
+        LOG.warn("Wrong game session. Ignore command.");
+        return;
+      } else if (!StringUtils.equals(playerState.getIPAddress(),
+          clientAddress.getAddress().getHostAddress())) {
+        LOG.warn("IP address mismatch for player id {}. Ignore command.",
+            gameCommand.getPlayerId());
+        return;
+      }
       initMDC(gameCommand, playerState);
       var gameEventType = gameCommand.getEventType();
       var handler = gameEventHandlerFactory.create(gameEventType);
@@ -112,13 +119,11 @@ public class PushGameEventHandlerDispatcher {
       LOG.error("Can't process command: " + gameCommand, e);
       throw e;
     } finally {
-      processedGameEventsStorage.markEventProcessed(gameCommand,
-          () -> ack(playerState, gameCommand, udpChannel));
       clearMDC();
     }
   }
 
-  private void ack(PlayerStateChannel playerState, PushGameEventCommand gameCommand,
+  private void ack(PlayerNetworkLayerState playerState, PushGameEventCommand gameCommand,
       Channel udpChannel) {
     var ackBuf = PooledByteBufAllocator.DEFAULT.directBuffer(5);
     ackBuf.writeByte(DatagramRequestType.ACK.getCode());
@@ -131,11 +136,12 @@ public class PushGameEventHandlerDispatcher {
   }
 
   private void initMDC(final PushGameEventCommand gameEventCommand,
-      final PlayerStateChannel playerState) {
+      final PlayerNetworkLayerState playerState) {
     MDC.put(MDC_GAME_ID, String.valueOf(gameEventCommand.getGameId()));
     MDC.put(MDC_PLAYER_ID, String.valueOf(playerState.getPlayerState().getPlayerId()));
     MDC.put(MDC_PLAYER_NAME, playerState.getPlayerState().getPlayerName());
     MDC.put(MDC_IP_ADDRESS, playerState.getIPAddress());
+    MDC.put(MDC_GAME_SESSION, String.valueOf(playerState.getPlayerState().getGameSession()));
     MDC.put(MDC_PING_MLS, Optional.of(playerState.getPlayerState().getPingMls())
         .map(String::valueOf).orElse(""));
   }
@@ -146,5 +152,6 @@ public class PushGameEventHandlerDispatcher {
     MDC.remove(MDC_PLAYER_NAME);
     MDC.remove(MDC_IP_ADDRESS);
     MDC.remove(MDC_PING_MLS);
+    MDC.remove(MDC_GAME_SESSION);
   }
 }

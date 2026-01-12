@@ -79,7 +79,7 @@ public class RespawnEventTest extends AbstractGameServerTest {
     for (int i = 0; i < shotsToKill; i++) {
       killerConnection.write(PushGameEventCommand.newBuilder()
           .setPlayerId(shooterPlayerId)
-          .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
+          .setPingMls(PING_MLS)
           .setGameId(gameIdToConnectTo)
           .setEventType(GameEventType.ATTACK)
           .setWeaponType(WeaponType.SHOTGUN)
@@ -125,7 +125,7 @@ public class RespawnEventTest extends AbstractGameServerTest {
         otherPlayersSpawnResponse.getGameEvents().getEvents(0).getPlayer().getSkinColor());
 
     var respawnEvent = respawnResponse.getGameEvents().getEvents(0);
-    assertEquals(ServerResponse.GameEvent.GameEventType.SPAWN, respawnEvent.getEventType());
+    assertEquals(GameEvent.GameEventType.INIT_RESPAWN, respawnEvent.getEventType());
     assertEquals(shotPlayerId, respawnEvent.getPlayer().getPlayerId());
 
     waitUntilQueueNonEmpty(killerConnection.getResponse());

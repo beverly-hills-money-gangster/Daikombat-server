@@ -20,9 +20,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 
-public class PlayerStateChannelTest {
+public class PlayerNetworkLayerStateTest {
 
-  private PlayerStateChannel playerStateChannel;
+  private PlayerNetworkLayerState playerNetworkLayerState;
 
   private PlayerState playerState;
 
@@ -32,7 +32,7 @@ public class PlayerStateChannelTest {
   public void setUp() {
     playerState = mock(PlayerState.class);
     channel = mock(Channel.class);
-    playerStateChannel = spy(PlayerStateChannel.builder()
+    playerNetworkLayerState = spy(PlayerNetworkLayerState.builder()
         .tcpChannel(channel).playerState(playerState)
         .build());
   }
@@ -46,7 +46,7 @@ public class PlayerStateChannelTest {
                     GameEvent.newBuilder().setEventType(GameEventType.MOVE).build(),
                     GameEvent.newBuilder().setEventType(GameEventType.ATTACK).build())))
         .build();
-    ServerResponse newResponse = playerStateChannel.setEventSequence(serverResponse);
+    ServerResponse newResponse = playerNetworkLayerState.enrichResponse(serverResponse);
     assertTrue(newResponse.hasGameEvents());
     assertEquals(
         serverResponse.getGameEvents().getPlayersOnline(),
@@ -73,7 +73,7 @@ public class PlayerStateChannelTest {
   public void testSetEventSequenceForChatEvent() {
     ServerResponse serverResponse = ServerResponse.newBuilder()
         .setChatEvents(ChatEvent.newBuilder().build()).build();
-    ServerResponse newResponse = playerStateChannel.setEventSequence(serverResponse);
+    ServerResponse newResponse = playerNetworkLayerState.enrichResponse(serverResponse);
     assertSame(serverResponse, newResponse,
         "Response should be exactly the same instance. Chat events don't have 'sequence'");
   }
@@ -81,12 +81,12 @@ public class PlayerStateChannelTest {
 
   @Test
   public void testIsOurChannelNotOurChannel() {
-    assertFalse(playerStateChannel.isOurChannel(mock(Channel.class)));
+    assertFalse(playerNetworkLayerState.isOurChannel(mock(Channel.class)));
   }
 
   @Test
   public void testIsOurChannel() {
-    assertTrue(playerStateChannel.isOurChannel(channel));
+    assertTrue(playerNetworkLayerState.isOurChannel(channel));
   }
 
 

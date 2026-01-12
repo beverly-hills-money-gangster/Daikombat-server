@@ -1,10 +1,12 @@
 package com.beverly.hills.money.gang.handler;
 
+import com.beverly.hills.money.gang.util.NumberUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 import io.netty.util.ReferenceCountUtil;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +20,14 @@ public class GlitchyUDPOutboundHandler extends ChannelOutboundHandlerAdapter {
 
   private final float dropMessageProbability;
 
-  public GlitchyUDPOutboundHandler(float dropMessageProbability) {
+  private final AtomicInteger totalPackets = new AtomicInteger();
+  private final AtomicInteger droppedPackets = new AtomicInteger();
+
+  public GlitchyUDPOutboundHandler(
+      float dropMessageProbability) {
+    if (!NumberUtil.isValidProbability(dropMessageProbability)) {
+      throw new IllegalStateException("Not valid drop probability " + dropMessageProbability);
+    }
     this.dropMessageProbability = dropMessageProbability;
   }
 
@@ -27,8 +36,11 @@ public class GlitchyUDPOutboundHandler extends ChannelOutboundHandlerAdapter {
   @Override
   public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise)
       throws Exception {
+    totalPackets.incrementAndGet();
     if (random.nextFloat() < dropMessageProbability) {
-      LOG.info("Drop write");
+      droppedPackets.incrementAndGet();
+      LOG.info("Drop write. Total packets {}, dropped packets {}",
+          totalPackets.get(), droppedPackets.get());
       ReferenceCountUtil.safeRelease(msg);
     } else {
       ctx.write(msg, promise);

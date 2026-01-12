@@ -41,7 +41,7 @@ public class ConcurrentKillTest extends AbstractGameServerTest {
    * @when all of them try to kill each other concurrently at the same time
    * @then none of them receive an ERROR event
    */
-  @RepeatedTest(4)
+  @RepeatedTest(32)
   public void testKillConcurrent() throws InterruptedException {
     AtomicBoolean failed = new AtomicBoolean(false);
     List<Thread> joinThreads = new ArrayList<>();
@@ -95,7 +95,7 @@ public class ConcurrentKillTest extends AbstractGameServerTest {
           float newPositionY = mySpawn.getPlayer().getPosition().getY() - 0.1f;
           wait.await();
           gameConnection.write(PushGameEventCommand.newBuilder()
-              .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
+              .setPingMls(PING_MLS)
               .setPlayerId(mySpawn.getPlayer().getPlayerId())
               .setGameId(0)
               .setEventType(GameEventType.ATTACK)

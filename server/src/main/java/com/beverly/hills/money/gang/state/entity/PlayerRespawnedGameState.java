@@ -1,7 +1,7 @@
 package com.beverly.hills.money.gang.state.entity;
 
 import com.beverly.hills.money.gang.powerup.PowerUp;
-import com.beverly.hills.money.gang.state.PlayerStateChannel;
+import com.beverly.hills.money.gang.state.PlayerNetworkLayerState;
 import com.beverly.hills.money.gang.teleport.Teleport;
 import java.util.List;
 import lombok.Builder;
@@ -13,7 +13,7 @@ import lombok.NonNull;
 public class PlayerRespawnedGameState {
 
   @NonNull
-  private final PlayerStateChannel playerStateChannel;
+  private final PlayerNetworkLayerState playerNetworkLayerState;
 
   @NonNull
   private final List<PowerUp> spawnedPowerUps;

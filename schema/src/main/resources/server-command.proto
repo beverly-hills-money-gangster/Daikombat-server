@@ -64,6 +64,7 @@ message PushGameEventCommand {
   optional WeaponType weaponType = 10;
   optional ProjectileCoordinates projectile = 11;
   optional GamePowerUpType powerUp = 12;
+  optional int32 gameSession = 13;
 
   enum GameEventType {
     MOVE = 0;

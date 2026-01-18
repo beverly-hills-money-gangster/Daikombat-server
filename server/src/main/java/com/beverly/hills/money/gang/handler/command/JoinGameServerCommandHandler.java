@@ -17,7 +17,7 @@ import com.beverly.hills.money.gang.proto.ServerCommand.CommandCase;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.state.Game;
-import com.beverly.hills.money.gang.state.PlayerStateChannel;
+import com.beverly.hills.money.gang.state.PlayerNetworkLayerState;
 import com.beverly.hills.money.gang.state.entity.PlayerActivityStatus;
 import com.beverly.hills.money.gang.state.entity.PlayerStateColor;
 import com.beverly.hills.money.gang.teleport.Teleport;
@@ -70,19 +70,19 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
         getRPGPlayerClass(command.getPlayerClass()));
     var playerSpawnEvent = createInitSinglePlayer(
         game.playersOnline(), playerConnected, game.gameId());
-    playerConnected.getPlayerStateChannel()
+    playerConnected.getPlayerNetworkLayerState()
         .writeTCPFlush(playerSpawnEvent, channelFuture -> {
           if (!channelFuture.isSuccess()) {
             tcpClientChannel.close();
             return;
           }
-          sendOtherSpawns(game, playerConnected.getPlayerStateChannel(),
+          sendOtherSpawns(game, playerConnected.getPlayerNetworkLayerState(),
               playerConnected.getSpawnedPowerUps(), playerConnected.getTeleports(),
               createJoinEventSinglePlayer(
                   game.playersOnline(),
-                  playerConnected.getPlayerStateChannel().getPlayerState()));
+                  playerConnected.getPlayerNetworkLayerState().getPlayerState()));
 
-          playerConnected.getPlayerStateChannel().getPlayerState()
+          playerConnected.getPlayerNetworkLayerState().getPlayerState()
               .setStatus(PlayerActivityStatus.ACTIVE);
         });
   }
@@ -101,14 +101,14 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
 
 
   protected void sendOtherSpawns(
-      Game game, PlayerStateChannel joinedPlayerStateChannel,
+      Game game, PlayerNetworkLayerState joinedPlayerNetworkLayerState,
       List<PowerUp> spawnedPowerUps,
       List<Teleport> teleports,
       ServerResponse playerSpawnEventToSendOtherPlayers) {
     var otherPlayers = game.getPlayersRegistry()
         .allActivePlayers().stream()
         .filter(playerStateChannel -> playerStateChannel.getPlayerState().getPlayerId()
-            != joinedPlayerStateChannel.getPlayerState().getPlayerId())
+            != joinedPlayerNetworkLayerState.getPlayerState().getPlayerId())
         .collect(Collectors.toList());
 
     if (!otherPlayers.isEmpty()) {
@@ -117,37 +117,37 @@ public class JoinGameServerCommandHandler extends ServerCommandHandler {
           .collect(Collectors.toList());
       ServerResponse allPlayersSpawnEvent =
           createSpawnEventAllPlayers(game.playersOnline(), otherLivePlayers.stream()
-              .map(PlayerStateChannel::getPlayerState)
+              .map(PlayerNetworkLayerState::getPlayerState)
               .collect(Collectors.toList()));
-      joinedPlayerStateChannel.writeTCPFlush(allPlayersSpawnEvent);
+      joinedPlayerNetworkLayerState.writeTCPFlush(allPlayersSpawnEvent);
     }
-    sendMapItems(joinedPlayerStateChannel, spawnedPowerUps, teleports);
+    sendMapItems(joinedPlayerNetworkLayerState, spawnedPowerUps, teleports);
     otherPlayers.forEach(playerStateChannel -> playerStateChannel.writeTCPFlush(
         playerSpawnEventToSendOtherPlayers));
 
   }
 
   private void sendMapItems(
-      PlayerStateChannel joinedPlayerStateChannel, List<PowerUp> powerUps,
+      PlayerNetworkLayerState joinedPlayerNetworkLayerState, List<PowerUp> powerUps,
       List<Teleport> teleports) {
-    sendPowerUpSpawn(powerUps, joinedPlayerStateChannel);
-    sendTeleportSpawn(teleports, joinedPlayerStateChannel);
+    sendPowerUpSpawn(powerUps, joinedPlayerNetworkLayerState);
+    sendTeleportSpawn(teleports, joinedPlayerNetworkLayerState);
   }
 
 
   private void sendPowerUpSpawn(List<PowerUp> powerUps,
-      PlayerStateChannel joinedPlayerStateChannel) {
+      PlayerNetworkLayerState joinedPlayerNetworkLayerState) {
     if (powerUps.isEmpty()) {
       return;
     }
-    joinedPlayerStateChannel.writeTCPFlush(createPowerUpSpawn(powerUps));
+    joinedPlayerNetworkLayerState.writeTCPFlush(createPowerUpSpawn(powerUps));
   }
 
   private void sendTeleportSpawn(List<Teleport> teleports,
-      PlayerStateChannel joinedPlayerStateChannel) {
+      PlayerNetworkLayerState joinedPlayerNetworkLayerState) {
     if (teleports.isEmpty()) {
       return;
     }
-    joinedPlayerStateChannel.writeTCPFlush(createTeleportSpawn(teleports));
+    joinedPlayerNetworkLayerState.writeTCPFlush(createTeleportSpawn(teleports));
   }
 }

@@ -1,9 +1,16 @@
 package com.beverly.hills.money.gang.network;
 
 import com.beverly.hills.money.gang.codec.OpusCodec;
+import com.beverly.hills.money.gang.converter.PingGameEventCommandConverter;
+import com.beverly.hills.money.gang.converter.SequencedGameEventCommandConverter;
+import com.beverly.hills.money.gang.converter.SessionGameEventCommandConverter;
+import com.beverly.hills.money.gang.entity.GameSessionHolder;
 import com.beverly.hills.money.gang.entity.HostPort;
 import com.beverly.hills.money.gang.entity.PlayerGameId;
 import com.beverly.hills.money.gang.entity.VoiceChatPayload;
+import com.beverly.hills.money.gang.filter.GameSessionEventFilter;
+import com.beverly.hills.money.gang.listener.InitListener;
+import com.beverly.hills.money.gang.listener.InitRespawnListener;
 import com.beverly.hills.money.gang.proto.DownloadMapAssetsCommand;
 import com.beverly.hills.money.gang.proto.GetServerInfoCommand;
 import com.beverly.hills.money.gang.proto.JoinGameCommand;
@@ -11,7 +18,6 @@ import com.beverly.hills.money.gang.proto.PushChatEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.RespawnCommand;
 import com.beverly.hills.money.gang.proto.ServerResponse;
-import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent.GameEventType;
 import com.beverly.hills.money.gang.queue.GameQueues;
 import com.beverly.hills.money.gang.queue.QueueReader;
 import com.beverly.hills.money.gang.stats.TCPGameNetworkStatsReader;
@@ -20,8 +26,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Function;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,31 +45,50 @@ public class GlobalGameConnection {
 
   private final UDPGameConnection udpGameConnection;
 
+  protected final GameSessionHolder gameSessionHolder = new GameSessionHolder();
+
+  private final List<Function<PushGameEventCommand, PushGameEventCommand>> gameEventConverters
+      = new CopyOnWriteArrayList<>();
+
   private GlobalGameConnection(
       final HostPort hostPort) throws IOException {
     this.tcpGameConnection = new TCPGameConnection(hostPort, gameQueues);
     this.udpGameConnection = new UDPGameConnection(
         hostPort.toBuilder().port(hostPort.getPort() + 1).build(),
-        new OpusCodec(), gameQueues);
+        new OpusCodec(), gameQueues, gameSessionHolder);
+  }
+
+  protected GlobalGameConnection(
+      final TCPGameConnection tcpGameConnection,
+      final UDPGameConnection udpGameConnection) {
+    this.tcpGameConnection = tcpGameConnection;
+    this.udpGameConnection = udpGameConnection;
   }
 
   public static GlobalGameConnection create(final HostPort hostPort) throws IOException {
     var connection = new GlobalGameConnection(hostPort);
-    connection.gameQueues.getResponsesQueueAPI().addListener(serverResponse -> {
-      serverResponse.getGameEvents().getEventsList().stream()
-          .filter(gameEvent -> gameEvent.getEventType() == GameEventType.INIT).findFirst()
-          .ifPresent(gameEvent -> {
-            int playerId = gameEvent.getPlayer().getPlayerId();
-            int gameId = gameEvent.getGameId();
-            connection.initUDPConnection(
-                PlayerGameId.builder().playerId(playerId).gameId(gameId).build());
-          });
-    });
+    var responseQueue = connection.gameQueues.getResponsesQueueAPI();
+    responseQueue.addListener(new InitListener(connection.gameSessionHolder, connection));
+    responseQueue.addListener(new InitRespawnListener(connection.gameSessionHolder));
+    responseQueue.addFilter(new GameSessionEventFilter(connection.gameSessionHolder));
     connection.gameQueues.getErrorsQueueAPI().addListener(
         throwable -> LOG.error("Error occurred", throwable));
     connection.gameQueues.getWarningsQueueAPI().addListener(
         throwable -> LOG.warn("Warning!", throwable));
+    connection.registerPushGameEventConverters();
     return connection;
+  }
+
+  protected void registerPushGameEventConverters() {
+    var sessionGameEventCommandConverter = new SessionGameEventCommandConverter(gameSessionHolder);
+    addGameEventConverter(new SequencedGameEventCommandConverter());
+    addGameEventConverter(new PingGameEventCommandConverter(getTCPNetworkStats()));
+    addGameEventConverter(sessionGameEventCommandConverter);
+  }
+
+  public void addGameEventConverter(
+      Function<PushGameEventCommand, PushGameEventCommand> converter) {
+    gameEventConverters.add(converter);
   }
 
   public VoiceChatConfigs getVoiceChatConfigs() {
@@ -69,8 +97,12 @@ public class GlobalGameConnection {
         .sampleSize(codec.getSampleSize()).build();
   }
 
-  public void write(PushGameEventCommand pushGameEventCommand) {
-    udpGameConnection.write(pushGameEventCommand);
+  public void write(@NonNull PushGameEventCommand pushGameEventCommand) {
+    var convertedCommand = pushGameEventCommand;
+    for (var gameEventConverter : gameEventConverters) {
+      convertedCommand = gameEventConverter.apply(convertedCommand);
+    }
+    udpGameConnection.write(convertedCommand);
   }
 
   public UDPGameNetworkStatsReader getUDPNetworkStats() {

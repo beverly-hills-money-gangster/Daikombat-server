@@ -30,7 +30,7 @@ public class TeleportGameEventHandler extends GameEventHandler {
         gameCommand.getPingMls());
     var serverResponse = createPlayerTeleportGameEvent(result.getTeleportedPlayer());
     game.getPlayersRegistry().allActivePlayers()
-        .forEach(stateChannel -> stateChannel.writeUDPAckRequiredFlush(udpChannel, serverResponse));
+        .forEach(stateChannel -> stateChannel.writeUDPFlush(udpChannel, serverResponse));
 
   }
 }

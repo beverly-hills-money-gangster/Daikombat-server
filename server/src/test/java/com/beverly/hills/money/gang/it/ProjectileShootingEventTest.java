@@ -58,7 +58,7 @@ public class ProjectileShootingEventTest extends AbstractGameServerTest {
    * @when player 1 launcher a rocket at player 2
    * @then player 2 health is reduced and the event is sent to all players
    */
-  @RepeatedTest(8)
+  @RepeatedTest(16)
   public void testShootHitRocketLauncher() throws Exception {
 
     int gameIdToConnectTo = 0;
@@ -105,7 +105,7 @@ public class ProjectileShootingEventTest extends AbstractGameServerTest {
 
     // launch a rocket
     shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
+        .setPingMls(PING_MLS)
         .setGameId(gameIdToConnectTo)
         .setEventType(GameEventType.ATTACK).setWeaponType(WeaponType.ROCKET_LAUNCHER).setDirection(
             Vector.newBuilder().setX(shooterSpawnEvent.getPlayer().getDirection().getX())
@@ -115,7 +115,7 @@ public class ProjectileShootingEventTest extends AbstractGameServerTest {
 
     // blow up the rocket
     shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
+        .setPingMls(PING_MLS)
         .setGameId(gameIdToConnectTo)
         .setEventType(GameEventType.ATTACK)
         .setProjectile(ProjectileCoordinates.newBuilder()
@@ -178,7 +178,7 @@ public class ProjectileShootingEventTest extends AbstractGameServerTest {
     ServerResponse.GameInfo myGame = games.stream()
         .filter(gameInfo -> gameInfo.getGameId() == gameIdToConnectTo).findFirst().orElseThrow(
             (Supplier<Exception>) () -> new IllegalStateException(
-                "Can't find the game we connected to"));
+                "Can't find the game we connected to. Actual response :" + serverInfoResponse));
     assertEquals(2, myGame.getPlayersOnline(), "Should be 2 players still");
   }
 
@@ -187,7 +187,7 @@ public class ProjectileShootingEventTest extends AbstractGameServerTest {
    * @when player 1 shoots plasma at player 2
    * @then player 2 health is reduced and the event is sent to all players
    */
-  @RepeatedTest(8)
+  @RepeatedTest(16)
   public void testShootHitPlasmagun() throws Exception {
     int gameIdToConnectTo = 0;
     var plasmagunInfo = gameRoomRegistry.getGame(gameIdToConnectTo).getRpgWeaponInfo()
@@ -233,7 +233,7 @@ public class ProjectileShootingEventTest extends AbstractGameServerTest {
 
     // launch plasma
     shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
+        .setPingMls(PING_MLS)
         .setGameId(gameIdToConnectTo)
         .setEventType(GameEventType.ATTACK).setWeaponType(WeaponType.PLASMAGUN).setDirection(
             Vector.newBuilder().setX(shooterSpawnEvent.getPlayer().getDirection().getX())
@@ -243,7 +243,7 @@ public class ProjectileShootingEventTest extends AbstractGameServerTest {
 
     // blow up plasma
     shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
+        .setPingMls(PING_MLS)
         .setGameId(gameIdToConnectTo)
         .setEventType(GameEventType.ATTACK)
         .setProjectile(ProjectileCoordinates.newBuilder()
@@ -305,7 +305,7 @@ public class ProjectileShootingEventTest extends AbstractGameServerTest {
     ServerResponse.GameInfo myGame = games.stream()
         .filter(gameInfo -> gameInfo.getGameId() == gameIdToConnectTo).findFirst().orElseThrow(
             (Supplier<Exception>) () -> new IllegalStateException(
-                "Can't find the game we connected to"));
+                "Can't find the game we connected to. Actual response :" + serverInfoResponse));
     assertEquals(2, myGame.getPlayersOnline(), "Should be 2 players still");
   }
 

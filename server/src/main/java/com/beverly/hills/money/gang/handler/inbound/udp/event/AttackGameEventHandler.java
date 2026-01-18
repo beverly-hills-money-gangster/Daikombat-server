@@ -81,7 +81,7 @@ public class AttackGameEventHandler extends GameEventHandler {
                 gameCommand);
             game.getPlayersRegistry().allActivePlayers().forEach(
                 playerStateChannel ->
-                    playerStateChannel.writeUDPAckRequiredFlush(udpChannel, attackEvent));
+                    playerStateChannel.writeUDPFlush(udpChannel, attackEvent));
             return;
           }
           var deadEvent = createKillEvent(
@@ -90,7 +90,7 @@ public class AttackGameEventHandler extends GameEventHandler {
 
           // send KILL event to all joined players
           game.getPlayersRegistry().allActivePlayers().forEach(
-              playerStateChannel -> playerStateChannel.writeUDPAckRequiredFlush(udpChannel,
+              playerStateChannel -> playerStateChannel.writeUDPFlush(udpChannel,
                   deadEvent));
 
           // send "game over" to all players (even partially joined)
@@ -108,7 +108,7 @@ public class AttackGameEventHandler extends GameEventHandler {
                   // don't send me my own attack back
                   -> playerStateChannel.getPlayerState().getPlayerId() != gameCommand.getPlayerId())
               .forEach(playerStateChannel
-                  -> playerStateChannel.writeUDPAckRequiredFlush(udpChannel, attackEvent));
+                  -> playerStateChannel.writeUDPFlush(udpChannel, attackEvent));
         });
   }
 

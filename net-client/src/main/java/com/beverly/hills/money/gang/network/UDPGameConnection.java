@@ -4,23 +4,22 @@ import com.beverly.hills.money.gang.codec.OpusCodec;
 import com.beverly.hills.money.gang.config.ClientConfig;
 import com.beverly.hills.money.gang.dto.DatagramRequestType;
 import com.beverly.hills.money.gang.entity.AckPayload;
+import com.beverly.hills.money.gang.entity.GameSessionReader;
 import com.beverly.hills.money.gang.entity.HostPort;
 import com.beverly.hills.money.gang.entity.PlayerGameId;
 import com.beverly.hills.money.gang.entity.VoiceChatPayload;
 import com.beverly.hills.money.gang.handler.GlitchyUDPInboundHandler;
 import com.beverly.hills.money.gang.handler.GlitchyUDPOutboundHandler;
 import com.beverly.hills.money.gang.handler.UDPInboundHandler;
-import com.beverly.hills.money.gang.handler.UDPServerResponseHandler;
+import com.beverly.hills.money.gang.network.ack.AckRequiredPushGameEventCommandsStorage;
+import com.beverly.hills.money.gang.network.storage.AckRequiredEventStorage;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
-import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.queue.GameQueues;
 import com.beverly.hills.money.gang.stats.UDPGameNetworkStats;
-import com.beverly.hills.money.gang.storage.ProcessedServerResponseGameEventsStorage;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -34,9 +33,7 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 import java.io.Closeable;
 import java.net.InetSocketAddress;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -52,13 +49,14 @@ public class UDPGameConnection implements Closeable {
 
   private static final int ACK_RESEND_MLS = 100;
 
-  private static final int MAX_ACK_REQUIRED = 100;
+  private final GameSessionReader gameSessionReader;
 
   private final AtomicReference<PlayerGameId> playerGameIdAtomicRef = new AtomicReference<>();
 
   private final GameQueues gameQueues;
 
-  private final Map<Integer, PushGameEventCommand> ackRequiredGameEvents = new ConcurrentHashMap<>();
+  private final AckRequiredEventStorage<PushGameEventCommand>
+      ackRequiredGameEventsStorage = new AckRequiredPushGameEventCommandsStorage();
 
   @Getter
   private final OpusCodec opusCodec;
@@ -68,9 +66,6 @@ public class UDPGameConnection implements Closeable {
   private final HostPort hostPort;
 
   private final CountDownLatch connectedLatch = new CountDownLatch(1);
-
-  private final ProcessedServerResponseGameEventsStorage
-      processedServerResponseGameEventsStorage = new ProcessedServerResponseGameEventsStorage();
 
   private final AtomicReference<Channel> channelRef = new AtomicReference<>();
   private final AtomicReference<ConnectionState> connectionState = new AtomicReference<>();
@@ -82,12 +77,14 @@ public class UDPGameConnection implements Closeable {
   private final AtomicBoolean keepAliveScheduled = new AtomicBoolean();
 
   public UDPGameConnection(
-      final HostPort hostPort, final OpusCodec opusCodec, final GameQueues gameQueues) {
+      final HostPort hostPort, final OpusCodec opusCodec, final GameQueues gameQueues,
+      final GameSessionReader gameSessionReader) {
     LOG.info("Connect to {}", hostPort);
     connectionState.set(ConnectionState.CONNECTING);
     this.gameQueues = gameQueues;
     this.opusCodec = opusCodec;
     this.hostPort = hostPort;
+    this.gameSessionReader = gameSessionReader;
     group = new NioEventLoopGroup();
 
     Bootstrap bootstrap = new Bootstrap();
@@ -130,28 +127,19 @@ public class UDPGameConnection implements Closeable {
                 .ifPresent(dropProbability -> ch.pipeline().addLast(
                     new GlitchyUDPOutboundHandler(dropProbability)
                 ));
-
             ch.pipeline()
                 .addLast(new IdleStateHandler(
                     ClientConfig.SERVER_MAX_INACTIVE_MLS / 1000, 0, 0));
             ch.pipeline().addLast(UDPInboundHandler.builder()
-                .udpServerResponseHandler(UDPServerResponseHandler.builder()
-                    .responsesQueueAPI(gameQueues.getResponsesQueueAPI())
-                    .onAck(gameEvent -> ack(gameEvent))
-                    .processedServerResponseGameEventsStorage(
-                        processedServerResponseGameEventsStorage).build())
-                .fullyConnected(fullyConnected)
                 .gameQueues(gameQueues)
-                .ackRequiredGameEvents(ackRequiredGameEvents)
+                .onAck(gameEvent -> ack(gameEvent))
+                .fullyConnected(fullyConnected)
+                .ackRequiredGameEvents(ackRequiredGameEventsStorage)
                 .opusCodec(opusCodec)
                 .onClose(() -> close())
                 .build());
             ch.eventLoop().scheduleAtFixedRate(() -> resendAckRequired(),
                 ACK_RESEND_MLS, ACK_RESEND_MLS, TimeUnit.MILLISECONDS);
-            ch.eventLoop().scheduleAtFixedRate(
-                processedServerResponseGameEventsStorage::clearOldEvents,
-                processedServerResponseGameEventsStorage.getCheckPeriodMls(),
-                processedServerResponseGameEventsStorage.getCheckPeriodMls(), TimeUnit.MILLISECONDS);
           }
         });
 
@@ -216,16 +204,19 @@ public class UDPGameConnection implements Closeable {
 
   public void write(final PushGameEventCommand payload) {
     writeInternal(payload);
-    if (payload.getEventType() != GameEventType.MOVE) {
-      if (ackRequiredGameEvents.size() >= MAX_ACK_REQUIRED) {
-        throw new IllegalStateException("Too many ack-required messages in the queue");
-      }
-      ackRequiredGameEvents.put(payload.getSequence(), payload);
-    }
+    ackRequiredGameEventsStorage.requireAck(payload.getSequence(), payload);
   }
 
   private void resendAckRequired() {
-    ackRequiredGameEvents.forEach((seqId, gameEventCommand) -> writeInternal(gameEventCommand));
+    try {
+      gameSessionReader.getGameSession().ifPresentOrElse(gameSession -> {
+        ackRequiredGameEventsStorage.ackNotRequired(
+            gameEventCommand -> gameEventCommand.getGameSession() != gameSession);
+        ackRequiredGameEventsStorage.get().forEach(this::writeInternal);
+      }, () -> LOG.warn("Can't resend events because no game session specified"));
+    } catch (Exception e) {
+      LOG.error("Can't run resend", e);
+    }
   }
 
   public void startKeepAlive() {
@@ -303,7 +294,7 @@ public class UDPGameConnection implements Closeable {
             connectionState.set(ConnectionState.DISCONNECTED);
             LOG.info("Channel closed {}", udpNetworkStats);
           }));
-      ackRequiredGameEvents.clear();
+      ackRequiredGameEventsStorage.clear();
     } catch (Exception e) {
       LOG.error("Failed to close connection", e);
     }

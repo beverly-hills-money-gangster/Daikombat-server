@@ -4,7 +4,7 @@ import static com.beverly.hills.money.gang.config.ServerConfig.MAX_PLAYERS_PER_G
 
 import com.beverly.hills.money.gang.exception.GameErrorCode;
 import com.beverly.hills.money.gang.exception.GameLogicError;
-import com.beverly.hills.money.gang.state.PlayerStateChannel;
+import com.beverly.hills.money.gang.state.PlayerNetworkLayerState;
 import com.beverly.hills.money.gang.state.entity.PlayerActivityStatus;
 import com.beverly.hills.money.gang.state.entity.PlayerState;
 import io.netty.channel.Channel;
@@ -24,12 +24,11 @@ import org.slf4j.LoggerFactory;
 public class PlayersRegistry implements Closeable {
 
   private static final Logger LOG = LoggerFactory.getLogger(PlayersRegistry.class);
-
-  private final Map<Integer, PlayerStateChannel> players = new ConcurrentHashMap<>();
+  private final Map<Integer, PlayerNetworkLayerState> players = new ConcurrentHashMap<>();
 
   private final PlayerStatsRecoveryRegistry playerStatsRecoveryRegistry;
 
-  public PlayerStateChannel addPlayer(
+  public PlayerNetworkLayerState addPlayer(
       PlayerState playerState,
       Channel tcpChannel)
       throws GameLogicError {
@@ -45,31 +44,31 @@ public class PlayersRegistry implements Closeable {
           GameErrorCode.PLAYER_EXISTS);
     }
     // thread-safe
-    var playerStateChannel = PlayerStateChannel.builder()
+    var playerStateChannel = PlayerNetworkLayerState.builder()
         .tcpChannel(tcpChannel).playerState(playerState).build();
     players.put(playerState.getPlayerId(), playerStateChannel);
     return playerStateChannel;
   }
 
   public Optional<PlayerState> getPlayerState(int playerId) {
-    return getPlayerStateChannel(playerId).map(PlayerStateChannel::getPlayerState);
+    return getPlayerStateChannel(playerId).map(PlayerNetworkLayerState::getPlayerState);
   }
 
-  public Optional<PlayerStateChannel> getPlayerStateChannel(int playerId) {
+  public Optional<PlayerNetworkLayerState> getPlayerStateChannel(int playerId) {
     return Optional.ofNullable(players.get(playerId));
   }
 
-  public Optional<PlayerStateChannel> getPlayerStateChannel(int playerId, String ipAddress) {
+  public Optional<PlayerNetworkLayerState> getPlayerStateChannel(int playerId, String ipAddress) {
     return getPlayerStateChannel(playerId)
         // check that it matches our ip address
         .filter(playerStateChannel -> playerStateChannel.getIPAddress().equals(ipAddress));
   }
 
-  public List<PlayerStateChannel> allPlayers() {
+  public List<PlayerNetworkLayerState> allPlayers() {
     return new ArrayList<>(players.values());
   }
 
-  public List<PlayerStateChannel> allChatablePlayers(final int myPlayerId) {
+  public List<PlayerNetworkLayerState> allChatablePlayers(final int myPlayerId) {
     return getPlayerStateChannel(myPlayerId).map(
         myPlayer -> players.values().stream().filter(playerStateChannel -> {
           var playerReader = playerStateChannel.getPlayerState();
@@ -80,7 +79,7 @@ public class PlayersRegistry implements Closeable {
   }
 
 
-  public List<PlayerStateChannel> allActivePlayers() {
+  public List<PlayerNetworkLayerState> allActivePlayers() {
     return allActivePlayersStream().collect(Collectors.toList());
   }
 
@@ -88,7 +87,7 @@ public class PlayersRegistry implements Closeable {
     return (int) allActivePlayersStream().count();
   }
 
-  private Stream<PlayerStateChannel> allActivePlayersStream() {
+  private Stream<PlayerNetworkLayerState> allActivePlayersStream() {
     return players.values().stream().filter(
         playerStateChannel -> playerStateChannel.getPlayerState().getActivityStatus()
             == PlayerActivityStatus.ACTIVE);
@@ -107,7 +106,7 @@ public class PlayersRegistry implements Closeable {
     });
   }
 
-  public Optional<PlayerStateChannel> removePlayer(int playerId) {
+  public Optional<PlayerNetworkLayerState> removePlayer(int playerId) {
     LOG.debug("Remove player {}", playerId);
     var result = Optional.ofNullable(players.remove(playerId));
     // save stats for future recovery if needed
@@ -120,7 +119,7 @@ public class PlayersRegistry implements Closeable {
   @Override
   public void close() {
     LOG.info("Close");
-    players.values().forEach(PlayerStateChannel::close);
+    players.values().forEach(PlayerNetworkLayerState::close);
     players.clear();
   }
 }

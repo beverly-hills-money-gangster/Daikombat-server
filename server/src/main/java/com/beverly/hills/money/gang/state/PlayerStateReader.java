@@ -38,6 +38,8 @@ public interface PlayerStateReader {
 
   PlayerGameStatsReader getGameStats();
 
+  int getGameSession();
+
   RPGPlayerClass getRpgPlayerClass();
 
   float getSpeed();

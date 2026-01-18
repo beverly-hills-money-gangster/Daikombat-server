@@ -33,12 +33,12 @@ public class GameTeleportTest extends GameTest {
 
     PlayerJoinedGameState teleportedPlayerGameState = fullyJoin(teleportedPlayerName,
         channel, PlayerStateColor.GREEN);
-    var oldCoordinates = teleportedPlayerGameState.getPlayerStateChannel().getPlayerState()
+    var oldCoordinates = teleportedPlayerGameState.getPlayerNetworkLayerState().getPlayerState()
         .getCoordinates();
     var teleportToUse = teleportedPlayerGameState.getTeleports().get(0);
 
     GameLogicError error = assertThrows(GameLogicError.class, () -> game.teleport(
-        teleportedPlayerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        teleportedPlayerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         oldCoordinates,
         teleportToUse.getId(),
         testSequenceGenerator.getNext(),
@@ -47,7 +47,7 @@ public class GameTeleportTest extends GameTest {
     assertEquals(CHEATING, error.getErrorCode());
     assertEquals("Teleport is too far", error.getMessage());
     assertEquals(oldCoordinates,
-        teleportedPlayerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        teleportedPlayerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
         "Coordinates should NOT change if there was an error");
   }
 
@@ -64,11 +64,11 @@ public class GameTeleportTest extends GameTest {
 
     PlayerJoinedGameState teleportedPlayerGameState = fullyJoin(teleportedPlayerName,
         channel, PlayerStateColor.GREEN);
-    var oldCoordinates = teleportedPlayerGameState.getPlayerStateChannel().getPlayerState()
+    var oldCoordinates = teleportedPlayerGameState.getPlayerNetworkLayerState().getPlayerState()
         .getCoordinates();
 
     GameLogicError error = assertThrows(GameLogicError.class, () -> game.teleport(
-        teleportedPlayerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        teleportedPlayerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         oldCoordinates,
         666, // not real
         testSequenceGenerator.getNext(),
@@ -77,7 +77,7 @@ public class GameTeleportTest extends GameTest {
     assertEquals(COMMON_ERROR, error.getErrorCode());
     assertEquals("Can't find teleport", error.getMessage());
     assertEquals(oldCoordinates,
-        teleportedPlayerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        teleportedPlayerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
         "Coordinates should NOT change if there was an error");
   }
 
@@ -94,7 +94,7 @@ public class GameTeleportTest extends GameTest {
 
     PlayerJoinedGameState teleportedPlayerGameState = fullyJoin(teleportedPlayerName,
         channel, PlayerStateColor.GREEN);
-    var oldCoordinates = teleportedPlayerGameState.getPlayerStateChannel().getPlayerState()
+    var oldCoordinates = teleportedPlayerGameState.getPlayerNetworkLayerState().getPlayerState()
         .getCoordinates();
 
     GameLogicError error = assertThrows(GameLogicError.class, () -> game.teleport(
@@ -107,7 +107,7 @@ public class GameTeleportTest extends GameTest {
     assertEquals(COMMON_ERROR, error.getErrorCode());
     assertEquals("Can't find player", error.getMessage());
     assertEquals(oldCoordinates,
-        teleportedPlayerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        teleportedPlayerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
         "Coordinates should NOT change if there was an error");
   }
 }

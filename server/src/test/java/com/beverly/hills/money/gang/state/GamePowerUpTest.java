@@ -69,9 +69,9 @@ public class GamePowerUpTest extends GameTest {
     PlayerJoinedGameState playerGameState = fullyJoin("some player",
         mock(Channel.class), PlayerStateColor.GREEN);
     var result = game.pickupPowerUp(
-        playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
         QUAD_DAMAGE,
-        playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         testSequenceGenerator.getNext(),
         PING_MLS);
     assertNull(result,
@@ -95,17 +95,17 @@ public class GamePowerUpTest extends GameTest {
         mock(Channel.class), PlayerStateColor.GREEN);
 
     // pick up
-    game.pickupPowerUp(playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+    game.pickupPowerUp(playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
         QUAD_DAMAGE,
-        playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         testSequenceGenerator.getNext(),
         PING_MLS);
     reset(powerUpRegistry, quadDamagePowerUp); // reset spy objects
     // pick up again without releasing
     var result = game.pickupPowerUp(
-        otherPlayerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        otherPlayerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
         QUAD_DAMAGE,
-        otherPlayerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        otherPlayerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         testSequenceGenerator.getNext(),
         PING_MLS);
 
@@ -129,9 +129,9 @@ public class GamePowerUpTest extends GameTest {
         mock(Channel.class), PlayerStateColor.GREEN);
 
     var result = game.pickupPowerUp(
-        playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
         QUAD_DAMAGE,
-        playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         testSequenceGenerator.getNext(),
         PING_MLS);
 
@@ -141,28 +141,28 @@ public class GamePowerUpTest extends GameTest {
         "One(quad damage) power-up should be active");
     assertEquals(quadDamagePowerUp,
         result.getPlayerState().getActivePowerUps().get(0).getPowerUp());
-    assertEquals(playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+    assertEquals(playerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         result.getPlayerState().getPlayerId());
-    assertEquals(playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+    assertEquals(playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
         result.getPlayerState().getCoordinates(), "Coordinates shouldn't change");
 
     verify(quadDamagePowerUp).apply(argThat(
-        playerState -> playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId()
-            == playerGameState.getPlayerStateChannel()
+        playerState -> playerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId()
+            == playerGameState.getPlayerNetworkLayerState()
             .getPlayerState().getPlayerId()));
-    assertEquals(4, playerGameState.getPlayerStateChannel().getPlayerState()
+    assertEquals(4, playerGameState.getPlayerNetworkLayerState().getPlayerState()
             .getDamageAmplifier(
-                playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
-                victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+                playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates().getPosition(),
+                victimGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
                 GameWeaponType.PUNCH.getDamageFactory().getDamage(game)),
         0.001,
         "Damage should amplify after picking up quad damage power-up");
 
     PlayerAttackingGameState playerAttackingGameState = game.attack(
-        playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
-        playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
-        playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates().getPosition(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
+        victimGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         GameWeaponType.PUNCH.getDamageFactory().getDamage(game),
         testSequenceGenerator.getNext(),
         PING_MLS);
@@ -183,9 +183,9 @@ public class GamePowerUpTest extends GameTest {
         mock(Channel.class), PlayerStateColor.GREEN);
 
     var result = game.pickupPowerUp(
-        playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
         QUAD_DAMAGE,
-        playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         testSequenceGenerator.getNext(),
         PING_MLS);
 
@@ -194,10 +194,10 @@ public class GamePowerUpTest extends GameTest {
 
     result.getPlayerState().revertPowerUp(quadDamagePowerUp);
 
-    assertEquals(1, playerGameState.getPlayerStateChannel().getPlayerState()
+    assertEquals(1, playerGameState.getPlayerNetworkLayerState().getPlayerState()
             .getDamageAmplifier(
-                playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
-                victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+                playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates().getPosition(),
+                victimGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
                 GameWeaponType.PUNCH.getDamageFactory().getDamage(game)),
         0.001,
         "Damage should get back to 1 after reverting");
@@ -215,9 +215,9 @@ public class GamePowerUpTest extends GameTest {
         mock(Channel.class), PlayerStateColor.GREEN);
 
     var result = game.pickupPowerUp(
-        playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
         QUAD_DAMAGE,
-        playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         testSequenceGenerator.getNext(),
         PING_MLS);
 
@@ -227,10 +227,10 @@ public class GamePowerUpTest extends GameTest {
     result.getPlayerState().revertPowerUp(quadDamagePowerUp); // first call
     result.getPlayerState().revertPowerUp(quadDamagePowerUp); // second call
 
-    assertEquals(1, playerGameState.getPlayerStateChannel().getPlayerState()
+    assertEquals(1, playerGameState.getPlayerNetworkLayerState().getPlayerState()
             .getDamageAmplifier(
-                playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
-                victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+                playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates().getPosition(),
+                victimGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
                 GameWeaponType.PUNCH.getDamageFactory().getDamage(game)),
         0.001,
         "Damage should get back to 1 after reverting");
@@ -248,9 +248,9 @@ public class GamePowerUpTest extends GameTest {
         mock(Channel.class), PlayerStateColor.GREEN);
 
     var result = game.pickupPowerUp(
-        playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
         QUAD_DAMAGE,
-        playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         testSequenceGenerator.getNext(),
         PING_MLS);
 
@@ -260,10 +260,10 @@ public class GamePowerUpTest extends GameTest {
     result.getPlayerState().revertAllPowerUps(); // first call
     result.getPlayerState().revertAllPowerUps(); // second call
 
-    assertEquals(1, playerGameState.getPlayerStateChannel().getPlayerState()
+    assertEquals(1, playerGameState.getPlayerNetworkLayerState().getPlayerState()
             .getDamageAmplifier(
-                playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
-                victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+                playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates().getPosition(),
+                victimGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
                 GameWeaponType.PUNCH.getDamageFactory().getDamage(game)),
         0.001,
         "Damage should get back to 1 after reverting");
@@ -285,9 +285,9 @@ public class GamePowerUpTest extends GameTest {
         mock(Channel.class), PlayerStateColor.GREEN);
 
     var result = game.pickupPowerUp(
-        playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
         BEAST,
-        playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         testSequenceGenerator.getNext(),
         PING_MLS);
 
@@ -298,28 +298,28 @@ public class GamePowerUpTest extends GameTest {
         "One(beast) power-up should be active");
     assertEquals(beastPowerUp,
         resultPlayerState.getActivePowerUps().get(0).getPowerUp());
-    assertEquals(playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+    assertEquals(playerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         resultPlayerState.getPlayerId());
-    assertEquals(playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+    assertEquals(playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
         resultPlayerState.getCoordinates(), "Coordinates shouldn't change");
 
     verify(beastPowerUp).apply(argThat(
-        playerState -> playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId()
-            == playerGameState.getPlayerStateChannel()
+        playerState -> playerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId()
+            == playerGameState.getPlayerNetworkLayerState()
             .getPlayerState().getPlayerId()));
-    assertEquals(2, playerGameState.getPlayerStateChannel().getPlayerState()
+    assertEquals(2, playerGameState.getPlayerNetworkLayerState().getPlayerState()
             .getDamageAmplifier(
-                playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
-                victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+                playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates().getPosition(),
+                victimGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
                 GameWeaponType.PUNCH.getDamageFactory().getDamage(game)),
         0.001,
         "Damage should amplify after picking up beast power-up");
 
     PlayerAttackingGameState playerAttackingGameState = game.attack(
-        playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
-        playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
-        playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates().getPosition(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
+        victimGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         GameWeaponType.PUNCH.getDamageFactory().getDamage(game),
         testSequenceGenerator.getNext(),
         PING_MLS);
@@ -343,17 +343,17 @@ public class GamePowerUpTest extends GameTest {
         mock(Channel.class), PlayerStateColor.GREEN);
 
     var result = game.pickupPowerUp(
-        playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
         BEAST,
-        playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         testSequenceGenerator.getNext(),
         PING_MLS);
     assertEquals(beastPowerUp, result.getPowerUp());
 
     result = game.pickupPowerUp(
-        playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
         QUAD_DAMAGE,
-        playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         testSequenceGenerator.getNext(),
         PING_MLS);
 
@@ -367,28 +367,28 @@ public class GamePowerUpTest extends GameTest {
         resultPlayerState.getActivePowerUps().stream().map(
             powerUpInEffect -> powerUpInEffect.getPowerUp().getType()).collect(Collectors.toSet()));
 
-    assertEquals(playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+    assertEquals(playerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         resultPlayerState.getPlayerId());
-    assertEquals(playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+    assertEquals(playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
         resultPlayerState.getCoordinates(), "Coordinates shouldn't change");
 
     verify(beastPowerUp).apply(argThat(
-        playerState -> playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId()
-            == playerGameState.getPlayerStateChannel()
+        playerState -> playerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId()
+            == playerGameState.getPlayerNetworkLayerState()
             .getPlayerState().getPlayerId()));
-    assertEquals(8, playerGameState.getPlayerStateChannel().getPlayerState()
+    assertEquals(8, playerGameState.getPlayerNetworkLayerState().getPlayerState()
             .getDamageAmplifier(
-                playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
-                victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+                playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates().getPosition(),
+                victimGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
                 GameWeaponType.PUNCH.getDamageFactory().getDamage(game)),
         0.001,
         "Damage should amplify after picking up beast + quad power-ups");
 
     PlayerAttackingGameState playerAttackingGameState = game.attack(
-        playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
-        playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
-        playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates().getPosition(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
+        victimGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         GameWeaponType.PUNCH.getDamageFactory().getDamage(game),
         testSequenceGenerator.getNext(),
         PING_MLS);
@@ -412,10 +412,10 @@ public class GamePowerUpTest extends GameTest {
         mock(Channel.class), PlayerStateColor.GREEN);
 
     PlayerAttackingGameState playerAttackingGameState = game.attack(
-        playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
-        playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
-        playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates().getPosition(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
+        victimGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         GameWeaponType.PUNCH.getDamageFactory().getDamage(game),
         testSequenceGenerator.getNext(),
         PING_MLS);
@@ -424,9 +424,9 @@ public class GamePowerUpTest extends GameTest {
         playerAttackingGameState.getPlayerAttacked().getHealth());
 
     var result = game.pickupPowerUp(
-        victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        victimGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
         PowerUpType.HEALTH,
-        victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        victimGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         testSequenceGenerator.getNext(),
         PING_MLS);
 
@@ -449,9 +449,9 @@ public class GamePowerUpTest extends GameTest {
         mock(Channel.class), PlayerStateColor.GREEN);
 
     var result = game.pickupPowerUp(
-        victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        victimGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
         PowerUpType.DEFENCE,
-        victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        victimGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         testSequenceGenerator.getNext(),
         PING_MLS);
 
@@ -461,29 +461,29 @@ public class GamePowerUpTest extends GameTest {
         "One(defence) power-up should be active");
     assertEquals(defencePowerUp,
         result.getPlayerState().getActivePowerUps().get(0).getPowerUp());
-    assertEquals(victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+    assertEquals(victimGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         result.getPlayerState().getPlayerId());
-    assertEquals(victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+    assertEquals(victimGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
         result.getPlayerState().getCoordinates(), "Coordinates shouldn't change");
 
     verify(defencePowerUp).apply(argThat(
-        playerState -> victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId()
-            == victimGameState.getPlayerStateChannel()
+        playerState -> victimGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId()
+            == victimGameState.getPlayerNetworkLayerState()
             .getPlayerState().getPlayerId()));
 
     for (int i = 0; i < 2; i++) {
       PlayerAttackingGameState playerAttackingGameState = game.attack(
-          playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
-          playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
-          playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
+          playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates().getPosition(),
+          playerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
+          victimGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
           GameWeaponType.PUNCH.getDamageFactory().getDamage(game),
           testSequenceGenerator.getNext(),
           PING_MLS);
       assertFalse(playerAttackingGameState.getPlayerAttacked().isDead(),
           "Attacked player should not be dead. Defence power-up is active");
     }
-    assertEquals(50, victimGameState.getPlayerStateChannel().getPlayerState().getHealth());
+    assertEquals(50, victimGameState.getPlayerNetworkLayerState().getPlayerState().getHealth());
   }
 
   /**
@@ -501,9 +501,9 @@ public class GamePowerUpTest extends GameTest {
         mock(Channel.class), PlayerStateColor.GREEN);
 
     var result = game.pickupPowerUp(
-        victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        victimGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
         PowerUpType.DEFENCE,
-        victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        victimGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         testSequenceGenerator.getNext(),
         PING_MLS);
 
@@ -513,22 +513,22 @@ public class GamePowerUpTest extends GameTest {
         "One(defence) power-up should be active");
     assertEquals(defencePowerUp,
         result.getPlayerState().getActivePowerUps().get(0).getPowerUp());
-    assertEquals(victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+    assertEquals(victimGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         result.getPlayerState().getPlayerId());
-    assertEquals(victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+    assertEquals(victimGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
         result.getPlayerState().getCoordinates(), "Coordinates shouldn't change");
 
     verify(defencePowerUp).apply(argThat(
-        playerState -> victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId()
-            == victimGameState.getPlayerStateChannel()
+        playerState -> victimGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId()
+            == victimGameState.getPlayerNetworkLayerState()
             .getPlayerState().getPlayerId()));
 
     for (int i = 0; i < 3; i++) {
       PlayerAttackingGameState playerAttackingGameState = game.attack(
-          playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
-          playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
-          playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
+          playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates().getPosition(),
+          playerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
+          victimGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
           GameWeaponType.PUNCH.getDamageFactory().getDamage(game),
           testSequenceGenerator.getNext(),
           PING_MLS);
@@ -537,10 +537,10 @@ public class GamePowerUpTest extends GameTest {
     }
     // this is the punch that kills
     PlayerAttackingGameState playerAttackingGameState = game.attack(
-        playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
-        playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
-        playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates().getPosition(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
+        victimGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         GameWeaponType.PUNCH.getDamageFactory().getDamage(game),
         testSequenceGenerator.getNext(),
         PING_MLS);
@@ -559,9 +559,9 @@ public class GamePowerUpTest extends GameTest {
     PlayerJoinedGameState playerGameState = fullyJoin("some player",
         mock(Channel.class), PlayerStateColor.GREEN);
 
-    game.pickupPowerUp(playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+    game.pickupPowerUp(playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
         QUAD_DAMAGE,
-        playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        playerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         testSequenceGenerator.getNext(),
         PING_MLS);
 
@@ -586,34 +586,34 @@ public class GamePowerUpTest extends GameTest {
     PlayerJoinedGameState victimGameState = fullyJoin("victim",
         mock(Channel.class), PlayerStateColor.GREEN);
 
-    game.pickupPowerUp(victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+    game.pickupPowerUp(victimGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
         QUAD_DAMAGE,
-        victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        victimGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         testSequenceGenerator.getNext(),
         PING_MLS);
 
     int punchesToKill = (int) Math.ceil(100d / game.getGameConfig().getDefaultPunchDamage());
     for (int i = 0; i < punchesToKill; i++) {
       game.attack(
-          playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
-          playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
-          playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          victimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
+          playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates().getPosition(),
+          playerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
+          victimGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
           GameWeaponType.PUNCH.getDamageFactory().getDamage(game),
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
 
-    assertTrue(victimGameState.getPlayerStateChannel().getPlayerState().isDead(),
+    assertTrue(victimGameState.getPlayerNetworkLayerState().getPlayerState().isDead(),
         "Attacked player should be dead");
     assertEquals(0,
-        victimGameState.getPlayerStateChannel().getPlayerState().getActivePowerUps().size(),
+        victimGameState.getPlayerNetworkLayerState().getPlayerState().getActivePowerUps().size(),
         "Power-ups should be cleared out after death");
-    verify(quadDamagePowerUp).revert(victimGameState.getPlayerStateChannel().getPlayerState());
-    assertEquals(1, victimGameState.getPlayerStateChannel().getPlayerState()
+    verify(quadDamagePowerUp).revert(victimGameState.getPlayerNetworkLayerState().getPlayerState());
+    assertEquals(1, victimGameState.getPlayerNetworkLayerState().getPlayerState()
             .getDamageAmplifier(
-                playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates().getPosition(),
-                victimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+                playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates().getPosition(),
+                victimGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
                 GameWeaponType.PUNCH.getDamageFactory().getDamage(game)),
         0.001,
         "Damage amplifier has to default to 1");
@@ -640,9 +640,9 @@ public class GamePowerUpTest extends GameTest {
         try {
           latch.await();
           var result = game.pickupPowerUp(
-              playerGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+              playerGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
               QUAD_DAMAGE,
-              playerGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+              playerGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
               testSequenceGenerator.getNext(),
               PING_MLS);
           if (result != null) {
@@ -692,20 +692,20 @@ public class GamePowerUpTest extends GameTest {
 
     for (int i = 0; i < shotsToKill; i++) {
       game.attack(
-          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
-          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+          shooterPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
+          shooterPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates()
               .getPosition(),
-          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          shooterPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
+          shotPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
           GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
 
     var result = game.pickupPowerUp(
-        shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        shotPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
         QUAD_DAMAGE,
-        shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        shotPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         testSequenceGenerator.getNext(),
         PING_MLS);
     assertNull(result, "Should be no result as dead players can't pick up power-ups");
@@ -730,23 +730,23 @@ public class GamePowerUpTest extends GameTest {
     PlayerJoinedGameState shotPlayerConnectedGameState = fullyJoin(shotPlayerName, channel,
         PlayerStateColor.GREEN);
     game.pickupPowerUp(
-        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        shooterPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
         QUAD_DAMAGE,
-        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        shooterPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         testSequenceGenerator.getNext(),
         PING_MLS);
     game.attack(
-        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
-        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+        shooterPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
+        shooterPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates()
             .getPosition(),
-        shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        shooterPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
+        shotPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         GameWeaponType.PUNCH.getDamageFactory().getDamage(game),
         testSequenceGenerator.getNext(),
         PING_MLS);
 
     var result = game.respawnPlayer(
-        shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId());
+        shotPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId());
 
     assertEquals(4,
         Streams.stream(result.getSpawnedPowerUps().iterator()).count(),

@@ -50,19 +50,19 @@ public class GameJoinTest extends GameTest {
     assertEquals(1, game.getPlayersRegistry().allPlayers().size(), "We connected 1 player only");
     PlayerState playerState = game.getPlayersRegistry()
         .getPlayerState(
-            playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
+            playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertFalse(playerState.hasMoved(), "Nobody moved");
     assertEquals(playerName, playerState.getPlayerName());
     assertEquals(0, playerState.getGameStats().getKills(), "Nobody got killed yet");
-    assertEquals(playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+    assertEquals(playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         playerState.getPlayerId());
     assertEquals(100, playerState.getHealth(), "Full 100% HP must be set by default");
     assertEquals(1, playerConnectedGameState.getLeaderBoard().size(),
         "Leader board has 1 item as we have 1 player only");
     assertEquals(
-        playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         playerConnectedGameState.getLeaderBoard().get(0).getPlayerId());
     assertEquals(
         0,
@@ -97,7 +97,7 @@ public class GameJoinTest extends GameTest {
     doReturn(spawner.getPlayerSpawns()).when(spawner).getRandomSpawns();
     var connectedPlayer = fullyJoin(playerName, channel, PlayerStateColor.GREEN);
     assertEquals(spawner.getPlayerSpawns().get(spawner.getPlayerSpawns().size() - 1),
-        connectedPlayer.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        connectedPlayer.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
         "Should be spawned to the last spawn position because it's least populated");
   }
 
@@ -124,12 +124,12 @@ public class GameJoinTest extends GameTest {
     assertEquals(1, game.getPlayersRegistry().allPlayers().size(), "We connected 1 player only");
     PlayerState playerState = game.getPlayersRegistry()
         .getPlayerState(
-            playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
+            playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertFalse(playerState.hasMoved(), "Nobody moved");
     assertEquals(playerName, playerState.getPlayerName());
-    assertEquals(playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+    assertEquals(playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         playerState.getPlayerId());
     assertEquals(100, playerState.getHealth(), "Full 100% HP must be set by default");
   }

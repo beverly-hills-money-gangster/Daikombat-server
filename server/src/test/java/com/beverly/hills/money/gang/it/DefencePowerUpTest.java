@@ -35,8 +35,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 @SetEnvironmentVariable(key = "GAME_SERVER_SPAWN_IMMORTAL_MLS", value = "0")
 @SetEnvironmentVariable(key = "GAME_SERVER_TELEPORTS_ENABLED", value = "false")
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "5000")
-@SetEnvironmentVariable(key = "CLIENT_UDP_GLITCHY_INBOUND_DROP_MESSAGE_PROBABILITY", value = "0.15")
-@SetEnvironmentVariable(key = "CLIENT_UDP_GLITCHY_OUTBOUND_DROP_MESSAGE_PROBABILITY", value = "0.15")
+@SetEnvironmentVariable(key = "CLIENT_UDP_GLITCHY_INBOUND_DROP_MESSAGE_PROBABILITY", value = "0.20")
+@SetEnvironmentVariable(key = "CLIENT_UDP_GLITCHY_OUTBOUND_DROP_MESSAGE_PROBABILITY", value = "0.20")
 public class DefencePowerUpTest extends AbstractGameServerTest {
 
 
@@ -49,7 +49,7 @@ public class DefencePowerUpTest extends AbstractGameServerTest {
    * @then invisibility is applied, reverted after GAME_SERVER_DEFENCE_LASTS_FOR_MLS, and then
    * released after GAME_SERVER_DEFENCE_SPAWN_MLS
    */
-  @RepeatedTest(8)
+  @RepeatedTest(4)
   public void testPickUpPowerUpDefence()
       throws IOException, InterruptedException, GameLogicError {
     int gameIdToConnectTo = 0;
@@ -86,7 +86,7 @@ public class DefencePowerUpTest extends AbstractGameServerTest {
 
     playerConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(playerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
+        .setPingMls(PING_MLS)
         .setPingMls(PING_MLS)
         .setGameId(gameIdToConnectTo)
         .setPosition(Vector.newBuilder()

@@ -50,8 +50,9 @@ public class GameTickScheduler {
   public void resendAckRequiredEvents(final Channel udpChannel) {
     gameRoomRegistry.getGames().forEach(game -> {
       try {
-        game.getPlayersRegistry().allActivePlayers().forEach(player -> player.getAckRequiredEvents()
-            .forEach(gameEvent -> player.writeUDPFlushRaw(udpChannel, gameEvent, false)));
+        game.getPlayersRegistry().allActivePlayers()
+            .forEach(player -> player.getAckRequiredEvents().forEach(
+                gameEvent -> player.writeUDPFlushRaw(udpChannel, gameEvent)));
       } catch (Exception e) {
         LOG.error("Error while scheduling", e);
       } finally {

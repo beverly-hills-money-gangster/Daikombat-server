@@ -47,11 +47,11 @@ public class GameTestRespawn extends GameTest {
     // after this loop, victim player is dead
     for (int i = 0; i < shotsToKill; i++) {
       game.attack(
-          playerRespawnedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
-          playerRespawnedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+          playerRespawnedGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
+          playerRespawnedGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates()
               .getPosition(),
-          playerRespawnedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          playerVictimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          playerRespawnedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
+          playerVictimGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
           GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
           testSequenceGenerator.getNext(),
           PING_MLS);
@@ -60,34 +60,34 @@ public class GameTestRespawn extends GameTest {
     // after this loop, respawn player is dead
     for (int i = 0; i < shotsToKill; i++) {
       game.bufferMove(
-          playerVictimGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          playerVictimGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+          playerVictimGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
+          playerVictimGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
           testSequenceGenerator.getNext(), PING_MLS);
       game.attack(
-          killerPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
-          killerPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+          killerPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
+          killerPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates()
               .getPosition(),
-          killerPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          playerRespawnedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          killerPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
+          playerRespawnedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
           GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
           testSequenceGenerator.getNext(),
           PING_MLS);
     }
 
     var respawned = game.respawnPlayer(
-        playerRespawnedGameState.getPlayerStateChannel().getPlayerState().getPlayerId());
+        playerRespawnedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId());
     assertEquals(-1,
-        respawned.getPlayerStateChannel().getPlayerState().getLastReceivedEventSequenceId(),
+        respawned.getPlayerNetworkLayerState().getPlayerState().getLastReceivedEventSequenceId(),
         "Last received sequence id must default to -1 because game client starts from 0 on respawn");
-    assertEquals(playerRespawnedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-        respawned.getPlayerStateChannel().getPlayerState().getPlayerId());
-    assertFalse(respawned.getPlayerStateChannel().getPlayerState().isDead());
-    assertEquals(1, respawned.getPlayerStateChannel().getPlayerState().getGameStats().getDeaths(),
+    assertEquals(playerRespawnedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
+        respawned.getPlayerNetworkLayerState().getPlayerState().getPlayerId());
+    assertFalse(respawned.getPlayerNetworkLayerState().getPlayerState().isDead());
+    assertEquals(1, respawned.getPlayerNetworkLayerState().getPlayerState().getGameStats().getDeaths(),
         "Death count should increment after respawn");
     assertEquals(DEFAULT_HP,
-        respawned.getPlayerStateChannel().getPlayerState().getHealth(),
+        respawned.getPlayerNetworkLayerState().getPlayerState().getHealth(),
         "Health must be restored after respawn");
-    assertEquals(1, respawned.getPlayerStateChannel().getPlayerState().getGameStats().getKills(),
+    assertEquals(1, respawned.getPlayerNetworkLayerState().getPlayerState().getGameStats().getKills(),
         "Number of kills should be the same after respawn");
 
     PlayerJoinedGameState observerPlayerConnectedGameState = fullyJoin("observer",
@@ -100,7 +100,7 @@ public class GameTestRespawn extends GameTest {
     var respawnedLeaderBoardItem = observerPlayerConnectedGameState.getLeaderBoard().stream()
         .filter(
             gameLeaderBoardItem -> gameLeaderBoardItem.getPlayerId()
-                == respawned.getPlayerStateChannel()
+                == respawned.getPlayerNetworkLayerState()
                 .getPlayerState().getPlayerId())
         .findFirst()
         .orElseThrow(
@@ -121,14 +121,14 @@ public class GameTestRespawn extends GameTest {
         .position(Vector.builder().x(0f).y(1).build()).build();
 
     game.bufferMove(
-        playerRespawnedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        playerRespawnedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         newCoordinates,
         0, PING_MLS);
 
     assertEquals(newCoordinates,
-        playerRespawnedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
+        playerRespawnedGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
         "Respawned player position should be updated after moving");
-    assertEquals(0, playerRespawnedGameState.getPlayerStateChannel().getPlayerState()
+    assertEquals(0, playerRespawnedGameState.getPlayerNetworkLayerState().getPlayerState()
             .getLastReceivedEventSequenceId(),
         "Last event sequence id must be 0 as it was the last id received after buffering a MOVE event");
   }
@@ -146,7 +146,7 @@ public class GameTestRespawn extends GameTest {
     GameLogicError gameLogicError
         = assertThrows(GameLogicError.class,
         () -> game.respawnPlayer(
-            playerRespawnedGameState.getPlayerStateChannel().getPlayerState().getPlayerId()),
+            playerRespawnedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId()),
         "Live players shouldn't be able to respawn");
     assertEquals(COMMON_ERROR, gameLogicError.getErrorCode());
   }

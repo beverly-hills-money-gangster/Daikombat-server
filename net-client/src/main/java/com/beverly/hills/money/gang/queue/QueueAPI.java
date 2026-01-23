@@ -7,6 +7,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,8 @@ public class QueueAPI<T> implements QueueReader<T>, QueueWriter<T> {
   private final Object waiter = new Object();
 
   private final List<Consumer<T>> listeners = new CopyOnWriteArrayList<>();
+
+  private final List<Predicate<T>> filters = new CopyOnWriteArrayList<>();
 
   @Override
   public int size() {
@@ -63,8 +66,16 @@ public class QueueAPI<T> implements QueueReader<T>, QueueWriter<T> {
     listeners.add(listener);
   }
 
+  public void addFilter(final @NonNull Predicate<T> filter) {
+    filters.add(filter);
+  }
+
   @Override
   public void push(T event) {
+    var matchingEvent = filters.stream().allMatch(filter -> filter.test(event));
+    if (!matchingEvent) {
+      return;
+    }
     queue.add(event);
     listeners.forEach(consumer -> {
       try {

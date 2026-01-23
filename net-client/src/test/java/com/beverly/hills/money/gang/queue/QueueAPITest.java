@@ -3,10 +3,14 @@ package com.beverly.hills.money.gang.queue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -47,6 +51,42 @@ public class QueueAPITest {
     queueAPI.push(1);
     queueAPI.push(2);
     assertEquals(2, queueAPI.size());
+  }
+
+  @Test
+  public void testPushFilter() {
+    queueAPI.addFilter(integer -> integer % 2 == 0);
+    queueAPI.push(1);
+    queueAPI.push(2);
+    queueAPI.push(3);
+    queueAPI.push(4);
+    assertEquals(2, queueAPI.size());
+    var pushed = new HashSet<>(queueAPI.list());
+    assertTrue(pushed.contains(2));
+    assertTrue(pushed.contains(4));
+  }
+
+  @Test
+  public void testPushListener() {
+    var oddCounter = new AtomicInteger();
+    Consumer<Integer> listener = spy(new Consumer<Integer>() {
+      @Override
+      public void accept(Integer integer) {
+        if (integer % 2 != 0) {
+          oddCounter.incrementAndGet();
+        }
+      }
+    });
+
+    queueAPI.addListener(listener);
+    int elementsToPush = 5;
+    for (int i = 0; i < elementsToPush; i++) {
+      queueAPI.push(i + 1);
+    }
+
+    assertEquals(elementsToPush, queueAPI.size());
+    verify(listener, times(elementsToPush)).accept(anyInt());
+    assertEquals(3, oddCounter.get());
   }
 
   @Test
@@ -160,7 +200,7 @@ public class QueueAPITest {
     assertEquals(threadsToCreate * eventsToPush, queueAPI.size());
   }
 
-  @RepeatedTest(8)
+  @RepeatedTest(256)
   public void testPollBlockingEmpty() throws InterruptedException {
     var polledElements = new AtomicInteger();
     var interrupted = new AtomicBoolean();
@@ -187,7 +227,7 @@ public class QueueAPITest {
         "No elements to be polled because we haven't pushed anything");
   }
 
-  @RepeatedTest(8)
+  @RepeatedTest(256)
   public void testPollBlockingTimeout() throws InterruptedException {
     int maxTimeoutMls = 500;
     long start = System.currentTimeMillis();
@@ -197,7 +237,7 @@ public class QueueAPITest {
   }
 
 
-  @RepeatedTest(8)
+  @RepeatedTest(256)
   public void testPollBlockingOneElement() throws InterruptedException {
     var polledElement = new AtomicInteger();
     int maxElementsToPoll = 1;

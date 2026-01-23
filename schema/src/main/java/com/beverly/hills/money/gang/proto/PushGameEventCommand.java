@@ -436,6 +436,25 @@ private static final long serialVersionUID = 0L;
     return result == null ? com.beverly.hills.money.gang.proto.GamePowerUpType.UNRECOGNIZED : result;
   }
 
+  public static final int GAMESESSION_FIELD_NUMBER = 13;
+  private int gameSession_ = 0;
+  /**
+   * <code>optional int32 gameSession = 13;</code>
+   * @return Whether the gameSession field is set.
+   */
+  @java.lang.Override
+  public boolean hasGameSession() {
+    return ((bitField0_ & 0x00001000) != 0);
+  }
+  /**
+   * <code>optional int32 gameSession = 13;</code>
+   * @return The gameSession.
+   */
+  @java.lang.Override
+  public int getGameSession() {
+    return gameSession_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -485,6 +504,9 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000800) != 0)) {
       output.writeEnum(12, powerUp_);
+    }
+    if (((bitField0_ & 0x00001000) != 0)) {
+      output.writeInt32(13, gameSession_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -542,6 +564,10 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000800) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(12, powerUp_);
+    }
+    if (((bitField0_ & 0x00001000) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(13, gameSession_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -615,6 +641,11 @@ private static final long serialVersionUID = 0L;
     if (hasPowerUp()) {
       if (powerUp_ != other.powerUp_) return false;
     }
+    if (hasGameSession() != other.hasGameSession()) return false;
+    if (hasGameSession()) {
+      if (getGameSession()
+          != other.getGameSession()) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -673,6 +704,10 @@ private static final long serialVersionUID = 0L;
     if (hasPowerUp()) {
       hash = (37 * hash) + POWERUP_FIELD_NUMBER;
       hash = (53 * hash) + powerUp_;
+    }
+    if (hasGameSession()) {
+      hash = (37 * hash) + GAMESESSION_FIELD_NUMBER;
+      hash = (53 * hash) + getGameSession();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -837,6 +872,7 @@ private static final long serialVersionUID = 0L;
         projectileBuilder_ = null;
       }
       powerUp_ = 0;
+      gameSession_ = 0;
       return this;
     }
 
@@ -925,6 +961,10 @@ private static final long serialVersionUID = 0L;
         result.powerUp_ = powerUp_;
         to_bitField0_ |= 0x00000800;
       }
+      if (((from_bitField0_ & 0x00001000) != 0)) {
+        result.gameSession_ = gameSession_;
+        to_bitField0_ |= 0x00001000;
+      }
       result.bitField0_ |= to_bitField0_;
     }
 
@@ -1007,6 +1047,9 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasPowerUp()) {
         setPowerUp(other.getPowerUp());
+      }
+      if (other.hasGameSession()) {
+        setGameSession(other.getGameSession());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -1100,6 +1143,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000800;
               break;
             } // case 96
+            case 104: {
+              gameSession_ = input.readInt32();
+              bitField0_ |= 0x00001000;
+              break;
+            } // case 104
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1896,6 +1944,46 @@ private static final long serialVersionUID = 0L;
     public Builder clearPowerUp() {
       bitField0_ = (bitField0_ & ~0x00000800);
       powerUp_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private int gameSession_ ;
+    /**
+     * <code>optional int32 gameSession = 13;</code>
+     * @return Whether the gameSession field is set.
+     */
+    @java.lang.Override
+    public boolean hasGameSession() {
+      return ((bitField0_ & 0x00001000) != 0);
+    }
+    /**
+     * <code>optional int32 gameSession = 13;</code>
+     * @return The gameSession.
+     */
+    @java.lang.Override
+    public int getGameSession() {
+      return gameSession_;
+    }
+    /**
+     * <code>optional int32 gameSession = 13;</code>
+     * @param value The gameSession to set.
+     * @return This builder for chaining.
+     */
+    public Builder setGameSession(int value) {
+
+      gameSession_ = value;
+      bitField0_ |= 0x00001000;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional int32 gameSession = 13;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearGameSession() {
+      bitField0_ = (bitField0_ & ~0x00001000);
+      gameSession_ = 0;
       onChanged();
       return this;
     }

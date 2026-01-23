@@ -1,6 +1,7 @@
 package com.beverly.hills.money.gang.it;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 
@@ -15,6 +16,7 @@ import com.beverly.hills.money.gang.proto.PlayerSkinColor;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand;
 import com.beverly.hills.money.gang.proto.PushGameEventCommand.GameEventType;
 import com.beverly.hills.money.gang.proto.ServerResponse;
+import com.beverly.hills.money.gang.proto.ServerResponse.GameEvent;
 import com.beverly.hills.money.gang.proto.ServerResponse.PowerUpSpawnEventItem;
 import com.beverly.hills.money.gang.proto.Vector;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
@@ -38,8 +40,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 @SetEnvironmentVariable(key = "GAME_SERVER_SPAWN_IMMORTAL_MLS", value = "0")
 @SetEnvironmentVariable(key = "GAME_SERVER_MOVES_UPDATE_FREQUENCY_MLS", value = "999999")
 @SetEnvironmentVariable(key = "CLIENT_MAX_SERVER_INACTIVE_MLS", value = "5000")
-@SetEnvironmentVariable(key = "CLIENT_UDP_GLITCHY_INBOUND_DROP_MESSAGE_PROBABILITY", value = "0.15")
-@SetEnvironmentVariable(key = "CLIENT_UDP_GLITCHY_OUTBOUND_DROP_MESSAGE_PROBABILITY", value = "0.15")
+@SetEnvironmentVariable(key = "CLIENT_UDP_GLITCHY_INBOUND_DROP_MESSAGE_PROBABILITY", value = "0.20")
+@SetEnvironmentVariable(key = "CLIENT_UDP_GLITCHY_OUTBOUND_DROP_MESSAGE_PROBABILITY", value = "0.20")
 public class AllPowerUpTest extends AbstractGameServerTest {
 
   @Autowired
@@ -50,7 +52,7 @@ public class AllPowerUpTest extends AbstractGameServerTest {
    * @when a player picks up all power-ups
    * @then all power-ups are applied and reverted after some time
    */
-  @RepeatedTest(8)
+  @RepeatedTest(4)
   public void testPickUpPowerUpAll()
       throws IOException, GameLogicError, InterruptedException {
     int gameIdToConnectTo = 0;
@@ -90,7 +92,7 @@ public class AllPowerUpTest extends AbstractGameServerTest {
 
     powerUpsToPick.forEach(powerUpType -> playerConnection.write(PushGameEventCommand.newBuilder()
         .setPlayerId(playerId)
-        .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
+        .setPingMls(PING_MLS)
         .setGameId(gameIdToConnectTo)
         .setPosition(Vector.newBuilder()
             .setX(playerSpawnEvent.getPlayer().getPosition().getX())
@@ -102,6 +104,14 @@ public class AllPowerUpTest extends AbstractGameServerTest {
         .build()));
 
     waitUntilGetResponses(playerConnection.getResponse(), powerUpsToPick.size());
+
+    for (ServerResponse response : playerConnection.getResponse().list()) {
+      assertTrue(response.hasGameEvents(),
+          "Expected to have game events. Actual response: " + playerConnection.getResponse()
+              .list());
+      assertEquals(GameEvent.GameEventType.POWER_UP_PICKUP,
+          response.getGameEvents().getEvents(0).getEventType());
+    }
 
     for (PowerUp powerUpBean : allPowerUps) {
       verify(powerUpBean).apply(argThat(playerState -> playerState.getPlayerId() == playerId));

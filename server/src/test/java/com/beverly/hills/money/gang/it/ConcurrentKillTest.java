@@ -95,7 +95,7 @@ public class ConcurrentKillTest extends AbstractGameServerTest {
           float newPositionY = mySpawn.getPlayer().getPosition().getY() - 0.1f;
           wait.await();
           gameConnection.write(PushGameEventCommand.newBuilder()
-              .setSequence(sequenceGenerator.getNext()).setPingMls(PING_MLS)
+              .setPingMls(PING_MLS)
               .setPlayerId(mySpawn.getPlayer().getPlayerId())
               .setGameId(0)
               .setEventType(GameEventType.ATTACK)

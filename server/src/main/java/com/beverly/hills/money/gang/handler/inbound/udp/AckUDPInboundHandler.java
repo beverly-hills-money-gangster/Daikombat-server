@@ -32,7 +32,7 @@ public class AckUDPInboundHandler extends SimpleChannelInboundHandler<AckUDPPayl
       var ipAddress = payloadDTO.getInetSocketAddress();
       gameRoomRegistry.getGame(gameId).getPlayersRegistry()
           .getPlayerStateChannel(playerId, ipAddress.getAddress().getHostAddress())
-          .ifPresent(playerStateChannel -> playerStateChannel.ackGameEvent(sequence));
+          .ifPresent(playerStateChannel -> playerStateChannel.ackReceivedGameEvent(sequence));
     } finally {
       buf.release();
     }

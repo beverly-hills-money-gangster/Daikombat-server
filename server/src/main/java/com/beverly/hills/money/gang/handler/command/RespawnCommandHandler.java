@@ -1,11 +1,11 @@
 package com.beverly.hills.money.gang.handler.command;
 
-import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createRespawnEventSinglePlayer;
+import static com.beverly.hills.money.gang.factory.response.ServerResponseFactory.createInitRespawnEventSinglePlayer;
 
 import com.beverly.hills.money.gang.exception.GameLogicError;
+import com.beverly.hills.money.gang.factory.response.ServerResponseFactory;
 import com.beverly.hills.money.gang.proto.ServerCommand;
 import com.beverly.hills.money.gang.proto.ServerCommand.CommandCase;
-import com.beverly.hills.money.gang.proto.ServerResponse;
 import com.beverly.hills.money.gang.registry.GameRoomRegistry;
 import com.beverly.hills.money.gang.state.Game;
 import com.beverly.hills.money.gang.state.entity.PlayerRespawnedGameState;
@@ -44,22 +44,22 @@ public class RespawnCommandHandler extends JoinGameServerCommandHandler {
       LOG.warn("Can't respawn. Ignore.");
       return;
     }
-    ServerResponse playerSpawnEvent = createRespawnEventSinglePlayer(
+    var playerSpawnEvent = ServerResponseFactory.createInitRespawnEventSinglePlayer(
         game.playersOnline(), playerRespawnedGameState);
 
-    playerRespawnedGameState.getPlayerStateChannel()
+    playerRespawnedGameState.getPlayerNetworkLayerState()
         .writeTCPFlush(playerSpawnEvent, channelFuture -> {
           if (!channelFuture.isSuccess()) {
             tcpClientChannel.close();
             return;
           }
           sendOtherSpawns(game,
-              playerRespawnedGameState.getPlayerStateChannel(),
+              playerRespawnedGameState.getPlayerNetworkLayerState(),
               playerRespawnedGameState.getSpawnedPowerUps(),
               playerRespawnedGameState.getTeleports(),
-              createRespawnEventSinglePlayer(
+              createInitRespawnEventSinglePlayer(
                   game.playersOnline(),
-                  playerRespawnedGameState.getPlayerStateChannel().getPlayerState()));
+                  playerRespawnedGameState.getPlayerNetworkLayerState().getPlayerState()));
         });
   }
 }

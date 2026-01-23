@@ -58,7 +58,7 @@ public class GameMoveTest extends GameTest {
     Channel channel = mock(Channel.class);
     PlayerJoinedGameState playerConnectedGameState = fullyJoin(playerName, channel,
         PlayerStateColor.GREEN);
-    var playerCurrentCoordinates = playerConnectedGameState.getPlayerStateChannel().getPlayerState()
+    var playerCurrentCoordinates = playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState()
         .getCoordinates();
 
     assertEquals(0, game.getBufferedMoves().size(), "No moves buffered before you actually move");
@@ -70,18 +70,18 @@ public class GameMoveTest extends GameTest {
             .x(playerCurrentCoordinates.getPosition().getX() + 0.1f)
             .y(playerCurrentCoordinates.getPosition().getY() + 0.1f).build()).build();
 
-    game.bufferMove(playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+    game.bufferMove(playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         newCoordinates,
         sequence,
         PING_MLS);
 
     assertEquals(sequence,
-        playerConnectedGameState.getPlayerStateChannel().getPlayerState()
+        playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState()
             .getLastReceivedEventSequenceId());
     assertEquals(1, game.getBufferedMoves().size(), "One move should be buffered");
     PlayerState playerState = game.getPlayersRegistry()
         .getPlayerState(
-            playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
+            playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(100, playerState.getHealth());
@@ -110,18 +110,18 @@ public class GameMoveTest extends GameTest {
           .position(newPosition).build();
 
       game.bufferMove(
-          playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
           newCoordinates,
           sequence,
           PING_MLS);
 
       assertEquals(sequence,
-          playerConnectedGameState.getPlayerStateChannel().getPlayerState()
+          playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState()
               .getLastReceivedEventSequenceId());
       assertEquals(1, game.getBufferedMoves().size(), "One move should be buffered");
       PlayerState playerState = game.getPlayersRegistry()
           .getPlayerState(
-              playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
+              playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId())
           .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
               "A connected player must have a state!"));
       assertEquals(100, playerState.getHealth());
@@ -145,11 +145,11 @@ public class GameMoveTest extends GameTest {
     Channel channel = mock(Channel.class);
     PlayerJoinedGameState playerConnectedGameState = fullyJoin(playerName, channel,
         PlayerStateColor.GREEN);
-    var playerCurrentCoordinates = playerConnectedGameState.getPlayerStateChannel().getPlayerState()
+    var playerCurrentCoordinates = playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState()
         .getCoordinates();
 
     assertEquals(0, game.getBufferedMoves().size(), "No moves buffered before you actually move");
-    int oldSequence = playerConnectedGameState.getPlayerStateChannel().getPlayerState()
+    int oldSequence = playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState()
         .getLastReceivedEventSequenceId();
     int sequence = 15;
     Coordinates newCoordinates = Coordinates
@@ -160,7 +160,7 @@ public class GameMoveTest extends GameTest {
             .y(playerCurrentCoordinates.getPosition().getY() + 9999).build()).build();
 
     GameLogicError ex = assertThrows(GameLogicError.class, () -> game.bufferMove(
-        playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         newCoordinates,
         sequence,
         PING_MLS));
@@ -169,14 +169,14 @@ public class GameMoveTest extends GameTest {
     assertEquals("Illegal move", ex.getMessage());
 
     assertEquals(oldSequence,
-        playerConnectedGameState.getPlayerStateChannel().getPlayerState()
+        playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState()
             .getLastReceivedEventSequenceId(),
         "Sequence shouldn't change because we didn't apply the move");
     assertEquals(0, game.getBufferedMoves().size(), "Nothing should be buffered");
 
     PlayerState playerState = game.getPlayersRegistry()
         .getPlayerState(
-            playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
+            playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(100, playerState.getHealth());
@@ -199,10 +199,10 @@ public class GameMoveTest extends GameTest {
     Channel channel = mock(Channel.class);
     PlayerJoinedGameState playerConnectedGameState = fullyJoin(playerName, channel,
         PlayerStateColor.GREEN);
-    var playerCurrentCoordinates = playerConnectedGameState.getPlayerStateChannel().getPlayerState()
+    var playerCurrentCoordinates = playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState()
         .getCoordinates();
 
-    int oldSequence = playerConnectedGameState.getPlayerStateChannel().getPlayerState()
+    int oldSequence = playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState()
         .getLastReceivedEventSequenceId();
     int sequence = 15;
     for (Vector wallPosition : CLASSIC_MAP_INSIDE_WALL_POSITIONS) {
@@ -213,7 +213,7 @@ public class GameMoveTest extends GameTest {
 
       int finalSequence = sequence;
       GameLogicError ex = assertThrows(GameLogicError.class, () -> game.bufferMove(
-          playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
           newCoordinates,
           finalSequence,
           PING_MLS));
@@ -222,14 +222,14 @@ public class GameMoveTest extends GameTest {
       assertEquals("Illegal move", ex.getMessage());
 
       assertEquals(oldSequence,
-          playerConnectedGameState.getPlayerStateChannel().getPlayerState()
+          playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState()
               .getLastReceivedEventSequenceId(),
           "Sequence shouldn't change because we didn't apply the move");
       assertEquals(0, game.getBufferedMoves().size(), "Nothing should be buffered");
 
       PlayerState playerState = game.getPlayersRegistry()
           .getPlayerState(
-              playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
+              playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId())
           .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
               "A connected player must have a state!"));
       assertEquals(100, playerState.getHealth());
@@ -254,7 +254,7 @@ public class GameMoveTest extends GameTest {
     Channel channel = mock(Channel.class);
     PlayerJoinedGameState playerConnectedGameState = fullyJoin(playerName, channel,
         PlayerStateColor.GREEN);
-    var playerCurrentCoordinates = playerConnectedGameState.getPlayerStateChannel().getPlayerState()
+    var playerCurrentCoordinates = playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState()
         .getCoordinates();
 
     assertEquals(0, game.getBufferedMoves().size(), "No moves buffered before you actually move");
@@ -265,12 +265,12 @@ public class GameMoveTest extends GameTest {
             .x(playerCurrentCoordinates.getPosition().getX() + 0.1f)
             .y(playerCurrentCoordinates.getPosition().getY() + 0.1f).build()).build();
 
-    game.bufferMove(playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+    game.bufferMove(playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         newCoordinates,
         5,
         PING_MLS);
 
-    game.bufferMove(playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+    game.bufferMove(playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         Coordinates
             .builder()
             .direction(Vector.builder().x(1f).y(0).build())
@@ -281,13 +281,13 @@ public class GameMoveTest extends GameTest {
         PING_MLS);
 
     assertEquals(5,
-        playerConnectedGameState.getPlayerStateChannel().getPlayerState()
+        playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState()
             .getLastReceivedEventSequenceId(),
         "Out-of-order move should be ignored. Last in-order move sequence id was 5");
     assertEquals(1, game.getBufferedMoves().size(), "One move should be buffered");
     PlayerState playerState = game.getPlayersRegistry()
         .getPlayerState(
-            playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
+            playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(100, playerState.getHealth());
@@ -308,7 +308,7 @@ public class GameMoveTest extends GameTest {
     Channel channel = mock(Channel.class);
     PlayerJoinedGameState playerConnectedGameState = fullyJoin(playerName, channel,
         PlayerStateColor.GREEN);
-    var playerCurrentCoordinates = playerConnectedGameState.getPlayerStateChannel().getPlayerState()
+    var playerCurrentCoordinates = playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState()
         .getCoordinates();
 
     assertEquals(0, game.getBufferedMoves().size(), "No moves buffered before you actually move");
@@ -326,12 +326,12 @@ public class GameMoveTest extends GameTest {
             .x(playerCurrentCoordinates.getPosition().getX() + 0.3f)
             .y(playerCurrentCoordinates.getPosition().getY() + 0.3f).build()).build();
 
-    game.bufferMove(playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+    game.bufferMove(playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         newCoordinates,
         testSequenceGenerator.getNext(),
         PING_MLS);
 
-    game.bufferMove(playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+    game.bufferMove(playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         latestCoordinates,
         testSequenceGenerator.getNext(),
         PING_MLS);
@@ -339,7 +339,7 @@ public class GameMoveTest extends GameTest {
 
     PlayerState playerState = game.getPlayersRegistry()
         .getPlayerState(
-            playerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
+            playerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
     assertEquals(100, playerState.getHealth());
@@ -385,7 +385,7 @@ public class GameMoveTest extends GameTest {
     PlayerJoinedGameState shotPlayerConnectedGameState = fullyJoin(shotPlayerName, channel,
         PlayerStateColor.GREEN);
 
-    var shotPlayerCoordinates = shotPlayerConnectedGameState.getPlayerStateChannel()
+    var shotPlayerCoordinates = shotPlayerConnectedGameState.getPlayerNetworkLayerState()
         .getPlayerState().getCoordinates();
 
     int shotsToKill = (int) Math.ceil(100d / game.getGameConfig().getDefaultShotgunDamage());
@@ -393,11 +393,11 @@ public class GameMoveTest extends GameTest {
     // after this loop, one player is  dead
     for (int i = 0; i < shotsToKill; i++) {
       game.attack(
-          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates(),
-          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+          shooterPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates(),
+          shooterPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates()
               .getPosition(),
-          shooterPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
-          shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+          shooterPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
+          shotPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
           GameWeaponType.SHOTGUN.getDamageFactory().getDamage(game),
           testSequenceGenerator.getNext(),
           PING_MLS);
@@ -411,24 +411,24 @@ public class GameMoveTest extends GameTest {
             .y(shotPlayerCoordinates.getPosition().getY() + 0.3f).build()).build();
 
     game.bufferMove(
-        shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId(),
+        shotPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId(),
         newCoordinates,
         testSequenceGenerator.getNext(),
         PING_MLS);
 
     PlayerState deadPlayerState = game.getPlayersRegistry()
         .getPlayerState(
-            shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getPlayerId())
+            shotPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getPlayerId())
         .orElseThrow((Supplier<Throwable>) () -> new IllegalStateException(
             "A connected player must have a state!"));
 
     assertEquals(
-        shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+        shotPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates()
             .getDirection(),
         deadPlayerState.getCoordinates().getDirection(),
         "Direction should be the same as the player has moved only after getting killed");
     assertEquals(
-        shotPlayerConnectedGameState.getPlayerStateChannel().getPlayerState().getCoordinates()
+        shotPlayerConnectedGameState.getPlayerNetworkLayerState().getPlayerState().getCoordinates()
             .getPosition(),
         deadPlayerState.getCoordinates().getPosition(),
         "Position should be the same as the player has moved only after getting killed");

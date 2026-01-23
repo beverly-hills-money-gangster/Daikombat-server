@@ -44,7 +44,7 @@ public class PowerUpPickGameEventHandler extends GameEventHandler {
     }
     var event = createPowerUpPlayerMoveGameEvent(result.getPlayerState());
     game.getPlayersRegistry().allActivePlayers()
-        .forEach(stateChannel -> stateChannel.writeUDPAckRequiredFlush(udpChannel, event));
+        .forEach(stateChannel -> stateChannel.writeUDPFlush(udpChannel, event));
     scheduler.schedule(result.getPowerUp().getLastsForMls(), () -> {
       if (!result.getPlayerState().isDead()) {
         LOG.debug("Revert power-up");

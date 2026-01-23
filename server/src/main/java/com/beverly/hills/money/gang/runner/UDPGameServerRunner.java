@@ -4,7 +4,6 @@ package com.beverly.hills.money.gang.runner;
 import com.beverly.hills.money.gang.config.ServerConfig;
 import com.beverly.hills.money.gang.initializer.UDPGameServerInitializer;
 import com.beverly.hills.money.gang.scheduler.GameTickScheduler;
-import com.beverly.hills.money.gang.storage.ProcessedGameEventsStorage;
 import com.beverly.hills.money.gang.transport.ServerTransport;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -32,8 +31,6 @@ public class UDPGameServerRunner extends AbstractServerRunner {
 
   private final GameTickScheduler gameTickScheduler;
 
-  private final ProcessedGameEventsStorage processedGameEventsStorage;
-
   @Override
   public void runServer(int port) throws InterruptedException {
     if (!stateRef.compareAndSet(ServerState.INIT, ServerState.STARTING)) {
@@ -59,10 +56,6 @@ public class UDPGameServerRunner extends AbstractServerRunner {
           () -> gameTickScheduler.resendAckRequiredEvents(serverChannel),
           ServerConfig.ACK_RESEND_FREQUENCY_MLS, ServerConfig.ACK_RESEND_FREQUENCY_MLS,
           TimeUnit.MILLISECONDS);
-      serverChannel.eventLoop().scheduleAtFixedRate(
-          processedGameEventsStorage::clearOldEvents,
-          processedGameEventsStorage.getCheckPeriodMls(),
-          processedGameEventsStorage.getCheckPeriodMls(), TimeUnit.MILLISECONDS);
       startWaitingLatch.countDown();
       serverChannel.closeFuture().sync();
       LOG.info("Server channel closed");

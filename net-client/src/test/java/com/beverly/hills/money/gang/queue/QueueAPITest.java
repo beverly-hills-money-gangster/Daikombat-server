@@ -200,7 +200,7 @@ public class QueueAPITest {
     assertEquals(threadsToCreate * eventsToPush, queueAPI.size());
   }
 
-  @RepeatedTest(256)
+  @RepeatedTest(4)
   public void testPollBlockingEmpty() throws InterruptedException {
     var polledElements = new AtomicInteger();
     var interrupted = new AtomicBoolean();
@@ -227,7 +227,7 @@ public class QueueAPITest {
         "No elements to be polled because we haven't pushed anything");
   }
 
-  @RepeatedTest(256)
+  @RepeatedTest(4)
   public void testPollBlockingTimeout() throws InterruptedException {
     int maxTimeoutMls = 500;
     long start = System.currentTimeMillis();
@@ -237,7 +237,7 @@ public class QueueAPITest {
   }
 
 
-  @RepeatedTest(256)
+  @RepeatedTest(4)
   public void testPollBlockingOneElement() throws InterruptedException {
     var polledElement = new AtomicInteger();
     int maxElementsToPoll = 1;

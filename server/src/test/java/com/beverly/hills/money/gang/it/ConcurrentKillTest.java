@@ -41,7 +41,7 @@ public class ConcurrentKillTest extends AbstractGameServerTest {
    * @when all of them try to kill each other concurrently at the same time
    * @then none of them receive an ERROR event
    */
-  @RepeatedTest(4)
+  @RepeatedTest(16)
   public void testKillConcurrent() throws InterruptedException {
     AtomicBoolean failed = new AtomicBoolean(false);
     List<Thread> joinThreads = new ArrayList<>();

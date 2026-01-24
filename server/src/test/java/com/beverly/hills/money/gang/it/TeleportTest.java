@@ -46,7 +46,7 @@ public class TeleportTest extends AbstractGameServerTest {
    * @when the player enters a teleport
    * @then the player gets teleported
    */
-  @RepeatedTest(4)
+  @RepeatedTest(16)
   public void testTeleport() throws IOException, GameLogicError, InterruptedException {
 
     int gameIdToConnectTo = 0;

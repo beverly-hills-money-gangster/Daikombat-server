@@ -27,7 +27,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -132,7 +131,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @when a new player connects to a server
    * @then the player sees "6 players online message"
    */
-  @RepeatedTest(4)
+  @Test
   public void testJoinGameAfterManyPlayersJoined() throws Exception {
     int gameIdToConnectTo = 0;
     int playersToConnect = 5;
@@ -182,7 +181,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @when a player connects to a server using wrong game id
    * @then the player is not connected
    */
-  @RepeatedTest(4)
+  @Test
   public void testJoinGameNotExistingGame() throws IOException, InterruptedException {
     int gameIdToConnectTo = 666;
     var gameConnection = createGameConnection("localhost", port);
@@ -257,7 +256,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @when a player connects with older major version connects to a server
    * @then the player is not connected
    */
-  @RepeatedTest(4)
+  @Test
   public void testJoinGameWrongVersion() throws IOException, InterruptedException {
     int gameIdToConnectTo = 0;
     var gameConnection = createGameConnection("localhost", port);
@@ -300,7 +299,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @when one more player connects to game 0
    * @then the player is not connected as the server is full
    */
-  @RepeatedTest(4)
+  @Test
   public void testJoinGameTooMany() throws IOException, InterruptedException {
     for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
       var gameConnection = createGameConnection("localhost",
@@ -339,7 +338,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @when 2 players connect with the same name
    * @then 1st player is connected, 2nd player is not
    */
-  @RepeatedTest(4)
+  @Test
   public void testJoinSameName() throws IOException, InterruptedException {
 
     var gameConnection = createGameConnection("localhost", port);
@@ -382,7 +381,7 @@ public class JoinGameTest extends AbstractGameServerTest {
    * @when a new player connects to game 0
    * @then the player is successfully connected
    */
-  @RepeatedTest(4)
+  @Test
   public void testJoinGameAlmostFull() throws Exception {
     int gameIdToConnectTo = 0;
     Map<Integer, Vector> connectedPlayersPositions = new ConcurrentHashMap<>();

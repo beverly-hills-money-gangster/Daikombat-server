@@ -57,7 +57,7 @@ public class ProjectileShootingEventTest extends AbstractGameServerTest {
    * @when player 1 launcher a rocket at player 2
    * @then player 2 health is reduced and the event is sent to all players
    */
-  @RepeatedTest(4)
+  @RepeatedTest(16)
   public void testShootHitRocketLauncher() throws Exception {
 
     int gameIdToConnectTo = 0;
@@ -113,6 +113,8 @@ public class ProjectileShootingEventTest extends AbstractGameServerTest {
         .setPosition(Vector.newBuilder().setX(newPositionX).setY(newPositionY).build())
         .build());
 
+    // projectile is flying
+    Thread.sleep(500);
     // blow up the rocket
     shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)
         .setPingMls(PING_MLS)
@@ -188,7 +190,7 @@ public class ProjectileShootingEventTest extends AbstractGameServerTest {
    * @when player 1 shoots plasma at player 2
    * @then player 2 health is reduced and the event is sent to all players
    */
-  @RepeatedTest(4)
+  @RepeatedTest(16)
   public void testShootHitPlasmagun() throws Exception {
     int gameIdToConnectTo = 0;
     var plasmagunInfo = gameRoomRegistry.getGame(gameIdToConnectTo).getRpgWeaponInfo()
@@ -241,6 +243,9 @@ public class ProjectileShootingEventTest extends AbstractGameServerTest {
                 .setY(shooterSpawnEvent.getPlayer().getDirection().getY()).build())
         .setPosition(Vector.newBuilder().setX(newPositionX).setY(newPositionY).build())
         .build());
+
+    // projectile is flying
+    Thread.sleep(500);
 
     // blow up plasma
     shooterConnection.write(PushGameEventCommand.newBuilder().setPlayerId(shooterPlayerId)

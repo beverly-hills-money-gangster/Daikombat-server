@@ -49,7 +49,7 @@ public class InvisibilityPowerUpTest extends AbstractGameServerTest {
    * @then invisibility is applied, reverted after GAME_SERVER_INVISIBILITY_LASTS_FOR_MLS, and then
    * released after GAME_SERVER_INVISIBILITY_SPAWN_MLS
    */
-  @RepeatedTest(4)
+  @RepeatedTest(16)
   public void testPickUpPowerUpInvisibility()
       throws IOException, InterruptedException, GameLogicError {
     int gameIdToConnectTo = 0;

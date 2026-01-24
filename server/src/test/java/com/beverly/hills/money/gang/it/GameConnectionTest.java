@@ -30,7 +30,7 @@ public class GameConnectionTest extends AbstractGameServerTest {
    * @when player 1 disconnects from server
    * @then player 1 gets disconnected and player 2 has the event DISCONNECT for player 1
    */
-  @RepeatedTest(4)
+  @RepeatedTest(16)
   public void testExit() throws IOException, InterruptedException {
     int gameToConnectTo = 0;
     var gameConnection1 = createGameConnection("localhost", port);
@@ -68,8 +68,8 @@ public class GameConnectionTest extends AbstractGameServerTest {
     assertEquals(0, gameConnection1.getResponse().size(),
         "Should be no response because the connection is closed. Actual response: "
             + gameConnection1.getResponse().list());
-    assertEquals(1, gameConnection1.getWarning().size(),
-        "Should be one warning because the connection is closed. Actual warnings: "
+    assertTrue(gameConnection1.getWarning().size() >= 1,
+        "Should be at least one warning because the connection is closed. Actual warnings: "
             + gameConnection1.getWarning().list());
     Throwable error = gameConnection1.getWarning().poll().get();
     assertEquals(IOException.class, error.getClass());

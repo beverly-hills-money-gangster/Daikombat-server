@@ -52,7 +52,7 @@ public class AllPowerUpTest extends AbstractGameServerTest {
    * @when a player picks up all power-ups
    * @then all power-ups are applied and reverted after some time
    */
-  @RepeatedTest(4)
+  @RepeatedTest(16)
   public void testPickUpPowerUpAll()
       throws IOException, GameLogicError, InterruptedException {
     int gameIdToConnectTo = 0;

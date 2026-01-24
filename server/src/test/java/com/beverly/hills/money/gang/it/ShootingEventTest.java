@@ -198,7 +198,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
    * @then player 2 health is reduced by ServerConfig.DEFAULT_SHOTGUN_DAMAGE and the event is sent
    * to all players
    */
-  @RepeatedTest(4)
+  @RepeatedTest(16)
   public void testShootHit() throws Exception {
     int gameIdToConnectTo = 0;
     var gameConfig = gameRoomRegistry.getGame(gameIdToConnectTo).getGameConfig();
@@ -297,7 +297,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
    * @when player 1 shoots player 2 through a wall
    * @then the event is ignored
    */
-  @RepeatedTest(4)
+  @RepeatedTest(16)
   public void testShootHitCrossingWalls() throws Exception {
     doReturn(true).when(antiCheat).isCrossingWalls(any(), any(), any());
 
@@ -364,7 +364,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
    * @then player 2 health is reduced by ServerConfig.DEFAULT_SHOTGUN_DAMAGE*3 and the event is sent
    * to all players
    */
-  @RepeatedTest(4)
+  @RepeatedTest(16)
   public void testShootHitVeryClose() throws Exception {
     int gameIdToConnectTo = 0;
     var gameConfig = gameRoomRegistry.getGame(gameIdToConnectTo).getGameConfig();
@@ -391,7 +391,8 @@ public class ShootingEventTest extends AbstractGameServerTest {
     ServerResponse shooterPlayerSpawn = shooterConnection.getResponse().poll().get();
     int shooterPlayerId = shooterPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
 
-    waitUntilQueueNonEmpty(getShotConnection.getResponse());
+    waitUntilGetResponses(getShotConnection.getResponse(), 2);
+    waitUntilQueueNonEmpty(shooterConnection.getResponse());
     ServerResponse shotPlayerSpawn = shooterConnection.getResponse().poll().get();
     int shotPlayerId = shotPlayerSpawn.getGameEvents().getEvents(0).getPlayer().getPlayerId();
 
@@ -460,7 +461,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
    * @then player 2 health is reduced by ServerConfig.DEFAULT_SHOTGUN_DAMAGE*2 and the event is sent
    * to all players
    */
-  @RepeatedTest(4)
+  @RepeatedTest(16)
   public void testShootHitClose() throws Exception {
     int gameIdToConnectTo = 0;
     var gameConfig = gameRoomRegistry.getGame(gameIdToConnectTo).getGameConfig();
@@ -558,7 +559,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
    * @then player 2 health is reduced by ServerConfig.DEFAULT_PUNCH_DAMAGE and the event is sent to
    * all players
    */
-  @RepeatedTest(4)
+  @RepeatedTest(16)
   public void testPunchHit() throws Exception {
     int gameIdToConnectTo = 0;
     var gameConfig = gameRoomRegistry.getGame(gameIdToConnectTo).getGameConfig();
@@ -872,7 +873,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
    * @then player 2 is dead. KILL event is sent to all active players. player 2 stats are recovered
    * after reconnecting
    */
-  @RepeatedTest(4)
+  @RepeatedTest(16)
   public void testRailgunKillRecovery() throws Exception {
     int gameIdToConnectTo = 0;
     String shooterPlayerName = "killer";
@@ -1010,7 +1011,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
    * @when player 1 shoots player 2
    * @then nothing happens as dead players can't get shot
    */
-  @RepeatedTest(4)
+  @RepeatedTest(16)
   public void testShootDeadPlayer() throws Exception {
     int gameIdToConnectTo = 0;
     var gameConfig = gameRoomRegistry.getGame(gameIdToConnectTo).getGameConfig();
@@ -1112,7 +1113,7 @@ public class ShootingEventTest extends AbstractGameServerTest {
    * @when player shoots himself
    * @then player's health is reduced accordingly
    */
-  @RepeatedTest(4)
+  @RepeatedTest(16)
   public void testShootYourself() throws Exception {
     doReturn(Coordinates.builder()
         .position(com.beverly.hills.money.gang.state.entity.Vector.builder().x(0F).y(0F).build())

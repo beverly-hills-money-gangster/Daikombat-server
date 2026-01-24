@@ -89,7 +89,7 @@ public class ChatEventTest extends AbstractGameServerTest {
    * @when many players connect to server and send messages
    * @then all messages are correctly received by players
    */
-  @RepeatedTest(4)
+  @RepeatedTest(16)
   public void testChatManyPlayers() throws IOException, InterruptedException {
     int gameIdToConnectTo = 0;
     for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
@@ -149,7 +149,7 @@ public class ChatEventTest extends AbstractGameServerTest {
    * @when both players send a chat message
    * @then none of them get it because you can only see messages from YOUR game
    */
-  @RepeatedTest(4)
+  @RepeatedTest(16)
   public void testChatDifferentGame() throws IOException, InterruptedException {
 
     var gameConnectionPlayer1 = createGameConnection("localhost",
@@ -204,7 +204,7 @@ public class ChatEventTest extends AbstractGameServerTest {
    * @when many players connect to server and send messages along with taunts
    * @then all messages and taunts are correctly received by players
    */
-  @RepeatedTest(4)
+  @RepeatedTest(16)
   public void testChatManyPlayersTaunt() throws IOException, InterruptedException {
     int gameIdToConnectTo = 0;
     for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
@@ -265,7 +265,7 @@ public class ChatEventTest extends AbstractGameServerTest {
    * @when many players connect to server and send messages concurrently
    * @then all messages are correctly received by players
    */
-  @RepeatedTest(4)
+  @RepeatedTest(16)
   public void testChatManyPlayersConcurrent() throws IOException, InterruptedException {
     int gameIdToConnectTo = 0;
     for (int i = 0; i < ServerConfig.MAX_PLAYERS_PER_GAME; i++) {
